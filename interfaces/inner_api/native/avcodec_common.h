@@ -59,7 +59,7 @@ struct AVCodecBufferInfo {
 };
 
 struct AVCodecBufferElement {
-    std::shared_ptr<AVSharedMemory> frameBuffer;
+    std::shared_ptr<AVSharedMemory> buffer;
     std::shared_ptr<AVSharedMemory> metaData;
 };
 
