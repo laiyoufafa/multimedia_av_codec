@@ -24,8 +24,8 @@ namespace AVCodec {
 /**
  * @brief Error type of AVCodec
  *
- * @since 3.1
- * @version 3.1
+ * @since 4.0
+ * @version 4.0
  */
 enum AVCodecErrorType : int32_t {
     /* internal errors, error code passed by the errorCode, and definition see "MediaServiceErrCode" */
@@ -54,6 +54,13 @@ struct AVCodecBufferInfo {
     int32_t size = 0;
     /* The start-offset of the data in the buffer */
     int32_t offset = 0;
+    /* The flag of the available buffer. For details, see {@link AVCodecBufferFlag} */
+    uint32_t flags = 0;
+};
+
+struct AVCodecBufferElement {
+    std::shared_ptr<AVSharedMemory> frameBuffer;
+    std::shared_ptr<AVSharedMemory> metaData;
 };
 
 class AVCodecCallback {
@@ -64,8 +71,8 @@ public:
      *
      * @param errorType Error type. For details, see {@link AVCodecErrorType}.
      * @param errorCode Error code.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual void OnError(AVCodecErrorType errorType, int32_t errorCode) = 0;
 
@@ -73,8 +80,8 @@ public:
      * Called when the output format has changed.
      *
      * @param format The new output format.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual void OnOutputFormatChanged(const Format &format) = 0;
 
@@ -82,8 +89,8 @@ public:
      * Called when an input buffer becomes available.
      *
      * @param index The index of the available input buffer.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual void OnInputBufferAvailable(uint32_t index) = 0;
 
@@ -92,11 +99,10 @@ public:
      *
      * @param index The index of the available output buffer.
      * @param info The info of the available output buffer. For details, see {@link AVCodecBufferInfo}
-     * @param flag The flag of the available output buffer. For details, see {@link AVCodecBufferFlag}
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
-    virtual void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) = 0;
+    virtual void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info) = 0;
 };
 
 class SurfaceBufferExtratDataKey {
