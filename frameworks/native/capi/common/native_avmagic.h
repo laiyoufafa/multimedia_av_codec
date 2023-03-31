@@ -40,7 +40,7 @@ struct OH_AVBufferElement : public OHOS::RefBase {
     explicit OH_AVBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
     ~OH_AVBufferElement() override;
     bool IsEqualBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
-    const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> bufferElement_;
+    const std::shared_ptr<OHOS::AVCodec::AVBufferElement> bufferElement_;
 }
 
 struct OH_AVCodec : public OHOS::RefBase {

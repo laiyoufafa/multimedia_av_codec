@@ -25,7 +25,6 @@ namespace {
 }
 
 using namespase OHOS::AVCodec;
-using namespase OHOS::AVCodec;
 
 struct DemuxerObject : public OH_AVDemuxer {
     explicit DemuxerObject(const std::shared_ptr<AVDemuxer> &demuxer)
