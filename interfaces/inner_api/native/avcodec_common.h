@@ -58,7 +58,7 @@ struct AVCodecBufferInfo {
     uint32_t flags = 0;
 };
 
-struct AVCodecBufferElement {
+struct AVBufferElement {
     std::shared_ptr<AVSharedMemory> buffer;
     std::shared_ptr<AVSharedMemory> metaData;
 };

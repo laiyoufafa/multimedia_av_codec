@@ -40,9 +40,9 @@ typedef struct OH_AVSourceTrack OH_AVSourceTrack;
  */
 typedef struct OH_AVBufferElement {
     /* pointer to the buffer*/
-    uint8_t *buffer,
-    /* The size of the data contained in the Buffer in bytes */
-    size_t size,
+    OH_AVMemory *buffer,
+    /* pointer to the metadata*/
+    OH_AVMemory *metadata,
 } OH_AVBufferElement;
 
 

@@ -61,7 +61,7 @@ public:
      * @since 3.1
      * @version 3.1
      */
-    virtual int32_t CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
+    virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
 
     /**
      * @brief All selected tracks seek near to the requested time according to the seek mode.

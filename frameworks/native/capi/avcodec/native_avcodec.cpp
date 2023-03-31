@@ -36,7 +36,8 @@ struct CodecObject : public OH_AVCodec {
     ~CodecObject() = default;
 
     const std::shared_ptr<AVCodec> codec_;
-    std::list<OHOS::sptr<OH_AVMemory>> memoryObjList_;
+    // std::list<OHOS::sptr<OH_AVMemory>> memoryObjList_;
+    std::list<OHOS::sptr<OH_AVBufferElement>> memoryObjList_;
     std::shared_ptr<NativeCodecCallback> callback_ = nullptr;
     std::atomic<bool> isFlushing_ = false;
     std::atomic<bool> isStop_ = false;
@@ -115,50 +116,50 @@ public:
     }
 
 private:
-    OH_AVMemory *GetInputData(struct OH_AVCodec *codec, uint32_t index)
+    OH_AVBufferElement *GetInputData(struct OH_AVCodec *codec, uint32_t index)
     {
         CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
         struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
         CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, nullptr, "codec_ is nullptr!");
 
-        std::shared_ptr<AVSharedMemory> memory = codecObj->codec_->GetInputBuffer(index);
-        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "get input buffer is nullptr!");
+        std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetInputBuffer(index);
+        CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get input buffer is nullptr!");
 
         for (auto &memoryObj : codecObj->memoryObjList_) {
-            if (memoryObj->IsEqualMemory(memory)) {
-                return reinterpret_cast<OH_AVMemory *>(memoryObj.GetRefPtr());
+            if (memoryObj->IsEqualBufferElement(bufferElement)) {
+                return reinterpret_cast<OH_AVBufferElement *>(memoryObj);
             }
         }
 
-        OHOS::sptr<OH_AVMemory> object = new(std::nothrow) OH_AVMemory(memory);
-        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "failed to new OH_AVMemory");
+        OHOS::sptr<OH_AVBufferElement> object = new(std::nothrow) OH_AVBufferElement(bufferElement);
+        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "failed to new OH_AVBufferElement");
 
         codecObj->memoryObjList_.push_back(object);
-        return reinterpret_cast<OH_AVMemory *>(object.GetRefPtr());
+        return reinterpret_cast<OH_AVBufferElement *>(object);
     }
 
-    OH_AVMemory *GetOutputData(struct OH_AVCodec *codec, uint32_t index)
+    OH_AVBufferElement *GetOutputData(struct OH_AVCodec *codec, uint32_t index)
     {
         CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
         struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
         CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, nullptr, "codec_ is nullptr!");
 
-        std::shared_ptr<AVSharedMemory> memory = codecObj->codec_->GetOutputBuffer(index);
-        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "get output buffer is nullptr!");
+        std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetOutputBuffer(index);
+        CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get output buffer is nullptr!");
 
         for (auto &memoryObj : codecObj->memoryObjList_) {
-            if (memoryObj->IsEqualMemory(memory)) {
-                return reinterpret_cast<OH_AVMemory *>(memoryObj.GetRefPtr());
+            if (memoryObj->IsEqualBufferElement(bufferElement)) {
+                return reinterpret_cast<OH_AVBufferElement *>(memoryObj);
             }
         }
 
-        OHOS::sptr<OH_AVMemory> object = new(std::nothrow) OH_AVMemory(memory);
-        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "failed to new OH_AVMemory");
+        OHOS::sptr<OH_AVBufferElement> object = new(std::nothrow) OH_AVBufferElement(bufferElement);
+        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "failed to new OH_AVBufferElement");
 
         codecObj->memoryObjList_.push_back(object);
-        return reinterpret_cast<OH_AVMemory *>(object.GetRefPtr());
+        return reinterpret_cast<OH_AVBufferElement *>(object);
     }
 
     struct OH_AVCodec *codec_;
@@ -442,14 +443,10 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
 
-    std::shared_ptr<AVSharedMemory> memory = codecObj->codec_->GetInputBuffer(index);
-    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "get input buffer is nullptr!");    
+    std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetInputBuffer(index);
+    CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get input buffer is nullptr!")
 
-    OH_AVBufferElement bufferElement;
-    bufferElement.buffer = memory.GetBase();
-    bufferElement.size = memory.GetSize();
-
-    return &bufferElement;
+    return bufferElement
 }
 
 OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
@@ -459,14 +456,10 @@ OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
 
-    std::shared_ptr<AVSharedMemory> memory = codecObj->codec_->GetOutputBuffer(index);
-    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "get input buffer is nullptr!");    
+    std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetOutputBuffer(index);
+    CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get input buffer is nullptr!");    
 
-    OH_AVBufferElement bufferElement;
-    bufferElement.buffer = memory.GetBase();
-    bufferElement.size = memory.GetSize();
-
-    return &bufferElement;   
+    return bufferElement;   
 }
 
 int32_t OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, int64_t timeoutUs)

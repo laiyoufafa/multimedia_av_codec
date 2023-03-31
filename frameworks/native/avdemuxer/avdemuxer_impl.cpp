@@ -70,7 +70,7 @@ int32_t AVDemuxerImpl::RemoveSourceTrackByID(uint32_t index)
     return demuxerService_->RemoveSourceTrackByID(index);
 }
 
-int32_t AVDemuxerImpl::CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t AVDemuxerImpl::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->CopyCurrentSampleToBuf(buffer, bufferInfo);
