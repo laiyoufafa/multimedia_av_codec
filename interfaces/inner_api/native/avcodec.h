@@ -33,8 +33,8 @@ public:
      *
      * @param format The format of the input data and the desired format of the output data.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Configure(const Format &format) = 0;
 
@@ -42,8 +42,8 @@ public:
      * @brief Start codec.
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Start() = 0;
 
@@ -53,8 +53,8 @@ public:
      * This function must be called during running
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Stop() = 0;
 
@@ -62,8 +62,8 @@ public:
      * @brief Flush both input and output buffers of the codec.
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Flush() = 0;
 
@@ -71,8 +71,8 @@ public:
      * @brief Notify eos of the encoder.
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t NotifyEos() = 0;
 
@@ -80,8 +80,8 @@ public:
      * @brief Restores the codec to the initial state.
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Reset() = 0;
 
@@ -89,8 +89,8 @@ public:
      * @brief Releases codec resources. All methods are unavailable after calling this.
      *
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t Release() = 0;
 
@@ -100,8 +100,8 @@ public:
      * This function can only be called after {@link Configure} and before {@link Start}
      *
      * @return Returns the pointer to the surface.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual sptr<Surface> CreateInputSurface() = 0;
 
@@ -112,8 +112,8 @@ public:
      *
      * @param index The index of the output buffer.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
 
@@ -124,8 +124,8 @@ public:
      *
      * @param index The index of the output buffer.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
 
@@ -136,8 +136,8 @@ public:
      *
      * @param index The index of the input buffer.
      * @return Returns {@link AVSharedMemory} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) = 0;
 
@@ -150,8 +150,8 @@ public:
      * @param info The info of the input buffer. For details, see {@link AVCodecBufferInfo}
      * @param flag The flag of the input buffer. For details, see {@link AVCodecBufferFlag}
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) = 0;
 
@@ -163,8 +163,8 @@ public:
      * @param index The index of the input buffer.
      * @param timeUs timeoutUs
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) = 0;
 
@@ -176,8 +176,8 @@ public:
      * @param index The index of the output buffer.
      * @param timeUs timeoutUs
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) = 0;
 
@@ -188,8 +188,8 @@ public:
      *
      * @param index The index of the output buffer.
      * @return Returns {@link AVSharedMemory} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) = 0;
 
@@ -200,8 +200,8 @@ public:
      *
      * @param format
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t GetOutputFormat(Format &format) = 0;
 
@@ -212,8 +212,8 @@ public:
      *
      * @param index The index of the output buffer.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t ReleaseOutputBuffer(uint32_t index, bool render) = 0;
 
@@ -224,8 +224,8 @@ public:
      *
      * @param format The parameters.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t SetParameter(const Format &format) = 0;
 
@@ -236,8 +236,8 @@ public:
      *
      * @param callback Indicates the codec listener to register. For details, see {@link AVCodecCallback}.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
 
@@ -264,8 +264,8 @@ public:
      * @param mime The mime type.
      * @param encoder true for encoder and false for decoder.
      * @return Returns the preferred codec.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     static std::shared_ptr<AVCodec> CreateByMime(const std::string &mime, bool encoder);
 
@@ -274,8 +274,8 @@ public:
      *
      * @param name The codec's name.
      * @return Returns the designated codec.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     static std::shared_ptr<AVCodec> CreateByName(const std::string &name);
 #endif

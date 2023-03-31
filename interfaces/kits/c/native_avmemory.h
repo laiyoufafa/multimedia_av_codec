@@ -30,7 +30,7 @@ typedef struct OH_AVMemory OH_AVMemory;
  * @param mem Encapsulate OH_AVMemory structure instance pointer
  * @return the memory's virtual address if the memory is valid, otherwise nullptr.
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem);
 
@@ -40,7 +40,7 @@ uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem);
  * @param mem Encapsulate OH_AVMemory structure instance pointer
  * @return the memory's size if the memory is valid, otherwise -1.
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 int32_t OH_AVMemory_GetSize(struct OH_AVMemory *mem);
 
