@@ -31,8 +31,8 @@ public:
      * 
      * @param uri The source model for demuxer.
      * @return Returns the designated demuxer.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     static Source(const std::string &uri);
     virtual ~Source() = default;
@@ -41,8 +41,8 @@ public:
      * @brief Count number of the track in source.
      * 
      * @return Returns the tracks's count.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual uint32_t GetTrackCount() = 0;
 
@@ -51,8 +51,8 @@ public:
      * 
      * @param trackId The index of the track.
      * @return Returns {@link AVSourceTrack} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<SourceTrack> LoadSourceTrackByID(uint32_t trackId) = 0;
 
@@ -68,8 +68,8 @@ public:
      * 
      * @param formatContext The ffmpeg source model.
      * @param trackId The index of the track.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     SourceTrack(const AVFormatContext &formatContext, uint32_t trackId);
     virtual ~SourceTrack() = default;
@@ -79,8 +79,8 @@ public:
      * 
      * @param format The parameters.
      * @return Returns {@link MSEER_OK} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual uint32_t SetParameter(const Format &param) = 0;
 
@@ -88,8 +88,8 @@ public:
      * @brief Gets the parameters of the track.
      * 
      * @return Returns {@link Format} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<Format> GetTrackFormat() = 0;
 private:

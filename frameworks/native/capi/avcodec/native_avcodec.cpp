@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -36,7 +36,6 @@ struct CodecObject : public OH_AVCodec {
     ~CodecObject() = default;
 
     const std::shared_ptr<AVCodec> codec_;
-    // std::list<OHOS::sptr<OH_AVMemory>> memoryObjList_;
     std::list<OHOS::sptr<OH_AVBufferElement>> memoryObjList_;
     std::shared_ptr<NativeCodecCallback> callback_ = nullptr;
     std::atomic<bool> isFlushing_ = false;
@@ -81,7 +80,7 @@ public:
                 MEDIA_LOGD("At flush, eos or stop, no buffer available");
                 return;
             }
-            OH_AVMemory *data = GetInputData(codec_, index);
+            OH_AVBufferElement *data = GetInputData(codec_, index);
             if (data != nullptr) {
                 callback_.onInputDataReady(codec_, index, data, userData_);
             }
