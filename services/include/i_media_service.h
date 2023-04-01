@@ -36,8 +36,8 @@ public:
      * All player functions must be created and obtained first.
      *
      * @return Returns a valid pointer if the setting is successful;
-     * @since 1.0
-     * @version 1.0
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<IAVCodecListService> CreateAVCodecListService() = 0;
 
@@ -48,8 +48,8 @@ public:
      *
      * @param pointer to the codeclist service.
      * @return Returns a valid pointer if the setting is successful;
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t DestroyAVCodecListService(std::shared_ptr<IAVCodecListService> avCodecList) = 0;
 
@@ -59,8 +59,8 @@ public:
      * All player functions must be created and obtained first.
      *
      * @return Returns a valid pointer if the setting is successful;
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<IAVCodecService> CreateAVCodecService() = 0;
 
@@ -71,8 +71,8 @@ public:
      *
      * @param pointer to the avcodec service.
      * @return Returns a valid pointer if the setting is successful;
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t DestroyAVCodecService(std::shared_ptr<IAVCodecService> avCodec) = 0;
 #endif
@@ -84,8 +84,8 @@ public:
      * All player functions must be created and obtained first.
      *
      * @return Returns a valid pointer if the setting is successful;
-     * @since 1.0
-     * @version 1.0
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<IAVMetadataHelperService> CreateAVMetadataHelperService() = 0;
 
@@ -96,8 +96,8 @@ public:
      *
      * @param pointer to the avmetadatahelper service.
      * @return Returns a valid pointer if the setting is successful;
-     * @since 1.0
-     * @version 1.0
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t DestroyAVMetadataHelperService(std::shared_ptr<IAVMetadataHelperService> avMetadataHelper) = 0;
 #endif
@@ -111,8 +111,8 @@ public:
      * Create Recorder Service and Player Service Through the Media Service.
      *
      * @return Returns IMediaService singleton;
-     * @since 1.0
-     * @version 1.0
+     * @since 4.0
+     * @version 4.0
      */
     static IMediaService &GetInstance();
 private:
