@@ -19,6 +19,7 @@
 #include <string>
 #include <refbase.h>
 #include "nocopyable.h"
+#include "hisysevent.h"
 
 namespace OHOS {
 namespace AVCodec {

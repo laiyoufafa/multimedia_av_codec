@@ -238,3 +238,6 @@ AVCodecServiceExtErrCode AVCSErrorToExtError(AVCodecServiceErrCode code)
 
     return AVCSERR_EXT_UNKNOWN;
 }
+
+} // namespace AVCodec
+} // namespace OHOS
