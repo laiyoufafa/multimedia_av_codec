@@ -17,6 +17,9 @@
 #include <unordered_set>
 #include "codec_service_stub.h"
 #include "codeclist_service_stub.h"
+#include "muxer_service_stub.h"
+#include "demuxer_service_stub.h"
+#include "source_service_stub.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avcodec_dfx.h"
