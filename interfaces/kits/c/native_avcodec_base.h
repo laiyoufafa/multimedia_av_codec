@@ -79,6 +79,8 @@ typedef struct OH_AVCodecBufferAttr {
     int32_t offset;
     /* The flags this Buffer has, which is also a combination of multiple {@link OH_AVCodecBufferFlags}. */
     uint32_t flags;
+    /* The index of the track which this Buffer belongs. */
+    uint32_t trackId;
 } OH_AVCodecBufferAttr;
 
 /**
