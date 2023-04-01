@@ -158,7 +158,7 @@ int32_t AVCodecImpl::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
     return codecService_->SetCallback(callback);
 }
 
-sptr<Surface> AVCodecVideoEncoderImpl::CreateInputSurface()
+sptr<Surface> AVCodecImpl::CreateInputSurface()
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, nullptr, "service died");
     surface_ = codecService_->CreateInputSurface();
@@ -182,6 +182,7 @@ int32_t AVCodecImpl::DequeueOutputBuffer(size_t *index, int64_t timetUs)
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
     return codecService_->DequeueOutputBuffer(surface);
 }
+
 
 } // namespace AVCodec
 } // namespace OHOS

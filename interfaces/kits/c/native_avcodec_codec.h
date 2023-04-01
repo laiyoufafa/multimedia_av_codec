@@ -82,8 +82,8 @@ OH_AVErrCode OH_AVCodec_Destroy(OH_AVCodec *codec);
 OH_AVErrCode OH_AVCodec_SetCallback(OH_AVCodec *codec, OH_AVCodecCallback callback, void *userData);
 
 /**
- * @brief To configure the codec, typically, you need to configure the description information of the decoded
- * video track, which can be extracted from the container. This interface must be called before Start is called.
+ * @brief To configure the codec, typically, you would get the fotmat from an extractor for decoding.
+ * This interface must be called before Start is called.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param format A pointer to an OH_AVFormat to give the description of the video track to be decoded
@@ -169,6 +169,30 @@ OH_AVFormat *OH_AVCodec_GetOutputFormat(OH_AVCodec *codec);
 OH_AVErrCode OH_AVCodec_SetParameter(OH_AVCodec *codec, OH_AVFormat *format);
 
 /**
+ * @brief Get the index of the next ready input buffer. 
+ * @syscap SystemCapability.Multimedia.AVCodec.Codec
+ * @param codec Pointer to an OH_AVCodec instance
+ * @param timeoutUs timeoutUs
+ * @return Returns non-negtive value of the buffer index,
+ * otherwise returns negtive value for invalid buffer index
+ * @since 10
+ * @version 4.0
+ */
+int32_t OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
+
+/**
+ * @brief Get an input buffer. 
+ * The buffer index must be odbtained from OH_AVCodec_DequeueInputBuffer, and not queued yet.
+ * @syscap SystemCapability.Multimedia.AVCodec.Codec
+ * @param codec Pointer to an OH_AVCodec instance
+ * @param index The index value corresponding to the input Buffer
+ * @return Returns a pointer to an BufferElement instance
+ * @since 10
+ * @version 4.0
+ */
+OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index);
+
+/**
  * @brief Submit the input buffer filled with data to the codec. The {@link OH_AVCodecOnInputDataReady} callback
  * will report the available input buffer and the corresponding index value. Once the buffer with the specified index
  * is submitted to the codec, the buffer cannot be accessed again until the {@link OH_AVCodecOnInputDataReady}
@@ -187,18 +211,20 @@ OH_AVErrCode OH_AVCodec_SetParameter(OH_AVCodec *codec, OH_AVFormat *format);
 OH_AVErrCode OH_AVCodec_QueueInputBuffer(OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr);
 
 /**
- * @brief Get an input buffer. 
+ * @brief Get the index of the next ready output buffer of processed data. 
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @param index The index value corresponding to the input Buffer
- * @return Returns a pointer to an BufferElement instance
+ * @param timeoutUs timeoutUs
+ * @return Returns non-negtive value of the buffer index,
+ * otherwise returns negtive value for invalid buffer index
  * @since 10
  * @version 4.0
  */
-OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index);
+int32_t OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
 
 /**
  * @brief Get an output buffer. 
+ * The buffer index must be odbtained from OH_AVCodec_DequeueOutputBuffer.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param index The index value corresponding to the output Buffer
@@ -207,30 +233,6 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index);
  * @version 4.0
  */
 OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index);
-
-/**
- * @brief Get the index of the next ready input buffer. 
- * @syscap SystemCapability.Multimedia.AVCodec.Codec
- * @param codec Pointer to an OH_AVCodec instance
- * @param timeoutUs timeoutUs
- * @return Returns 0 or positive of the buffer index,
- * otherwise returns negtive value for invalid buffer index
- * @since 10
- * @version 4.0
- */
-int32_t OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
-
-/**
- * @brief Get the index of the next ready output buffer of processed data. 
- * @syscap SystemCapability.Multimedia.AVCodec.Codec
- * @param codec Pointer to an OH_AVCodec instance
- * @param timeoutUs timeoutUs
- * @return Returns 0 or positive of the buffer index,
- * otherwise returns negtive value for invalid buffer index
- * @since 10
- * @version 4.0
- */
-int32_t OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
 
 /**
  * @brief Return the processed output Buffer to the codec.
