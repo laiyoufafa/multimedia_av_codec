@@ -27,9 +27,9 @@ namespace AVCodec {
 
 #define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define AVCODEC_LOG(func, fmt, args...)                                                       \
-    do {                                                                                      \
-        (void)func(LABEL, "{%{public}s():%{public}d} " fmt, __FUNCTION__, __LINE__, ##args);  \
+#define AVCODEC_LOG(func, fmt, args...)                       \
+    do {                                                      \
+        (void)func(LABEL, fmt, ##args);                       \
     } while (0)
 
 #define AVCODEC_LOGD(fmt, ...) AVCODEC_LOG(::OHOS::HiviewDFX::HiLog::Debug, fmt, ##__VA_ARGS__)
