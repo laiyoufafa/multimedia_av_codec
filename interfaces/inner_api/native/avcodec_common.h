@@ -56,6 +56,8 @@ struct AVCodecBufferInfo {
     int32_t offset = 0;
     /* The flag of the available buffer. For details, see {@link AVCodecBufferFlag} */
     uint32_t flags = 0;
+    /* The index of the track which this Buffer belongs. */
+    uint32_t trackId;
 };
 
 struct AVBufferElement {
