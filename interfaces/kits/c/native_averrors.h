@@ -33,43 +33,43 @@ typedef enum OH_AVErrCode {
     /**
      * no memory.
      */
-    AV_ERR_NO_MEMORY = 1,
+    AV_ERR_NO_MEMORY = -1,
     /**
      * opertation not be permitted.
      */
-    AV_ERR_OPERATE_NOT_PERMIT = 2,
+    AV_ERR_OPERATE_NOT_PERMIT = -2,
     /**
      * invalid argument.
      */
-    AV_ERR_INVALID_VAL = 3,
+    AV_ERR_INVALID_VAL = -3,
     /**
      * IO error.
      */
-    AV_ERR_IO = 4,
+    AV_ERR_IO = -4,
     /**
      * network timeout.
      */
-    AV_ERR_TIMEOUT = 5,
+    AV_ERR_TIMEOUT = -5,
     /**
      * unknown error.
      */
-    AV_ERR_UNKNOWN = 6,
+    AV_ERR_UNKNOWN = -6,
     /**
      * media service died.
      */
-    AV_ERR_SERVICE_DIED = 7,
+    AV_ERR_SERVICE_DIED = -7,
     /**
      * the state is not support this operation.
      */
-    AV_ERR_INVALID_STATE = 8,
+    AV_ERR_INVALID_STATE = -8,
     /**
      * unsupport interface.
      */
-    AV_ERR_UNSUPPORT = 9,
+    AV_ERR_UNSUPPORT = -9,
     /**
      * extend err start.
      */
-    AV_ERR_EXTEND_START = 100,
+    AV_ERR_EXTEND_START = -100,
 } OH_AVErrCode;
 
 #ifdef __cplusplus

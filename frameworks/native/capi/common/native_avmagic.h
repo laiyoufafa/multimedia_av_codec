@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,6 +19,20 @@
 #include <refbase.h>
 #include "format.h"
 #include "avsharedmemory.h"
+
+
+#define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
+
+enum AVMagic {
+    MEDIA_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
+    MEDIA_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
+};
+
+struct AVObjectMagic : public OHOS::RefBase {
+    explicit AVObjectMagic(enum AVMagic m) : magic_(m) {}
+    virtual ~AVObjectMagic() = default;
+    enum AVMagic magic_;
+};
 
 struct OH_AVFormat : public OHOS::RefBase {
     OH_AVFormat();
@@ -46,5 +60,10 @@ struct OH_AVBufferElement : public OHOS::RefBase {
 struct OH_AVCodec : public OHOS::RefBase {
     explicit OH_AVCodec();
     virtual ~OH_AVCodec() = default;
+};
+
+struct OH_AVMuxer : public AVObjectMagic {
+    explicit OH_AVMuxer(enum AVMagic m) : AVObjectMagic(m) {}
+    virtual ~OH_AVMuxer() = default;
 };
 #endif // NATIVE_AVMAGIC_H
