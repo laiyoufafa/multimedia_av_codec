@@ -16,7 +16,7 @@
 #ifndef AV_CODEC_SERVER_H
 #define AV_CODEC_SERVER_H
 
-#include "av_codec_service_stub.h"
+#include "avcodec_service_stub.h"
 #include "system_ability.h"
 #include "nocopyable.h"
 
