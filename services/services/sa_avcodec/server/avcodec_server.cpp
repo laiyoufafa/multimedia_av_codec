@@ -64,9 +64,9 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed set death listener");
 
     switch (subSystemId) {
-        case AVCodecSystemAbility::AV_CODEC_CODECLIST: {
-            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
-        }
+        // case AVCodecSystemAbility::AV_CODEC_CODECLIST: {
+            // return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
+        // }
         case AVCodecSystemAbility::AV_CODEC_CODEC: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
         }
@@ -75,6 +75,9 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
         }
         case AVCodecSystemAbility::AV_CODEC_DEMUXER: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
+        }
+        case AVCodecSystemAbility::AV_CODEC_SOURCE: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
         }
         default: {
             AV_CODEC_LOGE("subSystemId is invalid");
