@@ -29,12 +29,8 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, boo
     std::shared_ptr<AVCodecImpl> impl = std::make_shared<AVCodecImpl>();
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecImpl");
 
-    int32_t ret;
-    if (encoder) {
-        ret = impl->Init(AVCODEC_TYPE_ENCODER, true, mime);
-    } else {
-        ret = impl->Init(AVCODEC_TYPE_DECODER, true, mime);
-    }
+    AVCodecType codeType = encoder ? AVCODEC_TYPE_ENCODER : AVCODEC_TYPE_DECODER;
+    int32_t ret = impl->Init(codeType, true, mime);;
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to init AVCodecImpl");
 
     return impl;
