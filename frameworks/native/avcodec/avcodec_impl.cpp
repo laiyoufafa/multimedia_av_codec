@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -115,7 +115,7 @@ int32_t AVCodecImpl::SetOutputSurface(sptr<Surface> surface)
     return codecService_->SetOutputSurface(surface);
 }
 
-std::shared_ptr<AVSharedMemory> AVCodecImpl::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> AVCodecImpl::GetInputBuffer(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, nullptr, "service died");
     return codecService_->GetInputBuffer(index);
@@ -127,7 +127,7 @@ int32_t AVCodecImpl::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
     return codecService_->QueueInputBuffer(index, info, flag);
 }
 
-std::shared_ptr<AVSharedMemory> AVCodecImpl::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> AVCodecImpl::GetOutputBuffer(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, nullptr, "service died");
     return codecService_->GetOutputBuffer(index);

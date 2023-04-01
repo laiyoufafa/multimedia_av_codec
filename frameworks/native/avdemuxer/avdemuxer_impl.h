@@ -30,7 +30,7 @@ public:
 
     int32_t AddSourceTrackByID(uint32_t index) override;
     int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
+    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
     int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
     int32_t Init(Source *source);
 

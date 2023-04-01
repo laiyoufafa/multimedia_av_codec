@@ -32,7 +32,7 @@ extern "C"{
  * @return Returns AV_ERR_OK if the execution is successful,
  *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVSource *OH_AVSource_CreateWithURI(char *uri);
 
@@ -45,7 +45,7 @@ OH_AVSource *OH_AVSource_CreateWithURI(char *uri);
  * @return Returns AV_ERR_OK if the execution is successful,
  *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVSource *OH_AVSource_CreateWithFd(int32_t fd, int64_t offset, int64_t size);
 
@@ -56,7 +56,7 @@ OH_AVSource *OH_AVSource_CreateWithFd(int32_t fd, int64_t offset, int64_t size);
  * @return Returns AV_ERR_OK if the execution is successful,
  *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source);
 
@@ -66,7 +66,7 @@ OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source);
  * @param source Pointer to an OH_AVSource instance.
  * @return Returns the count of tracks in the source.
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 uint32_t OH_AVSource_GetTrackCount(OH_AVSource *source);
 
@@ -77,7 +77,7 @@ uint32_t OH_AVSource_GetTrackCount(OH_AVSource *source);
  * @param trackId The identifier of the track to load.
  * @return Returns the track's format at the specified index.
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVSourceTrack *OH_AVSource_LoadSourceTrackByID(OH_AVSource *source, uint32_t trackId);
 
@@ -89,7 +89,7 @@ OH_AVSourceTrack *OH_AVSource_LoadSourceTrackByID(OH_AVSource *source, uint32_t 
  * @return Returns AV_ERR_OK if the execution is successful,
  *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVSourceTrack_SetParameter(OH_AVSourceTrack *sourceTrack, OH_AVFormat *param);
 
@@ -99,7 +99,7 @@ OH_AVErrCode OH_AVSourceTrack_SetParameter(OH_AVSourceTrack *sourceTrack, OH_AVF
  * @param sourceTrack Pointer to an AVSourceTrack instance.
  * @return Returns the track's format.
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVFormat *OH_AVSourceTrack_GetTrackFormat(OH_AVSourceTrack *sourceTrack);
 

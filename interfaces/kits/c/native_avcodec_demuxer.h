@@ -30,7 +30,7 @@ extern "C"{
  * @param source Pointer to an OH_AVSource instance.
  * @return Returns a pointer to an OH_AVDemuxer instance
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVDemuxer *OH_AVDemuxer_CreateWithSource(OH_AVSource *source);
 
@@ -41,7 +41,7 @@ OH_AVDemuxer *OH_AVDemuxer_CreateWithSource(OH_AVSource *source);
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVDemuxer_Destroy(OH_AVDemuxer *demuxer);
 
@@ -56,7 +56,7 @@ OH_AVErrCode OH_AVDemuxer_Destroy(OH_AVDemuxer *demuxer);
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVDemuxer_AddSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackId);
 
@@ -70,7 +70,7 @@ OH_AVErrCode OH_AVDemuxer_AddSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t tra
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVDemuxer_RemoveSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackId);
 
@@ -84,7 +84,7 @@ OH_AVErrCode OH_AVDemuxer_RemoveSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t 
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVDemuxer_CopyCurrentSampleToBuf(OH_AVDemuxer *demuxer, OH_AVBufferElement *buffer, OH_AVCodecBufferAttr *bufferInfo);
 
@@ -102,7 +102,7 @@ OH_AVErrCode OH_AVDemuxer_CopyCurrentSampleToBuf(OH_AVDemuxer *demuxer, OH_AVBuf
  * @return Returns AV_ERR_OK if the execution is successful,
  *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
  * @since 10
- * @version 1.0
+ * @version 4.0
 */
 OH_AVErrCode OH_AVDemuxer_SeekToTimeStamp(OH_AVDemuxer *demuxer, int64_t mSeconds, OH_AVSeekMode mode);
 
