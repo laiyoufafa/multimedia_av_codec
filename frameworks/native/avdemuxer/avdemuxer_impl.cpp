@@ -15,7 +15,7 @@
 
 #include "avdemuxer_impl.h"
 #include "i_media_service.h"
-#include "media_error.h"
+#include "media_errors.h"
 #include "media_log.h"
 
 namespace {
@@ -39,8 +39,8 @@ int32_t AVDemuxerImpl::Init(Source *source)
 {
     demuxerService_ = MediaServiceFactory::GetInstance().CreateAVDemuxerService();
     CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
-
-    return demuxerService_->InitParameter(source);
+    uint8_t sourceServerAttr = source->GetSourceServerAttr();
+    return demuxerService_->Init(sourceServerAttr);
 }
 
 
