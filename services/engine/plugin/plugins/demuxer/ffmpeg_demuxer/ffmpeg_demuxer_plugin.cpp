@@ -25,6 +25,11 @@ namespace OHOS {
 namespace AVCodec{
 namespace Plugin {
 namespace Ffmpeg {
+FFmpegDemuxerPlugin::FFmpegDemuxerPlugin(size_t sourceAttr)
+{
+    formatContext_ = (AVFormatContext*)sourceAttr;
+}
+
 Status FFmpegDemuxerPlugin::AddSourceTrackByID(uint32_t trackId)
 {
     CHECK_AND_RETURN_RET_LOG(formatContext_ != nullptr, 

@@ -17,7 +17,7 @@
 #include "avdemuxer.h"
 #include "native_avcodec_demuxer.h"
 #include "native_avmagic.h"
-#include "media_error.h"
+#include "media_errors.h"
 #include "media_log.h"
 
 namespace {

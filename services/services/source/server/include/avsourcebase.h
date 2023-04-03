@@ -12,31 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef AVDEMUXER_IMPL_H
-#define AVDEMUXER_IMPL_H
+#ifndef AVSOURCEBASE_H
+#define AVSOURCEBASE_H
 
 #include <memory>
-#include "avdemuxer.h"
-#include "i_avdemuxer_service.h"
-#include "nocopyable.h"
+#include <stdint>
+#include <string>
+#include "avcodec_common.h"
+#include "libavformat/avformat.h"
 
 namespace OHOS {
-namespace AVCodec{
-class AVDemuxerImpl : public AVDemuxer, public NoCopyable {
+namespace AVCodec {
+class AVSourceBase {
 public:
-    AVDemuxerImpl();
-    ~AVDemuxerImpl();
-
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
-    int32_t Init(Source *source);
+    static std::shared_ptr<AVSourceBase> Create(const std::string& uri);
+    virtual int32_t GetTrackCount() = 0;
+    virtual int32_t Destroy() = 0;
+    virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
+    virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
+    virtual size_t GetSourceAttr() = 0;
 
 private:
-    std::shared_ptr<IAVDemuxerService> demuxerService_ = nullptr;
+    std::shared_ptr<AVFormatContext> formatContext_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVDEMUXER_IMPL_H
+#endif // AVSOURCEBASE_H

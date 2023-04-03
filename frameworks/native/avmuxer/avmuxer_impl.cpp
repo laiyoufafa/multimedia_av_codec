@@ -14,6 +14,7 @@
  */
 
 #include "avmuxer_impl.h"
+#include <unistd.h>
 #include "av_log.h"
 
 
@@ -25,6 +26,9 @@ namespace OHOS {
 namespace Media {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat format)
 {
+    CHECK_AND_RETURN_RET_LOG((fcntl(fd, F_GETFL, 0) & O_RDWR) == O_RDWR, nullptr, "No permission to read and write fd");
+    CHECK_AND_RETURN_RET_LOG(lseek(fd, 0, SEEK_CUR) != -1, nullptr, "The fd is not seekable");
+
     std::shared_ptr<AVMuxerImpl> impl = std::make_shared<AVMuxerImpl>(fd, format);
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "Failed to create avmuxer implementation");
 

@@ -78,21 +78,20 @@ public:
 class __attribute__((visibility("default"))) DemuxerFactory {
 public:
 #ifdef UNSUPPORT_DEMUXER
-    static std::shared_ptr<AVDemuxer> CreateWithSource(Source *source)
+    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr)
     {
-        (void)source;
         return nullptr;
     }
 #else
     /**
      * @brief Instantiate the preferred demuxer of the given source instance.
      * 
-     * @param source The source model for demuxer.
-     * @return Returns the designated demuxer.
+     * @param sourceAddr The address for source instance.
+     * @return Returns the preferred demuxer.
      * @since 4.0
      * @version 4.0
      */
-    static std::shared_ptr<AVDemuxer> CreateWithSource(Source *source);
+    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr);
 #endif
 private:
     DemuxerFactory() = default;
