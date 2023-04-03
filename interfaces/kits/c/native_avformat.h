@@ -31,7 +31,7 @@ typedef struct OH_AVFormat OH_AVFormat;
  * @syscap SystemCapability.Multimedia.AVCodec.Core
  * @return Returns a pointer to an OH_AVFormat instance
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 struct OH_AVFormat *OH_AVFormat_Create(void);
 
@@ -41,7 +41,7 @@ struct OH_AVFormat *OH_AVFormat_Create(void);
  * @param format pointer to an OH_AVFormat instance
  * @return void
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 void OH_AVFormat_Destroy(struct OH_AVFormat *format);
 
@@ -52,7 +52,7 @@ void OH_AVFormat_Destroy(struct OH_AVFormat *format);
  * @param from pointer to the OH_AVFormat handle of the copied data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_Copy(struct OH_AVFormat *to, struct OH_AVFormat *from);
 
@@ -64,7 +64,7 @@ bool OH_AVFormat_Copy(struct OH_AVFormat *to, struct OH_AVFormat *from);
  * @param value written data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetIntValue(struct OH_AVFormat *format, const char *key, int32_t value);
 
@@ -76,7 +76,7 @@ bool OH_AVFormat_SetIntValue(struct OH_AVFormat *format, const char *key, int32_
  * @param value written data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetLongValue(struct OH_AVFormat *format, const char *key, int64_t value);
 
@@ -88,7 +88,7 @@ bool OH_AVFormat_SetLongValue(struct OH_AVFormat *format, const char *key, int64
  * @param value written data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetFloatValue(struct OH_AVFormat *format, const char *key, float value);
 
@@ -100,7 +100,7 @@ bool OH_AVFormat_SetFloatValue(struct OH_AVFormat *format, const char *key, floa
  * @param value written data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetDoubleValue(struct OH_AVFormat *format, const char *key, double value);
 
@@ -112,7 +112,7 @@ bool OH_AVFormat_SetDoubleValue(struct OH_AVFormat *format, const char *key, dou
  * @param value written data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetStringValue(struct OH_AVFormat *format, const char *key, const char *value);
 
@@ -125,7 +125,7 @@ bool OH_AVFormat_SetStringValue(struct OH_AVFormat *format, const char *key, con
  * @param size written data length
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_SetBuffer(struct OH_AVFormat *format, const char *key, const uint8_t *addr, size_t size);
 
@@ -137,7 +137,7 @@ bool OH_AVFormat_SetBuffer(struct OH_AVFormat *format, const char *key, const ui
  * @param out read data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetIntValue(struct OH_AVFormat *format, const char *key, int32_t *out);
 
@@ -149,7 +149,7 @@ bool OH_AVFormat_GetIntValue(struct OH_AVFormat *format, const char *key, int32_
  * @param out read data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetLongValue(struct OH_AVFormat *format, const char *key, int64_t *out);
 
@@ -161,7 +161,7 @@ bool OH_AVFormat_GetLongValue(struct OH_AVFormat *format, const char *key, int64
  * @param out read data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetFloatValue(struct OH_AVFormat *format, const char *key, float *out);
 
@@ -173,7 +173,7 @@ bool OH_AVFormat_GetFloatValue(struct OH_AVFormat *format, const char *key, floa
  * @param out read data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetDoubleValue(struct OH_AVFormat *format, const char *key, double *out);
 
@@ -186,7 +186,7 @@ bool OH_AVFormat_GetDoubleValue(struct OH_AVFormat *format, const char *key, dou
  * and Format is destroyed. If the caller needs to hold it for a long time, it must copy the memory
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetStringValue(struct OH_AVFormat *format, const char *key, const char **out);
 
@@ -200,7 +200,7 @@ bool OH_AVFormat_GetStringValue(struct OH_AVFormat *format, const char *key, con
  * @param size Length of read and write data
  * @return The return value is TRUE for success, FALSE for failure
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 bool OH_AVFormat_GetBuffer(struct OH_AVFormat *format, const char *key, uint8_t **addr, size_t *size);
 
@@ -210,7 +210,7 @@ bool OH_AVFormat_GetBuffer(struct OH_AVFormat *format, const char *key, uint8_t 
  * @param format pointer to an OH_AVFormat instance
  * @return Returns a string consisting of key and data
  * @since 10
- * @version 1.0
+ * @version 4.0
  */
 const char *OH_AVFormat_DumpInfo(struct OH_AVFormat *format);
 

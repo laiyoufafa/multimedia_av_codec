@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,7 +24,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVMemor
 
 using namespace OHOS::AVCodec;
 
-OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
+OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem)
     : memory_(mem)
 {
 }
@@ -33,7 +33,7 @@ OH_AVMemory::~OH_AVMemory()
 {
 }
 
-bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
+bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem)
 {
     return (mem == memory_) ? true : false;
 }
@@ -50,4 +50,19 @@ int32_t OH_AVMemory_GetSize(struct OH_AVMemory *mem)
     CHECK_AND_RETURN_RET_LOG(mem != nullptr, -1, "input mem is nullptr!");
     CHECK_AND_RETURN_RET_LOG(mem->memory_ != nullptr, -1, "memory is nullptr!");
     return mem->memory_->GetSize();
+}
+
+
+OH_AVBufferElement::OH_AVBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement)
+    : bufferElement_(bufferElement)
+{
+}
+
+OH_AVBufferElement::~OH_AVBufferElement()
+{
+}
+
+bool OH_AVBufferElement::IsEqualBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement)
+{
+    return (bufferElement == bufferElement_) ? true : false;
 }
