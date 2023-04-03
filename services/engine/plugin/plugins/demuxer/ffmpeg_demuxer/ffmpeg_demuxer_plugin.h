@@ -31,7 +31,7 @@ namespace Plugin{
 namespace FFmpeg{
 class FFmpegDemuxerPlugin : public DemuxerPlugin{
 public:
-    FFmpegDemuxerPlugin(Source source);
+    FFmpegDemuxerPlugin(size_t sourceAttr);
     ~FFmpegDemuxerPlugin() override;
 
     Status AddSourceTrackByID(uint32_t index) override;

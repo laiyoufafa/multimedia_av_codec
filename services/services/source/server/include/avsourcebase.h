@@ -30,6 +30,7 @@ public:
     virtual int32_t Destroy() = 0;
     virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
     virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
+    virtual size_t GetSourceAttr() = 0;
 
 private:
     std::shared_ptr<AVFormatContext> formatContext_;
