@@ -176,7 +176,7 @@ bool OH_AVFormat_GetStringValue(struct OH_AVFormat *format, const char *key, con
     CHECK_AND_RETURN_RET_LOG(format->outString_ != nullptr, false, "malloc out string nullptr!");
 
     if (strcpy_s(format->outString_, bufLength + 1, str.c_str()) != EOK) {
-        MEDIA_LOGE("Failed to strcpy_s");
+        AVCODEC_LOGE("Failed to strcpy_s");
         free(format->outString_);
         format->outString_ = nullptr;
         return false;
@@ -211,7 +211,7 @@ const char *OH_AVFormat_DumpInfo(struct OH_AVFormat *format)
     format->dumpInfo_ = static_cast<char *>(malloc((bufLength + 1) * sizeof(char)));
     CHECK_AND_RETURN_RET_LOG(format->dumpInfo_ != nullptr, nullptr, "malloc dump info nullptr!");
     if (strcpy_s(format->dumpInfo_, bufLength + 1, info.c_str()) != EOK) {
-        MEDIA_LOGE("Failed to strcpy_s");
+        AVCODEC_LOGE("Failed to strcpy_s");
         free(format->dumpInfo_);
         format->dumpInfo_ = nullptr;
     }

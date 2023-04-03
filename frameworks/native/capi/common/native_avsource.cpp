@@ -74,12 +74,12 @@ OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source)
     if (sourceObj != nullptr && sourceObj->source_ != nullptr) {
         int32_t ret = sourceObj->source_->Destroy();
         if (ret != MSERR_OK) {
-            MEDIA_LOGE("source Destroy failed!");
+            AVCODEC_LOGE("source Destroy failed!");
             delete source;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGE("source_ is nullptr!");
+        AVCODEC_LOGE("source_ is nullptr!");
     }
 
     delete source;

@@ -24,8 +24,8 @@
 #define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
 
 enum AVMagic {
-    MEDIA_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
-    MEDIA_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
+    AVCODEC_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
+    AVCODEC_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
 };
 
 struct AVObjectMagic : public OHOS::RefBase {

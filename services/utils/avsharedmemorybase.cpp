@@ -39,7 +39,7 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromLocal(
     std::shared_ptr<AVSharedMemoryBase> memory = std::make_shared<AVSharedMemoryBase>(size, flags, name);
     int32_t ret = memory->Init();
     if (ret != MSERR_OK) {
-        MEDIA_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
+        AVCODEC_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
         return nullptr;
     }
 
@@ -52,7 +52,7 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromRemote(
     std::shared_ptr<AVSharedMemoryBase> memory = std::make_shared<AVSharedMemoryBaseImpl>(fd, size, flags, name);
     int32_t ret = memory->Init();
     if (ret != MSERR_OK) {
-        MEDIA_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
+        AVCODEC_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
         return nullptr;
     }
 
@@ -62,20 +62,20 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromRemote(
 AVSharedMemoryBase::AVSharedMemoryBase(int32_t size, uint32_t flags, const std::string &name)
     : base_(nullptr), size_(size), flags_(flags), name_(name), fd_(-1)
 {
-    MEDIA_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
+    AVCODEC_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), name_.c_str());
 }
 
 AVSharedMemoryBase::AVSharedMemoryBase(int32_t fd, int32_t size, uint32_t flags, const std::string &name)
     : base_(nullptr), size_(size), flags_(flags), name_(name), fd_(dup(fd))
 {
-    MEDIA_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
+    AVCODEC_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), name_.c_str());
 }
 
 AVSharedMemoryBase::~AVSharedMemoryBase()
 {
-    MEDIA_LOGD("enter dtor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
+    AVCODEC_LOGD("enter dtor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), name_.c_str());
     Close();
 }
@@ -83,7 +83,7 @@ AVSharedMemoryBase::~AVSharedMemoryBase()
 int32_t AVSharedMemoryBase::Init()
 {
     ON_SCOPE_EXIT(0) {
-        MEDIA_LOGE("create avsharedmemory failed, name = %{public}s, size = %{public}d, "
+        AVCODEC_LOGE("create avsharedmemory failed, name = %{public}s, size = %{public}d, "
                    "flags = 0x%{public}x, fd = %{public}d",
                    name_.c_str(), size_, flags_, fd_);
         Close();
