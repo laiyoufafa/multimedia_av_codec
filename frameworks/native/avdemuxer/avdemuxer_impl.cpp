@@ -39,10 +39,9 @@ int32_t AVDemuxerImpl::Init(Source *source)
 {
     demuxerService_ = MediaServiceFactory::GetInstance().CreateAVDemuxerService();
     CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
-    uint8_t sourceServerAttr = source->GetSourceServerAttr();
-    return demuxerService_->Init(sourceServerAttr);
+    uint8_t sourceAttr = source->GetSourceAttr();
+    return demuxerService_->Init(sourceAttr);
 }
-
 
 AVDemuxerImpl::AVDemuxerImpl()
 {
