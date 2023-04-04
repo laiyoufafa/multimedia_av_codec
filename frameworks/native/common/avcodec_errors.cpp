@@ -66,7 +66,7 @@ const std::map<AVCodecServiceErrCode, std::string> AVCS_ERRCODE_INFOS = {
     {AVCS_ERR_EXTEND_START,                          "extend start error code"},
 };
 
-const std::map<AVCodecServiceErrCode, AVCodecServiceExtErrCode> AVCSERRCODE_TO_OHAVCODECERRCODE = {
+const std::map<AVCodecServiceErrCode, OH_AVErrCode> AVCSERRCODE_TO_OHAVCODECERRCODE = {
     {AVCS_ERR_OK,                                  AVCODEC_ERR_OK},
     {AVCS_ERR_NO_MEMORY,                           AVCODEC_ERR_NO_MEMORY},
     {AVCS_ERR_INVALID_OPERATION,                   AVCODEC_ERR_OPERATE_NOT_PERMIT},
@@ -111,7 +111,7 @@ const std::map<AVCodecServiceErrCode, AVCodecServiceExtErrCode> AVCSERRCODE_TO_O
     {AVCS_ERR_EXTEND_START,                        AVCODEC_ERR_EXTEND_START},
 };
 
-const std::map<AVCodecServiceExtErrCode, std::string> OHAVCODECERRCODE_INFOS = {
+const std::map<OH_AVErrCode, std::string> OHAVCODECERRCODE_INFOS = {
     {AVCODEC_ERR_OK,                    "success"},
     {AVCODEC_ERR_NO_MEMORY,             "no memory"},
     {AVCODEC_ERR_OPERATE_NOT_PERMIT,    "operation not be permitted"},
@@ -207,7 +207,7 @@ std::string AVCSErrorToString(AVCodecServiceErrCode code)
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
 }
 
-std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code)
+std::string OH_AVErrCodeToString(OH_AVErrCode code)
 {
     if (OHAVCODECERRCODE_INFOS.count(code) != 0) {
         return OHAVCODECERRCODE_INFOS.at(code);
@@ -220,10 +220,10 @@ std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code)
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
 }
 
-std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code)
+std::string AVCSErrorToOH_AVErrCodeString(AVCodecServiceErrCode code)
 {
     if (AVCS_ERRCODE_INFOS.count(code) != 0 && AVCSERRCODE_TO_OHAVCODECERRCODE.count(code) != 0) {
-        AVCodecServiceExtErrCode extCode = AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
+        OH_AVErrCode extCode = AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
         if (OHAVCODECERRCODE_INFOS.count(extCode) != 0) {
             return OHAVCODECERRCODE_INFOS.at(extCode);
         }
@@ -232,7 +232,7 @@ std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code)
     return "unkown error";
 }
 
-AVCodecServiceExtErrCode AVCSErrorToExtError(AVCodecServiceErrCode code)
+OH_AVErrCode AVCSErrorToOH_AVErrCode(AVCodecServiceErrCode code)
 {
     if (AVCS_ERRCODE_INFOS.count(code) != 0 && AVCSERRCODE_TO_OHAVCODECERRCODE.count(code) != 0) {
         return AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
