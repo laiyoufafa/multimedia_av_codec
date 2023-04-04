@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,26 +13,43 @@
  * limitations under the License.
  */
 
-#include "avcodec_server_manager.h"
 #include <unordered_set>
-#include "codec_service_stub.h"
-#include "codeclist_service_stub.h"
-#include "muxer_service_stub.h"
-#include "demuxer_service_stub.h"
+#include "avcodec_server_manager.h"
 #include "source_service_stub.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avcodec_dfx.h"
 #include "service_dump_manager.h"
 
+#ifdef SUPPORT_CODECLIST
+#include "codeclist_service_stub.h"
+#endif
+#ifdef SUPPORT_CODEC
+#include "codec_service_stub.h"
+#endif
+#ifdef SUPPORT_DEMUXER
+#include "demuxer_service_stub.h"
+#endif
+#ifdef SUPPORT_MUXER
+#include "muxer_service_stub.h"
+#endif
+#ifdef SUPPORT_SOURCE
+#include "source_service_stub.h"
+#endif
+
+#include "av_log.h"
+#include "media_errors.h"
+#include <thread>
+#include <unistd.h>
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServerManager"};
 }
 
+
 namespace OHOS {
 namespace AVCodec {
 constexpr uint32_t SERVER_MAX_NUMBER = 16;
-AVCodecServerManager &AVCOdecServerManager::GetInstance()
+AVCodecServerManager &AVCodecServerManager::GetInstance()
 {
     static AVCodecServerManager instance;
     return instance;
@@ -75,33 +92,41 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
         argSets.insert(args[index]);
     }
 
+#ifdef SUPPORT_CODEC
     dumpString += "------------------CodecServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::CODEC],
         argSets.find(u"codec") != argSets.end()) != OHOS::NO_ERROR) {
         AVCODEC_LOGW("Failed to write CodecServer information");
         return OHOS::INVALID_OPERATION;
     }
+#endif
 
+#ifdef SUPPORT_MUXER
     dumpString += "------------------MuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::MUXER],
         argSets.find(u"muxer") != argSets.end()) != OHOS::NO_ERROR) {
         AVCODEC_LOGW("Failed to write MuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
+#endif
 
+#ifdef SUPPORT_DEMUXER
     dumpString += "------------------DemuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::DEMUXER],
         argSets.find(u"demuxer") != argSets.end()) != OHOS::NO_ERROR) {
         AVCODEC_LOGW("Failed to write DemuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
+#endif
 
+#ifdef SUPPORT_SOURCE
     dumpString += "------------------SourceServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::SOURCE],
         argSets.find(u"source") != argSets.end()) != OHOS::NO_ERROR) {
         AVCODEC_LOGW("Failed to write SourceServer information");
         return OHOS::INVALID_OPERATION;
     }
+#endif
 
     if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
         AVCODEC_LOGW("Failed to write dfx dump information");
@@ -125,21 +150,31 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     switch (type) {
+#ifdef SUPPORT_CODECLIST
         case CODECLIST: {
             return CreateCodecListStubObject();
         }
+#endif
+#ifdef SUPPORT_CODEC
         case CODEC: {
             return CreateCodecStubObject();
         }
+#endif
+#ifdef SUPPORT_MUXER
         case MUXER: {
             return CreateMuxerStubObject();
         }
+#endif
+#ifdef SUPPORT_DEMUXER
         case DEMUXER: {
             return CreateDemuxerStubObject();
         }
+#endif
+#ifdef SUPPORT_SOURCE
         case SOURCE: {
             return CreateSourceStubObject();
         }
+#endif
         default: {
             AVCODEC_LOGE("default case, av_codec server manager failed");
             return nullptr;
@@ -147,6 +182,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
     }
 }
 
+#ifdef SUPPORT_CODECLIST
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
 {
     if (codecListStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -154,12 +190,12 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
             "Please release the applied resources.", codecListStubMap_.size());
         return nullptr;
     }
-    sptr<CodecListServiceStub> codecListStub = codecListServiceStub::Create();
-    if (codecListStub == nullptr) {
+    sptr<CodecListServiceStub> stub = codecListServiceStub::Create();
+    if (stub == nullptr) {
         AVCODEC_LOGE("failed to create CodecListServiceStub");
         return nullptr;
     }
-    sptr<IRemoteObject> object = codecListStub->AsObject();
+    sptr<IRemoteObject> object = stub->AsObject();
     if (object != nullptr) {
         pid_t pid = IPCSkeleton::GetCallingPid();
         codecListStubMap_[object] = pid;
@@ -167,7 +203,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
     }
     return object;
 }
+#endif
 
+#ifdef SUPPORT_CODEC
 sptr<IRemoteObject> MediaServerManager::CreateCodecStubObject()
 {
     if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -175,19 +213,19 @@ sptr<IRemoteObject> MediaServerManager::CreateCodecStubObject()
             "Please release the applied resources.", codecStubMap_.size());
         return nullptr;
     }
-    sptr<CodecServiceStub> codecHelperStub = CodecServiceStub::Create();
-    if (CodecHelperStub == nullptr) {
+    sptr<CodecServiceStub> stub = CodecServiceStub::Create();
+    if (stub == nullptr) {
         AVCODEC_LOGE("failed to create CodecServiceStub");
         return nullptr;
     }
-    sptr<IRemoteObject> object = codecHelperStub->AsObject();
+    sptr<IRemoteObject> object = stub->AsObject();
     if (object != nullptr) {
         pid_t pid = IPCSkeleton::GetCallingPid();
         codecStubMap_[object] = pid;
 
         Dumper dumper;
-        dumper.entry_ = [codec = codecHelperStub](int32_t fd) -> int32_t {
-            return codec->DumpInfo(fd);
+        dumper.entry_ = [stub](int32_t fd) -> int32_t {
+            return stub->DumpInfo(fd);
         };
         dumper.pid_ = pid;
         dumper.uid_ = IPCSkeleton::GetCallingUid();
@@ -200,6 +238,112 @@ sptr<IRemoteObject> MediaServerManager::CreateCodecStubObject()
     }
     return object;
 }
+#endif
+
+#ifdef SUPPORT_DEMUXER
+sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
+{
+    if (demuxerStubMap_.size() >= SERVER_MAX_NUMBER) {
+        MEDIA_LOGE("The number of demuxer services(%{public}zu) has reached the upper limit."
+            "Please release the applied resources.", demuxerStubMap_.size());
+        return nullptr;
+    }
+    sptr<DemuxerServiceStub> stub = DemuxerServiceStub::Create();
+    if (stub == nullptr) {
+        MEDIA_LOGE("failed to create DemuxerServiceStub");
+        return nullptr;
+    }
+    sptr<IRemoteObject> object = stub->AsObject();
+    if (object != nullptr) {
+        pid_t pid = IPCSkeleton::GetCallingPid();
+        demuxerStubMap_[object] = pid;
+
+        Dumper dumper;
+        dumper.entry_ = [stub](int32_t fd) -> int32_t {
+            return stub->DumpInfo(fd);
+        };
+        dumper.pid_ = pid;
+        dumper.uid_ = IPCSkeleton::GetCallingUid();
+        dumper.remoteObject_ = object;
+        dumperTbl_[StubType::DEMUXER].emplace_back(dumper);
+        MEDIA_LOGD("The number of demuxer services(%{public}zu).", demuxerStubMap_.size());
+        if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
+            MEDIA_LOGW("failed to call InstanceDump");
+        }
+    }
+    return object;
+}
+#endif
+
+#ifdef SUPPORT_MUXER
+sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
+{
+    if (muxerStubMap_.size() >= SERVER_MAX_NUMBER) {
+        MEDIA_LOGE("The number of muxer services(%{public}zu) has reached the upper limit."
+            "Please release the applied resources.", muxerStubMap_.size());
+        return nullptr;
+    }
+    sptr<MuxerServiceStub> stub = MuxerServiceStub::Create();
+    if (stub == nullptr) {
+        MEDIA_LOGE("failed to create MuxerServiceStub");
+        return nullptr;
+    }
+    sptr<IRemoteObject> object = stub->AsObject();
+    if (object != nullptr) {
+        pid_t pid = IPCSkeleton::GetCallingPid();
+        muxerStubMap_[object] = pid;
+
+        Dumper dumper;
+        dumper.entry_ = [stub](int32_t fd) -> int32_t {
+            return stub->DumpInfo(fd);
+        };
+        dumper.pid_ = pid;
+        dumper.uid_ = IPCSkeleton::GetCallingUid();
+        dumper.remoteObject_ = object;
+        dumperTbl_[StubType::MUXER].emplace_back(dumper);
+        MEDIA_LOGD("The number of muxer services(%{public}zu).", muxerStubMap_.size());
+        if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
+            MEDIA_LOGW("failed to call InstanceDump");
+        }
+    }
+    return object;
+}
+#endif
+
+#ifdef SUPPORT_SOURCE
+sptr<IRemoteObject> AVCodecServerManager::CreateSourceStubObject()
+{
+    if (sourceStubMap_.size() >= SERVER_MAX_NUMBER) {
+        AVCODEC_LOGE("The number of source services(%{public}zu) has reached the upper limit."
+            "Please release the applied resources.", sourceStubMap_.size());
+        return nullptr;
+    }
+    sptr<SourceServiceStub> stub = SourceServiceStub::Create();
+    if (stub == nullptr) {
+        AVCODEC_LOGE("failed to create SourceServiceStub");
+        return nullptr;
+    }
+    sptr<IRemoteObject> object = stub->AsObject();
+    if (object != nullptr) {
+        pid_t pid = IPCSkeleton::GetCallingPid();
+        sourceStubMap_[object] = pid;
+
+        Dumper dumper;
+        dumper.entry_ = [stub](int32_t fd) -> int32_t {
+            return stub->DumpInfo(fd);
+        };
+        dumper.pid_ = pid;
+        dumper.uid_ = IPCSkeleton::GetCallingUid();
+        dumper.remoteObject_ = object;
+        dumperTbl_[StubType::SOURCE].emplace_back(dumper);
+        AVCODEC_LOGD("The number of source services(%{public}zu).", sourceStubMap_.size());
+        if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
+            AVCODEC_LOGW("failed to call InstanceDump");
+        }
+    }
+    return object;
+}
+#endif
 
 void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> object)
 {
@@ -207,7 +351,7 @@ void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> 
     pid_t pid = IPCSkeleton::GetCallingPid();
     DestroyDumper(type, object);
     
-    auto compare_func = [object](pair<sptr<IRemoteObject>, pid_t> v) { return v.first == object };
+    auto compare_func = [object](pair<sptr<IRemoteObject>, pid_t> v) -> bool { return v.first == object };
     switch (type) {
         case CODEC: {
             auto it = find_if(codecStubMap_.begin(), codecStubMap_.end(), compare_func);

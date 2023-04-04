@@ -14,7 +14,7 @@
  */
 
 #include "avsource_impl.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "media_errors.h"
 #include "media_log.h"
 
@@ -38,7 +38,7 @@ std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 
 int32_t AVSourceImpl::Init(const std::string &uri)
 {
-    sourceService_ = MediaServiceFactory::GetInstance().CreateAVSourceService();
+    sourceService_ = AVCodecServiceFactory::GetInstance().CreateAVSourceService();
     CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, MSERR_UNKNOWN, "failed to create avsource service");
     return sourceService_->Init(uri);
 }
@@ -57,7 +57,7 @@ AVSourceImpl::AVSourceImpl()
 AVSourceImpl::~AVSourceImpl()
 {
     if (sourceService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVSourceService(sourceService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyAVSourceService(sourceService_);
         sourceService_ = nullptr;
     }
     MEDIA_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));

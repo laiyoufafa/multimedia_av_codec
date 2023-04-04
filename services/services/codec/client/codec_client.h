@@ -12,20 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef AVCODEC_IMPL_H
-#define AVCODEC_IMPL_H
 
-#include "avcodec.h"
-#include "nocopyable.h"
-#include "i_avcodec_service.h"
+#ifndef CODEC_SERVICE_CLIENT_H
+#define CODEC_SERVICE_CLIENT_H
+
+#include "i_codec_service.h"
+#include "i_standard_codec_service.h"
+#include "codec_listener_stub.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecImpl : public AVCodec, public NoCopyable {
+class CodecClient : public ICodecService {
 public:
-    AVCodecImpl();
-    ~AVCodecImpl();
-
+    static std::shared_ptr<CodecClient> Create(const sptr<IStandardCodecService> &ipcProxy);
+    explicit CodecClient(const sptr<IStandardCodecService> &ipcProxy);
+    ~CodecClient();
+    // 业务
+    int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) override;
     int32_t Configure(const Format &format) override;
     int32_t Start() override;
     int32_t Stop() override;
@@ -43,13 +46,20 @@ public:
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) override;
-    int32_t Init(AVCodecType type, bool isMimeType, const std::string &name);
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) override;
+    // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
+
+    void AVCodecServerDied();
 
 private:
-    std::shared_ptr<ICodecService> codecService_ = nullptr;
+    int32_t CreateListenerObject();
+
+    sptr<IStandardCodecService> codecProxy_ = nullptr;
+    sptr<CodecListenerStub> listenerStub_ = nullptr;
+    std::shared_ptr<AVCodecCallback> callback_ = nullptr;
+    std::mutex mutex_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_IMPL_H
+#endif // CODEC_SERVICE_CLIENT_H

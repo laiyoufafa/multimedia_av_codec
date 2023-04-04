@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_impl.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "media_log.h"
 #include "media_errors.h"
 
@@ -49,7 +49,7 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByName(const std::string &name)
 
 int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
-    codecService_ = MediaServiceFactory::GetInstance().CreateAVCodecService();
+    codecService_ = AVCodecServiceFactory::GetInstance().CreateAVCodecService();
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_UNKNOWN, "failed to create avcodec service");
 
     return codecService_->InitParameter(type, isMimeType, name);
@@ -63,7 +63,7 @@ AVCodecImpl::AVCodecImpl()
 AVCodecImpl::~AVCodecImpl()
 {
     if (codecService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
         codecService_ = nullptr;
     }
     AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));

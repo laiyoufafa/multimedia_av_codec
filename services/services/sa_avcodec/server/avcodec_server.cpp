@@ -26,35 +26,35 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 
 namespace OHOS {
 namespace AVCodec {
-REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AV_CODEC_SERVICE_ID, true)
+REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AVCODEC_SERVICE_ID, true)
 AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate)
     : SystemAbility(systemAbilityId, runOnCreate)
 {
-    // AV_CODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecServer::~AVCodecServer()
 {
-    // AV_CODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void AVCodecServer::OnDump()
 {
-    // AV_CODEC_LOGD("AVCodecServer OnDump");
+    AVCODEC_LOGD("AVCodecServer OnDump");
 }
 
 void AVCodecServer::OnStart()
 {
-    // AV_CODEC_LOGD("AVCodecServer OnStart");
+    AVCODEC_LOGD("AVCodecServer OnStart");
     bool res = Publish(this);
     if (res) {
-        // AV_CODEC_LOGD("AVCodecServer OnStart res=%{public}d", res);
+        AVCODEC_LOGD("AVCodecServer OnStart res=%{public}d", res);
     }
 }
 
 void AVCodecServer::OnStop()
 {
-    // AV_CODEC_LOGD("AVCodecServer OnStop");
+    AVCODEC_LOGD("AVCodecServer OnStop");
 }
 
 sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
@@ -64,23 +64,33 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed set death listener");
 
     switch (subSystemId) {
-        // case AVCodecSystemAbility::AV_CODEC_CODECLIST: {
-            // return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
-        // }
-        case AVCodecSystemAbility::AV_CODEC_CODEC: {
-            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
-        }
-        case AVCodecSystemAbility::AV_CODEC_MUXER: {
-            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::MUXER);
-        }
-        case AVCodecSystemAbility::AV_CODEC_DEMUXER: {
-            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
-        }
-        case AVCodecSystemAbility::AV_CODEC_SOURCE: {
+#ifdef SUPPORT_CODEC
+        case AVCodecSystemAbility::AVCODEC_CODECLIST: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
         }
+#endif
+#ifdef SUPPORT_CODEC
+        case AVCodecSystemAbility::AVCODEC_CODEC: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
+        }
+#endif
+#ifdef SUPPORT_MUXER
+        case AVCodecSystemAbility::AVCODEC_MUXER: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::MUXER);
+        }
+#endif
+#ifdef SUPPORT_DEMUXER
+        case AVCodecSystemAbility::AVCODEC_DEMUXER: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
+        }
+#endif
+#ifdef SUPPORT_SOURCE
+        case AVCodecSystemAbility::AVCODEC_SOURCE: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::SOURCE);
+        }
+#endif
         default: {
-            AV_CODEC_LOGE("subSystemId is invalid");
+            AVCODEC_LOGE("subSystemId is invalid");
             return nullptr;
         }
     }
@@ -89,11 +99,11 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
 int32_t AVCodecServer::Dump(int32_t fd, const std::vector<std::u16string> &args)
 {
     if (fd <= 0) {
-        // AV_CODEC_LOGW("Failed to check fd");
+        AVCODEC_LOGW("Failed to check fd");
         return OHOS::INVALID_OPERATION;
     }
     if (AVCodecServerManager::GetInstance().Dump(fd, args) != OHOS::NO_ERROR) {
-        // AV_CODEC_LOGW("Failed to call AVCodecServerManager::Dump");
+        AVCODEC_LOGW("Failed to call AVCodecServerManager::Dump");
         return OHOS::INVALID_OPERATION;
     }
 
