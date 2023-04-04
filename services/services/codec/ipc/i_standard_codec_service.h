@@ -81,9 +81,9 @@ public:
         SET_PARAMETER,
         SET_INPUT_SURFACE,
         DEQUEUE_INPUT_BUFFER,
-        DEQUEUE_OUTPUT_BUFFER
+        DEQUEUE_OUTPUT_BUFFER,
 
-        DESTROY
+        DESTROY_STUB
     };
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardCodecService");

@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "avmuxer_service_stub.h"
+#include "muxer_service_stub.h"
 #include "avcodec_server_manager.h"
 #include "media_errors.h"
 #include "media_log.h"
@@ -28,12 +28,12 @@ namespace OHOS {
 namespace AVCodec {
 sptr<MuxerServiceStub> MuxerServiceStub::Create()
 {
-    sptr<MuxerServiceStub> avmuxerStub = new(std::nothrow) MuxerServiceStub();
-    CHECK_AND_RETURN_RET_LOG(avmuxerStub != nullptr, nullptr, "Failed to create avmuxer service stub");
+    sptr<MuxerServiceStub> muxerStub = new(std::nothrow) MuxerServiceStub();
+    CHECK_AND_RETURN_RET_LOG(muxerStub != nullptr, nullptr, "Failed to create muxer service stub");
 
-    int32_t ret = avmuxerStub->Init();
+    int32_t ret = muxerStub->Init();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init MuxerServiceStub");
-    return avmuxerStub;
+    return muxerStub;
 }
 
 MuxerServiceStub::MuxerServiceStub()
@@ -58,7 +58,7 @@ int32_t MuxerServiceStub::Init()
     muxerFuncs_[START] = &MuxerServiceStub::Start;
     muxerFuncs_[WRITE_SAMPLE_BUFFER] = &MuxerServiceStub::WriteSampleBuffer;
     muxerFuncs_[STOP] = &MuxerServiceStub::Stop;
-    muxerFuncs_[DESTROY] = &MuxerServiceStub::DestroyStub;
+    muxerFuncs_[DESTROY_STUB] = &MuxerServiceStub::DestroyStub;
     return MSERR_OK;
 }
 

@@ -13,41 +13,37 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_MUXER_SERVICE_H
-#define I_STANDARD_MUXER_SERVICE_H
+#ifndef I_STANDARD_SOURCE_SERVICE_H
+#define I_STANDARD_SOURCE_SERVICE_H
 
-#include "i_muxer_service.h"
+#include "i_source_service.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {
 namespace AVCodec {
-class IStandardMuxerService : public IRemoteBroker {
+class IStandardSourceService : public IRemoteBroker {
 public:
-    virtual ~IStandardMuxerService() = default;
+    virtual ~IStandardSourceService() = default;
 
-    virtual int32_t SetLocation(float latitude, float longitude) = 0;
-    virtual int32_t SetRotation(int32_t rotation) = 0;
-    virtual int32_t SetParameter(const Format &generalFormat) = 0;
-    virtual int32_t AddTrack(const Format &trackFormat) = 0;
-    virtual int32_t Start() = 0;
-    virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
-    virtual int32_t Stop() = 0;
+    virtual int32_t GetTrackCount() = 0;
+    virtual int32_t Destroy() = 0;
+    virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
+    virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
+    virtual uint64_t GetSourceAttr() = 0;
 
     virtual int32_t DestroyStub() = 0;
     enum MuxerServiceMsg {
-        SET_LOCATION,
-        SET_ROTATION,
+        GET_TRACK_COUNT,
+        DESTROY,
         SET_PARAMETER,
-        ADD_TRACK,
-        START,
-        WRITE_SAMPLE_BUFFER,
-        STOP,
+        GET_TRACK_FORMAT,
+        GET_SOURCE_ATTR,
 
         DESTROY_STUB,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardMuxerService");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardSourceService");
 };
 }  // namespace AVCodec
 }  // namespace OHOS
-#endif  // I_STANDARD_MUXER_SERVICE_H
+#endif  // I_STANDARD_SOURCE_SERVICE_H

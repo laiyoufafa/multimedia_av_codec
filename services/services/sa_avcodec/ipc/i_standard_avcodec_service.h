@@ -31,6 +31,7 @@ public:
         AVCODEC_DEMUXER = 0,
         AVCODEC_MUXER,
         AVCODEC_CODEC,
+        AVCODEC_SOURCE
     };
 
     virtual sptr<IRemoteObject> GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,

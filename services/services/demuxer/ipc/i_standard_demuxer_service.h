@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_AVMUXER_SERVICE_H
-#define I_STANDARD_AVMUXER_SERVICE_H
+#ifndef I_STANDARD_DEMUXER_SERVICE_H
+#define I_STANDARD_DEMUXER_SERVICE_H
 
 
 #include "iremote_proxy.h"
@@ -41,7 +41,7 @@ public:
         COPY_CURRENT_SAMPLE_TO_BUF,
         SEEK_TO_TIME_STAMP,
 
-        DESTROY,
+        DESTROY_STUB,
     };
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardDemuxerService");
@@ -49,4 +49,4 @@ public:
 
 }  // namespace AVCodec
 }  // namespace OHOS
-#endif  // I_STANDARD_AVMUXER_SERVICE_H
+#endif  // I_STANDARD_DEMUXER_SERVICE_H

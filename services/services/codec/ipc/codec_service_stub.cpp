@@ -131,7 +131,7 @@ int32_t CodecServiceStub::Init()
     recFuncs_[DEQUEUE_INPUT_BUFFER] = &CodecServiceStub::DequeueInputBuffer;
     recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &CodecServiceStub::DequeueOutputBuffer;
 
-    recFuncs_[DESTROY] = &CodecServiceStub::DestroyStub;
+    recFuncs_[DESTROY_STUB] = &CodecServiceStub::DestroyStub;
     return MSERR_OK;
 }
 

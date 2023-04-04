@@ -27,7 +27,7 @@ namespace {
 sptr<DemuxerServiceStub> DemuxerServiceStub::Create()
 {
     sptr<DemuxerServiceStub> demuxerStub = new(std::nothrow) DemuxerServiceStub();
-    CHECK_AND_RETURN_RET_LOG(demuxerStub != nullptr, nullptr, "Failed to create avmuxer service stub");
+    CHECK_AND_RETURN_RET_LOG(demuxerStub != nullptr, nullptr, "Failed to create demuxer service stub");
 
     int32_t ret = demuxerStub->Init();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init DemuxerServiceStub");
@@ -54,7 +54,7 @@ int32_t DemuxerServiceStub::Init()
     demuxerFuncs_[COPY_CURRENT_SAMPLE_TO_BUF] = &DemuxerServiceStub::CopyCurrentSampleToBuf;
     demuxerFuncs_[SEEK_TO_TIME_STAMP] = &DemuxerServiceStub::SeekToTimeStamp;
 
-    demuxerFuncs_[DESTROY] = &DemuxerServiceStub::DestroyStub;
+    demuxerFuncs_[DESTROY_STUB] = &DemuxerServiceStub::DestroyStub;
 
     return MSERR_OK;
 }

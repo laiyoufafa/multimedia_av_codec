@@ -10,7 +10,7 @@ namespace AVCodec {
 std::shared_ptr<DemuxerClient> DemuxerClient::Create(const sptr<IStandardDemuxerService> &ipcProxy)
 {
     std::shared_ptr<DemuxerClient> demuxerClient = std::make_shared<DemuxerClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, nullptr, "Failed to create avmuxer client");
+    CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, nullptr, "Failed to create demuxer client");
     return demuxerClient;
 }
 

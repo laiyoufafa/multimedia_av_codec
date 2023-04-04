@@ -45,7 +45,7 @@ int32_t MuxerServiceProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(DESTROY, data, reply, option);
+    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call DestroyStub, error: %{public}d", error);
     return reply.ReadInt32();
 }
