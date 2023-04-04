@@ -29,7 +29,7 @@ public:
     std::string FindVideoDecoder(const Format &format);
     std::string FindAudioEncoder(const Format &format);
     std::string FindAudioDecoder(const Format &format);
-    CapabilityData GetCapability(std::string name);
+    CapabilityData GetCapabilityData(std::string name);
 
 private:
     bool CheckBitrate(const Format &format, const CapabilityData &data);

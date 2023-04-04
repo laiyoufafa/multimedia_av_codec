@@ -209,7 +209,7 @@ std::string AVCodecListCore::FindAudioDecoder(const Format &format)
     return FindCodec(format, AVCODEC_TYPE_AUDIO_DECODER);
 }
 
-CapabilityData GetCapability(std::string name)
+CapabilityData AVCodecListCore::GetCapabilityData(std::string name)
 {              
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;
