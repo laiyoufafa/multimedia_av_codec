@@ -209,17 +209,17 @@ std::string AVCodecListCore::FindAudioDecoder(const Format &format)
     return FindCodec(format, AVCODEC_TYPE_AUDIO_DECODER);
 }
 
-CapabilityData AVCodecListCore::GetCapabilityData(std::string name)
+CapabilityData AVCodecListCore::GetCapabilityData(std::string codecName)
 {              
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;
-    if (name.empty()) {
+    if (codecName.empty()) {
         return capData;
     }
     std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
-        if (name.equal((*iter).codecName)) {
+        if (codecName.equal((*iter).codecName)) {
             capData = (*iter);
             break;
         }
