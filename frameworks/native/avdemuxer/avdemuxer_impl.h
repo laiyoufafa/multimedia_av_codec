@@ -18,7 +18,7 @@
 
 #include <memory>
 #include "avdemuxer.h"
-#include "i_demuxer_service.h"
+#include "i_avdemuxer_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {

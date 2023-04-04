@@ -43,7 +43,7 @@ void CopyFormatDataMap(const Format::FormatDataMap &from, Format::FormatDataMap 
 
         it->second.addr = reinterpret_cast<uint8_t *>(malloc(it->second.size));
         if (it->second.addr == nullptr) {
-            MEDIA_LOGE("malloc addr failed. Key: %{public}s", it->first.c_str());
+            AVCODEC_LOGE("malloc addr failed. Key: %{public}s", it->first.c_str());
             it = to.erase(it);
             continue;
         }
@@ -51,7 +51,7 @@ void CopyFormatDataMap(const Format::FormatDataMap &from, Format::FormatDataMap 
         errno_t err = memcpy_s(reinterpret_cast<void *>(it->second.addr),
             it->second.size, reinterpret_cast<const void *>(from.at(it->first).addr), it->second.size);
         if (err != EOK) {
-            MEDIA_LOGE("memcpy addr failed. Key: %{public}s", it->first.c_str());
+            AVCODEC_LOGE("memcpy addr failed. Key: %{public}s", it->first.c_str());
             free(it->second.addr);
             it->second.addr = nullptr;
             it = to.erase(it);
@@ -159,7 +159,7 @@ bool Format::GetStringValue(const std::string_view &key, std::string &value) con
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_STRING) {
-        MEDIA_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
         return false;
     }
     value = iter->second.stringVal;
@@ -170,7 +170,7 @@ bool Format::GetIntValue(const std::string_view &key, int32_t &value) const
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_INT32) {
-        MEDIA_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
         return false;
     }
     value = iter->second.val.int32Val;
@@ -181,7 +181,7 @@ bool Format::GetLongValue(const std::string_view &key, int64_t &value) const
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_INT64) {
-        MEDIA_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
         return false;
     }
     value = iter->second.val.int64Val;
@@ -192,7 +192,7 @@ bool Format::GetFloatValue(const std::string_view &key, float &value) const
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_FLOAT) {
-        MEDIA_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
         return false;
     }
     value = iter->second.val.floatVal;
@@ -203,7 +203,7 @@ bool Format::GetDoubleValue(const std::string_view &key, double &value) const
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_DOUBLE) {
-        MEDIA_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetFormat failed. Key: %{public}s", key.data());
         return false;
     }
     value = iter->second.val.doubleVal;
@@ -213,13 +213,13 @@ bool Format::GetDoubleValue(const std::string_view &key, double &value) const
 bool Format::PutBuffer(const std::string_view &key, const uint8_t *addr, size_t size)
 {
     if (addr == nullptr) {
-        MEDIA_LOGE("put buffer error, addr is nullptr");
+        AVCODEC_LOGE("put buffer error, addr is nullptr");
         return false;
     }
 
     constexpr size_t sizeMax = 1 * 1024 * 1024;
     if (size > sizeMax) {
-        MEDIA_LOGE("PutBuffer input size failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("PutBuffer input size failed. Key: %{public}s", key.data());
         return false;
     }
 
@@ -227,13 +227,13 @@ bool Format::PutBuffer(const std::string_view &key, const uint8_t *addr, size_t 
     data.type = FORMAT_TYPE_ADDR;
     data.addr = reinterpret_cast<uint8_t *>(malloc(size));
     if (data.addr == nullptr) {
-        MEDIA_LOGE("malloc addr failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("malloc addr failed. Key: %{public}s", key.data());
         return false;
     }
 
     errno_t err = memcpy_s(reinterpret_cast<void *>(data.addr), size, reinterpret_cast<const void *>(addr), size);
     if (err != EOK) {
-        MEDIA_LOGE("PutBuffer memcpy addr failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("PutBuffer memcpy addr failed. Key: %{public}s", key.data());
         free(data.addr);
         return false;
     }
@@ -249,7 +249,7 @@ bool Format::GetBuffer(const std::string_view &key, uint8_t **addr, size_t &size
 {
     auto iter = formatMap_.find(key);
     if (iter == formatMap_.end() || iter->second.type != FORMAT_TYPE_ADDR) {
-        MEDIA_LOGE("Format::GetBuffer failed. Key: %{public}s", key.data());
+        AVCODEC_LOGE("Format::GetBuffer failed. Key: %{public}s", key.data());
         return false;
     }
     *addr = iter->second.addr;
@@ -317,7 +317,7 @@ std::string Format::Stringify() const
             case FORMAT_TYPE_ADDR:
                 break;
             default:
-                MEDIA_LOGE("Format::Stringify failed. Key: %{public}s", iter->first.c_str());
+                AVCODEC_LOGE("Format::Stringify failed. Key: %{public}s", iter->first.c_str());
         }
     }
     return outString;

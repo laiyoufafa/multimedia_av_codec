@@ -27,35 +27,6 @@ extern "C" {
 typedef struct OH_AVFormat OH_AVFormat;
 
 /**
- * @brief Enumerates AVPixel Format.
- * @syscap SystemCapability.Multimedia.AVCodec.Core
- * @since 10
- * @version 4.0
- */
-typedef enum OH_AVPixelFormat {
-    /**
-     * yuv 420 planar.
-     */
-    AV_PIXEL_FORMAT_YUVI420 = 1,
-    /**
-     *  NV12. yuv 420 semiplanar.
-     */
-    AV_PIXEL_FORMAT_NV12 = 2,
-    /**
-     *  NV21. yvu 420 semiplanar.
-     */
-    AV_PIXEL_FORMAT_NV21 = 3,
-    /**
-     * format from surface.
-     */
-    AV_PIXEL_FORMAT_SURFACE_FORMAT = 4,
-    /**
-     * RGBA8888
-     */
-    AV_PIXEL_FORMAT_RGBA = 5,
-} OH_AVPixelFormat;
-
-/**
  * @briefCreate an OH_AVFormat handle pointer to read and write data
  * @syscap SystemCapability.Multimedia.AVCodec.Core
  * @return Returns a pointer to an OH_AVFormat instance

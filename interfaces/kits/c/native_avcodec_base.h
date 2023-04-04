@@ -79,6 +79,8 @@ typedef struct OH_AVCodecBufferAttr {
     int32_t offset;
     /* The flags this Buffer has, which is also a combination of multiple {@link OH_AVCodecBufferFlags}. */
     uint32_t flags;
+    /* The index of the track which this Buffer belongs. */
+    uint32_t trackId;
 } OH_AVCodecBufferAttr;
 
 /**
@@ -222,9 +224,9 @@ extern const char *OH_MD_KEY_ROTATION;
  */
 typedef enum OH_MediaType {
     /* track is audio. */
-    MEDIA_TYPE_AUD = 0,
+    AVCODEC_TYPE_AUD = 0,
     /* track is video. */
-    MEDIA_TYPE_VID = 1,
+    AVCODEC_TYPE_VID = 1,
 } OH_MediaType;
 
 /**

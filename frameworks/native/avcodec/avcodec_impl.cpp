@@ -29,12 +29,8 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, boo
     std::shared_ptr<AVCodecImpl> impl = std::make_shared<AVCodecImpl>();
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecImpl");
 
-    int32_t ret;
-    if (encoder) {
-        ret = impl->Init(AVCODEC_TYPE_ENCODER, true, mime);
-    } else {
-        ret = impl->Init(AVCODEC_TYPE_DECODER, true, mime);
-    }
+    AVCodecType codeType = encoder ? AVCODEC_TYPE_ENCODER : AVCODEC_TYPE_DECODER;
+    int32_t ret = impl->Init(codeType, true, mime);;
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to init AVCodecImpl");
 
     return impl;
@@ -61,7 +57,7 @@ int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &
 
 AVCodecImpl::AVCodecImpl()
 {
-    MEDIA_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecImpl::~AVCodecImpl()
@@ -70,7 +66,7 @@ AVCodecImpl::~AVCodecImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
         codecService_ = nullptr;
     }
-    MEDIA_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t AVCodecImpl::Configure(const Format &format)
@@ -158,7 +154,7 @@ int32_t AVCodecImpl::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
     return codecService_->SetCallback(callback);
 }
 
-sptr<Surface> AVCodecVideoEncoderImpl::CreateInputSurface()
+sptr<Surface> AVCodecImpl::CreateInputSurface()
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, nullptr, "service died");
     surface_ = codecService_->CreateInputSurface();
@@ -182,6 +178,7 @@ int32_t AVCodecImpl::DequeueOutputBuffer(size_t *index, int64_t timetUs)
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
     return codecService_->DequeueOutputBuffer(surface);
 }
+
 
 } // namespace AVCodec
 } // namespace OHOS

@@ -12,17 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef AVCODECLISTBASE_H
-#define AVCODECLISTBASE_H
+#ifndef AVSOURCEBASE_H
+#define AVSOURCEBASE_H
 
+#include <memory>
+#include <stdint>
 #include <string>
-#include "avcodec_info.h"
+#include "avcodec_common.h"
+#include "libavformat/avformat.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecListBase {
-    virtual int32_t GetCapabilityList(std::vector<CapabilityData>& caps) = 0;
+class AVSourceBase {
+public:
+    static std::shared_ptr<AVSourceBase> Create(const std::string& uri);
+    virtual int32_t GetTrackCount() = 0;
+    virtual int32_t Destroy() = 0;
+    virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
+    virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
+    virtual size_t GetSourceAttr() = 0;
+
+private:
+    std::shared_ptr<AVFormatContext> formatContext_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODECLISTBASE_H
+#endif // AVSOURCEBASE_H

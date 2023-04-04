@@ -17,7 +17,7 @@
 #include "avdemuxer.h"
 #include "native_avcodec_demuxer.h"
 #include "native_avmagic.h"
-#include "media_error.h"
+#include "media_errors.h"
 #include "media_log.h"
 
 namespace {
@@ -56,12 +56,12 @@ OH_AVErrCode OH_AVDemuxer_Destroy(OH_AVDemuxer *demuxer)
     if (demuxerObj != nullptr && demuxerObj->demuxer_ != nullptr) {
         int32_t ret = demuxerObj->demuxer_->Destroy();
         if (ret != MSERR_OK) {
-            MEDIA_LOGE("demuxer Destroy failed!");
+            AVCODEC_LOGE("demuxer Destroy failed!");
             delete demuxer;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGE("demuxer_ is nullptr!");
+        AVCODEC_LOGE("demuxer_ is nullptr!");
     }
 
     delete demuxer;

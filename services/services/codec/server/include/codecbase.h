@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef AVCODECBASE_H
-#define AVCODECBASE_H
+#ifndef CODECBASE_H
+#define CODECBASE_H
 
 #include <string>
 #include "avcodec_common.h"
@@ -21,9 +21,10 @@
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecBase {
-    static std::shared_ptr<AVCodecBase> Create(const std::string& name);
-    static std::shared_ptr<AVCodecBase> Create(bool isEncoder,const std::string& mime);
+class CodecBase {
+    virtual ~CodecBase() = default;
+    static std::shared_ptr<CodecBase> Create(const std::string& name);
+    static std::shared_ptr<CodecBase> Create(bool isEncoder,const std::string& mime);
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallBack>& callback) = 0;
     virtual int32_t Configure(const Format& format) = 0;
     virtual int32_t Start() = 0;
@@ -48,4 +49,4 @@ class AVCodecBase {
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODECBASE_H
+#endif // CODECBASE_H
