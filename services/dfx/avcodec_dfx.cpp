@@ -44,7 +44,7 @@ bool AVCodecEvent::CreateMsg(const char *format, ...)
     return true;
 }
 
-void AVCodecEvent::EventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
+void AVCodecEvent::StatisticEventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
         std::string module) 
 {
     int32_t pid = getpid();
@@ -56,21 +56,46 @@ void AVCodecEvent::EventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent
         "MSG", msg_);
 }
 
+void AVCodecEvent::BehaviorEventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
+        std::string module) 
+{
+    int32_t pid = getpid();
+    uint32_t uid = getuid();
+    HiSysEventWrite(HISYSEVENT_DOMAIN_AVCODEC, eventName, type,
+        "PID", pid,
+        "UID", uid,
+        "MODULE", module,
+        "STATE", msg_);
+}
+
+void AVCodecEvent::FaultEventWrite(std::string eventName, int32_t errorCode, OHOS::HiviewDFX::HiSysEvent::EventType type,
+    std::string module) 
+{
+    int32_t pid = getpid();
+    uint32_t uid = getuid();
+    HiSysEventWrite(HISYSEVENT_DOMAIN_AVCODEC, eventName, type,
+        "PID", pid,
+        "UID", uid,
+        "MODULE", module,
+        "ERRORCODE", errorCode,
+        "MSG", msg_);
+}
+
 void BehaviorEventWrite(std::string status, std::string moudle) 
 {
     AVCodecEvent event;
     if (event.CreateMsg("%s, current state is: %s", "state change", status.c_str())) {
-        event.EventWrite("AVCODEC_STATE", OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR, moudle);
+        event.BehaviorEventWrite("AVCODEC_STATE", OHOS::HiviewDFX::HiSysEvent::EventType::BEHAVIOR, moudle);
     } else {
         AVCODEC_LOGW("Failed to call CreateMsg");
     }
 }
 
-void FaultEventWrite(std::string msg, std::string moudle) 
+void FaultEventWrite(int32_t errorCode, std::string msg, std::string moudle) 
 {
     AVCodecEvent event;
     if (event.CreateMsg("%s", msg.c_str())) {
-        event.EventWrite("AVCODEC_ERR", OHOS::HiviewDFX::HiSysEvent::EventType::FAULT, moudle);
+        event.FaultEventWrite("AVCODEC_ERR", errorCode, OHOS::HiviewDFX::HiSysEvent::EventType::FAULT, moudle);
     } else {
         AVCODEC_LOGW("Failed to call CreateMsg");
     }
@@ -80,7 +105,7 @@ void StatisticEventWrite(std::string msg, std::string moudle)
 {
     AVCodecEvent event;
     if (event.CreateMsg("%s", msg.c_str())) {
-        event.EventWrite("AVCODEC_STATISTIC", OHOS::HiviewDFX::HiSysEvent::EventType::STATISTIC, moudle);
+        event.StatisticEventWrite("AVCODEC_STATISTIC", OHOS::HiviewDFX::HiSysEvent::EventType::STATISTIC, moudle);
     } else {
         AVCODEC_LOGW("Failed to call CreateMsg");
     }

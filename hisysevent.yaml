@@ -14,23 +14,16 @@
 domain: AVCODEC
 
 AVCODEC_ERR:
-  __BASE: {type: FAULT,  level: CRITICAL, desc: AVCodec error}
-  PID:    {type: INT32,  desc: The pid of the AVCODEC_ERR event}
-  UID:    {type: INT32,  desc: The uid of the AVCODEC_ERR event}
+  __BASE: {type: FAULT, level: CRITICAL, desc: AVCodec error}
+  PID: {type: INT32, desc: The pid of the AVCODEC_ERR event}
+  UID: {type: INT32, desc: The uid of the AVCODEC_ERR event}
   MODULE: {type: STRING, desc: module name}
-  MSG:    {type: STRING, desc: message}
+  ERRORCODE: {type: INT32, desc: error code}
+  MSG: {type: STRING, desc: error description}
 
 AVCODEC_STATE:
-  __BASE: {type: BEHAVIOR, level: MINOR, desc: AVCodec state change}
-  PID:    {type: INT32,    desc: The pid of the AVCODEC_STATE event}
-  UID:    {type: INT32,    desc: The uid of the AVCODEC_STATE event}
-  MODULE: {type: STRING,   desc: module name}
-  MSG:    {type: STRING,   desc: message}
-
-AVCODEC_STATISTIC:
-  __BASE: {type: STATISTIC, level: MINOR, desc: function call frequency}
-  PID:    {type: INT32,     desc: The pid of the AVCODEC_STATISTIC event}
-  UID:    {type: INT32,     desc: The uid of the AVCODEC_STATISTIC event}
-  MODULE: {type: STRING,    desc: module name}
-  MSG:    {type: STRING,    desc: message}
-  
+  __BASE: {type: BEHAVIOR, level: MINOR, desc: state change}
+  PID: {type: INT32, desc: The pid of the AVCODEC_STATE event}
+  UID: {type: INT32, desc: The uid of the AVCODEC_STATE event}
+  MODULE: {type: STRING, desc: module name}
+  STATE: {type: STRING, desc: current state}

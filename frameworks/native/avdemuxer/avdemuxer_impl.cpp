@@ -15,7 +15,7 @@
 
 #include "avdemuxer_impl.h"
 #include "i_media_service.h"
-#include "media_error.h"
+#include "media_errors.h"
 #include "media_log.h"
 
 namespace {
@@ -39,14 +39,13 @@ int32_t AVDemuxerImpl::Init(Source *source)
 {
     demuxerService_ = MediaServiceFactory::GetInstance().CreateAVDemuxerService();
     CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
-
-    return demuxerService_->InitParameter(source);
+    uint8_t sourceAttr = source->GetSourceAttr();
+    return demuxerService_->Init(sourceAttr);
 }
-
 
 AVDemuxerImpl::AVDemuxerImpl()
 {
-    MEDIA_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
 }
 
 AVDemuxerImpl::~AVDemuxerImpl()
@@ -55,7 +54,7 @@ AVDemuxerImpl::~AVDemuxerImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVDemuxerService(demuxerService_);
         demuxerService_ = nullptr;
     }
-    MEDIA_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
 }
 
 int32_t AVDemuxerImpl::AddSourceTrackByID(uint32_t index)
@@ -70,7 +69,7 @@ int32_t AVDemuxerImpl::RemoveSourceTrackByID(uint32_t index)
     return demuxerService_->RemoveSourceTrackByID(index);
 }
 
-int32_t AVDemuxerImpl::CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t AVDemuxerImpl::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->CopyCurrentSampleToBuf(buffer, bufferInfo);

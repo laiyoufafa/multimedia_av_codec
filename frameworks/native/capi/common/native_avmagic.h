@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,24 +20,50 @@
 #include "format.h"
 #include "avsharedmemory.h"
 
+
+#define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
+
+enum AVMagic {
+    AVCODEC_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
+    AVCODEC_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
+};
+
+struct AVObjectMagic : public OHOS::RefBase {
+    explicit AVObjectMagic(enum AVMagic m) : magic_(m) {}
+    virtual ~AVObjectMagic() = default;
+    enum AVMagic magic_;
+};
+
 struct OH_AVFormat : public OHOS::RefBase {
     OH_AVFormat();
-    explicit OH_AVFormat(const OHOS::Media::Format &fmt);
+    explicit OH_AVFormat(const OHOS::AVCodec::Format &fmt);
     ~OH_AVFormat() override;
-    OHOS::Media::Format format_;
+    OHOS::AVCodec::Format format_;
     char *outString_ = nullptr;
     char *dumpInfo_ = nullptr;
 };
 
 struct OH_AVMemory : public OHOS::RefBase {
-    explicit OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem);
+    explicit OH_AVMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem);
     ~OH_AVMemory() override;
-    bool IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem);
-    const std::shared_ptr<OHOS::Media::AVSharedMemory> memory_;
+    bool IsEqualMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem);
+    const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> memory_;
 };
+
+struct OH_AVBufferElement : public OHOS::RefBase {
+    explicit OH_AVBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
+    ~OH_AVBufferElement() override;
+    bool IsEqualBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
+    const std::shared_ptr<OHOS::AVCodec::AVBufferElement> bufferElement_;
+}
 
 struct OH_AVCodec : public OHOS::RefBase {
     explicit OH_AVCodec();
     virtual ~OH_AVCodec() = default;
+};
+
+struct OH_AVMuxer : public AVObjectMagic {
+    explicit OH_AVMuxer(enum AVMagic m) : AVObjectMagic(m) {}
+    virtual ~OH_AVMuxer() = default;
 };
 #endif // NATIVE_AVMAGIC_H

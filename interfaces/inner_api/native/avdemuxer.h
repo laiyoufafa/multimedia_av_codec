@@ -35,8 +35,8 @@ public:
      * 
      * @param index The index of the track to add.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
 
@@ -47,8 +47,8 @@ public:
      * 
      * @param index The index of the track to remove.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
 
@@ -58,10 +58,10 @@ public:
      * @param buffer The BufferElement pointer to store data.
      * @param attr The CodecBufferAttr pointer to store data attribute.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
-    virtual int32_t CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
+    virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
 
     /**
      * @brief All selected tracks seek near to the requested time according to the seek mode.
@@ -69,8 +69,8 @@ public:
      * @param mSeconds The seconds for seeking.
      * @param mode The mode for seeking. Value. For details, see {@link SeekMode}.
      * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual int32_t SeekToTimeStamp(int64_t mSeconds, SeekMode mode) = 0;
 };
@@ -78,21 +78,20 @@ public:
 class __attribute__((visibility("default"))) DemuxerFactory {
 public:
 #ifdef UNSUPPORT_DEMUXER
-    static std::shared_ptr<AVDemuxer> CreateWithSource(Source *source)
+    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr)
     {
-        (void)source;
         return nullptr;
     }
 #else
     /**
      * @brief Instantiate the preferred demuxer of the given source instance.
      * 
-     * @param source The source model for demuxer.
-     * @return Returns the designated demuxer.
-     * @since 3.1
-     * @version 3.1
+     * @param sourceAddr The address for source instance.
+     * @return Returns the preferred demuxer.
+     * @since 4.0
+     * @version 4.0
      */
-    static std::shared_ptr<AVDemuxer> CreateWithSource(Source *source);
+    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr);
 #endif
 private:
     DemuxerFactory() = default;

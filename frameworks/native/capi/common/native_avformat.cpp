@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,8 +17,7 @@
 
 #include "securec.h"
 #include "native_avmagic.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVFormat"};
@@ -177,7 +176,7 @@ bool OH_AVFormat_GetStringValue(struct OH_AVFormat *format, const char *key, con
     CHECK_AND_RETURN_RET_LOG(format->outString_ != nullptr, false, "malloc out string nullptr!");
 
     if (strcpy_s(format->outString_, bufLength + 1, str.c_str()) != EOK) {
-        MEDIA_LOGE("Failed to strcpy_s");
+        AVCODEC_LOGE("Failed to strcpy_s");
         free(format->outString_);
         format->outString_ = nullptr;
         return false;
@@ -212,7 +211,7 @@ const char *OH_AVFormat_DumpInfo(struct OH_AVFormat *format)
     format->dumpInfo_ = static_cast<char *>(malloc((bufLength + 1) * sizeof(char)));
     CHECK_AND_RETURN_RET_LOG(format->dumpInfo_ != nullptr, nullptr, "malloc dump info nullptr!");
     if (strcpy_s(format->dumpInfo_, bufLength + 1, info.c_str()) != EOK) {
-        MEDIA_LOGE("Failed to strcpy_s");
+        AVCODEC_LOGE("Failed to strcpy_s");
         free(format->dumpInfo_);
         format->dumpInfo_ = nullptr;
     }

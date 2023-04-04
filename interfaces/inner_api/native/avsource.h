@@ -16,33 +16,25 @@
 #ifndef AVSOURCE_H
 #define AVSOURCE_H
 
-#include <stdint>
 #include <memory>
-#include "native_avcodec_base.h"
-#include "libavformat/avformat.h"
+#include <stdint>
+#include <string>
+#include "avcodec_common.h"
+#include "format.h"
 
 namespace OHOS {
 namespace AVCodec{
 
-class __attribute__((visibility("default"))) AVSource {
+class AVSource {
 public:
-    /**
-     * @brief Instantiate the source of the given uri.
-     * 
-     * @param uri The source model for demuxer.
-     * @return Returns the designated demuxer.
-     * @since 3.1
-     * @version 3.1
-     */
-    static Source(const std::string &uri);
-    virtual ~Source() = default;
+    virtual ~AVSource() = default;
 
     /**
      * @brief Count number of the track in source.
      * 
      * @return Returns the tracks's count.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual uint32_t GetTrackCount() = 0;
 
@@ -51,52 +43,61 @@ public:
      * 
      * @param trackId The index of the track.
      * @return Returns {@link AVSourceTrack} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
     virtual std::shared_ptr<SourceTrack> LoadSourceTrackByID(uint32_t trackId) = 0;
-
-private:
-    std::shared_ptr<AVFormatContext> formatContext_ = nullptr;
-
 };
 
-class __attribute__((visibility("default"))) AVSourceTrack {
-public:
+class __attribute__((visibility("default"))) SourceFactory {
+#ifdef UNSUPPORT_SOURCE
+    static std::shared_ptr<AVSource> CreateWithURI(const std::string &uri)
+    {
+        (void)uri;
+        return nullptr;
+    }
+
+#else
     /**
-     * @brief Instantiate the sourceTrack of the given trackId from formatContext.
-     * 
-     * @param formatContext The ffmpeg source model.
-     * @param trackId The index of the track.
-     * @since 3.1
-     * @version 3.1
+     * @brief Instantiate the preferred source of the uri.
+     *
+     * @param uri The file's uri.
+     * @return Returns the preferred source.
+     * @since 4.0
+     * @version 4.0
      */
-    SourceTrack(const AVFormatContext &formatContext, uint32_t trackId);
-    virtual ~SourceTrack() = default;
+    static std::shared_ptr<AVSource> CreateWithURI(const std::string &uri);
+
+#endif
+private:
+    SourceFactory() = default;
+    ~SourceFactory() = default;
+};
+
+class AVSourceTrack {
+public:
+    virtual ~AVSourceTrack() = default;
 
     /**
      * @brief Sets the parameters to the track.
      * 
      * @param format The parameters.
      * @return Returns {@link MSEER_OK} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
-    virtual uint32_t SetParameter(const Format &param) = 0;
+    virtual int32_t SetParameter(const Format &param) = 0;
 
     /**
      * @brief Gets the parameters of the track.
      * 
      * @return Returns {@link Format} if success; returns nullptr otherwise.
-     * @since 3.1
-     * @version 3.1
+     * @since 4.0
+     * @version 4.0
      */
-    virtual std::shared_ptr<Format> GetTrackFormat() = 0;
+    virtual std::shared_ptr<Format> GetTrackFormat(Format &format) = 0;
 private:
     uint32_t trackId_;
-    OH_MediaType trackType_;
-    std::unique_ptr<Format> trackFormat_;
-    std::shared_ptr<AVStream> stream_;
 };
 } // namespace AVCodec
 } // namespace OHOS

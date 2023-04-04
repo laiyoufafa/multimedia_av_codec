@@ -13,18 +13,16 @@
  * limitations under the License.
  */
 
-#include <string>
 #include "avsource.h"
 #include "native_avmagic.h"
 #include "native_avsource.h"
-#include "media_error.h"
+#include "media_errors.h"
 #include "media_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVSource"}
 }
 
-using namespase OHOS::Media;
 using namespase OHOS::AVCodec;
 
 struct SourceObject : public OH_AVSource {
@@ -35,11 +33,11 @@ struct SourceObject : public OH_AVSource {
     const std::shared_ptr<OH_AVSource> source_;
 };
 
-struct OH_AVSource *OH_AVSource_CreateWithURI(char *uri)
+struct OH_AVSource *OH_AVSource_CreateWithURI(const char *uri)
 {
     CHECK_AND_RETURN_RET_LOG(uri != nullptr, nullptr, "input uri is nullptr!");
 
-    std::shared_ptr<AVSource> source = std::make_shared_ptr<AVSource>(uri);
+    std::shared_ptr<AVSource> source = SourceFactory::CreateWithURI(uri);
     CHECK_AND_RETURN_RET_LOG(source != nullptr, nullptr, "failed to new Source!");
 
     struct SourceObject *object = new(std::nothrow) SourceObject(source);
@@ -57,7 +55,7 @@ struct OH_AVSource *OH_AVSource_CreateWithFd(int32_t fd, int64_t offset, int64_t
     std::String uri = std::format("fd://()?offset=()&size=()", fd, offset, size)
     CHECK_AND_RETURN_RET_LOG(uri != nullptr, nullptr, "Format uri is nullptr!");
 
-    std::shared_ptr<AVSource> source = std::make_shared_ptr<AVSource>(uri.c_str());
+    std::shared_ptr<AVSource> source = SourceFactory::CreateWithURI(uri);
     CHECK_AND_RETURN_RET_LOG(source != nullptr, nullptr, "failed to new Source!");
 
     struct SourceObject *object = new(std::nothrow) SourceObject(source);
@@ -75,12 +73,12 @@ OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source)
     if (sourceObj != nullptr && sourceObj->source_ != nullptr) {
         int32_t ret = sourceObj->source_->Destroy();
         if (ret != MSERR_OK) {
-            MEDIA_LOGE("source Destroy failed!");
+            AVCODEC_LOGE("source Destroy failed!");
             delete source;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGE("source_ is nullptr!");
+        AVCODEC_LOGE("source_ is nullptr!");
     }
 
     delete source;
@@ -131,7 +129,7 @@ OH_AVErrCode OH_AVSourceTrack_SetParameter(OH_AVSourceTrack *sourceTrack, OH_AVF
     struct SourceTrackObject *sourceTrackObj = reinterpret_cast<SourceTrackObject *>(sourceTrack);
     CHECK_AND_RETURN_RET_LOG(sourceTrackObj->sourceTrack_ != nullptr, nullptr, "sourceTrack_ is nullptr!");
 
-    int32_t ret = sourceTrackObj->sourceTrack_->SetParameter(sourceTrack, param->format_);
+    int32_t ret = sourceTrackObj->sourceTrack_->SetParameter(param->format_);
     CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack SetParameter failed!");
 
     return AV_ERR_OK;

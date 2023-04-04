@@ -1,0 +1,78 @@
+# Copyright (C) 2022 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//foundation/multimedia/av_codec/config.gni")
+
+AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
+
+group("capi_packages") {
+  deps = []
+  if (multimedia_av_codec_support_capi) {
+    deps += [
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
+    ]
+  }
+}
+
+config("av_codec_capi_config") {
+  include_dirs = [
+    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+    "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avmuxer",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common",
+    "$AV_CODEC_ROOT_DIR/services/utils",
+  ]
+
+  cflags = [
+    "-fno-exceptions",
+    "-Wall",
+    "-fno-common",
+    "-fstack-protector-all",
+    "-Wshadow",
+    "-FPIC",
+    "-FS",
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+    "-Wformat=2",
+    "-Wdate-time",
+  ]
+
+  cflags_cc = [
+    "-std=c++17",
+    "-fno-rtti",
+  ]
+}
+
+ohos_shared_library("native_av_codec_avmuxer") {
+  install_enable = true
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avformat.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avmuxer/native_avmuxer.cpp",
+  ]
+
+  public_configs = [ ":av_codec_capi_config" ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+  output_extension = "so"
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
