@@ -32,7 +32,7 @@ public:
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
     int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
     
-    void MediaServerDied();
+    void AVCodecServerDied();
 private:
     std::mutex mutex_;
     sptr<IStandardDemuxerService> demuxerProxy_ = nullptr;

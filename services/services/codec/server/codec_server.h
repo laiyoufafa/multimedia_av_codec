@@ -13,11 +13,10 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_SERVER_H
-#define AVCODEC_SERVER_H
+#ifndef CODEC_SERVER_H
+#define CODEC_SERVER_H
 
 #include <queue>
-#include "i_avcodec_engine.h"
 #include "i_codec_service.h"
 #include "time_monitor.h"
 #include "nocopyable.h"
@@ -25,34 +24,34 @@
 namespace OHOS {
 namespace AVCodec {
 
-class AVCodecBaseCallback : public AVCodecCallback, public NoCopyable {
+class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
 public:
-    explicit AVCodecBaseCallback(const sptr<AVCodecServer> &codec);
-    virtual ~AVCodecBaseCallback();
+    explicit CodecBaseCallback(const sptr<CodecServer> &codec);
+    virtual ~CodecBaseCallback();
 
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
     void OnInputBufferAvailable(uint32_t index) override;
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
 private:
-    sptr<AVCodecServer> codec_ = nullptr;
+    sptr<CodecServer> codec_ = nullptr;
 };
 
 
-class AVCodecServer : public IAVCodecService, public IAVCodecEngineObs, public NoCopyable {
+class CodecServer : public ICodecService, public NoCopyable {
 public:
-    static std::shared_ptr<IAVCodecService> Create();
-    AVCodecServer();
-    virtual ~AVCodecServer();
+    static std::shared_ptr<ICodecService> Create();
+    CodecServer();
+    virtual ~CodecServer();
 
-    enum AVCodecStatus {
-        AVCODEC_UNINITIALIZED = 0,
-        AVCODEC_INITIALIZED,
-        AVCODEC_CONFIGURED,
-        AVCODEC_RUNNING,
-        AVCODEC_FLUSHED,
-        AVCODEC_END_OF_STREAM,
-        AVCODEC_ERROR,
+    enum CodecStatus {
+        CODEC_UNINITIALIZED = 0,
+        CODEC_INITIALIZED,
+        CODEC_CONFIGURED,
+        CODEC_RUNNING,
+        CODEC_FLUSHED,
+        CODEC_END_OF_STREAM,
+        CODEC_ERROR,
     };
 
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) override;
@@ -79,7 +78,6 @@ public:
 
     int32_t DumpInfo(int32_t fd);
 
-    // IAVCodecEngineObs override
     void OnError(int32_t errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
     void OnInputBufferAvailable(uint32_t index) override;
@@ -89,9 +87,9 @@ public:
 private:
     int32_t Init();
     void ExitProcessor();
-    const std::string &GetStatusDescription(OHOS::Media::AVCodecServer::AVCodecStatus status);
+    const std::string &GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status);
 
-    AVCodecStatus status_ = AVCODEC_UNINITIALIZED;
+    CodecStatus status_ = CODEC_UNINITIALIZED;
     
     // std::unique_ptr<IAVCodecEngine> codecEngine_;
     std::unique_ptr<AVCodecBase> codecBase_;
@@ -109,4 +107,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_SERVER_H
+#endif // CODEC_SERVER_H

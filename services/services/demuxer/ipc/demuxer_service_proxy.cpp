@@ -16,7 +16,7 @@
 #include "av_log.h"
 #include "media_errors.h"
 #include "avsharedmemory_ipc.h"
-// #include "media_parcel.h"
+// #include "avcodec_parcel.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServiceProxy"};

@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef I_STANDARD_MEDIA_SERVICE_H
-#define I_STANDARD_MEDIA_SERVICE_H
+#ifndef I_STANDARD_AVCODEC_SERVICE_H
+#define I_STANDARD_AVCODEC_SERVICE_H
 
 #include "ipc_types.h"
 #include "iremote_broker.h"
@@ -22,28 +22,29 @@
 
 namespace OHOS {
 namespace AVCodec {
-class IStandardAvcodecService : public IRemoteBroker {
+class IStandardAVCodecService : public IRemoteBroker {
 public:
     /**
      * sub system ability ID
      */
-    enum MediaSystemAbility : int32_t {
-        MEDIA_DEMUXER = 0,
-        MEDIA_AVCODEC,
+    enum AVCodecSystemAbility : int32_t {
+        AVCODEC_DEMUXER = 0,
+        AVCODEC_MUXER,
+        AVCODEC_CODEC,
     };
 
-    virtual sptr<IRemoteObject> GetSubSystemAbility(IStandardAvcodecService::MediaSystemAbility subSystemId,
+    virtual sptr<IRemoteObject> GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
         const sptr<IRemoteObject> &listener) = 0;
 
     /**
      * IPC code ID
      */
-    enum MediaServiceMsg : int32_t {
+    enum AVCodecServiceMsg : int32_t {
         GET_SUBSYSTEM = 0,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardAvcodecService");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardAVCodecService");
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_STANDARD_MEDIA_SERVICE_H
+#endif // I_STANDARD_AVCODEC_SERVICE_H

@@ -30,7 +30,7 @@ DemuxerClient::~DemuxerClient()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void DemuxerClient::DemuxerClient::MediaServerDied()
+void DemuxerClient::DemuxerClient::AVCodecServerDied()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     demuxerProxy_ = nullptr;

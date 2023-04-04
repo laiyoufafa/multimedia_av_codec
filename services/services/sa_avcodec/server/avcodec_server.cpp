@@ -12,79 +12,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "media_server.h"
+#include "avcodec_server.h"
 #include "iservice_registry.h"
 #include "av_log.h"
 #include "media_errors.h"
 #include "system_ability_definition.h"
-#include "media_server_manager.h"
+#include "avcodec_server_manager.h"
 
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvcodecServer"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServer"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-REGISTER_SYSTEM_ABILITY_BY_ID(AvcodecServer, AVCODEC_SERVICE_ID, true)
+REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AVCODEC_SERVICE_ID, true)
 
-AvcodecServer::AvcodecServer(int32_t systemAbilityId, bool runOnCreate)
+AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate)
     : SystemAbility(systemAbilityId, runOnCreate)
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AvcodecServer::~AvcodecServer()
+AVCodecServer::~AVCodecServer()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AvcodecServer::OnDump()
+void AVCodecServer::OnDump()
 {
-    MEDIA_LOGD("AvcodecServer OnDump");
+    MEDIA_LOGD("AVCodecServer OnDump");
 }
 
-void AvcodecServer::OnStart()
+void AVCodecServer::OnStart()
 {
-    MEDIA_LOGD("AvcodecServer OnStart");
+    MEDIA_LOGD("AVCodecServer OnStart");
     bool res = Publish(this);
     if (res) {
-        MEDIA_LOGD("AvcodecServer OnStart res=%{public}d", res);
+        MEDIA_LOGD("AVCodecServer OnStart res=%{public}d", res);
     }
 }
 
-void AvcodecServer::OnStop()
+void AVCodecServer::OnStop()
 {
-    MEDIA_LOGD("AvcodecServer OnStop");
+    MEDIA_LOGD("AVCodecServer OnStop");
 }
 
-sptr<IRemoteObject> AvcodecServer::GetSubSystemAbility(IStandardAvcodecService::MediaSystemAbility subSystemId,
+sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
     const sptr<IRemoteObject> &listener)
 {
-    int32_t ret = MediaServiceStub::SetDeathListener(listener);
+    int32_t ret = AVCodecServiceStub::SetDeathListener(listener);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed set death listener");
 
     switch (subSystemId) {
-        case MediaSystemAbility::MEDIA_DEMUXER: {
-            return MediaServerManager::GetInstance().CreateStubObject(MediaServerManager::DEMUXER);
+        case AVCodecSystemAbility::AVCODEC_DEMUXER: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
         }
-        case MediaSystemAbility::MEDIA_AVCODEC: {
-            return MediaServerManager::GetInstance().CreateStubObject(MediaServerManager::AVCODEC);
+        case AVCodecSystemAbility::AVCODEC_CODEC: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
         }
         default: {
-            MEDIA_LOGE("default case, media client need check subSystemId");
+            MEDIA_LOGE("default case, avcodec client need check subSystemId");
             return nullptr;
         }
     }
 }
 
-int32_t AvcodecServer::Dump(int32_t fd, const std::vector<std::u16string> &args)
+int32_t AVCodecServer::Dump(int32_t fd, const std::vector<std::u16string> &args)
 {
     if (fd <= 0) {
         MEDIA_LOGW("Failed to check fd");
         return OHOS::INVALID_OPERATION;
     }
-    if (MediaServerManager::GetInstance().Dump(fd, args) != OHOS::NO_ERROR) {
-        MEDIA_LOGW("Failed to call MediaServerManager::Dump");
+    if (AVCodecServerManager::GetInstance().Dump(fd, args) != OHOS::NO_ERROR) {
+        MEDIA_LOGW("Failed to call AVCodecServerManager::Dump");
         return OHOS::INVALID_OPERATION;
     }
 

@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 #include "demuxer_service_stub.h"
-#include "media_server_manager.h"
+#include "avcodec_server_manager.h"
 #include "media_errors.h"
 #include "av_log.h"
 #include "avsharedmemory_ipc.h"
-// #include "media_parcel.h"
+// #include "avcodec_parcel.h"
 namespace OHOS {
 namespace AVCodec {
 namespace {
@@ -92,7 +92,7 @@ int32_t DemuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &repl
 int32_t DemuxerServiceStub::DestroyStub()
 {
     demuxerServer_ = nullptr;
-    MediaServerManager::GetInstance().DestroyStubObject(MediaServerManager::DEMUXER, AsObject());
+    AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::DEMUXER, AsObject());
     return MSERR_OK;
 }
 

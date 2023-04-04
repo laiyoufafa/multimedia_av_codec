@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_AVCODEC_SERVICE_H
-#define I_STANDARD_AVCODEC_SERVICE_H
+#ifndef I_STANDARD_CODEC_SERVICE_H
+#define I_STANDARD_CODEC_SERVICE_H
 
 #include "ipc_types.h"
 #include "iremote_broker.h"
@@ -61,7 +61,7 @@ public:
     /**
      * IPC code ID
      */
-    enum AVCodecServiceMsg {
+    enum CodecServiceMsg {
         SET_LISTENER_OBJ = 0,
         INIT,
         CONFIGURE,
@@ -90,4 +90,4 @@ public:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_STANDARD_AVCODEC_SERVICE_H
+#endif // I_STANDARD_CODEC_SERVICE_H

@@ -16,52 +16,52 @@
 #include "codec_listener_stub.h"
 #include "media_errors.h"
 #include "media_log.h"
-#include "media_parcel.h"
+#include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListenerStub"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListenerStub"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-AVCodecListenerStub::AVCodecListenerStub()
+CodecListenerStub::CodecListenerStub()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecListenerStub::~AVCodecListenerStub()
+CodecListenerStub::~CodecListenerStub()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int AVCodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
+int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
     auto remoteDescriptor = data.ReadInterfaceToken();
-    if (AVCodecListenerStub::GetDescriptor() != remoteDescriptor) {
+    if (CodecListenerStub::GetDescriptor() != remoteDescriptor) {
         MEDIA_LOGE("Invalid descriptor");
         return MSERR_INVALID_OPERATION;
     }
 
     switch (code) {
-        case AVCodecListenerMsg::ON_ERROR: {
+        case CodecListenerMsg::ON_ERROR: {
             int32_t errorType = data.ReadInt32();
             int32_t errorCode = data.ReadInt32();
             OnError(static_cast<AVCodecErrorType>(errorType), errorCode);
             return MSERR_OK;
         }
-        case AVCodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED: {
+        case CodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED: {
             Format format;
-            (void)MediaParcel::Unmarshalling(data, format);
+            (void)AVCodecParcel::Unmarshalling(data, format);
             OnOutputFormatChanged(format);
             return MSERR_OK;
         }
-        case AVCodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE: {
+        case CodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE: {
             uint32_t index = data.ReadUint32();
             OnInputBufferAvailable(index);
             return MSERR_OK;
         }
-        case AVCodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE: {
+        case CodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE: {
             uint32_t index = data.ReadUint32();
             AVCodecBufferInfo info;
             info.presentationTimeUs = data.ReadInt64();
@@ -72,41 +72,41 @@ int AVCodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mes
             return MSERR_OK;
         }
         default: {
-            MEDIA_LOGE("default case, need check AVCodecListenerStub");
+            MEDIA_LOGE("default case, need check CodecListenerStub");
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
     }
 }
 
-void AVCodecListenerStub::OnError(AVCodecErrorType errorType, int32_t errorCode)
+void CodecListenerStub::OnError(AVCodecErrorType errorType, int32_t errorCode)
 {
     if (callback_ != nullptr) {
         callback_->OnError(errorType, errorCode);
     }
 }
 
-void AVCodecListenerStub::OnOutputFormatChanged(const Format &format)
+void CodecListenerStub::OnOutputFormatChanged(const Format &format)
 {
     if (callback_ != nullptr) {
         callback_->OnOutputFormatChanged(format);
     }
 }
 
-void AVCodecListenerStub::OnInputBufferAvailable(uint32_t index)
+void CodecListenerStub::OnInputBufferAvailable(uint32_t index)
 {
     if (callback_ != nullptr) {
         callback_->OnInputBufferAvailable(index);
     }
 }
 
-void AVCodecListenerStub::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
+void CodecListenerStub::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
     if (callback_ != nullptr) {
         callback_->OnOutputBufferAvailable(index, info, flag);
     }
 }
 
-void AVCodecListenerStub::SetCallback(const std::shared_ptr<AVCodecCallback> &callback)
+void CodecListenerStub::SetCallback(const std::shared_ptr<AVCodecCallback> &callback)
 {
     callback_ = callback;
 }

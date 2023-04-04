@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MEDIA_SERVER_MANAGER_H
-#define MEDIA_SERVER_MANAGER_H
+#ifndef AVCODEC_MANAGER_H
+#define AVCODEC_MANAGER_H
 
 #include <memory>
 #include <functional>
@@ -33,14 +33,15 @@ struct Dumper {
     sptr<IRemoteObject> remoteObject_;
 };
 
-class MediaServerManager : public NoCopyable {
+class AVCodecServerManager : public NoCopyable {
 public:
-    static MediaServerManager &GetInstance();
-    ~MediaServerManager();
+    static AVCodecServerManager &GetInstance();
+    ~AVCodecServerManager();
 
     enum StubType {
         DEMUXER,
-        AVCODEC,
+        MUXER,
+        CODEC,
     };
     sptr<IRemoteObject> CreateStubObject(StubType type);
     void DestroyStubObject(StubType type, sptr<IRemoteObject> object);
@@ -50,11 +51,16 @@ public:
     void DestroyDumperForPid(pid_t pid);
 
 private:
-    MediaServerManager();
+    AVCodecServerManager();
 
 #ifdef SUPPORT_DEMUXER
     sptr<IRemoteObject> CreateDemuxerStubObject();
 #endif
+
+#ifdef SUPPORT_MUXER
+    sptr<IRemoteObject> CreateMuxerStubObject();
+#endif
+
 #ifdef SUPPORT_CODEC
     sptr<IRemoteObject> CreateAVCodecStubObject();
 #endif
@@ -72,8 +78,8 @@ private:
     };
 
     std::map<sptr<IRemoteObject>, pid_t> demuxerStubMap_;
-
-    std::map<sptr<IRemoteObject>, pid_t> avCodecStubMap_;
+    std::map<sptr<IRemoteObject>, pid_t> muxerStubMap_;
+    std::map<sptr<IRemoteObject>, pid_t> codecStubMap_;
 
     std::map<StubType, std::vector<Dumper>> dumperTbl_;
     AsyncExecutor executor_;
@@ -82,4 +88,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_SERVER_MANAGER_H
+#endif // AVCODEC_MANAGER_H

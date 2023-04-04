@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_AVCODEC_SERVICE_H
-#define I_AVCODEC_SERVICE_H
+#ifndef I_CODEC_SERVICE_H
+#define I_CODEC_SERVICE_H
 
 #include <string>
 #include "avcodec_common.h"
@@ -25,9 +25,9 @@
 
 namespace OHOS {
 namespace AVCodec {
-class IAVCodecService {
+class ICodecService {
 public:
-    virtual ~IAVCodecService() = default;
+    virtual ~ICodecService() = default;
 
     virtual int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) = 0;
     virtual int32_t Configure(const Format &format) = 0;
@@ -55,4 +55,4 @@ public:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_AVCODEC_SERVICE_H
+#endif // I_CODEC_SERVICE_H

@@ -12,23 +12,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MEDIA_LISTENER_PROXY_H
-#define MEDIA_LISTENER_PROXY_H
+#include "avcodec_listener_proxy.h"
+#include "av_log.h"
+#include "media_errors.h"
 
-#include "i_standard_media_listener.h"
-#include "media_death_recipient.h"
-#include "nocopyable.h"
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListenerProxy"};
+}
 
 namespace OHOS {
 namespace AVCodec {
-class MediaListenerProxy : public IRemoteProxy<IStandardAvcodecListener>, public NoCopyable {
-public:
-    explicit MediaListenerProxy(const sptr<IRemoteObject> &impl);
-    virtual ~MediaListenerProxy();
-
-private:
-    static inline BrokerDelegator<MediaListenerProxy> delegator_;
-};
+AVCodecListenerProxy::AVCodecListenerProxy(const sptr<IRemoteObject> &impl)
+    : IRemoteProxy<IStandardAVCodecListener>(impl)
+{
+    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+}
+AVCodecListenerProxy::~AVCodecListenerProxy()
+{
+    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+}
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_LISTENER_PROXY_H

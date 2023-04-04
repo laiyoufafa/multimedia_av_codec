@@ -19,19 +19,19 @@
 #include "avsharedmemory_ipc.h"
 #include "media_errors.h"
 #include "media_log.h"
-#include "media_parcel.h"
-#include "media_server_manager.h"
+#include "avcodec_parcel.h"
+#include "avcodec_server_manager.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceStub"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecServiceStub"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecServiceStub::AVCodecBufferCache : public NoCopyable {
+class CodecServiceStub::CodecBufferCache : public NoCopyable {
 public:
-    AVCodecBufferCache() = default;
-    ~AVCodecBufferCache() = default;
+    CodecBufferCache() = default;
+    ~CodecBufferCache() = default;
 
     int32_t WriteToParcel(uint32_t index, const std::shared_ptr<AVBufferElement> &memory, MessageParcel &parcel)
     {
@@ -84,78 +84,78 @@ private:
     std::unordered_map<uint32_t, AVBufferElement *> caches_;
 };
 
-sptr<AVCodecServiceStub> AVCodecServiceStub::Create()
+sptr<CodecServiceStub> CodecServiceStub::Create()
 {
-    sptr<AVCodecServiceStub> codecStub = new(std::nothrow) AVCodecServiceStub();
-    CHECK_AND_RETURN_RET_LOG(codecStub != nullptr, nullptr, "failed to new AVCodecServiceStub");
+    sptr<CodecServiceStub> codecStub = new(std::nothrow) CodecServiceStub();
+    CHECK_AND_RETURN_RET_LOG(codecStub != nullptr, nullptr, "failed to new CodecServiceStub");
 
     int32_t ret = codecStub->Init();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to codec stub init");
     return codecStub;
 }
 
-AVCodecServiceStub::AVCodecServiceStub()
+CodecServiceStub::CodecServiceStub()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecServiceStub::~AVCodecServiceStub()
+CodecServiceStub::~CodecServiceStub()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t AVCodecServiceStub::Init()
+int32_t CodecServiceStub::Init()
 {
-    codecServer_ = AVCodecServer::Create();
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "failed to create AVCodecServer");
+    codecServer_ = CodecServer::Create();
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "failed to create CodecServer");
 
-    recFuncs_[SET_LISTENER_OBJ] = &AVCodecServiceStub::SetListenerObject;
+    recFuncs_[SET_LISTENER_OBJ] = &CodecServiceStub::SetListenerObject;
 
-    recFuncs_[INIT] = &AVCodecServiceStub::Init;
-    recFuncs_[CONFIGURE] = &AVCodecServiceStub::Configure;
-    recFuncs_[START] = &AVCodecServiceStub::Start;
-    recFuncs_[STOP] = &AVCodecServiceStub::Stop;
-    recFuncs_[FLUSH] = &AVCodecServiceStub::Flush;
-    recFuncs_[RESET] = &AVCodecServiceStub::Reset;
-    recFuncs_[RELEASE] = &AVCodecServiceStub::Release;
-    recFuncs_[NOTIFY_EOS] = &AVCodecServiceStub::NotifyEos;
-    recFuncs_[CREATE_INPUT_SURFACE] = &AVCodecServiceStub::CreateInputSurface;
-    recFuncs_[SET_OUTPUT_SURFACE] = &AVCodecServiceStub::SetOutputSurface;
-    recFuncs_[GET_INPUT_BUFFER] = &AVCodecServiceStub::GetInputBuffer;
-    recFuncs_[QUEUE_INPUT_BUFFER] = &AVCodecServiceStub::QueueInputBuffer;
-    recFuncs_[GET_OUTPUT_BUFFER] = &AVCodecServiceStub::GetOutputBuffer;
-    recFuncs_[RELEASE_OUTPUT_BUFFER] = &AVCodecServiceStub::ReleaseOutputBuffer;
-    recFuncs_[GET_OUTPUT_FORMAT] = &AVCodecServiceStub::GetOutputFormat;
-    recFuncs_[SET_PARAMETER] = &AVCodecServiceStub::SetParameter;
-    recFuncs_[SET_INPUT_SURFACE] = &AVCodecServiceStub::SetInputSurface;
-    recFuncs_[DEQUEUE_INPUT_BUFFER] = &AVCodecServiceStub::DequeueInputBuffer;
-    recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &AVCodecServiceStub::DequeueOutputBuffer;
+    recFuncs_[INIT] = &CodecServiceStub::Init;
+    recFuncs_[CONFIGURE] = &CodecServiceStub::Configure;
+    recFuncs_[START] = &CodecServiceStub::Start;
+    recFuncs_[STOP] = &CodecServiceStub::Stop;
+    recFuncs_[FLUSH] = &CodecServiceStub::Flush;
+    recFuncs_[RESET] = &CodecServiceStub::Reset;
+    recFuncs_[RELEASE] = &CodecServiceStub::Release;
+    recFuncs_[NOTIFY_EOS] = &CodecServiceStub::NotifyEos;
+    recFuncs_[CREATE_INPUT_SURFACE] = &CodecServiceStub::CreateInputSurface;
+    recFuncs_[SET_OUTPUT_SURFACE] = &CodecServiceStub::SetOutputSurface;
+    recFuncs_[GET_INPUT_BUFFER] = &CodecServiceStub::GetInputBuffer;
+    recFuncs_[QUEUE_INPUT_BUFFER] = &CodecServiceStub::QueueInputBuffer;
+    recFuncs_[GET_OUTPUT_BUFFER] = &CodecServiceStub::GetOutputBuffer;
+    recFuncs_[RELEASE_OUTPUT_BUFFER] = &CodecServiceStub::ReleaseOutputBuffer;
+    recFuncs_[GET_OUTPUT_FORMAT] = &CodecServiceStub::GetOutputFormat;
+    recFuncs_[SET_PARAMETER] = &CodecServiceStub::SetParameter;
+    recFuncs_[SET_INPUT_SURFACE] = &CodecServiceStub::SetInputSurface;
+    recFuncs_[DEQUEUE_INPUT_BUFFER] = &CodecServiceStub::DequeueInputBuffer;
+    recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &CodecServiceStub::DequeueOutputBuffer;
 
-    recFuncs_[DESTROY] = &AVCodecServiceStub::DestroyStub;
+    recFuncs_[DESTROY] = &CodecServiceStub::DestroyStub;
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::DestroyStub()
+int32_t CodecServiceStub::DestroyStub()
 {
     codecServer_ = nullptr;
     outputBufferCache_ = nullptr;
     inputBufferCache_ = nullptr;
 
-    MediaServerManager::GetInstance().DestroyStubObject(MediaServerManager::AVCODEC, AsObject());
+    AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::CODEC, AsObject());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::DumpInfo(int32_t fd)
+int32_t CodecServiceStub::DumpInfo(int32_t fd)
 {
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
-    return std::static_pointer_cast<AVCodecServer>(codecServer_)->DumpInfo(fd);
+    return std::static_pointer_cast<CodecServer>(codecServer_)->DumpInfo(fd);
 }
 
-int AVCodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
+int CodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
     auto remoteDescriptor = data.ReadInterfaceToken();
-    if (AVCodecServiceStub::GetDescriptor() != remoteDescriptor) {
+    if (CodecServiceStub::GetDescriptor() != remoteDescriptor) {
         MEDIA_LOGE("Invalid descriptor");
         return MSERR_INVALID_OPERATION;
     }
@@ -171,160 +171,160 @@ int AVCodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mess
             return MSERR_OK;
         }
     }
-    MEDIA_LOGW("AVCodecServiceStub: no member func supporting, applying default process");
+    MEDIA_LOGW("CodecServiceStub: no member func supporting, applying default process");
 
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-int32_t AVCodecServiceStub::SetListenerObject(const sptr<IRemoteObject> &object)
+int32_t CodecServiceStub::SetListenerObject(const sptr<IRemoteObject> &object)
 {
     CHECK_AND_RETURN_RET_LOG(object != nullptr, MSERR_NO_MEMORY, "set listener object is nullptr");
 
     sptr<IStandardCodecListener> listener = iface_cast<IStandardCodecListener>(object);
     CHECK_AND_RETURN_RET_LOG(listener != nullptr, MSERR_NO_MEMORY, "failed to convert IStandardCodecListener");
 
-    std::shared_ptr<AVCodecCallback> callback = std::make_shared<AVCodecListenerCallback>(listener);
-    CHECK_AND_RETURN_RET_LOG(callback != nullptr, MSERR_NO_MEMORY, "failed to new AVCodecListenerCallback");
+    std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecListenerCallback>(listener);
+    CHECK_AND_RETURN_RET_LOG(callback != nullptr, MSERR_NO_MEMORY, "failed to new CodecListenerCallback");
 
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     (void)codecServer_->SetCallback(callback);
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Init(AVCodecType type, bool isMimeType, const std::string &name)
+int32_t CodecServiceStub::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->Init(type, isMimeType, name);
 }
 
-int32_t AVCodecServiceStub::Configure(const Format &format)
+int32_t CodecServiceStub::Configure(const Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->Configure(format);
 }
 
-int32_t AVCodecServiceStub::Start()
+int32_t CodecServiceStub::Start()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->Start();
 }
 
-int32_t AVCodecServiceStub::Stop()
+int32_t CodecServiceStub::Stop()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->Stop();
 }
 
-int32_t AVCodecServiceStub::Flush()
+int32_t CodecServiceStub::Flush()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->Flush();
 }
 
-int32_t AVCodecServiceStub::Reset()
+int32_t CodecServiceStub::Reset()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
     return codecServer_->Reset();
 }
 
-int32_t AVCodecServiceStub::Release()
+int32_t CodecServiceStub::Release()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
     return codecServer_->Release();
 }
 
-int32_t AVCodecServiceStub::NotifyEos()
+int32_t CodecServiceStub::NotifyEos()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->NotifyEos();
 }
 
-sptr<OHOS::Surface> AVCodecServiceStub::CreateInputSurface()
+sptr<OHOS::Surface> CodecServiceStub::CreateInputSurface()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
     return codecServer_->CreateInputSurface();
 }
 
-int32_t AVCodecServiceStub::SetOutputSurface(sptr<OHOS::Surface> surface)
+int32_t CodecServiceStub::SetOutputSurface(sptr<OHOS::Surface> surface)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->SetOutputSurface(surface);
 }
 
-std::shared_ptr<AVBufferElement> AVCodecServiceStub::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> CodecServiceStub::GetInputBuffer(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
     return codecServer_->GetInputBuffer(index);
 }
 
-int32_t AVCodecServiceStub::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
+int32_t CodecServiceStub::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->QueueInputBuffer(index, info, flag);
 }
 
-std::shared_ptr<AVBufferElement> AVCodecServiceStub::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> CodecServiceStub::GetOutputBuffer(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
     return codecServer_->GetOutputBuffer(index);
 }
 
-int32_t AVCodecServiceStub::GetOutputFormat(Format &format)
+int32_t CodecServiceStub::GetOutputFormat(Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->GetOutputFormat(format);
 }
 
-int32_t AVCodecServiceStub::ReleaseOutputBuffer(uint32_t index, bool render)
+int32_t CodecServiceStub::ReleaseOutputBuffer(uint32_t index, bool render)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->ReleaseOutputBuffer(index, render);
 }
 
-int32_t AVCodecServiceStub::SetParameter(const Format &format)
+int32_t CodecServiceStub::SetParameter(const Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->SetParameter(format);
 }
 
-int32_t AVCodecServiceStub::SetInputSurface(sptr<PersistentSurface> surface)
+int32_t CodecServiceStub::SetInputSurface(sptr<PersistentSurface> surface)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->SetInputSurface(surface);
 }
 
-int32_t AVCodecServiceStub::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceStub::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->DequeueInputBuffer(index, timetUs);
 }
 
-int32_t AVCodecServiceStub::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceStub::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "avcodec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->DequeueOutputBuffer(index, timetUs);
 }
 
 
-int32_t AVCodecServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(DestroyStub());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::SetListenerObject(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::SetListenerObject(MessageParcel &data, MessageParcel &reply)
 {
     sptr<IRemoteObject> object = data.ReadRemoteObject();
     reply.WriteInt32(SetListenerObject(object));
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     AVCodecType type = static_cast<AVCodecType>(data.ReadInt32());
     bool isMimeType = data.ReadBool();
@@ -333,58 +333,58 @@ int32_t AVCodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Configure(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Configure(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteInt32(Configure(format));
     return MSERR_OK;
 }
 
 
-int32_t AVCodecServiceStub::Start(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Start(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(Start());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(Stop());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Flush(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Flush(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(Flush());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Reset(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Reset(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(Reset());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::Release(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::Release(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(Release());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::NotifyEos(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::NotifyEos(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(NotifyEos());
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     sptr<OHOS::Surface> surface = CreateInputSurface();
@@ -395,7 +395,7 @@ int32_t AVCodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParce
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &reply)
 {
     sptr<IRemoteObject> object = data.ReadRemoteObject();
     CHECK_AND_RETURN_RET_LOG(object != nullptr, MSERR_NO_MEMORY, "object is nullptr");
@@ -414,7 +414,7 @@ int32_t AVCodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel 
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
     CHECK_AND_RETURN_RET(inputBufferCache_ != nullptr, MSERR_INVALID_OPERATION);
 
@@ -423,7 +423,7 @@ int32_t AVCodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &r
     return inputBufferCache_->WriteToParcel(index, buffer, reply);
 }
 
-int32_t AVCodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
     AVCodecBufferInfo info;
@@ -435,7 +435,7 @@ int32_t AVCodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel 
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
     CHECK_AND_RETURN_RET(outputBufferCache_ != nullptr, MSERR_INVALID_OPERATION);
 
@@ -444,16 +444,16 @@ int32_t AVCodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &
     return outputBufferCache_->WriteToParcel(index, buffer, reply);
 }
 
-int32_t AVCodecServiceStub::GetOutputFormat(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::GetOutputFormat(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     Format format;
     (void)GetOutputFormat(format);
-    (void)MediaParcel::Marshalling(reply, format);
+    (void)AVCodecParcel::Marshalling(reply, format);
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::ReleaseOutputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::ReleaseOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
     bool render = data.ReadBool();
@@ -461,16 +461,16 @@ int32_t AVCodecServiceStub::ReleaseOutputBuffer(MessageParcel &data, MessageParc
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteInt32(SetParameter(format));
     return MSERR_OK;
 }
 
 
-int32_t AVCodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &reply)
 {
 
 
@@ -481,7 +481,7 @@ int32_t AVCodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &
 
     return MSERR_OK;
 }
-int32_t AVCodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
 
     int64_t timetUs = data.ReadInt64();
@@ -490,7 +490,7 @@ int32_t AVCodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParce
     reply.WriteUint32(index);
     return MSERR_OK;
 }
-int32_t AVCodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t CodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
 
     int64_t timetUs = data.ReadInt64();

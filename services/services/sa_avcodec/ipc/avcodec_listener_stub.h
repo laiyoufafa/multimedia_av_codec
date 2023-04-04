@@ -12,29 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef AVCODEC_LISTENER_STUB_H
+#define AVCODEC_LISTENER_STUB_H
 
-#include "media_local.h"
-#include "media_errors.h"
-#include "av_log.h"
-#include "demuxer_server.h"
+#include "i_standard_avcodec_listener.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-IMediaService &MediaServiceFactory::GetInstance()
-{
-    static MediaLocal instance;
-    return instance;
-}
-
-std::shared_ptr<IDemuxerService> MediaLocal::CreateDemuxerService()
-{
-    return DemuxerService::Create();
-}
-
-int32_t MediaLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)
-{
-    return MSERR_OK;
-}
-
+class AVCodecListenerStub : public IRemoteStub<IStandardAVCodecListener>, public NoCopyable {
+public:
+    AVCodecListenerStub();
+    virtual ~AVCodecListenerStub();
+};
 } // namespace AVCodec
 } // namespace OHOS
+#endif // AVCODEC_LISTENER_STUB_H

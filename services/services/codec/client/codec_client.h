@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_SERVICE_CLIENT_H
-#define AVCODEC_SERVICE_CLIENT_H
+#ifndef CODEC_SERVICE_CLIENT_H
+#define CODEC_SERVICE_CLIENT_H
 
 #include "i_codec_service.h"
 #include "i_standard_codec_service.h"
@@ -22,11 +22,11 @@
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecClient : public IAVCodecService {
+class CodecClient : public ICodecService {
 public:
-    static std::shared_ptr<AVCodecClient> Create(const sptr<IStandardCodecService> &ipcProxy);
-    explicit AVCodecClient(const sptr<IStandardCodecService> &ipcProxy);
-    ~AVCodecClient();
+    static std::shared_ptr<CodecClient> Create(const sptr<IStandardCodecService> &ipcProxy);
+    explicit CodecClient(const sptr<IStandardCodecService> &ipcProxy);
+    ~CodecClient();
     // 业务
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) override;
     int32_t Configure(const Format &format) override;
@@ -50,16 +50,16 @@ public:
     int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) override;
     // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
-    void MediaServerDied();
+    void AVCodecServerDied();
 
 private:
     int32_t CreateListenerObject();
 
     sptr<IStandardCodecService> codecProxy_ = nullptr;
-    sptr<AVCodecListenerStub> listenerStub_ = nullptr;
+    sptr<CodecListenerStub> listenerStub_ = nullptr;
     std::shared_ptr<AVCodecCallback> callback_ = nullptr;
     std::mutex mutex_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_SERVICE_CLIENT_H
+#endif // CODEC_SERVICE_CLIENT_H

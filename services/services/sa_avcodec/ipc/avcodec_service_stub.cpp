@@ -12,42 +12,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "media_service_stub.h"
+#include "avcodec_service_stub.h"
 #include "av_log.h"
 #include "media_errors.h"
-#include "media_server_manager.h"
+#include "avcodec_server_manager.h"
 // #include "player_xcollie.h"
 
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MediaServiceStub"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceStub"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-MediaServiceStub::MediaServiceStub()
+AVCodecServiceStub::AVCodecServiceStub()
 {
     deathRecipientMap_.clear();
-    mediaListenerMap_.clear();
+    avcodecListenerMap_.clear();
     Init();
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MediaServiceStub::~MediaServiceStub()
+AVCodecServiceStub::~AVCodecServiceStub()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void MediaServiceStub::Init()
+void AVCodecServiceStub::Init()
 {
-    mediaFuncs_[GET_SUBSYSTEM] = &MediaServiceStub::GetSystemAbility;
+    avcodecFuncs_[GET_SUBSYSTEM] = &AVCodecServiceStub::GetSystemAbility;
 }
 
-int32_t MediaServiceStub::DestroyStubForPid(pid_t pid)
+int32_t AVCodecServiceStub::DestroyStubForPid(pid_t pid)
 {
     {
         std::lock_guard<std::mutex> lock(mutex_);
-        sptr<MediaDeathRecipient> deathRecipient = nullptr;
-        sptr<IStandardAvcodecListener> mediaListener = nullptr;
+        sptr<AVCodecDeathRecipient> deathRecipient = nullptr;
+        sptr<IStandardAVCodecListener> avcodecListener = nullptr;
 
         auto itDeath = deathRecipientMap_.find(pid);
         if (itDeath != deathRecipientMap_.end()) {
@@ -60,35 +60,35 @@ int32_t MediaServiceStub::DestroyStubForPid(pid_t pid)
             (void)deathRecipientMap_.erase(itDeath);
         }
 
-        auto itListener = mediaListenerMap_.find(pid);
-        if (itListener != mediaListenerMap_.end()) {
-            mediaListener = itListener->second;
+        auto itListener = avcodecListenerMap_.find(pid);
+        if (itListener != avcodecListenerMap_.end()) {
+            avcodecListener = itListener->second;
 
-            if (mediaListener != nullptr && mediaListener->AsObject() != nullptr && deathRecipient != nullptr) {
-                (void)mediaListener->AsObject()->RemoveDeathRecipient(deathRecipient);
+            if (avcodecListener != nullptr && avcodecListener->AsObject() != nullptr && deathRecipient != nullptr) {
+                (void)avcodecListener->AsObject()->RemoveDeathRecipient(deathRecipient);
             }
 
-            (void)mediaListenerMap_.erase(itListener);
+            (void)avcodecListenerMap_.erase(itListener);
         }
     }
 
-    MediaServerManager::GetInstance().DestroyStubObjectForPid(pid);
+    AVCodecServerManager::GetInstance().DestroyStubObjectForPid(pid);
     return MSERR_OK;
 }
 
-int MediaServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
+int AVCodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
     MEDIA_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
-    if (MediaServiceStub::GetDescriptor() != remoteDescriptor) {
+    if (AVCodecServiceStub::GetDescriptor() != remoteDescriptor) {
         MEDIA_LOGE("Invalid descriptor");
         return MSERR_INVALID_OPERATION;
     }
 
-    auto itFunc = mediaFuncs_.find(code);
-    if (itFunc != mediaFuncs_.end()) {
+    auto itFunc = avcodecFuncs_.find(code);
+    if (itFunc != avcodecFuncs_.end()) {
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
             int32_t ret = (this->*memberFunc)(data, reply);
@@ -98,47 +98,47 @@ int MediaServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
             return MSERR_OK;
         }
     }
-    MEDIA_LOGW("mediaFuncs_: no member func supporting, applying default process");
+    MEDIA_LOGW("avcodecFuncs_: no member func supporting, applying default process");
 
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-void MediaServiceStub::ClientDied(pid_t pid)
+void AVCodecServiceStub::ClientDied(pid_t pid)
 {
     MEDIA_LOGE("client pid is dead, pid:%{public}d", pid);
     (void)DestroyStubForPid(pid);
 }
 
-int32_t MediaServiceStub::SetDeathListener(const sptr<IRemoteObject> &object)
+int32_t AVCodecServiceStub::SetDeathListener(const sptr<IRemoteObject> &object)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, MSERR_NO_MEMORY, "set listener object is nullptr");
 
-    sptr<IStandardAvcodecListener> mediaListener = iface_cast<IStandardAvcodecListener>(object);
-    CHECK_AND_RETURN_RET_LOG(mediaListener != nullptr, MSERR_NO_MEMORY,
-        "failed to convert IStandardAvcodecListener");
+    sptr<IStandardAVCodecListener> avcodecListener = iface_cast<IStandardAVCodecListener>(object);
+    CHECK_AND_RETURN_RET_LOG(avcodecListener != nullptr, MSERR_NO_MEMORY,
+        "failed to convert IStandardAVCodecListener");
 
     pid_t pid = IPCSkeleton::GetCallingPid();
-    sptr<MediaDeathRecipient> deathRecipient = new(std::nothrow) MediaDeathRecipient(pid);
-    CHECK_AND_RETURN_RET_LOG(deathRecipient != nullptr, MSERR_NO_MEMORY, "failed to new MediaDeathRecipient");
+    sptr<AVCodecDeathRecipient> deathRecipient = new(std::nothrow) AVCodecDeathRecipient(pid);
+    CHECK_AND_RETURN_RET_LOG(deathRecipient != nullptr, MSERR_NO_MEMORY, "failed to new AVCodecDeathRecipient");
 
-    deathRecipient->SetNotifyCb(std::bind(&MediaServiceStub::ClientDied, this, std::placeholders::_1));
+    deathRecipient->SetNotifyCb(std::bind(&AVCodecServiceStub::ClientDied, this, std::placeholders::_1));
 
-    if (mediaListener->AsObject() != nullptr) {
-        (void)mediaListener->AsObject()->AddDeathRecipient(deathRecipient);
+    if (avcodecListener->AsObject() != nullptr) {
+        (void)avcodecListener->AsObject()->AddDeathRecipient(deathRecipient);
     }
 
     MEDIA_LOGD("client pid pid:%{public}d", pid);
-    mediaListenerMap_[pid] = mediaListener;
+    avcodecListenerMap_[pid] = avcodecListener;
     deathRecipientMap_[pid] = deathRecipient;
     return MSERR_OK;
 }
 
-int32_t MediaServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel &reply)
 {
-    MediaSystemAbility id = static_cast<MediaSystemAbility>(data.ReadInt32());
+    AVCodecSystemAbility id = static_cast<AVCodecSystemAbility>(data.ReadInt32());
     sptr<IRemoteObject> listenerObj = data.ReadRemoteObject();
-    // int32_t xcollieId = PlayerXCollie::GetInstance().SetTimer("MediaServiceStub::GetSystemAbility", true);
+    // int32_t xcollieId = PlayerXCollie::GetInstance().SetTimer("AVCodecServiceStub::GetSystemAbility", true);
     (void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj));
     // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
     return MSERR_OK;

@@ -13,25 +13,25 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_SERVICE_STUB_H
-#define AVCODEC_SERVICE_STUB_H
+#ifndef CODEC_SERVICE_STUB_H
+#define CODEC_SERVICE_STUB_H
 
 #include <map>
 #include "i_standard_codec_listener.h"
 #include "i_standard_codec_service.h"
 #include "codec_server.h"
-#include "media_death_recipient.h"
+#include "avcodec_death_recipient.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecServiceStub : public IRemoteStub<IStandardCodecService>, public NoCopyable {
+class CodecServiceStub : public IRemoteStub<IStandardCodecService>, public NoCopyable {
 public:
-    static sptr<AVCodecServiceStub> Create();
-    virtual ~AVCodecServiceStub();
+    static sptr<CodecServiceStub> Create();
+    virtual ~CodecServiceStub();
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    using AVCodecStubFunc = int32_t(AVCodecServiceStub::*)(MessageParcel &data, MessageParcel &reply);
+    using CodecStubFunc = int32_t(CodecServiceStub::*)(MessageParcel &data, MessageParcel &reply);
     int32_t SetListenerObject(const sptr<IRemoteObject> &object) override;
 
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) override;
@@ -61,7 +61,7 @@ public:
     int32_t DumpInfo(int32_t fd);
 
 private:
-    AVCodecServiceStub();
+    CodecServiceStub();
     int32_t Init();
 
     int32_t Init(MessageParcel &data, MessageParcel &reply);
@@ -88,14 +88,14 @@ private:
 
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
-    std::shared_ptr<IAVCodecService> codecServer_ = nullptr;
-    std::map<uint32_t, AVCodecStubFunc> recFuncs_;
+    std::shared_ptr<ICodecService> codecServer_ = nullptr;
+    std::map<uint32_t, CodecStubFunc> recFuncs_;
     std::mutex mutex_;
 
-    class AVCodecBufferCache;
-    std::unique_ptr<AVCodecBufferCache> inputBufferCache_;
-    std::unique_ptr<AVCodecBufferCache> outputBufferCache_;
+    class CodecBufferCache;
+    std::unique_ptr<CodecBufferCache> inputBufferCache_;
+    std::unique_ptr<CodecBufferCache> outputBufferCache_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_SERVICE_STUB_H
+#endif // CODEC_SERVICE_STUB_H

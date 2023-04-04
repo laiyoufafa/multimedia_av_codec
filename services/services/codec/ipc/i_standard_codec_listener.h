@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_AVCODEC_LISTENER_H
-#define I_STANDARD_AVCODEC_LISTENER_H
+#ifndef I_STANDARD_CODEC_LISTENER_H
+#define I_STANDARD_CODEC_LISTENER_H
 
 #include "ipc_types.h"
 #include "iremote_broker.h"
@@ -35,7 +35,7 @@ public:
     /**
      * IPC code ID
      */
-    enum AVCodecListenerMsg {
+    enum CodecListenerMsg {
         ON_ERROR = 0,
         ON_OUTPUT_FORMAT_CHANGED,
         ON_INPUT_BUFFER_AVAILABLE,
@@ -46,4 +46,4 @@ public:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_STANDARD_AVCODEC_LISTENER_H
+#endif // I_STANDARD_CODEC_LISTENER_H

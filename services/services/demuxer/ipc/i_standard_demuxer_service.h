@@ -35,7 +35,7 @@ public:
 
     virtual int32_t DestroyStub() = 0;
 
-    enum AVMuxerServiceMsg {
+    enum DemuxerServiceMsg {
         ADD_SOURCE_TRACK_BY_ID,
         REMOVE_SOURCE_TRACK_BY_ID,
         COPY_CURRENT_SAMPLE_TO_BUF,

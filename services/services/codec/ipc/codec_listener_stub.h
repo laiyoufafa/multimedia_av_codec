@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_LISTENER_STUB_H
-#define AVCODEC_LISTENER_STUB_H
+#ifndef CODEC_LISTENER_STUB_H
+#define CODEC_LISTENER_STUB_H
 
 #include "i_standard_codec_listener.h"
 #include "avcodec_common.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecListenerStub : public IRemoteStub<IStandardCodecListener> {
+class CodecListenerStub : public IRemoteStub<IStandardCodecListener> {
 public:
-    AVCodecListenerStub();
-    virtual ~AVCodecListenerStub();
+    CodecListenerStub();
+    virtual ~CodecListenerStub();
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
@@ -37,4 +37,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_LISTENER_STUB_H
+#endif // CODEC_LISTENER_STUB_H

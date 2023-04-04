@@ -12,28 +12,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "media_service_proxy.h"
+#include "avcodec_service_proxy.h"
 #include "av_log.h"
 #include "media_errors.h"
 
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MediaServiceProxy"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceProxy"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-MediaServiceProxy::MediaServiceProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardAvcodecService>(impl)
+AVCodecServiceProxy::AVCodecServiceProxy(const sptr<IRemoteObject> &impl)
+    : IRemoteProxy<IStandardAVCodecService>(impl)
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MediaServiceProxy::~MediaServiceProxy()
+AVCodecServiceProxy::~AVCodecServiceProxy()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-sptr<IRemoteObject> MediaServiceProxy::GetSubSystemAbility(IStandardAvcodecService::MediaSystemAbility subSystemId,
+sptr<IRemoteObject> AVCodecServiceProxy::GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
     const sptr<IRemoteObject> &listener)
 {
     MessageParcel data;
@@ -45,14 +45,14 @@ sptr<IRemoteObject> MediaServiceProxy::GetSubSystemAbility(IStandardAvcodecServi
         return nullptr;
     }
 
-    if (!data.WriteInterfaceToken(MediaServiceProxy::GetDescriptor())) {
+    if (!data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor())) {
         MEDIA_LOGE("Failed to write descriptor");
         return nullptr;
     }
 
     (void)data.WriteInt32(static_cast<int32_t>(subSystemId));
     (void)data.WriteRemoteObject(listener);
-    int error = Remote()->SendRequest(MediaServiceMsg::GET_SUBSYSTEM, data, reply, option);
+    int error = Remote()->SendRequest(AVCodecServiceMsg::GET_SUBSYSTEM, data, reply, option);
     if (error != MSERR_OK) {
         MEDIA_LOGE("Create avcodec proxy failed, error: %{public}d", error);
         return nullptr;

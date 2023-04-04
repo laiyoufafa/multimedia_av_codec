@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_LISTENER_PROXY_H
-#define AVCODEC_LISTENER_PROXY_H
+#ifndef CODEC_LISTENER_PROXY_H
+#define CODEC_LISTENER_PROXY_H
 
 #include "i_standard_codec_listener.h"
-#include "media_death_recipient.h"
+#include "avcodec_death_recipient.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecListenerCallback : public AVCodecCallback, public NoCopyable {
+class CodecListenerCallback : public AVCodecCallback, public NoCopyable {
 public:
-    explicit AVCodecListenerCallback(const sptr<IStandardCodecListener> &listener);
-    virtual ~AVCodecListenerCallback();
+    explicit CodecListenerCallback(const sptr<IStandardCodecListener> &listener);
+    virtual ~CodecListenerCallback();
 
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
@@ -36,10 +36,10 @@ private:
     sptr<IStandardCodecListener> listener_ = nullptr;
 };
 
-class AVCodecListenerProxy : public IRemoteProxy<IStandardCodecListener>, public NoCopyable {
+class CodecListenerProxy : public IRemoteProxy<IStandardCodecListener>, public NoCopyable {
 public:
-    explicit AVCodecListenerProxy(const sptr<IRemoteObject> &impl);
-    virtual ~AVCodecListenerProxy();
+    explicit CodecListenerProxy(const sptr<IRemoteObject> &impl);
+    virtual ~CodecListenerProxy();
 
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
@@ -47,8 +47,8 @@ public:
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
 
 private:
-    static inline BrokerDelegator<AVCodecListenerProxy> delegator_;
+    static inline BrokerDelegator<CodecListenerProxy> delegator_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_LISTENER_PROXY_H
+#endif // CODEC_LISTENER_PROXY_H

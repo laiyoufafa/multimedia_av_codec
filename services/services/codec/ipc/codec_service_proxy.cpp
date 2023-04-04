@@ -18,18 +18,18 @@
 #include "avsharedmemory_ipc.h"
 #include "media_errors.h"
 #include "media_log.h"
-#include "media_parcel.h"
+#include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceProxy"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecServiceProxy"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecServiceProxy::AVCodecBufferCache : public NoCopyable {
+class CodecServiceProxy::CodecBufferCache : public NoCopyable {
 public:
-    AVCodecBufferCache() = default;
-    ~AVCodecBufferCache() = default;
+    CodecBufferCache() = default;
+    ~CodecBufferCache() = default;
 
     int32_t ReadFromParcel(uint32_t index, MessageParcel &parcel, std::shared_ptr<AVBufferElement> &memory)
     {
@@ -79,24 +79,24 @@ private:
     std::unordered_map<uint32_t, std::shared_ptr<AVBufferElement>> caches_;
 };
 
-AVCodecServiceProxy::AVCodecServiceProxy(const sptr<IRemoteObject> &impl)
+CodecServiceProxy::CodecServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardCodecService>(impl)
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecServiceProxy::~AVCodecServiceProxy()
+CodecServiceProxy::~CodecServiceProxy()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t AVCodecServiceProxy::SetListenerObject(const sptr<IRemoteObject> &object)
+int32_t CodecServiceProxy::SetListenerObject(const sptr<IRemoteObject> &object)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     (void)data.WriteRemoteObject(object);
@@ -108,7 +108,7 @@ int32_t AVCodecServiceProxy::SetListenerObject(const sptr<IRemoteObject> &object
 }
 
 
-int32_t AVCodecServiceProxy::DestroyStub()
+int32_t CodecServiceProxy::DestroyStub()
 {
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
@@ -117,7 +117,7 @@ int32_t AVCodecServiceProxy::DestroyStub()
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(DESTROY, data, reply, option);
@@ -128,13 +128,13 @@ int32_t AVCodecServiceProxy::DestroyStub()
 }
 
 
-int32_t AVCodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::string &name)
+int32_t CodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(static_cast<int32_t>(type));
@@ -147,16 +147,16 @@ int32_t AVCodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::Configure(const Format &format)
+int32_t CodecServiceProxy::Configure(const Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(CONFIGURE, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, MSERR_INVALID_OPERATION,
         "Configure failed, error: %{public}d", ret);
@@ -165,13 +165,13 @@ int32_t AVCodecServiceProxy::Configure(const Format &format)
 }
 
 
-int32_t AVCodecServiceProxy::Start()
+int32_t CodecServiceProxy::Start()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(START, data, reply, option);
@@ -181,13 +181,13 @@ int32_t AVCodecServiceProxy::Start()
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::Stop()
+int32_t CodecServiceProxy::Stop()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(STOP, data, reply, option);
@@ -197,13 +197,13 @@ int32_t AVCodecServiceProxy::Stop()
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::Flush()
+int32_t CodecServiceProxy::Flush()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(FLUSH, data, reply, option);
@@ -213,13 +213,13 @@ int32_t AVCodecServiceProxy::Flush()
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::NotifyEos()
+int32_t CodecServiceProxy::NotifyEos()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(NOTIFY_EOS, data, reply, option);
@@ -229,7 +229,7 @@ int32_t AVCodecServiceProxy::NotifyEos()
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::Reset()
+int32_t CodecServiceProxy::Reset()
 {
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
@@ -238,7 +238,7 @@ int32_t AVCodecServiceProxy::Reset()
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(RESET, data, reply, option);
@@ -248,7 +248,7 @@ int32_t AVCodecServiceProxy::Reset()
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::Release()
+int32_t CodecServiceProxy::Release()
 {
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
@@ -257,7 +257,7 @@ int32_t AVCodecServiceProxy::Release()
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(RELEASE, data, reply, option);
@@ -267,13 +267,13 @@ int32_t AVCodecServiceProxy::Release()
     return reply.ReadInt32();
 }
 
-sptr<OHOS::Surface> AVCodecServiceProxy::CreateInputSurface()
+sptr<OHOS::Surface> CodecServiceProxy::CreateInputSurface()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, nullptr, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(CREATE_INPUT_SURFACE, data, reply, option);
@@ -289,7 +289,7 @@ sptr<OHOS::Surface> AVCodecServiceProxy::CreateInputSurface()
     return OHOS::Surface::CreateSurfaceAsProducer(producer);
 }
 
-int32_t AVCodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
+int32_t CodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -306,7 +306,7 @@ int32_t AVCodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
     std::string format = surface->GetUserData(surfaceFormat);
     MEDIA_LOGI("surfaceFormat is %{public}s!", format.c_str());
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     (void)data.WriteRemoteObject(object);
@@ -318,13 +318,13 @@ int32_t AVCodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
     return reply.ReadInt32();
 }
 
-std::shared_ptr<AVBufferElement> AVCodecServiceProxy::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> CodecServiceProxy::GetInputBuffer(uint32_t index)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, nullptr, "Failed to write descriptor!");
 
     data.WriteUint32(index);
@@ -341,13 +341,13 @@ std::shared_ptr<AVBufferElement> AVCodecServiceProxy::GetInputBuffer(uint32_t in
     return memory;
 }
 
-int32_t AVCodecServiceProxy::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
+int32_t CodecServiceProxy::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteUint32(index);
@@ -362,13 +362,13 @@ int32_t AVCodecServiceProxy::QueueInputBuffer(uint32_t index, AVCodecBufferInfo 
     return reply.ReadInt32();
 }
 
-std::shared_ptr<AVBufferElement> AVCodecServiceProxy::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVBufferElement> CodecServiceProxy::GetOutputBuffer(uint32_t index)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, nullptr, "Failed to write descriptor!");
 
     data.WriteUint32(index);
@@ -385,30 +385,30 @@ std::shared_ptr<AVBufferElement> AVCodecServiceProxy::GetOutputBuffer(uint32_t i
     return memory;
 }
 
-int32_t AVCodecServiceProxy::GetOutputFormat(Format &format)
+int32_t CodecServiceProxy::GetOutputFormat(Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(GET_OUTPUT_FORMAT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, MSERR_INVALID_OPERATION,
         "GetOutputFormat failed, error: %{public}d", ret);
 
-    (void)MediaParcel::Unmarshalling(reply, format);
+    (void)AVCodecParcel::Unmarshalling(reply, format);
     return MSERR_OK;
 }
 
-int32_t AVCodecServiceProxy::ReleaseOutputBuffer(uint32_t index, bool render)
+int32_t CodecServiceProxy::ReleaseOutputBuffer(uint32_t index, bool render)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteUint32(index);
@@ -420,16 +420,16 @@ int32_t AVCodecServiceProxy::ReleaseOutputBuffer(uint32_t index, bool render)
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::SetParameter(const Format &format)
+int32_t CodecServiceProxy::SetParameter(const Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(SET_PARAMETER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, MSERR_INVALID_OPERATION,
         "SetParameter failed, error: %{public}d", ret);
@@ -437,7 +437,7 @@ int32_t AVCodecServiceProxy::SetParameter(const Format &format)
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
+int32_t CodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -454,7 +454,7 @@ int32_t AVCodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
     // std::string format = surface->GetUserData(surfaceFormat);
     // MEDIA_LOGI("surfaceFormat is %{public}s!", format.c_str());
 
-    // bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    // bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     // CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     // (void)data.WriteRemoteObject(object);
@@ -465,12 +465,12 @@ int32_t AVCodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
 
     return reply.ReadInt32();
 }
-int32_t AVCodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt64(timetUs);
@@ -481,12 +481,12 @@ int32_t AVCodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs
     return reply.ReadInt32();
 }
 
-int32_t AVCodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt64(timetUs);
@@ -496,7 +496,5 @@ int32_t AVCodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timetU
     *index = reply.ReadUint32();
     return reply.ReadInt32();
 }
-
-
 } // namespace AVCodec
 } // namespace OHOS

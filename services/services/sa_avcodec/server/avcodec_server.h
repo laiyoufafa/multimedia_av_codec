@@ -12,23 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MEDIA_SERVER_H
-#define MEDIA_SERVER_H
+#ifndef AVCODEC_SERVER_H
+#define AVCODEC_SERVER_H
 
-#include "media_service_stub.h"
+#include "avcodec_service_stub.h"
 #include "system_ability.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AvcodecServer : public SystemAbility, public MediaServiceStub {
-    DECLARE_SYSTEM_ABILITY(AvcodecServer);
+class AVCodecServer : public SystemAbility, public AVCodecServiceStub {
+    DECLARE_SYSTEM_ABILITY(AVCodecServer);
 public:
-    explicit AvcodecServer(int32_t systemAbilityId, bool runOnCreate = true);
-    ~AvcodecServer();
+    explicit AVCodecServer(int32_t systemAbilityId, bool runOnCreate = true);
+    ~AVCodecServer();
 
-    // IStandardAvcodecService override
-    sptr<IRemoteObject> GetSubSystemAbility(IStandardAvcodecService::MediaSystemAbility subSystemId,
+    // IStandardAVCodecService override
+    sptr<IRemoteObject> GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
         const sptr<IRemoteObject> &listener) override;
 
 protected:
@@ -40,4 +40,4 @@ protected:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_SERVER_H
+#endif // AVCODEC_SERVER_H

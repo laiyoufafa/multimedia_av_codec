@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_MEDIA_SERVICE_H
-#define I_MEDIA_SERVICE_H
+#ifndef I_AVCODEC_SERVICE_H
+#define I_AVCODEC_SERVICE_H
 
 #include <memory>
 
@@ -25,9 +25,9 @@
 
 namespace OHOS {
 namespace AVCodec {
-class IMediaService {
+class IAVCodecService {
 public:
-    virtual ~IMediaService() = default;
+    virtual ~IAVCodecService() = default;
 
 #ifdef SUPPORT_CODEC
     /**
@@ -62,7 +62,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<IAVCodecService> CreateAVCodecService() = 0;
+    virtual std::shared_ptr<ICodecService> CreateAVCodecService() = 0;
 
     /**
      * @brief Destroy a avcodec service.
@@ -74,7 +74,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DestroyAVCodecService(std::shared_ptr<IAVCodecService> avCodec) = 0;
+    virtual int32_t DestroyAVCodecService(std::shared_ptr<ICodecService> avCodec) = 0;
 #endif
 
 #ifdef SUPPORT_METADATA
@@ -103,22 +103,22 @@ public:
 #endif
 };
 
-class __attribute__((visibility("default"))) MediaServiceFactory {
+class __attribute__((visibility("default"))) AVCodecServiceFactory {
 public:
     /**
-     * @brief IMediaService singleton
+     * @brief IAVCodecService singleton
      *
-     * Create Recorder Service and Player Service Through the Media Service.
+     * Create Recorder Service and Player Service Through the Avcodec Service.
      *
-     * @return Returns IMediaService singleton;
+     * @return Returns IAVCodecService singleton;
      * @since 4.0
      * @version 4.0
      */
-    static IMediaService &GetInstance();
+    static IAVCodecService &GetInstance();
 private:
-    MediaServiceFactory() = delete;
-    ~MediaServiceFactory() = delete;
+    AVCodecServiceFactory() = delete;
+    ~AVCodecServiceFactory() = delete;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_MEDIA_SERVICE_H
+#endif // I_AVCODEC_SERVICE_H

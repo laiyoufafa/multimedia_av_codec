@@ -12,16 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MEDIA_CLIENT_H
-#define MEDIA_CLIENT_H
+#ifndef AVCODEC_CLIENT_H
+#define AVCODEC_CLIENT_H
 
-#include "i_media_service.h"
-#include "i_standard_media_service.h"
-#include "media_death_recipient.h"
-#include "media_listener_stub.h"
+#include "i_avcodec_service.h"
+#include "i_standard_avcodec_service.h"
+#include "avcodec_death_recipient.h"
+#include "avcodec_listener_stub.h"
 
 #ifdef SUPPORT_DEMUXER
 #include "demuxer_client.h"
+#endif
+
+#ifdef SUPPORT_MUXER
+#include "muxer_client.h"
 #endif
 
 #ifdef SUPPORT_CODEC
@@ -32,39 +36,47 @@
 
 namespace OHOS {
 namespace AVCodec {
-class MediaClient : public IMediaService, public NoCopyable {
+class AVCodecClient : public IAVCodecService, public NoCopyable {
 public:
-    MediaClient() noexcept;
-    ~MediaClient();
+    AVCodecClient() noexcept;
+    ~AVCodecClient();
 
 #ifdef SUPPORT_DEMUXER
     std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
     int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) override;
 #endif
 
+#ifdef SUPPORT_MUXER
+    std::shared_ptr<IMuxerService> CreateMuxerService() override;
+    int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) override;
+#endif
+
 #ifdef SUPPORT_CODEC
-    std::shared_ptr<IAVCodecService> CreateAVCodecService() override;
-    int32_t DestroyAVCodecService(std::shared_ptr<IAVCodecService> avCodec) override;
+    std::shared_ptr<ICodecService> CreateAVCodecService() override;
+    int32_t DestroyAVCodecService(std::shared_ptr<ICodecService> avCodec) override;
 #endif
 
 private:
-    sptr<IStandardAvcodecService> GetMediaProxy();
+    sptr<IStandardAVCodecService> GetAVCodecProxy();
     bool IsAlived();
-    static void MediaServerDied(pid_t pid);
-    void DoMediaServerDied();
+    static void AVCodecServerDied(pid_t pid);
+    void DoAVCodecServerDied();
 
-    sptr<IStandardAvcodecService> mediaProxy_ = nullptr;
-    sptr<MediaListenerStub> listenerStub_ = nullptr;
-    sptr<MediaDeathRecipient> deathRecipient_ = nullptr;
+    sptr<IStandardAVCodecService> avcodecProxy_ = nullptr;
+    sptr<AVCodecListenerStub> listenerStub_ = nullptr;
+    sptr<AVCodecDeathRecipient> deathRecipient_ = nullptr;
 
 #ifdef SUPPORT_DEMUXER
     std::list<std::shared_ptr<IDemuxerService>> demuxerClientList_;
 #endif
+#ifdef SUPPORT_MUXER
+    std::list<std::shared_ptr<IMuxerService>> muxerClientList_;
+#endif
 #ifdef SUPPORT_CODEC
-    std::list<std::shared_ptr<IAVCodecService>> avCodecClientList_;
+    std::list<std::shared_ptr<ICodecService>> avCodecClientList_;
 #endif
     std::mutex mutex_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_CLIENT_H
+#endif // AVCODEC_CLIENT_H

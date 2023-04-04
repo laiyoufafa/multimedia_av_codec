@@ -12,23 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef MEDIA_SERVICE_STUB_H
-#define MEDIA_SERVICE_STUB_H
+#ifndef AVCODEC_SERVICE_STUB_H
+#define AVCODEC_SERVICE_STUB_H
 
 #include <map>
-#include "i_standard_media_service.h"
-#include "i_standard_media_listener.h"
-#include "media_death_recipient.h"
+#include "i_standard_avcodec_service.h"
+#include "i_standard_avcodec_listener.h"
+#include "avcodec_death_recipient.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class MediaServiceStub : public IRemoteStub<IStandardAvcodecService>, public NoCopyable {
+class AVCodecServiceStub : public IRemoteStub<IStandardAVCodecService>, public NoCopyable {
 public:
-    MediaServiceStub();
-    virtual ~MediaServiceStub();
+    AVCodecServiceStub();
+    virtual ~AVCodecServiceStub();
 
-    using MediaStubFunc = int32_t(MediaServiceStub::*)(MessageParcel &data, MessageParcel &reply);
+    using AVCodecStubFunc = int32_t(AVCodecServiceStub::*)(MessageParcel &data, MessageParcel &reply);
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
 
 protected:
@@ -40,11 +40,11 @@ private:
     void ClientDied(pid_t pid);
     int32_t DestroyStubForPid(pid_t pid);
 
-    std::map<pid_t, sptr<MediaDeathRecipient>> deathRecipientMap_;
-    std::map<pid_t, sptr<IStandardAvcodecListener>> mediaListenerMap_;
-    std::map<uint32_t, MediaStubFunc> mediaFuncs_;
+    std::map<pid_t, sptr<AVCodecDeathRecipient>> deathRecipientMap_;
+    std::map<pid_t, sptr<IStandardAVCodecListener>> avcodecListenerMap_;
+    std::map<uint32_t, AVCodecStubFunc> avcodecFuncs_;
     std::mutex mutex_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_SERVICE_STUB_H
+#endif // AVCODEC_SERVICE_STUB_H

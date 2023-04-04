@@ -13,16 +13,16 @@
  * limitations under the License.
  */
 
-#include "media_parcel.h"
+#include "avcodec_parcel.h"
 #include "av_log.h"
 
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MediaParcel"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecParcel"};
 }
 
 namespace OHOS {
 namespace AVCodec {
-bool MediaParcel::Marshalling(MessageParcel &parcel, const Format &format)
+bool AVCodecParcel::Marshalling(MessageParcel &parcel, const Format &format)
 {
     auto dataMap = format.GetFormatMap();
     (void)parcel.WriteUint32(dataMap.size());
@@ -58,7 +58,7 @@ bool MediaParcel::Marshalling(MessageParcel &parcel, const Format &format)
     return true;
 }
 
-bool MediaParcel::Unmarshalling(MessageParcel &parcel, Format &format)
+bool AVCodecParcel::Unmarshalling(MessageParcel &parcel, Format &format)
 {
     uint32_t size = parcel.ReadUint32();
     for (uint32_t index = 0; index < size; index++) {

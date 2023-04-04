@@ -12,24 +12,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "media_listener_proxy.h"
-#include "av_log.h"
-#include "media_errors.h"
 
-namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MediaListenerProxy"};
-}
+#ifndef AVCODEC_PARCEL_H
+#define AVCODEC_PARCEL_H
+
+#include "format.h"
+#include "message_parcel.h"
 
 namespace OHOS {
 namespace AVCodec {
-MediaListenerProxy::MediaListenerProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardAvcodecListener>(impl)
-{
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
-}
-MediaListenerProxy::~MediaListenerProxy()
-{
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
-}
+class AVCodecParcel {
+public:
+    AVCodecParcel() = delete;
+    ~AVCodecParcel() = delete;
+    static bool Marshalling(MessageParcel &parcel, const Format &format);
+    static bool Unmarshalling(MessageParcel &parcel, Format &format);
+};
 } // namespace AVCodec
 } // namespace OHOS
+#endif // AVCODEC_PARCEL_H

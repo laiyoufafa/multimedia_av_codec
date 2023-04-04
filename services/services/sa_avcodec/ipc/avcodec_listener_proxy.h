@@ -12,22 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef AVCODEC_LISTENER_PROXY_H
+#define AVCODEC_LISTENER_PROXY_H
 
-#ifndef MEDIA_PARCEL_H
-#define MEDIA_PARCEL_H
-
-#include "format.h"
-#include "message_parcel.h"
+#include "i_standard_avcodec_listener.h"
+#include "avcodec_death_recipient.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class MediaParcel {
+class AVCodecListenerProxy : public IRemoteProxy<IStandardAVCodecListener>, public NoCopyable {
 public:
-    MediaParcel() = delete;
-    ~MediaParcel() = delete;
-    static bool Marshalling(MessageParcel &parcel, const Format &format);
-    static bool Unmarshalling(MessageParcel &parcel, Format &format);
+    explicit AVCodecListenerProxy(const sptr<IRemoteObject> &impl);
+    virtual ~AVCodecListenerProxy();
+
+private:
+    static inline BrokerDelegator<AVCodecListenerProxy> delegator_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_PARCEL_H
+#endif // AVCODEC_LISTENER_PROXY_H

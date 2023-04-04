@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef MEDIA_DEATH_RECIPIENT_H
-#define MEDIA_DEATH_RECIPIENT_H
+#ifndef AVCODEC_DEATH_RECIPIENT_H
+#define AVCODEC_DEATH_RECIPIENT_H
 
 #include "iremote_object.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class MediaDeathRecipient : public IRemoteObject::DeathRecipient, public NoCopyable {
+class AVCodecDeathRecipient : public IRemoteObject::DeathRecipient, public NoCopyable {
 public:
-    explicit MediaDeathRecipient(pid_t pid) : pid_(pid) {}
-    virtual ~MediaDeathRecipient() = default;
+    explicit AVCodecDeathRecipient(pid_t pid) : pid_(pid) {}
+    virtual ~AVCodecDeathRecipient() = default;
 
     void OnRemoteDied(const wptr<IRemoteObject> &remote) override
     {
@@ -45,4 +45,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_DEATH_RECIPIENT_H
+#endif // AVCODEC_DEATH_RECIPIENT_H

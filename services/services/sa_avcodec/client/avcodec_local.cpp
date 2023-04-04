@@ -13,22 +13,28 @@
  * limitations under the License.
  */
 
-#ifndef MEDIA_LOCAL_H
-#define MEDIA_LOCAL_H
-
-#include "i_media_service.h"
-#include "nocopyable.h"
+#include "avcodec_local.h"
+#include "media_errors.h"
+#include "av_log.h"
+#include "demuxer_server.h"
 
 namespace OHOS {
 namespace AVCodec {
-class MediaLocal : public IMediaService, public NoCopyable {
-public:
-    MediaLocal() = default;
-    ~MediaLocal() = default;
+IAVCodecService &AVCodecServiceFactory::GetInstance()
+{
+    static AVCodecLocal instance;
+    return instance;
+}
 
-    std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
-    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) override;
-};
+std::shared_ptr<IDemuxerService> AVCodecLocal::CreateDemuxerService()
+{
+    return DemuxerService::Create();
+}
+
+int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)
+{
+    return MSERR_OK;
+}
+
 } // namespace AVCodec
 } // namespace OHOS
-#endif // MEDIA_LOCAL_H

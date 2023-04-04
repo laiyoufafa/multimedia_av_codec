@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_SERVICE_PROXY_H
-#define AVCODEC_SERVICE_PROXY_H
+#ifndef CODEC_SERVICE_PROXY_H
+#define CODEC_SERVICE_PROXY_H
 
 #include "i_standard_codec_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class AVCodecServiceProxy : public IRemoteProxy<IStandardCodecService>, public NoCopyable {
+class CodecServiceProxy : public IRemoteProxy<IStandardCodecService>, public NoCopyable {
 public:
-    explicit AVCodecServiceProxy(const sptr<IRemoteObject> &impl);
-    virtual ~AVCodecServiceProxy();
+    explicit CodecServiceProxy(const sptr<IRemoteObject> &impl);
+    virtual ~CodecServiceProxy();
 
     int32_t SetListenerObject(const sptr<IRemoteObject> &object) override;
 
@@ -53,12 +53,12 @@ public:
     int32_t DestroyStub() override;
 
 private:
-    static inline BrokerDelegator<AVCodecServiceProxy> delegator_;
+    static inline BrokerDelegator<CodecServiceProxy> delegator_;
 
-    class AVCodecBufferCache;
-    std::unique_ptr<AVCodecBufferCache> inputBufferCache_;
-    std::unique_ptr<AVCodecBufferCache> outputBufferCache_;
+    class CodecBufferCache;
+    std::unique_ptr<CodecBufferCache> inputBufferCache_;
+    std::unique_ptr<CodecBufferCache> outputBufferCache_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AVCODEC_SERVICE_PROXY_H
+#endif // CODEC_SERVICE_PROXY_H

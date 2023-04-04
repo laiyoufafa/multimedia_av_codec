@@ -12,10 +12,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "media_server_manager.h"
+#include "avcodec_server_manager.h"
 #include <unordered_set>
 #ifdef SUPPORT_DEMUXER
 #include "demuxer_service_stub.h"
+#endif
+#ifdef SUPPORT_MUXER
+#include "muxer_service_stub.h"
 #endif
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
@@ -28,16 +31,16 @@
 #include <thread>
 #include <unistd.h>
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MediaServerManager"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServerManager"};
 }
 
 
 namespace OHOS {
 namespace AVCodec {
 constexpr uint32_t SERVER_MAX_NUMBER = 16;
-MediaServerManager &MediaServerManager::GetInstance()
+AVCodecServerManager &AVCodecServerManager::GetInstance()
 {
-    static MediaServerManager instance;
+    static AVCodecServerManager instance;
     return instance;
 }
 
@@ -70,7 +73,7 @@ int32_t WriteInfo(int32_t fd, std::string &dumpString, std::vector<Dumper> dumpe
     return OHOS::NO_ERROR;
 }
 
-int32_t MediaServerManager::Dump(int32_t fd, const std::vector<std::u16string> &args)
+int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string> &args)
 {
     std::string dumpString;
     std::unordered_set<std::u16string> argSets;
@@ -82,17 +85,17 @@ int32_t MediaServerManager::Dump(int32_t fd, const std::vector<std::u16string> &
     return OHOS::NO_ERROR;
 }
 
-MediaServerManager::MediaServerManager()
+AVCodecServerManager::AVCodecServerManager()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MediaServerManager::~MediaServerManager()
+AVCodecServerManager::~AVCodecServerManager()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-sptr<IRemoteObject> MediaServerManager::CreateStubObject(StubType type)
+sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     switch (type) {
@@ -101,20 +104,25 @@ sptr<IRemoteObject> MediaServerManager::CreateStubObject(StubType type)
             return CreateDemuxerStubObject();
         }
 #endif
+#ifdef SUPPORT_MUXER
+        case MUXER: {
+            return CreateMuxerStubObject();
+        }
+#endif
 #ifdef SUPPORT_CODEC
-        case AVCODEC: {
+        case CODEC: {
             return CreateAVCodecStubObject();
         }
 #endif
         default: {
-            MEDIA_LOGE("default case, media server manager failed");
+            MEDIA_LOGE("default case, avcodec server manager failed");
             return nullptr;
         }
     }
 }
 
 #ifdef SUPPORT_DEMUXER
-sptr<IRemoteObject> MediaServerManager::CreateDemuxerStubObject()
+sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
 {
     if (demuxerStubMap_.size() >= SERVER_MAX_NUMBER) {
         MEDIA_LOGE("The number of demuxer services(%{public}zu) has reached the upper limit."
@@ -148,23 +156,58 @@ sptr<IRemoteObject> MediaServerManager::CreateDemuxerStubObject()
 }
 #endif
 
-#ifdef SUPPORT_CODEC
-sptr<IRemoteObject> MediaServerManager::CreateAVCodecStubObject()
+#ifdef SUPPORT_MUXER
+sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
 {
-    if (avCodecStubMap_.size() >= SERVER_MAX_NUMBER) {
-        av_logE("The number of avcodec services(%{public}zu) has reached the upper limit."
-            "Please release the applied resources.", avCodecStubMap_.size());
+    if (muxerStubMap_.size() >= SERVER_MAX_NUMBER) {
+        MEDIA_LOGE("The number of muxer services(%{public}zu) has reached the upper limit."
+            "Please release the applied resources.", muxerStubMap_.size());
         return nullptr;
     }
-    sptr<AVCodecServiceStub> avCodecHelperStub = AVCodecServiceStub::Create();
+    sptr<MuxerServiceStub> muxerHelperStub = MuxerServiceStub::Create();
+    if (muxerHelperStub == nullptr) {
+        MEDIA_LOGE("failed to create MuxerServiceStub");
+        return nullptr;
+    }
+    sptr<IRemoteObject> object = muxerHelperStub->AsObject();
+    if (object != nullptr) {
+        pid_t pid = IPCSkeleton::GetCallingPid();
+        muxerStubMap_[object] = pid;
+
+        Dumper dumper;
+        // dumper.entry_ = [muxer = muxerHelperStub](int32_t fd) -> int32_t {
+        //     return muxer->DumpInfo(fd);
+        // };
+        dumper.pid_ = pid;
+        dumper.uid_ = IPCSkeleton::GetCallingUid();
+        dumper.remoteObject_ = object;
+        dumperTbl_[StubType::MUXER].emplace_back(dumper);
+        MEDIA_LOGD("The number of muxer services(%{public}zu).", muxerStubMap_.size());
+        if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
+            MEDIA_LOGW("failed to call InstanceDump");
+        }
+    }
+    return object;
+}
+#endif
+
+#ifdef SUPPORT_CODEC
+sptr<IRemoteObject> AVCodecServerManager::CreateAVCodecStubObject()
+{
+    if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {
+        av_logE("The number of avcodec services(%{public}zu) has reached the upper limit."
+            "Please release the applied resources.", codecStubMap_.size());
+        return nullptr;
+    }
+    sptr<CodecServiceStub> avCodecHelperStub = CodecServiceStub::Create();
     if (avCodecHelperStub == nullptr) {
-        av_logE("failed to create AVCodecServiceStub");
+        av_logE("failed to create CodecServiceStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = avCodecHelperStub->AsObject();
     if (object != nullptr) {
         pid_t pid = IPCSkeleton::GetCallingPid();
-        avCodecStubMap_[object] = pid;
+        codecStubMap_[object] = pid;
 
         Dumper dumper;
         dumper.entry_ = [avcodec = avCodecHelperStub](int32_t fd) -> int32_t {
@@ -173,8 +216,8 @@ sptr<IRemoteObject> MediaServerManager::CreateAVCodecStubObject()
         dumper.pid_ = pid;
         dumper.uid_ = IPCSkeleton::GetCallingUid();
         dumper.remoteObject_ = object;
-        dumperTbl_[StubType::AVCODEC].emplace_back(dumper);
-        av_logD("The number of avcodec services(%{public}zu).", avCodecStubMap_.size());
+        dumperTbl_[StubType::CODEC].emplace_back(dumper);
+        av_logD("The number of avcodec services(%{public}zu).", codecStubMap_.size());
         if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
             av_logW("failed to call InstanceDump");
         }
@@ -183,7 +226,7 @@ sptr<IRemoteObject> MediaServerManager::CreateAVCodecStubObject()
 }
 #endif
 
-void MediaServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> object)
+void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> object)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     pid_t pid = IPCSkeleton::GetCallingPid();
@@ -202,13 +245,13 @@ void MediaServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> ob
             break;
         }
         default: {
-            MEDIA_LOGE("default case, media server manager failed, pid(%{public}d).", pid);
+            MEDIA_LOGE("default case, avcodec server manager failed, pid(%{public}d).", pid);
             break;
         }
     }
 }
 
-void MediaServerManager::DestroyStubObjectForPid(pid_t pid)
+void AVCodecServerManager::DestroyStubObjectForPid(pid_t pid)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -226,12 +269,12 @@ void MediaServerManager::DestroyStubObjectForPid(pid_t pid)
     executor_.Clear();
 }
 
-void MediaServerManager::DestroyDumper(StubType type, sptr<IRemoteObject> object)
+void AVCodecServerManager::DestroyDumper(StubType type, sptr<IRemoteObject> object)
 {
     for (auto it = dumperTbl_[type].begin(); it != dumperTbl_[type].end(); it++) {
         if (it->remoteObject_ == object) {
             (void)dumperTbl_[type].erase(it);
-            MEDIA_LOGD("MediaServerManager::DestroyDumper");
+            MEDIA_LOGD("AVCodecServerManager::DestroyDumper");
             if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
                 MEDIA_LOGW("failed to call InstanceDump");
             }
@@ -240,13 +283,13 @@ void MediaServerManager::DestroyDumper(StubType type, sptr<IRemoteObject> object
     }
 }
 
-void MediaServerManager::DestroyDumperForPid(pid_t pid)
+void AVCodecServerManager::DestroyDumperForPid(pid_t pid)
 {
     for (auto &dumpers : dumperTbl_) {
         for (auto it = dumpers.second.begin(); it != dumpers.second.end();) {
             if (it->pid_ == pid) {
                 it = dumpers.second.erase(it);
-                MEDIA_LOGD("MediaServerManager::DestroyDumperForPid");
+                MEDIA_LOGD("AVCodecServerManager::DestroyDumperForPid");
             } else {
                 it++;
             }
@@ -257,18 +300,18 @@ void MediaServerManager::DestroyDumperForPid(pid_t pid)
     }
 }
 
-void MediaServerManager::AsyncExecutor::Commit(sptr<IRemoteObject> obj)
+void AVCodecServerManager::AsyncExecutor::Commit(sptr<IRemoteObject> obj)
 {
     std::lock_guard<std::mutex> lock(listMutex_);
     freeList_.push_back(obj);
 }
 
-void MediaServerManager::AsyncExecutor::Clear()
+void AVCodecServerManager::AsyncExecutor::Clear()
 {
-    std::thread(&MediaServerManager::AsyncExecutor::HandleAsyncExecution, this).detach();
+    std::thread(&AVCodecServerManager::AsyncExecutor::HandleAsyncExecution, this).detach();
 }
 
-void MediaServerManager::AsyncExecutor::HandleAsyncExecution()
+void AVCodecServerManager::AsyncExecutor::HandleAsyncExecution()
 {
     std::list<sptr<IRemoteObject>> tempList;
     {
