@@ -29,14 +29,18 @@ public:
     AVCodecEvent() = default;
     ~AVCodecEvent() = default;
     bool CreateMsg(const char *format, ...) __attribute__((__format__(printf, 2, 3)));
-    void EventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
+    void StatisticEventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
+        std::string module);
+    void BehaviorEventWrite(std::string eventName, OHOS::HiviewDFX::HiSysEvent::EventType type,
+        std::string module);
+    void FaultEventWrite(std::string eventName, int32_t errorCode, OHOS::HiviewDFX::HiSysEvent::EventType type,
         std::string module);
 private:
     std::string msg_;
 };
 
 __attribute__((visibility("default"))) void BehaviorEventWrite(std::string status, std::string moudle);
-__attribute__((visibility("default"))) void FaultEventWrite(std::string msg, std::string moudle);
+__attribute__((visibility("default"))) void FaultEventWrite(int32_t errorCode, std::string msg, std::string moudle);
 __attribute__((visibility("default"))) void StatisticEventWrite(std::string msg, std::string moudle);
 
 class __attribute__((visibility("default"))) AVCodecTrace : public NoCopyable {

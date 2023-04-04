@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_MEDIA_SERVICE_H
-#define I_MEDIA_SERVICE_H
+#ifndef I_AVCODEC_SERVICE_H
+#define I_AVCODEC_SERVICE_H
 
 #include <memory>
 
@@ -121,4 +121,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // I_MEDIA_SERVICE_H
+#endif // I_AVCODEC_SERVICE_H

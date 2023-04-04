@@ -224,9 +224,9 @@ extern const char *OH_MD_KEY_ROTATION;
  */
 typedef enum OH_MediaType {
     /* track is audio. */
-    MEDIA_TYPE_AUD = 0,
+    AVCODEC_TYPE_AUD = 0,
     /* track is video. */
-    MEDIA_TYPE_VID = 1,
+    AVCODEC_TYPE_VID = 1,
 } OH_MediaType;
 
 /**

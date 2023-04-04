@@ -27,12 +27,12 @@ namespace OHOS {
 namespace AVCodec {
 AVSharedMemoryPool::AVSharedMemoryPool(const std::string &name) : name_(name)
 {
-    MEDIA_LOGD("enter ctor, 0x%{public}06" PRIXPTR ", name: %{public}s", FAKE_POINTER(this), name_.c_str());
+    AVCODEC_LOGD("enter ctor, 0x%{public}06" PRIXPTR ", name: %{public}s", FAKE_POINTER(this), name_.c_str());
 }
 
 AVSharedMemoryPool::~AVSharedMemoryPool()
 {
-    MEDIA_LOGD("enter dtor, 0x%{public}06" PRIXPTR ", name: %{public}s", FAKE_POINTER(this), name_.c_str());
+    AVCODEC_LOGD("enter dtor, 0x%{public}06" PRIXPTR ", name: %{public}s", FAKE_POINTER(this), name_.c_str());
     Reset();
 }
 
@@ -49,7 +49,7 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
         option_.preAllocMemCnt = option.maxMemCnt;
     }
 
-    MEDIA_LOGI("name: %{public}s, init option: preAllocMemCnt = %{public}u, memSize = %{public}d, "
+    AVCODEC_LOGI("name: %{public}s, init option: preAllocMemCnt = %{public}u, memSize = %{public}d, "
                "maxMemCnt = %{public}u, enableFixedSize = %{public}d",
                name_.c_str(), option_.preAllocMemCnt, option_.memSize, option_.maxMemCnt,
                option_.enableFixedSize);
@@ -57,7 +57,7 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
     for (uint32_t i = 0; i < option_.preAllocMemCnt; ++i) {
         auto memory = AllocMemory(option_.memSize);
         if (memory == nullptr) {
-            MEDIA_LOGE("alloc memory failed");
+            AVCODEC_LOGE("alloc memory failed");
             ret = false;
             break;
         }
@@ -85,7 +85,7 @@ AVSharedMemory *AVSharedMemoryPool::AllocMemory(int32_t size)
     if (memory->Init() != MSERR_OK) {
         delete memory;
         memory = nullptr;
-        MEDIA_LOGE("init avsharedmemorybase failed");
+        AVCODEC_LOGE("init avsharedmemorybase failed");
     }
 
     return memory;
@@ -104,7 +104,7 @@ void AVSharedMemoryPool::ReleaseMemory(AVSharedMemory *memory)
         busyList_.erase(iter);
         idleList_.push_back(memory);
         cond_.notify_all();
-        MEDIA_LOGD("0x%{public}06" PRIXPTR " released back to pool %{public}s",
+        AVCODEC_LOGD("0x%{public}06" PRIXPTR " released back to pool %{public}s",
                     FAKE_POINTER(memory), name_.c_str());
 
         lock.unlock();
@@ -114,13 +114,13 @@ void AVSharedMemoryPool::ReleaseMemory(AVSharedMemory *memory)
         return;
     }
 
-    MEDIA_LOGE("0x%{public}06" PRIXPTR " is no longer managed by this pool", FAKE_POINTER(memory));
+    AVCODEC_LOGE("0x%{public}06" PRIXPTR " is no longer managed by this pool", FAKE_POINTER(memory));
     delete memory;
 }
 
 bool AVSharedMemoryPool::DoAcquireMemory(int32_t size, AVSharedMemory **outMemory)
 {
-    MEDIA_LOGD("busylist size %{public}zu, idlelist size %{public}zu", busyList_.size(), idleList_.size());
+    AVCODEC_LOGD("busylist size %{public}zu, idlelist size %{public}zu", busyList_.size(), idleList_.size());
 
     AVSharedMemory *result = nullptr;
     std::list<AVSharedMemory *>::iterator minSizeIdleMem = idleList_.end();
@@ -184,12 +184,12 @@ bool AVSharedMemoryPool::CheckSize(int32_t size)
 
 std::shared_ptr<AVSharedMemory> AVSharedMemoryPool::AcquireMemory(int32_t size, bool blocking)
 {
-    MEDIA_LOGD("acquire memory for size: %{public}d from pool %{public}s, blocking: %{public}d",
+    AVCODEC_LOGD("acquire memory for size: %{public}d from pool %{public}s, blocking: %{public}d",
                size, name_.c_str(), blocking);
 
     std::unique_lock<std::mutex> lock(mutex_);
     if (!CheckSize(size)) {
-        MEDIA_LOGE("invalid size: %{public}d", size);
+        AVCODEC_LOGE("invalid size: %{public}d", size);
         return nullptr;
     }
 
@@ -211,7 +211,7 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryPool::AcquireMemory(int32_t size, 
     } while (inited_ && !forceNonBlocking_);
 
     if (memory == nullptr) {
-        MEDIA_LOGD("acquire memory failed for size: %{public}d", size);
+        AVCODEC_LOGD("acquire memory failed for size: %{public}d", size);
         return nullptr;
     }
 
@@ -222,19 +222,19 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryPool::AcquireMemory(int32_t size, 
         if (pool != nullptr) {
             pool->ReleaseMemory(memory);
         } else {
-            MEDIA_LOGI("release memory 0x%{public}06" PRIXPTR ", but the pool is destroyed", FAKE_POINTER(memory));
+            AVCODEC_LOGI("release memory 0x%{public}06" PRIXPTR ", but the pool is destroyed", FAKE_POINTER(memory));
             delete memory;
         }
     });
 
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " acquired from pool", FAKE_POINTER(memory));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " acquired from pool", FAKE_POINTER(memory));
     return result;
 }
 
 void AVSharedMemoryPool::SetNonBlocking(bool enable)
 {
     std::unique_lock<std::mutex> lock(mutex_);
-    MEDIA_LOGD("SetNonBlocking: %{public}d", enable);
+    AVCODEC_LOGD("SetNonBlocking: %{public}d", enable);
     forceNonBlocking_ = enable;
     if (forceNonBlocking_) {
         cond_.notify_all();
@@ -243,7 +243,7 @@ void AVSharedMemoryPool::SetNonBlocking(bool enable)
 
 void AVSharedMemoryPool::Reset()
 {
-    MEDIA_LOGD("Reset");
+    AVCODEC_LOGD("Reset");
 
     std::unique_lock<std::mutex> lock(mutex_);
     for (auto &memory : idleList_) {

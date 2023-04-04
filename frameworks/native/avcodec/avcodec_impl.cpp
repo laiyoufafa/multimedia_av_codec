@@ -57,7 +57,7 @@ int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &
 
 AVCodecImpl::AVCodecImpl()
 {
-    MEDIA_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecImpl::~AVCodecImpl()
@@ -66,7 +66,7 @@ AVCodecImpl::~AVCodecImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
         codecService_ = nullptr;
     }
-    MEDIA_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t AVCodecImpl::Configure(const Format &format)
