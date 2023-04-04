@@ -111,18 +111,18 @@ const std::map<AVCodecServiceErrCode, AVCodecServiceExtErrCode> AVCSERRCODE_TO_O
     {AVCS_ERR_EXTEND_START,                        AVCODEC_ERR_EXTEND_START},
 };
 
-const std::map<AVCodecServiceExtErrCode, std::string> AVCSEXTERRCODE_INFOS = {
-    {AVCS_ERR_EXT_OK,                    "success"},
-    {AVCS_ERR_EXT_NO_MEMORY,             "no memory"},
-    {AVCS_ERR_EXT_OPERATE_NOT_PERMIT,    "operation not be permitted"},
-    {AVCS_ERR_EXT_INVALID_VAL,           "invalid argument"},
-    {AVCS_ERR_EXT_IO,                    "IO error"},
-    {AVCS_ERR_EXT_TIMEOUT,               "network timeout"},
-    {AVCS_ERR_EXT_UNKNOWN,               "unkown error"},
-    {AVCS_ERR_EXT_SERVICE_DIED,          "avcodec service died"},
-    {AVCS_ERR_EXT_INVALID_STATE,         "the state is not support this operation"},
-    {AVCS_ERR_EXT_UNSUPPORT,             "unsupport interface"},
-    {AVCS_ERR_EXT_EXTEND_START,          "extend err start"},
+const std::map<AVCodecServiceExtErrCode, std::string> OHAVCODECERRCODE_INFOS = {
+    {AVCODEC_ERR_OK,                    "success"},
+    {AVCODEC_ERR_NO_MEMORY,             "no memory"},
+    {AVCODEC_ERR_OPERATE_NOT_PERMIT,    "operation not be permitted"},
+    {AVCODEC_ERR_INVALID_VAL,           "invalid argument"},
+    {AVCODEC_ERR_IO,                    "IO error"},
+    {AVCODEC_ERR_TIMEOUT,               "network timeout"},
+    {AVCODEC_ERR_UNKNOWN,               "unkown error"},
+    {AVCODEC_ERR_SERVICE_DIED,          "avcodec service died"},
+    {AVCODEC_ERR_INVALID_STATE,         "the state is not support this operation"},
+    {AVCODEC_ERR_UNSUPPORT,             "unsupport interface"},
+    {AVCODEC_ERR_EXTEND_START,          "extend err start"},
 };
 
 std::string ErrorMessageOk(const std::string& param1, const std::string& param2)
