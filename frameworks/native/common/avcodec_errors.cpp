@@ -207,7 +207,7 @@ std::string AVCSErrorToString(AVCodecServiceErrCode code)
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
 }
 
-std::string OH_AVErrCodeToString(OH_AVErrCode code)
+std::string OHAVErrCodeToString(OH_AVErrCode code)
 {
     if (OHAVCODECERRCODE_INFOS.count(code) != 0) {
         return OHAVCODECERRCODE_INFOS.at(code);
@@ -220,7 +220,7 @@ std::string OH_AVErrCodeToString(OH_AVErrCode code)
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
 }
 
-std::string AVCSErrorToOH_AVErrCodeString(AVCodecServiceErrCode code)
+std::string AVCSErrorToOHAVErrCodeString(AVCodecServiceErrCode code)
 {
     if (AVCS_ERRCODE_INFOS.count(code) != 0 && AVCSERRCODE_TO_OHAVCODECERRCODE.count(code) != 0) {
         OH_AVErrCode extCode = AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
@@ -232,7 +232,7 @@ std::string AVCSErrorToOH_AVErrCodeString(AVCodecServiceErrCode code)
     return "unkown error";
 }
 
-OH_AVErrCode AVCSErrorToOH_AVErrCode(AVCodecServiceErrCode code)
+OH_AVErrCode AVCSErrorToOHAVErrCode(AVCodecServiceErrCode code)
 {
     if (AVCS_ERRCODE_INFOS.count(code) != 0 && AVCSERRCODE_TO_OHAVCODECERRCODE.count(code) != 0) {
         return AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);

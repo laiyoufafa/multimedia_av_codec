@@ -77,9 +77,9 @@ typedef enum AVCodecServiceErrCode : ErrCode {
 } AVCodecServiceErrCode;
 
 __attribute__((visibility("default"))) std::string AVCSErrorToString(AVCodecServiceErrCode code);
-__attribute__((visibility("default"))) std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code);
-__attribute__((visibility("default"))) std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code);
-__attribute__((visibility("default"))) AVCodecServiceExtErrCode AVCSErrorToExtError(AVCodecServiceErrCode code);
+__attribute__((visibility("default"))) std::string OHAVErrCodeToString(OH_AVErrCode code);
+__attribute__((visibility("default"))) std::string AVCSErrorToOHAVErrCodeString(AVCodecServiceErrCode code);
+__attribute__((visibility("default"))) OH_AVErrCode AVCSErrorToOHAVErrCode(AVCodecServiceErrCode code);
 
 } // namespace AVCodec
 } // namespace OHOS
