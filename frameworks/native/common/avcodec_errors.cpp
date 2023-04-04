@@ -209,8 +209,8 @@ std::string AVCSErrorToString(AVCodecServiceErrCode code)
 
 std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code)
 {
-    if (AVCSEXTERRCODE_INFOS.count(code) != 0) {
-        return AVCSEXTERRCODE_INFOS.at(code);
+    if (OHAVCODECERRCODE_INFOS.count(code) != 0) {
+        return OHAVCODECERRCODE_INFOS.at(code);
     }
 
     if (code > AVCODEC_ERR_EXTEND_START) {
@@ -224,8 +224,8 @@ std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code)
 {
     if (AVCS_ERRCODE_INFOS.count(code) != 0 && AVCSERRCODE_TO_OHAVCODECERRCODE.count(code) != 0) {
         AVCodecServiceExtErrCode extCode = AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
-        if (AVCSEXTERRCODE_INFOS.count(extCode) != 0) {
-            return AVCSEXTERRCODE_INFOS.at(extCode);
+        if (OHAVCODECERRCODE_INFOS.count(extCode) != 0) {
+            return OHAVCODECERRCODE_INFOS.at(extCode);
         }
     }
 
