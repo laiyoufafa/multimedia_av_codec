@@ -20,8 +20,8 @@
 #include "native_avmagic.h"
 #include "avcodec.h"
 #include "avsharedmemory.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVCodec"};
@@ -208,7 +208,7 @@ struct OH_AVCodec *OH_AVCodec_CreateByName(const char *name)
 
 OH_AVCodecErrCode OH_AVCodec_Destroy(struct OH_AVCodec *codec)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
 
@@ -217,10 +217,10 @@ OH_AVCodecErrCode OH_AVCodec_Destroy(struct OH_AVCodec *codec)
         codecObj->memoryObjList_.clear();
         codecObj->isStop_.store(false);
         int32_t ret = codecObj->codec_->Release();
-        if (ret != MSERR_OK) {
+        if (ret != AVCS_ERR_OK) {
             AVCODEC_LOGE("codec Release failed!");
             delete codec;
-            return AV_ERR_OPERATE_NOT_PERMIT;
+            return AVCODEC_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
         AVCODEC_LOGD("codec_ is nullptr!");
@@ -232,47 +232,47 @@ OH_AVCodecErrCode OH_AVCodec_Destroy(struct OH_AVCodec *codec)
 
 OH_AVCodecErrCode OH_AVCodec_Configure(struct OH_AVCodec *codec, struct OH_AVFormat *format)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(format != nullptr, AV_ERR_INVALID_VAL, "input format is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(format != nullptr, AVCODEC_ERR_INVALID_VAL, "input format is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec is nullptr!");
 
     int32_t ret = codecObj->codec_->Configure(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec Configure failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec Configure failed!");
 
     return AVCODEC_ERR_OK;
 }
 
 OH_AVCodecErrCode OH_AVCodec_Start(struct OH_AVCodec *codec)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
     codecObj->isStop_.store(false);
     codecObj->isEOS_.store(false);
     int32_t ret = codecObj->codec_->Start();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec Start failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec Start failed!");
 
     return AVCODEC_ERR_OK;
 }
 
 OH_AVCodecErrCode OH_AVCodec_Stop(struct OH_AVCodec *codec)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     codecObj->isStop_.store(true);
     AVCODEC_LOGD("Set stop status to true");
 
     int32_t ret = codecObj->codec_->Stop();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         codecObj->isStop_.store(false);
         AVCODEC_LOGE("codec Stop failed! Set stop status to false");
-        return AV_ERR_OPERATE_NOT_PERMIT;
+        return AVCODEC_ERR_OPERATE_NOT_PERMIT;
     }
     codecObj->memoryObjList_.clear();
 
@@ -281,19 +281,19 @@ OH_AVCodecErrCode OH_AVCodec_Stop(struct OH_AVCodec *codec)
 
 OH_AVCodecErrCode OH_AVCodec_Flush(struct OH_AVCodec *codec)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     codecObj->isFlushing_.store(true);
     AVCODEC_LOGD("Set flush status to true");
 
     int32_t ret = codecObj->codec_->Flush();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         codecObj->isFlushing_.store(false);
         AVCODEC_LOGD("codec Flush failed! Set flush status to false");
-        return AV_ERR_OPERATE_NOT_PERMIT;
+        return AVCODEC_ERR_OPERATE_NOT_PERMIT;
     }
 
     codecObj->memoryObjList_.clear();
@@ -304,17 +304,17 @@ OH_AVCodecErrCode OH_AVCodec_Flush(struct OH_AVCodec *codec)
 
 OH_AVCodecErrCode OH_AVCodec_Reset(struct OH_AVCodec *codec)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
     codecObj->isStop_.store(false);
     AVCODEC_LOGD("Set stop status to true");
     int32_t ret = codecObj->codec_->Reset();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         codecObj->isStop_.store(false);
         AVCODEC_LOGE("codec Reset failed! Set stop status to false");
-        return AV_ERR_OPERATE_NOT_PERMIT;
+        return AVCODEC_ERR_OPERATE_NOT_PERMIT;
     }
 
     codecObj->memoryObjList_.clear();
@@ -323,15 +323,15 @@ OH_AVCodecErrCode OH_AVCodec_Reset(struct OH_AVCodec *codec)
 
 OH_AVCodecErrCode OH_AVCodec_VideoDecoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(window != nullptr, AV_ERR_INVALID_VAL, "input window is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(window->surface != nullptr, AV_ERR_INVALID_VAL, "input surface is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(window != nullptr, AVCODEC_ERR_INVALID_VAL, "input window is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(window->surface != nullptr, AVCODEC_ERR_INVALID_VAL, "input surface is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     int32_t ret = codecObj->codec_->SetOutputSurface(window->surface);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec SetOutputSurface failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec SetOutputSurface failed!");
 
     return AVCODEC_ERR_OK;
 }
@@ -339,10 +339,10 @@ OH_AVCodecErrCode OH_AVCodec_VideoDecoderSetSurface(OH_AVCodec *codec, OHNativeW
 OH_AVCodecErrCode OH_AVCodec_QueueInputBuffer(struct OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr)
 {
     AVCODEC_LOGD("In OH_AVCodec_QueueInputBuffer");
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     struct AVCodecBufferInfo bufferInfo;
     bufferInfo.presentationTimeUs = attr.pts;
@@ -351,7 +351,7 @@ OH_AVCodecErrCode OH_AVCodec_QueueInputBuffer(struct OH_AVCodec *codec, uint32_t
     enum AVCodecBufferFlag bufferFlag = static_cast<enum AVCodecBufferFlag>(attr.flags);
 
     int32_t ret = codecObj->codec_->QueueInputBuffer(index, bufferInfo, bufferFlag);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec QueueInputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec QueueInputBuffer failed!");
     if (bufferFlag == AVCODEC_BUFFER_FLAG_EOS) {
         codecObj->isEOS_.store(true);
     }
@@ -368,7 +368,7 @@ OH_AVFormat *OH_AVCodec_GetOutputFormat(struct OH_AVCodec *codec)
 
     Format format;
     int32_t ret = codecObj->codec_->GetOutputFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "codec GetOutputFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "codec GetOutputFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;
@@ -379,13 +379,13 @@ OH_AVFormat *OH_AVCodec_GetOutputFormat(struct OH_AVCodec *codec)
 OH_AVCodecErrCode OH_AVCodec_VideoDecoderRenderFrame(struct OH_AVCodec *codec, uint32_t index)
 {
     AVCODEC_LOGD("In OH_AVCodec_VideoDecoderRenderFrame");
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     int32_t ret = codecObj->codec_->ReleaseOutputBuffer(index, true);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec ReleaseOutputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec ReleaseOutputBuffer failed!");
 
     return AVCODEC_ERR_OK;
 }
@@ -393,27 +393,27 @@ OH_AVCodecErrCode OH_AVCodec_VideoDecoderRenderFrame(struct OH_AVCodec *codec, u
 OH_AVCodecErrCode OH_AVCodec_ReleaseOutputData(struct OH_AVCodec *codec, uint32_t index)
 {
     AVCODEC_LOGD("In OH_AVCodec_ReleaseOutputData");
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     int32_t ret = codecObj->codec_->ReleaseOutputBuffer(index, false);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec ReleaseOutputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec ReleaseOutputBuffer failed!");
 
     return AVCODEC_ERR_OK;
 }
 
 OH_AVCodecErrCode OH_AVCodec_SetParameter(struct OH_AVCodec *codec, struct OH_AVFormat *format)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(format != nullptr, AV_ERR_INVALID_VAL, "input format is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(format != nullptr, AVCODEC_ERR_INVALID_VAL, "input format is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     int32_t ret = codecObj->codec_->SetParameter(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec SetParameter failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec SetParameter failed!");
 
     return AVCODEC_ERR_OK;
 }
@@ -421,26 +421,26 @@ OH_AVCodecErrCode OH_AVCodec_SetParameter(struct OH_AVCodec *codec, struct OH_AV
 OH_AVCodecErrCode OH_AVCodec_SetCallback(
     struct OH_AVCodec *codec, struct OH_AVCodecCallback callback, void *userData)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     codecObj->callback_ = std::make_shared<NativeCodecCallback>(codec, callback, userData);
-    CHECK_AND_RETURN_RET_LOG(codecObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->callback_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
 
     int32_t ret = codecObj->codec_->SetCallback(codecObj->callback_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "codec SetCallback failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec SetCallback failed!");
 
     return AVCODEC_ERR_OK;
 }
 
 OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, nullptr, "codec_ is nullptr!");
 
     std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetInputBuffer(index);
     CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get input buffer is nullptr!")
@@ -450,15 +450,44 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
 
 OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AV_ERR_INVALID_VAL, "codec_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, nullptr, "codec_ is nullptr!");
 
     std::shared_ptr<AVBufferElement> bufferElement = codecObj->codec_->GetOutputBuffer(index);
     CHECK_AND_RETURN_RET_LOG(bufferElement != nullptr, nullptr, "get input buffer is nullptr!");    
 
     return bufferElement;   
+}
+
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderNotifyEndOfStream(OH_AVCodec *codec)
+{
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
+
+    struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
+
+    int32_t ret = codecObj->codec_->NotifyEos();
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "codec NotifyEos failed!");
+
+    return AVCODEC_ERR_OK;
+}
+
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetSurface(OH_AVCodec *codec, OHNativeWindow **window)
+{
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr && window != nullptr, AVCODEC_ERR_INVALID_VAL, "input is nullptr!");
+
+    struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
+    CHECK_AND_RETURN_RET_LOG(codecObj->codec_ != nullptr, AVCODEC_ERR_INVALID_VAL, "codec_ is nullptr!");
+
+    OHOS::sptr<OHOS::Surface> surface = codecObj->codec_->CreateInputSurface();
+    CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCODEC_ERR_OPERATE_NOT_PERMIT, "venc createInputSurface failed!");
+
+    *window = CreateNativeWindowFromSurface(&surface);
+    CHECK_AND_RETURN_RET_LOG(*window != nullptr, AVCODEC_ERR_INVALID_VAL, "CreateNativeWindowFromSurface failed!");
+
+    return AVCODEC_ERR_OK;
 }
 
 OH_AVCodecErrCode OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, uint32_t *index, int64_t timeoutUs)
@@ -471,10 +500,6 @@ OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t *in
     return AVCODEC_ERR_UNSUPPORT;
 }
 
-OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetSurface(OH_AVCodec *codec, OHNativeWindow **window)
-{
-    return AVCODEC_ERR_UNSUPPORT;
-}
 
 OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetPersistentSurface(OHNativeWindow **window)
 {
@@ -482,11 +507,6 @@ OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetPersistentSurface(OHNativeWindow **w
 }
 
 OH_AVCodecErrCode OH_AVCodec_VideoEncoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window)
-{
-    return AVCODEC_ERR_UNSUPPORT;
-}
-
-OH_AVCodecErrCode OH_AVCodec_VideoEncoderNotifyEndOfStream(OH_AVCodec *codec)
 {
     return AVCODEC_ERR_UNSUPPORT;
 }
