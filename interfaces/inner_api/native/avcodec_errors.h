@@ -19,6 +19,7 @@
 #include <map>
 #include <string>
 #include "errors.h"
+#include "native_averrors.h"
 
 namespace OHOS {
 namespace AVCodec {
