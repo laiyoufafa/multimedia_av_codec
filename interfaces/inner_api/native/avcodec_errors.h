@@ -91,21 +91,6 @@ typedef enum AVCodecServiceExtErrCode : ErrCode {
     AVCS_ERR_EXT_EXTEND_START = 100,      // extend err start.
 } AVCodecServiceExtErrCode;
 
-// avcodec northbound interface error code
-typedef enum OH_AVCodecErrCode {
-    AVC_ERR_OK = 0,
-    AVC_ERR_NO_MEMORY = 1,           // no memory.
-    AVC_ERR_OPERATE_NOT_PERMIT = 2,  // opertation not be permitted.
-    AVC_ERR_INVALID_VAL = 3,         // invalid argument.
-    AVC_ERR_IO = 4,                  // IO error.
-    AVC_ERR_TIMEOUT = 5,             // network timeout.
-    AVC_ERR_UNKNOWN = 6,             // unknown error.
-    AVC_ERR_SERVICE_DIED = 7,        // avcodec service died.
-    AVC_ERR_INVALID_STATE = 8,       // the state is not support this operation.
-    AVC_ERR_UNSUPPORT = 9,           // unsupport interface.
-    AVC_ERR_EXTEND_START = 100,      // extend err start.
-} OH_AVCodecErrCode;
-
 __attribute__((visibility("default"))) std::string AVCSErrorToString(AVCodecServiceErrCode code);
 __attribute__((visibility("default"))) std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code);
 __attribute__((visibility("default"))) std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code);

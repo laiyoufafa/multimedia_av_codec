@@ -25,51 +25,51 @@ extern "C" {
  * @since 10
  * @version 4.0
  */
-typedef enum OH_AVErrCode {
+typedef enum OH_AVCodecErrCode {
     /**
      * the operation completed successfully.
      */
-    AV_ERR_OK = 0,
+    AVCODEC_ERR_OK = 0,
     /**
      * no memory.
      */
-    AV_ERR_NO_MEMORY = -1,
+    AVCODEC_ERR_NO_MEMORY = 1,
     /**
      * opertation not be permitted.
      */
-    AV_ERR_OPERATE_NOT_PERMIT = -2,
+    AVCODEC_ERR_OPERATE_NOT_PERMIT = 2,
     /**
      * invalid argument.
      */
-    AV_ERR_INVALID_VAL = -3,
+    AVCODEC_ERR_INVALID_VAL = 3,
     /**
      * IO error.
      */
-    AV_ERR_IO = -4,
+    AVCODEC_ERR_IO = 4,
     /**
-     * network timeout.
+     * avcodec service timeout.
      */
-    AV_ERR_TIMEOUT = -5,
+    AVCODEC_ERR_TIMEOUT = 5,
     /**
      * unknown error.
      */
-    AV_ERR_UNKNOWN = -6,
+    AVCODEC_ERR_UNKNOWN = 6,
     /**
-     * media service died.
+     * avcodec service died.
      */
-    AV_ERR_SERVICE_DIED = -7,
+    AVCODEC_ERR_SERVICE_DIED = 7,
     /**
      * the state is not support this operation.
      */
-    AV_ERR_INVALID_STATE = -8,
+    AVCODEC_ERR_INVALID_STATE = 8,
     /**
      * unsupport interface.
      */
-    AV_ERR_UNSUPPORT = -9,
+    AVCODEC_ERR_UNSUPPORT = 9,
     /**
      * extend err start.
      */
-    AV_ERR_EXTEND_START = -100,
+    AVCODEC_ERR_EXTEND_START = 100,
 } OH_AVErrCode;
 
 #ifdef __cplusplus
