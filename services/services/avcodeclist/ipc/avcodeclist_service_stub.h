@@ -22,7 +22,7 @@
 #include "avcodeclist_server.h"
 #include "nocopyable.h"
 #include "media_parcel.h"
-#include "avcodeclist_parcel.h"
+// #include "avcodeclist_parcel.h"
 
 namespace OHOS {
 namespace Media {

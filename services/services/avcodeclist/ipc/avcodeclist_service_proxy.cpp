@@ -112,7 +112,7 @@ CapabilityData AVCodecListServiceProxy::GetCapabilityData()
     int32_t ret = Remote()->SendRequest(GET_CAPABILITYDATA, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, capabilityData,
         "GetCodecCapabilityInfos failed, error: %{public}d", ret);
-    (void)AVCodecListParcel::Unmarshalling(reply, capabilityData); // TODO
+    // (void)AVCodecListParcel::Unmarshalling(reply, capabilityData); // TODO
 
     return capabilityData;
 }

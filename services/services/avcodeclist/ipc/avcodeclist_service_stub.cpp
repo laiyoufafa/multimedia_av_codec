@@ -161,7 +161,7 @@ int32_t AVCodecListServiceStub::GetCapabilityData(MessageParcel &data, MessagePa
 {
     std::string codecName = data.ReadString();
     CapabilityData capabilityData = GetCapabilityData(codecName);
-    (void)AVCodecListParcel::Marshalling(reply, capabilityData); // vector<CapabilityData> to MessageParcel TODO
+    // (void)AVCodecListParcel::Marshalling(reply, capabilityData); // vector<CapabilityData> to MessageParcel TODO
 
     return MSERR_OK;
 }

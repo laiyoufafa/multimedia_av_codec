@@ -73,7 +73,6 @@ public:
 
 };
 
-// TODO: 考虑减少这个类
 class __attribute__((visibility("default"))) AVCodecListFactory {
 public:
 #ifdef UNSUPPORT_CODEC
