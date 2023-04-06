@@ -1,0 +1,78 @@
+{
+    "name": "@ohos/av_codec",
+    "description": "Media standard provides atomic capabilities",
+    "version": "3.1",
+    "license": "Apache License 2.0",
+    "publishAs": "code-segment",
+    "segment": {
+      "destPath": "foundation/multimedia/av_codec"
+    },
+    "dirs": {},
+    "scripts": {},
+    "component": {
+      "name": "multimedia_av_codec",
+      "subsystem": "multimedia",
+      "syscap": [
+        "SystemCapability.Multimedia.Avcodec.Core",
+        "SystemCapability.Multimedia.Avcodec.AudioMuxer",
+        "SystemCapability.Multimedia.Avcodec.AudioDemuxer",
+        "SystemCapability.Multimedia.Avcodec.AudioEncoder",
+        "SystemCapability.Multimedia.Avcodec.AudioDecoder",
+        "SystemCapability.Multimedia.Avcodec.VideoMuxer",
+        "SystemCapability.Multimedia.Avcodec.VideoDemuxer",
+        "SystemCapability.Multimedia.Avcodec.VideoEncoder",
+        "SystemCapability.Multimedia.Avcodec.VideoDecoder",
+        "SystemCapability.Multimedia.Avcodec.CodecBase"
+      ],
+      "features": [],
+      "adapted_system_type": [ "standard" ],
+      "rom": "10000KB",
+      "ram": "10000KB",
+      "hisysevent_config": [
+        "//foundation/multimedia/av_codec/hisysevent.yaml"
+      ],
+      "deps": {
+        "components": [
+          "hiviewdfx_hilog_native",
+          "ipc",
+          "hisysevent_native",
+          "c_utils",
+          "hilog_native"
+        ],
+        "third_party": [
+          "glib",
+          "gstreamer",
+          "libffi",
+          "ffmpeg",
+          "common"
+        ]
+      },
+      "build": {
+        "group_type": {
+          "base_group": [],
+          "fwk_group": [
+            "//foundation/multimedia/av_codec/interfaces/kits/c:capi_packages",
+            "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client"
+          ],
+          "service_group": [
+            "//foundation/multimedia/av_codec/services:av_codec_services_package"
+          ]
+        },
+        "inner_kits": [
+          {
+            "type": "so",
+            "name": "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+            "header": {
+              "header_files": [
+                "avcodec.h",
+                "avdemuxer.h",
+                "avmuxer.h"
+              ],
+              "header_base": "//foundation/multimedia/av_codec/interfaces/inner_api/native"
+            }
+          }
+        ],
+        "test": []
+      }
+    }
+  }
