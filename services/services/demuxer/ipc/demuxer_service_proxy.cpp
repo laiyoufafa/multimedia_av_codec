@@ -44,8 +44,22 @@ int32_t DemuxerServiceProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(DESTROY, data, reply, option);
+    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call DestroyStub, error: %{public}d", error);
+    return reply.ReadInt32();
+}
+
+int32_t DemuxerServiceProxy::Init(uint64_t attr)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
+
+    data.WriteUint64(attr);
+    int32_t error = Remote()->SendRequest(INIT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call Init, error: %{public}d", error);
     return reply.ReadInt32();
 }
 
@@ -57,7 +71,7 @@ int32_t DemuxerServiceProxy::AddSourceTrackByID(uint32_t index)
     bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    CHECK_AND_RETURN_RET(data.WriteInt32(index), MSERR_UNKNOWN);
+    data.WriteInt32(index);
     int32_t error = Remote()->SendRequest(ADD_SOURCE_TRACK_BY_ID, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call AddSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
@@ -70,7 +84,7 @@ int32_t DemuxerServiceProxy::RemoveSourceTrackByID(uint32_t index)
     bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    CHECK_AND_RETURN_RET(data.WriteInt32(index), MSERR_UNKNOWN);
+    data.WriteInt32(index);
     int32_t error = Remote()->SendRequest(REMOVE_SOURCE_TRACK_BY_ID, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call RemoveSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
@@ -103,8 +117,8 @@ int32_t DemuxerServiceProxy::SeekToTimeStamp(int64_t mSeconds, const SeekMode mo
     bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    CHECK_AND_RETURN_RET(data.WriteInt64(mSeconds), MSERR_UNKNOWN);
-    CHECK_AND_RETURN_RET(data.WriteInt32(static_cast<int32_t>(mode)), MSERR_UNKNOWN);
+    data.WriteInt64(mSeconds);
+    data.WriteInt32(static_cast<int32_t>(mode));
     int32_t error = Remote()->SendRequest(SEEK_TO_TIME_STAMP, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call SeekToTimeStamp, error: %{public}d", error);
     return reply.ReadInt32();

@@ -22,20 +22,21 @@
 
 namespace OHOS {
 namespace AVCodec {
-class DemuxerService : public IDemuxerService, public NoCopyable {
+class DemuxerServer : public IDemuxerService, public NoCopyable {
 public:
     static std::shared_ptr<IDemuxerService> Create();
-    DemuxerService();
-    ~DemuxerService();
+    DemuxerServer();
+    ~DemuxerServer();
 
     // 业务
+    int32_t Init(uint64_t attr) override;
     int32_t AddSourceTrackByID(uint32_t index) override;
     int32_t RemoveSourceTrackByID(uint32_t index) override;
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
     int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
 
 private:
-    int32_t Init();
+    int32_t InitServer();
     std::mutex mutex_;
     // std::shared_ptr<IDemuxerEngine> demuxerEngine_ = nullptr;
     // IDemuxerEngine curState_ = DEMUXER_IDEL;

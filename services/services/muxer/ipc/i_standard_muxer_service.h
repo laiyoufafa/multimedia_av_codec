@@ -25,6 +25,7 @@ class IStandardMuxerService : public IRemoteBroker {
 public:
     virtual ~IStandardMuxerService() = default;
 
+    virtual int32_t Init() = 0;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
     virtual int32_t SetParameter(const Format &generalFormat) = 0;
@@ -35,6 +36,7 @@ public:
 
     virtual int32_t DestroyStub() = 0;
     enum MuxerServiceMsg {
+        INIT,
         SET_LOCATION,
         SET_ROTATION,
         SET_PARAMETER,
@@ -43,10 +45,10 @@ public:
         WRITE_SAMPLE_BUFFER,
         STOP,
 
-        DESTROY,
+        DESTROY_STUB,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardAVMuxerServiceq1a");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardMuxerService");
 };
 }  // namespace AVCodec
 }  // namespace OHOS

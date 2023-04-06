@@ -89,7 +89,7 @@ sptr<CodecServiceStub> CodecServiceStub::Create()
     sptr<CodecServiceStub> codecStub = new(std::nothrow) CodecServiceStub();
     CHECK_AND_RETURN_RET_LOG(codecStub != nullptr, nullptr, "failed to new CodecServiceStub");
 
-    int32_t ret = codecStub->Init();
+    int32_t ret = codecStub->InitStub();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to codec stub init");
     return codecStub;
 }
@@ -104,7 +104,7 @@ CodecServiceStub::~CodecServiceStub()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t CodecServiceStub::Init()
+int32_t CodecServiceStub::InitStub()
 {
     codecServer_ = CodecServer::Create();
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, MSERR_NO_MEMORY, "failed to create CodecServer");
@@ -131,7 +131,7 @@ int32_t CodecServiceStub::Init()
     recFuncs_[DEQUEUE_INPUT_BUFFER] = &CodecServiceStub::DequeueInputBuffer;
     recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &CodecServiceStub::DequeueOutputBuffer;
 
-    recFuncs_[DESTROY] = &CodecServiceStub::DestroyStub;
+    recFuncs_[DESTROY_STUB] = &CodecServiceStub::DestroyStub;
     return MSERR_OK;
 }
 

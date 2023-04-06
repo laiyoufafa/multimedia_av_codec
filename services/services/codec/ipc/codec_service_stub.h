@@ -62,7 +62,7 @@ public:
 
 private:
     CodecServiceStub();
-    int32_t Init();
+    int32_t InitStub();
 
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t Configure(MessageParcel &data, MessageParcel &reply);

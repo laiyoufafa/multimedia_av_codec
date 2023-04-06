@@ -15,6 +15,7 @@ public:
     virtual ~IDemuxerService() = default;
 
     // 业务
+    virtual int32_t Init(uint64_t attr) = 0;
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;

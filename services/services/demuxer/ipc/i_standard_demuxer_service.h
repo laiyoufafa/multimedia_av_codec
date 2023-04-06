@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_AVMUXER_SERVICE_H
-#define I_STANDARD_AVMUXER_SERVICE_H
+#ifndef I_STANDARD_DEMUXER_SERVICE_H
+#define I_STANDARD_DEMUXER_SERVICE_H
 
 
 #include "iremote_proxy.h"
@@ -27,7 +27,7 @@ public:
     virtual ~IStandardDemuxerService() = default;
 
     // 业务
-    
+    virtual int32_t Init(uint64_t attr) = 0;
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
@@ -36,12 +36,13 @@ public:
     virtual int32_t DestroyStub() = 0;
 
     enum DemuxerServiceMsg {
+        INIT,
         ADD_SOURCE_TRACK_BY_ID,
         REMOVE_SOURCE_TRACK_BY_ID,
         COPY_CURRENT_SAMPLE_TO_BUF,
         SEEK_TO_TIME_STAMP,
 
-        DESTROY,
+        DESTROY_STUB,
     };
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardDemuxerService");
@@ -49,4 +50,4 @@ public:
 
 }  // namespace AVCodec
 }  // namespace OHOS
-#endif  // I_STANDARD_AVMUXER_SERVICE_H
+#endif  // I_STANDARD_DEMUXER_SERVICE_H

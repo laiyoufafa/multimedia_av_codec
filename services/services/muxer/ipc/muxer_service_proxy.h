@@ -25,6 +25,7 @@ public:
     explicit MuxerServiceProxy(const sptr<IRemoteObject> &impl);
     virtual ~MuxerServiceProxy();
 
+    int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
     int32_t SetParameter(const Format &generalFormat) override;

@@ -25,9 +25,9 @@ namespace OHOS {
 namespace AVCodec {
 std::shared_ptr<MuxerClient> MuxerClient::Create(const sptr<IStandardMuxerService> &ipcProxy)
 {
-    std::shared_ptr<MuxerClient> avmuxerClient = std::make_shared<MuxerClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(avmuxerClient != nullptr, nullptr, "Failed to create avmuxer client");
-    return avmuxerClient;
+    std::shared_ptr<MuxerClient> muxerClient = std::make_shared<MuxerClient>(ipcProxy);
+    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, nullptr, "Failed to create muxer client");
+    return muxerClient;
 }
 
 MuxerClient::MuxerClient(const sptr<IStandardMuxerService> &ipcProxy)
@@ -50,6 +50,13 @@ void MuxerClient::AVCodecServerDied()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     muxerProxy_ = nullptr;
+}
+
+int32_t MuxerClient::Init()
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    return muxerProxy_->Init();
 }
 
 int32_t MuxerClient::SetLocation(float latitude, float longitude)

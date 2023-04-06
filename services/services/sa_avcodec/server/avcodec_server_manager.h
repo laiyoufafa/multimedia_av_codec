@@ -42,6 +42,7 @@ public:
         DEMUXER,
         MUXER,
         CODEC,
+        SOURCE,
     };
     sptr<IRemoteObject> CreateStubObject(StubType type);
     void DestroyStubObject(StubType type, sptr<IRemoteObject> object);
@@ -62,7 +63,11 @@ private:
 #endif
 
 #ifdef SUPPORT_CODEC
-    sptr<IRemoteObject> CreateAVCodecStubObject();
+    sptr<IRemoteObject> CreateCodecStubObject();
+#endif
+
+#ifdef SUPPORT_SOURCE
+    sptr<IRemoteObject> CreateSourceStubObject();
 #endif
 
     class AsyncExecutor {
@@ -80,6 +85,7 @@ private:
     std::map<sptr<IRemoteObject>, pid_t> demuxerStubMap_;
     std::map<sptr<IRemoteObject>, pid_t> muxerStubMap_;
     std::map<sptr<IRemoteObject>, pid_t> codecStubMap_;
+    std::map<sptr<IRemoteObject>, pid_t> sourceStubMap_;
 
     std::map<StubType, std::vector<Dumper>> dumperTbl_;
     AsyncExecutor executor_;

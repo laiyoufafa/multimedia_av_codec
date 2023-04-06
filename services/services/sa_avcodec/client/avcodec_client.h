@@ -32,6 +32,10 @@
 #include "codec_client.h"
 #endif
 
+#ifdef SUPPORT_SOURCE
+#include "source_client.h"
+#endif
+
 #include "nocopyable.h"
 
 namespace OHOS {
@@ -52,9 +56,15 @@ public:
 #endif
 
 #ifdef SUPPORT_CODEC
-    std::shared_ptr<ICodecService> CreateAVCodecService() override;
-    int32_t DestroyAVCodecService(std::shared_ptr<ICodecService> avCodec) override;
+    std::shared_ptr<ICodecService> CreateCodecService() override;
+    int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) override;
 #endif
+
+#ifdef SUPPORT_SOURCE
+    std::shared_ptr<ISourceService> CreateSourceService() override;
+    int32_t DestroySourceService(std::shared_ptr<ISourceService> source) override;
+#endif
+
 
 private:
     sptr<IStandardAVCodecService> GetAVCodecProxy();
@@ -73,8 +83,12 @@ private:
     std::list<std::shared_ptr<IMuxerService>> muxerClientList_;
 #endif
 #ifdef SUPPORT_CODEC
-    std::list<std::shared_ptr<ICodecService>> avCodecClientList_;
+    std::list<std::shared_ptr<ICodecService>> codecClientList_;
 #endif
+#ifdef SUPPORT_SOURCE
+    std::list<std::shared_ptr<ICodecService>> sourceClientList_;
+#endif
+
     std::mutex mutex_;
 };
 } // namespace AVCodec

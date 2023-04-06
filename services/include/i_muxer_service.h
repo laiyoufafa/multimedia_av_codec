@@ -11,6 +11,7 @@ public:
     virtual ~IMuxerService() = default;
 
     // 业务
+    virtual int32_t Init() = 0;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
     virtual int32_t SetParameter(const Format &generalFormat) = 0;

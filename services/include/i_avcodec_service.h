@@ -23,6 +23,18 @@
 #include "i_avcodeclist_service.h"
 #endif
 
+#ifdef SUPPORT_DEMUXER
+#include "i_demuxer_service.h"
+#endif
+
+#ifdef SUPPORT_MUXER
+#include "i_muxer_service.h"
+#endif
+
+#ifdef SUPPORT_SOURCE
+#include "i_source_service.h"
+#endif
+
 namespace OHOS {
 namespace AVCodec {
 class IAVCodecService {
@@ -62,7 +74,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<ICodecService> CreateAVCodecService() = 0;
+    virtual std::shared_ptr<ICodecService> CreateCodecService() = 0;
 
     /**
      * @brief Destroy a avcodec service.
@@ -74,7 +86,21 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DestroyAVCodecService(std::shared_ptr<ICodecService> avCodec) = 0;
+    virtual int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) = 0;
+#endif
+#ifdef SUPPORT_DEMUXER
+    virtual std::shared_ptr<IDemuxerService> CreateDemuxerService() = 0;
+    virtual int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) = 0;
+#endif
+
+#ifdef SUPPORT_MUXER
+    virtual std::shared_ptr<IMuxerService> CreateMuxerService() = 0;
+    virtual int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) = 0;
+#endif
+
+#ifdef SUPPORT_SOURCE
+    virtual std::shared_ptr<ISourceService> CreateSourceService() = 0;
+    virtual int32_t DestroySourceService(std::shared_ptr<ISourceService> source) = 0;
 #endif
 
 #ifdef SUPPORT_METADATA

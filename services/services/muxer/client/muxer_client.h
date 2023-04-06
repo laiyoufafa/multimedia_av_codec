@@ -26,7 +26,8 @@ public:
     static std::shared_ptr<MuxerClient> Create(const sptr<IStandardMuxerService> &ipcProxy);
     explicit MuxerClient(const sptr<IStandardMuxerService> &ipcProxy);
     ~MuxerClient();
-    
+
+    int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
     int32_t SetParameter(const Format &generalFormat) override;

@@ -13,46 +13,46 @@
  * limitations under the License.
  */
 
-#include "muxer_server.h"
+#include "source_server.h"
 #include "media_errors.h"
 #include "media_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MuxerServer"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServer"};
 }
 
-namespace OHOS {
+namespace OHOSmuxerServer {
 namespace AVCodec {
-std::shared_ptr<IMuxerService> MuxerServer::Create()
+std::shared_ptr<ISourceService> SourceServer::Create()
 {
-    std::shared_ptr<MuxerServer> muxerServer = std::make_shared<MuxerServer>();
-    CHECK_AND_RETURN_RET_LOG(muxerServer != nullptr, nullptr, "Muxer Service does not exist");
-    int32_t ret = muxerServer->InitServer();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init muxer server");
-    return muxerServer;
+    std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
+    CHECK_AND_RETURN_RET_LOG(sourceServer != nullptr, nullptr, "Source Service does not exist");
+    int32_t ret = sourceServer->InitServer();
+    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init source server");
+    return sourceServer;
 }
 
-MuxerServer::MuxerServer()
+SourceServer::SourceServer()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MuxerServer::~MuxerServer()
+SourceServer::~SourceServer()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
     std::lock_guard<std::mutex> lock(mutex_);
 
-    // avmuxerEngine_ = nullptr;
+    // sourceEngine_ = nullptr;
 }
 
-int32_t MuxerServer::InitServer()
+int32_t SourceServer::InitServer()
 {
 
 
     return MSERR_OK;
 }
 
-int32_t MuxerServer::Init()
+int32_t SourceServer::Init(const std::string &uri)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -60,7 +60,7 @@ int32_t MuxerServer::Init()
     return MSERR_OK;
 }
 
-int32_t MuxerServer::SetLocation(float latitude, float longitude)
+int32_t SourceServer::GetTrackCount()
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
@@ -68,44 +68,34 @@ int32_t MuxerServer::SetLocation(float latitude, float longitude)
     return MSERR_OK;
 }
 
-int32_t MuxerServer::SetRotation(int32_t rotation)
+int32_t SourceServer::Destroy()
 {
     std::lock_guard<std::mutex> lock(mutex_);
+
 
     return MSERR_OK;
 }
 
-int32_t MuxerServer::SetParameter(const Format &generalFormat)
+int32_t SourceServer::SetParameter(const Format &param, uint32_t trackId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
+
 
     return MSERR_OK;
 }
 
-int32_t MuxerServer::AddTrack(const Format &trackFormat)
+int32_t SourceServer::GetTrackFormat(Format &format, uint32_t trackId)
 {
     std::lock_guard<std::mutex> lock(mutex_);
+
 
     return MSERR_OK;
 }
 
-int32_t MuxerServer::Start()
+uint64_t SourceServer::GetSourceAttr()
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    return MSERR_OK;
-}
-
-int32_t MuxerServer::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    return MSERR_OK;
-}
-
-int32_t MuxerServer::Stop()
-{
-    std::lock_guard<std::mutex> lock(mutex_);
 
     return MSERR_OK;
 }

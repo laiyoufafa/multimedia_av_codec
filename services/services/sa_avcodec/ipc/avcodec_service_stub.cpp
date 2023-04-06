@@ -28,7 +28,7 @@ AVCodecServiceStub::AVCodecServiceStub()
 {
     deathRecipientMap_.clear();
     avcodecListenerMap_.clear();
-    Init();
+    InitStub();
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
@@ -37,7 +37,7 @@ AVCodecServiceStub::~AVCodecServiceStub()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AVCodecServiceStub::Init()
+void AVCodecServiceStub::InitStub()
 {
     avcodecFuncs_[GET_SUBSYSTEM] = &AVCodecServiceStub::GetSystemAbility;
 }

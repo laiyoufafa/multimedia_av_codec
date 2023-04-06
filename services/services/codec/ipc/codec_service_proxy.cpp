@@ -120,7 +120,7 @@ int32_t CodecServiceProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int32_t ret = Remote()->SendRequest(DESTROY, data, reply, option);
+    int32_t ret = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, MSERR_INVALID_OPERATION,
         "DestroyStub failed, error: %{public}d", ret);
 

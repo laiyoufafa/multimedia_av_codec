@@ -36,6 +36,9 @@
 #ifdef SUPPORT_SOURCE
 #include "source_service_stub.h"
 #endif
+#ifdef SUPPORT_SOURCE
+#include "source_service_stub.h"
+#endif
 
 #include "av_log.h"
 #include "media_errors.h"

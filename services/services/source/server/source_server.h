@@ -13,29 +13,27 @@
  * limitations under the License.
  */
 
-#ifndef MUXER_SERVER_H
-#define MUXER_SERVER_H
+#ifndef SOURCE_SERVER_H
+#define SOURCE_SERVER_H
 
 #include <mutex>
-#include "i_muxer_service.h"
+#include "i_source_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace AVCodec {
-class MuxerServer : public IMuxerService, public NoCopyable {
+class SourceServer : public ISourceService, public NoCopyable {
 public:
-    static std::shared_ptr<IMuxerService> Create();
-    MuxerServer();
-    ~MuxerServer();
+    static std::shared_ptr<ISourceService> Create();
+    SourceServer();
+    ~SourceServer();
 
-    int32_t Init() override;
-    int32_t SetLocation(float latitude, float longitude) override;
-    int32_t SetRotation(int32_t rotation) override;
-    int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(const Format &trackFormat) override;
-    int32_t Start() override;
-    int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) override;
-    int32_t Stop() override;
+    int32_t Init(const std::string &uri) override;
+    int32_t GetTrackCount() override;
+    int32_t Destroy() override;
+    int32_t SetParameter(const Format &param, uint32_t trackId) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackId) override;
+    uint64_t GetSourceAttr() override;
 
 private:
     int32_t InitServer();
