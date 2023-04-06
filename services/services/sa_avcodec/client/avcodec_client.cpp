@@ -73,7 +73,7 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
         return nullptr;
     }
 
-    sptr<IRemoteObject> object = avcodecProxy_->GetSubSystemAbility(
+    sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODEC, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "codec proxy object is nullptr.");
 
@@ -106,7 +106,7 @@ std::shared_ptr<IDemuxerService> AVCodecClient::CreateDemuxerService()
         return nullptr;
     }
 
-    sptr<IRemoteObject> object = avcodecProxy_->GetSubSystemAbility(
+    sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_DEMUXER, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "demuxer proxy object is nullptr.");
 
@@ -138,7 +138,7 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateMuxerService()
         return nullptr;
     }
 
-    sptr<IRemoteObject> object = avcodecProxy_->GetSubSystemAbility(
+    sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_MUXER, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "muxer proxy object is nullptr.");
 
@@ -170,7 +170,7 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateSourceService()
         return nullptr;
     }
 
-    sptr<IRemoteObject> object = avcodecProxy_->GetSubSystemAbility(
+    sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_SOURCE, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "source proxy object is nullptr.");
 
