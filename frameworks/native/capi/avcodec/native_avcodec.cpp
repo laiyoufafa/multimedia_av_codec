@@ -461,12 +461,12 @@ OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
     return bufferElement;   
 }
 
-OH_AVCodecErrCode OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, uint32_t index, int64_t timeoutUs)
+OH_AVCodecErrCode OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, uint32_t *index, int64_t timeoutUs)
 {
     return AVCODEC_ERR_UNSUPPORT;
 }
 
-OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t index, int64_t timeoutUs)
+OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t *index, OH_AVCodecBufferAttr *attr, int64_t timeoutUs)
 {
     return AVCODEC_ERR_UNSUPPORT;
 }
