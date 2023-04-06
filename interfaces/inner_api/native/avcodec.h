@@ -139,7 +139,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) = 0;
 
     /**
      * @brief Submits input buffer to codec.
@@ -191,7 +191,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) = 0;
 
     /**
      * @brief Gets the format of the output data.
