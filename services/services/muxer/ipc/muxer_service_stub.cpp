@@ -31,7 +31,7 @@ sptr<MuxerServiceStub> MuxerServiceStub::Create()
     sptr<MuxerServiceStub> muxerStub = new(std::nothrow) MuxerServiceStub();
     CHECK_AND_RETURN_RET_LOG(muxerStub != nullptr, nullptr, "Failed to create muxer service stub");
 
-    int32_t ret = muxerStub->Init();
+    int32_t ret = muxerStub->InitStub();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init MuxerServiceStub");
     return muxerStub;
 }
@@ -46,11 +46,12 @@ MuxerServiceStub::~MuxerServiceStub()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t MuxerServiceStub::Init()
+int32_t MuxerServiceStub::InitStub()
 {
     muxerServer_ = MuxerServer::Create();
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Failed to create muxer server");
 
+    muxerFuncs_[INIT] = &MuxerServiceStub::Init;
     muxerFuncs_[SET_LOCATION] = &MuxerServiceStub::SetLocation;
     muxerFuncs_[SET_ROTATION] = &MuxerServiceStub::SetRotation;
     muxerFuncs_[SET_PARAMETER] = &MuxerServiceStub::SetParameter;
@@ -92,45 +93,52 @@ int MuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
+int32_t MuxerServiceStub::Init()
+{
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
+    return muxerServer_->Init();
+}
+
+
 int32_t MuxerServiceStub::SetLocation(float latitude, float longitude)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer SerMuxeres not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetLocation(latitude, longitude);
 }
 
 int32_t MuxerServiceStub::SetRotation(int32_t rotation)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetRotation(rotation);
 }
 
 int32_t MuxerServiceStub::SetParameter(const Format &generalFormat)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetParameter(generalFormat);
 }
 
 int32_t MuxerServiceStub::AddTrack(const Format &trackFormat)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->AddTrack(trackFormat);
 }
 
 int32_t MuxerServiceStub::Start()
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Start();
 }
 
 int32_t MuxerServiceStub::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
 }
 
 int32_t MuxerServiceStub::Stop()
 {
-    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, MSERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Stop();
 }
 

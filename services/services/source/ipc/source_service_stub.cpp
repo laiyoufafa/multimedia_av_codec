@@ -31,7 +31,7 @@ sptr<SourceServiceStub> SourceServiceStub::Create()
     sptr<SourceServiceStub> sourceStub = new(std::nothrow) SourceServiceStub();
     CHECK_AND_RETURN_RET_LOG(sourceStub != nullptr, nullptr, "Failed to create source service stub");
 
-    int32_t ret = sourceStub->Init();
+    int32_t ret = sourceStub->InitStub();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init SourceServiceStub");
     return sourceStub;
 }
@@ -46,11 +46,12 @@ SourceServiceStub::~SourceServiceStub()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t SourceServiceStub::Init()
+int32_t SourceServiceStub::InitStub()
 {
     sourceServer_ = SourceServer::Create();
     CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, MSERR_NO_MEMORY, "Failed to create muxer server");
 
+    sourceFuncs_[INIT] = &SourceServiceStub::Init;
     sourceFuncs_[GET_TRACK_COUNT] = &SourceServiceStub::GetTrackCount;
     sourceFuncs_[DESTROY] = &SourceServiceStub::Destroy;
     sourceFuncs_[SET_PARAMETER] = &SourceServiceStub::SetParameter;
@@ -90,6 +91,12 @@ int32_t SourceServiceStub::DestroyStub()
     return MSERR_OK;
 }
 
+int32_t SourceServiceStub::Init(const std::string &uri)
+{
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
+    return sourceServer_->Init(uri);
+}
+
 int32_t SourceServiceStub::GetTrackCount()
 {
     CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
@@ -120,6 +127,12 @@ uint64_t SourceServiceStub::GetSourceAttr()
     return sourceServer_->GetSourceAttr();
 }
 
+int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
+{
+    std::string uri = data.ReadString();
+    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(uri)), MSERR_UNKNOWN);
+    return MSERR_OK;
+}
 
 int32_t SourceServiceStub::GetTrackCount(MessageParcel &data, MessageParcel &reply)
 {

@@ -25,6 +25,7 @@ class IStandardSourceService : public IRemoteBroker {
 public:
     virtual ~IStandardSourceService() = default;
 
+    virtual int32_t Init(const std::string &uri) = 0;
     virtual int32_t GetTrackCount() = 0;
     virtual int32_t Destroy() = 0;
     virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
@@ -33,6 +34,7 @@ public:
 
     virtual int32_t DestroyStub() = 0;
     enum MuxerServiceMsg {
+        INIT,
         GET_TRACK_COUNT,
         DESTROY,
         SET_PARAMETER,

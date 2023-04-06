@@ -50,6 +50,20 @@ int32_t MuxerServiceProxy::DestroyStub()
     return reply.ReadInt32();
 }
 
+int32_t MuxerServiceProxy::Init()
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
+
+    int error = Remote()->SendRequest(INIT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call Init, error: %{public}d", error);
+    return reply.ReadInt32();
+}
+
 int32_t MuxerServiceProxy::SetLocation(float latitude, float longitude)
 {
     MessageParcel data;
@@ -59,8 +73,8 @@ int32_t MuxerServiceProxy::SetLocation(float latitude, float longitude)
     bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    CHECK_AND_RETURN_RET(data.WriteFloat(latitude), MSERR_UNKNOWN);
-    CHECK_AND_RETURN_RET(data.WriteFloat(longitude), MSERR_UNKNOWN);
+    data.WriteFloat(latitude);
+    data.WriteFloat(longitude);
     int error = Remote()->SendRequest(SET_LOCATION, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call SetLocation, error: %{public}d", error);
     return reply.ReadInt32();
@@ -75,7 +89,7 @@ int32_t MuxerServiceProxy::SetRotation(int32_t rotation)
     bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    CHECK_AND_RETURN_RET(data.WriteInt32(rotation), MSERR_UNKNOWN);
+    data.WriteInt32(rotation);
     int error = Remote()->SendRequest(SET_ROTATION, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call SetRotation, error: %{public}d", error);
     return reply.ReadInt32();

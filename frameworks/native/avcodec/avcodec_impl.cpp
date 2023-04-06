@@ -52,7 +52,7 @@ int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &
     codecService_ = AVCodecServiceFactory::GetInstance().CreateAVCodecService();
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_UNKNOWN, "failed to create avcodec service");
 
-    return codecService_->InitParameter(type, isMimeType, name);
+    return codecService_->Init(type, isMimeType, name);
 }
 
 AVCodecImpl::AVCodecImpl()

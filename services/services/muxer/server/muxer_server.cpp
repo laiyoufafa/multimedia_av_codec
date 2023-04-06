@@ -27,7 +27,7 @@ std::shared_ptr<IMuxerService> MuxerServer::Create()
 {
     std::shared_ptr<MuxerServer> muxerServer = std::make_shared<MuxerServer>();
     CHECK_AND_RETURN_RET_LOG(muxerServer != nullptr, nullptr, "Muxer Service does not exist");
-    int32_t ret = muxerServer->Init();
+    int32_t ret = muxerServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init muxer server");
     return muxerServer;
 }
@@ -45,8 +45,16 @@ MuxerServer::~MuxerServer()
     // avmuxerEngine_ = nullptr;
 }
 
+int32_t MuxerServer::InitServer()
+{
+
+
+    return MSERR_OK;
+}
+
 int32_t MuxerServer::Init()
 {
+    std::lock_guard<std::mutex> lock(mutex_);
 
 
     return MSERR_OK;

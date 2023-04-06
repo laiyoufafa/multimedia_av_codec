@@ -30,7 +30,7 @@ public:
     uint32_t GetTrackCount() override;
     std::shared_ptr<SourceTrack> LoadSourceTrackByID(uint32_t trackId) override;
     int32_t Destroy() override;
-    uint8_t GetSourceAttr() override;
+    uint64_t GetSourceAttr() override;
     int32_t SetParameter(const Format &param, uint32_t trackId) override;
     std::shared_ptr<Format> GetTrackFormat(Format &param, uint32_t trackId) override;
     int32_t Init(const std::string &uri);

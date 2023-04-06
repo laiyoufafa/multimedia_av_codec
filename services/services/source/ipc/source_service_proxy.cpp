@@ -50,6 +50,21 @@ int32_t SourceServiceProxy::DestroyStub()
     return reply.ReadInt32();
 }
 
+int32_t SourceServiceProxy::Init(const std::string &uri)
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
+    CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
+
+    data.WriteString(uri);
+    int error = Remote()->SendRequest(INIT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == MSERR_OK, error, "Failed to call Init, error: %{public}d", error);
+    return reply.ReadInt32();
+}
+
 int32_t SourceServiceProxy::GetTrackCount()
 {
     MessageParcel data;

@@ -27,7 +27,7 @@ std::shared_ptr<ISourceService> SourceServer::Create()
 {
     std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
     CHECK_AND_RETURN_RET_LOG(sourceServer != nullptr, nullptr, "Source Service does not exist");
-    int32_t ret = sourceServer->Init();
+    int32_t ret = sourceServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init source server");
     return sourceServer;
 }
@@ -45,8 +45,16 @@ SourceServer::~SourceServer()
     // sourceEngine_ = nullptr;
 }
 
-int32_t SourceServer::Init()
+int32_t SourceServer::InitServer()
 {
+
+
+    return MSERR_OK;
+}
+
+int32_t SourceServer::Init(const std::string &uri)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
 
 
     return MSERR_OK;

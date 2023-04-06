@@ -29,7 +29,7 @@ sptr<DemuxerServiceStub> DemuxerServiceStub::Create()
     sptr<DemuxerServiceStub> demuxerStub = new(std::nothrow) DemuxerServiceStub();
     CHECK_AND_RETURN_RET_LOG(demuxerStub != nullptr, nullptr, "Failed to create demuxer service stub");
 
-    int32_t ret = demuxerStub->Init();
+    int32_t ret = demuxerStub->InitStub();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init DemuxerServiceStub");
     return demuxerStub;
 }
@@ -44,11 +44,12 @@ DemuxerServiceStub::~DemuxerServiceStub()
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t DemuxerServiceStub::Init()
+int32_t DemuxerServiceStub::InitStub()
 {
-    demuxerServer_ = DemuxerService::Create();
+    demuxerServer_ = DemuxerServer::Create();
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Failed to create muxer server");
-    
+
+    demuxerFuncs_[INIT] = &DemuxerServiceStub::Init;
     demuxerFuncs_[ADD_SOURCE_TRACK_BY_ID] = &DemuxerServiceStub::AddSourceTrackByID;
     demuxerFuncs_[REMOVE_SOURCE_TRACK_BY_ID] = &DemuxerServiceStub::RemoveSourceTrackByID;
     demuxerFuncs_[COPY_CURRENT_SAMPLE_TO_BUF] = &DemuxerServiceStub::CopyCurrentSampleToBuf;
@@ -96,6 +97,13 @@ int32_t DemuxerServiceStub::DestroyStub()
     return MSERR_OK;
 }
 
+int32_t DemuxerServiceStub::Init(MessageParcel &data, MessageParcel &reply)
+{
+    uint64_t attr = data.ReadUint64();
+    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(attr)), MSERR_UNKNOWN);   
+    return MSERR_OK;
+}
+
 int32_t DemuxerServiceStub::AddSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
@@ -135,26 +143,34 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &
     return MSERR_OK;
 }
 
-int32_t DemuxerServiceStub::AddSourceTrackByID(uint32_t index)
+int32_t DemuxerServiceStub::Init(uint64_t attr)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Demuxer server is nullptr");
-    return demuxerServer_->AddSourceTrackByID(index);
-}
-int32_t DemuxerServiceStub::RemoveSourceTrackByID(uint32_t index)
-{
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Demuxer server is nullptr");
-    return demuxerServer_->RemoveSourceTrackByID(index);
-}
-int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
-{
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Demuxer server is nullptr");
-    return demuxerServer_->CopyCurrentSampleToBuf(buffer, bufferInfo);
-}
-int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
-{
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Demuxer server is nullptr");
-    return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    return demuxerServer_->Init(attr);
 }
 
+int32_t DemuxerServiceStub::AddSourceTrackByID(uint32_t index)
+{
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    return demuxerServer_->AddSourceTrackByID(index);
+}
+
+int32_t DemuxerServiceStub::RemoveSourceTrackByID(uint32_t index)
+{
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    return demuxerServer_->RemoveSourceTrackByID(index);
+}
+
+int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+{
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    return demuxerServer_->CopyCurrentSampleToBuf(buffer, bufferInfo);
+}
+
+int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
+{
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
+}
 }  // namespace AVCodec
 }  // namespace OHOS  

@@ -27,6 +27,7 @@ public:
     ~DemuxerClient();
 
     // 业务
+    int32_t Init(uint64_t attr) override;
     int32_t AddSourceTrackByID(uint32_t index) override;
     int32_t RemoveSourceTrackByID(uint32_t index) override;
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;

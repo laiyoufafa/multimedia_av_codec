@@ -25,6 +25,7 @@ public:
     explicit SourceServiceProxy(const sptr<IRemoteObject> &impl);
     virtual ~SourceServiceProxy();
 
+    int32_t Init(const std::string &uri) override;
     int32_t GetTrackCount() override;
     int32_t Destroy() override;
     int32_t SetParameter(const Format &param, uint32_t trackId) override;

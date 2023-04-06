@@ -35,7 +35,7 @@ protected:
     int32_t SetDeathListener(const sptr<IRemoteObject> &object);
 
 private:
-    void Init();
+    void InitStub();
     int32_t GetSystemAbility(MessageParcel &data, MessageParcel &reply);
     void ClientDied(pid_t pid);
     int32_t DestroyStubForPid(pid_t pid);

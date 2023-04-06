@@ -27,7 +27,7 @@ public:
     virtual ~IStandardDemuxerService() = default;
 
     // 业务
-    
+    virtual int32_t Init(uint64_t attr) = 0;
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
@@ -36,6 +36,7 @@ public:
     virtual int32_t DestroyStub() = 0;
 
     enum DemuxerServiceMsg {
+        INIT,
         ADD_SOURCE_TRACK_BY_ID,
         REMOVE_SOURCE_TRACK_BY_ID,
         COPY_CURRENT_SAMPLE_TO_BUF,

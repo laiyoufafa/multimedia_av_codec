@@ -29,6 +29,7 @@ public:
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
     using SourceStubFunc = int32_t(SourceServiceStub::*)(MessageParcel &data, MessageParcel &reply);
 
+    int32_t Init(const std::string &uri) override;
     int32_t GetTrackCount() override;
     int32_t Destroy() override;
     int32_t SetParameter(const Format &param, uint32_t trackId) override;
@@ -38,8 +39,9 @@ public:
     int32_t DestroyStub() override;
 private:
     SourceServiceStub();
-    int32_t Init();
+    int32_t InitStub();
 
+    int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t GetTrackCount(MessageParcel &data, MessageParcel &reply);
     int32_t Destroy(MessageParcel &data, MessageParcel &reply);
     int32_t SetParameter(MessageParcel &data, MessageParcel &reply);

@@ -28,6 +28,7 @@ public:
     SourceServer();
     ~SourceServer();
 
+    int32_t Init(const std::string &uri) override;
     int32_t GetTrackCount() override;
     int32_t Destroy() override;
     int32_t SetParameter(const Format &param, uint32_t trackId) override;
@@ -35,7 +36,7 @@ public:
     uint64_t GetSourceAttr() override;
 
 private:
-    int32_t Init();
+    int32_t InitServer();
     std::mutex mutex_;
     // std::shared_ptr<IAVMuxerEngine> avmuxerEngine_ = nullptr;
     // uint32_t trackNum_ = 0;

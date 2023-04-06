@@ -38,7 +38,7 @@ namespace AVCodec {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
     std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
-    // int32_t ret = server->Init();
+    int32_t ret = server->InitServer();
     if (ret != MSERR_OK) {
         MEDIA_LOGE("failed to init CodecServer");
         return nullptr;
@@ -65,17 +65,11 @@ void CodecServer::ExitProcessor()
     codecEngine_ = nullptr;
 }
 
-// int32_t CodecServer::Init()
-// {
-//     // auto engineFactory = EngineFactoryRepo::Instance().GetEngineFactory(IEngineFactory::Scene::SCENE_AVCODEC);
-//     // CHECK_AND_RETURN_RET_LOG(engineFactory != nullptr, MSERR_CREATE_AVCODEC_ENGINE_FAILED, "failed to get factory");
-//     // codecEngine_ = engineFactory->CreateAVCodecEngine();
-//     // CHECK_AND_RETURN_RET_LOG(codecEngine_ != nullptr, MSERR_CREATE_AVCODEC_ENGINE_FAILED,
-//     //     "Failed to create codec engine");
-//     // status_ = CODEC_INITIALIZED;
-//     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
-//     return MSERR_OK;
-// }
+int32_t CodecServer::InitServer()
+{
+
+    return MSERR_OK;
+}
 
 int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
@@ -241,6 +235,9 @@ int32_t CodecServer::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
             MEDIA_LOGI("EOS state");
         }
     }
+    if (inQueue_.size() && ret == MSERR_OK) {
+        inQueue_.pop();
+    }
     return ret;
 }
 
@@ -268,7 +265,11 @@ int32_t CodecServer::ReleaseOutputBuffer(uint32_t index, bool render)
     CHECK_AND_RETURN_RET_LOG(status_ == CODEC_RUNNING || status_ == CODEC_END_OF_STREAM,
         MSERR_INVALID_OPERATION, "invalid state");
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, MSERR_NO_MEMORY, "codecBase is nullptr");
-    return codecBase_->ReleaseOutputBuffer(index, render);
+    int32_t ret = codecBase_->ReleaseOutputBuffer(index, render);
+    if (ret == MSERR_OK && outQueue_.size()) {
+        outQueue_.pop();
+    }
+    return ret;
 }
 
 int32_t CodecServer::SetParameter(const Format &format)
@@ -307,7 +308,7 @@ int32_t CodecServer::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == CODEC_RUNNING, MSERR_INVALID_OPERATION, "invalid state");
 
-    if (inQueue_.size() < 0) {
+    if (inQueue_.size() <= 0) {
         return MSERR_INVALID_OPERATION;
     }
     *index = inQueue_.front();
@@ -319,13 +320,12 @@ int32_t CodecServer::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == CODEC_RUNNING, MSERR_INVALID_OPERATION, "invalid state");
 
-    if (outQueue_.size() < 0) {
+    if (outQueue_.size() <= 0) {
         return MSERR_INVALID_OPERATION;
     }
     *index = outQueue_.front();
     return MSERR_OK;
 }
-
 
 int32_t CodecServer::DumpInfo(int32_t fd)
 {
@@ -416,7 +416,7 @@ void CodecServer::ResetTrace()
 
 
 CodecBaseCallback::CodecBaseCallback(const sptr<CodecServer> &codec)
-    : codec_(listener)
+    : codec_(codec)
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }

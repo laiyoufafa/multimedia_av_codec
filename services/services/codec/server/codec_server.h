@@ -85,7 +85,7 @@ public:
     void ResetTrace();
 
 private:
-    int32_t Init();
+    int32_t InitServer();
     void ExitProcessor();
     const std::string &GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status);
 

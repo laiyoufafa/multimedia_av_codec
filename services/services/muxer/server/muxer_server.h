@@ -28,6 +28,7 @@ public:
     MuxerServer();
     ~MuxerServer();
 
+    int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
     int32_t SetParameter(const Format &generalFormat) override;
@@ -37,7 +38,7 @@ public:
     int32_t Stop() override;
 
 private:
-    int32_t Init();
+    int32_t InitServer();
     std::mutex mutex_;
     // std::shared_ptr<IAVMuxerEngine> avmuxerEngine_ = nullptr;
     // uint32_t trackNum_ = 0;

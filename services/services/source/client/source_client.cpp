@@ -52,6 +52,15 @@ void SourceClient::AVCodecServerDied()
     sourceProxy_ = nullptr;
 }
 
+int32_t SourceClient::Init(const std::string &uri)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
+
+    MEDIA_LOGD("Init");
+    return sourceProxy_->Init(uri);
+}
+
 int32_t SourceClient::GetTrackCount()
 {
     std::lock_guard<std::mutex> lock(mutex_);

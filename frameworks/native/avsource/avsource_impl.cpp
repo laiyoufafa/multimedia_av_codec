@@ -43,7 +43,7 @@ int32_t AVSourceImpl::Init(const std::string &uri)
     return sourceService_->Init(uri);
 }
 
-uint8_t GetSourceAttr()
+uint64_t AVSourceImpl::GetSourceAttr()
 {
     CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
     return sourceService_->GetSourceAttr();

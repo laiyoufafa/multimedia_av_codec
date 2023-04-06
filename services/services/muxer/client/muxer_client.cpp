@@ -52,6 +52,13 @@ void MuxerClient::AVCodecServerDied()
     muxerProxy_ = nullptr;
 }
 
+int32_t MuxerClient::Init()
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    return muxerProxy_->Init();
+}
+
 int32_t MuxerClient::SetLocation(float latitude, float longitude)
 {
     std::lock_guard<std::mutex> lock(mutex_);

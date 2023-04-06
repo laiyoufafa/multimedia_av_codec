@@ -28,7 +28,7 @@ IAVCodecService &AVCodecServiceFactory::GetInstance()
 
 std::shared_ptr<IDemuxerService> AVCodecLocal::CreateDemuxerService()
 {
-    return DemuxerService::Create();
+    return DemuxerServer::Create();
 }
 
 int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)

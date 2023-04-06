@@ -26,7 +26,8 @@ public:
     static std::shared_ptr<SourceClient> Create(const sptr<IStandardSourceService> &ipcProxy);
     explicit SourceClient(const sptr<IStandardSourceService> &ipcProxy);
     ~SourceClient();
-    
+
+    virtual int32_t Init(const std::string &uri) = 0;
     virtual int32_t GetTrackCount() = 0;
     virtual int32_t Destroy() = 0;
     virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;

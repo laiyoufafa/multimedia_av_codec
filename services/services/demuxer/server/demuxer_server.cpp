@@ -21,56 +21,64 @@ namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServer"};
 }
 
-std::shared_ptr<IDemuxerService> DemuxerService::Create()
+std::shared_ptr<IDemuxerService> DemuxerServer::Create()
 {
-    std::shared_ptr<DemuxerService> demuxerServer = std::make_shared<DemuxerService>();
+    std::shared_ptr<DemuxerServer> demuxerServer = std::make_shared<DemuxerServer>();
     CHECK_AND_RETURN_RET_LOG(demuxerServer != nullptr, nullptr, "Demuxer Service does not exist");
-    int32_t ret = demuxerServer->Init();
+    int32_t ret = demuxerServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init demuxer server");
     return demuxerServer;
 }
 
-DemuxerService::DemuxerService()
+DemuxerServer::DemuxerServer()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-DemuxerService::~DemuxerService()
+DemuxerServer::~DemuxerServer()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
     std::lock_guard<std::mutex> lock(mutex_);
     // demuxerEngine_ = nullptr;
 }
 
-int32_t DemuxerService::Init()
+int32_t DemuxerServer::InitServer()
 {
     // 引擎创建
 
     return MSERR_OK;
 }
-int32_t DemuxerService::AddSourceTrackByID(uint32_t index)
+
+int32_t DemuxerServer::Init(uint64_t attr)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    return MSERR_OK;
+}
+
+int32_t DemuxerServer::AddSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
     // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
-    return index; // only for test
-    // return MSERR_OK;
+    // return index; // only for test
+    return MSERR_OK;
 }
 
-int32_t DemuxerService::RemoveSourceTrackByID(uint32_t index)
+int32_t DemuxerServer::RemoveSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
     // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
-    return index; // only for test
-    // return MSERR_OK;
+    // return index; // only for test
+    return MSERR_OK;
 }
 
-int32_t DemuxerService::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t DemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
@@ -80,7 +88,7 @@ int32_t DemuxerService::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecB
     return MSERR_OK;
 }
 
-int32_t DemuxerService::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
+int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
@@ -90,8 +98,8 @@ int32_t DemuxerService::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
     printf("SeekToTimeStamp: %lld %d\n", mSeconds, int(mode)); // only for test
 
     MEDIA_LOGI("SeekToTimeStamp: %{public}lld", mSeconds);
-    return int(mode); // only for test
-    // return MSERR_OK;
+    // return int(mode); // only for test
+    return MSERR_OK;
 }
 }  // namespace AVCodec
 }  // namespace OHOS
