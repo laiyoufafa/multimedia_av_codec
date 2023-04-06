@@ -30,6 +30,7 @@ public:
     enum AVCodecSystemAbility : int32_t {
         AVCODEC_DEMUXER = 0,
         AVCODEC_MUXER,
+        AVCODEC_CODECLIST,
         AVCODEC_CODEC,
         AVCODEC_SOURCE
     };
