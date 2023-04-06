@@ -47,22 +47,22 @@ public:
 
 #ifdef SUPPORT_DEMUXER
     std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
-    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) override;
+    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxerClient) override;
 #endif
 
 #ifdef SUPPORT_MUXER
     std::shared_ptr<IMuxerService> CreateMuxerService() override;
-    int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) override;
+    int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxerClient) override;
 #endif
 
 #ifdef SUPPORT_CODEC
     std::shared_ptr<ICodecService> CreateCodecService() override;
-    int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) override;
+    int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE
     std::shared_ptr<ISourceService> CreateSourceService() override;
-    int32_t DestroySourceService(std::shared_ptr<ISourceService> source) override;
+    int32_t DestroySourceService(std::shared_ptr<ISourceService> sourceClient) override;
 #endif
 
 

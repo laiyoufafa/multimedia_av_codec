@@ -30,8 +30,8 @@
 #include "i_standard_source_service.h"
 #endif
 
-#include "av_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecClient"};
@@ -69,7 +69,7 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        AVCODEC_LOGE("codec service does not exist.");
+        AVCODEC_LOGE("av_codec service does not exist.");
         return nullptr;
     }
 
@@ -77,22 +77,22 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODEC, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "codec proxy object is nullptr.");
 
-    sptr<IStandardAVCodecService> avCodecProxy = iface_cast<IStandardAVCodecService>(object);
-    CHECK_AND_RETURN_RET_LOG(avCodecProxy != nullptr, nullptr, "codec proxy is nullptr.");
+    sptr<IStandardAVCodecService> codecProxy = iface_cast<IStandardAVCodecService>(object);
+    CHECK_AND_RETURN_RET_LOG(codecProxy != nullptr, nullptr, "codec proxy is nullptr.");
 
-    std::shared_ptr<CodecClient> codec = CodecClient::Create(avCodecProxy);
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "failed to create codec client.");
+    std::shared_ptr<CodecClient> codecClient = CodecClient::Create(codecProxy);
+    CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, nullptr, "failed to create codec client.");
 
-    codecClientList_.push_back(codec);
-    return codec;
+    codecClientList_.push_back(codecClient);
+    return codecClient;
 }
 
-int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codec)
+int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, MSERR_NO_MEMORY, "input codec is nullptr.");
-    codecClientList_.remove(codec);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, AVCS_ERR_NO_MEMORY, "codec client is nullptr.");
+    codecClientList_.remove(codecClient);
+    return AVCS_ERR_OK;
 }
 #endif
 
@@ -101,8 +101,7 @@ std::shared_ptr<IDemuxerService> AVCodecClient::CreateDemuxerService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        AVCODEC_LOGE("demuxer service does not exist.");
-        printf("demuxer service does not exist\n");
+        AVCODEC_LOGE("av_codec service does not exist.");
         return nullptr;
     }
 
@@ -113,19 +112,19 @@ std::shared_ptr<IDemuxerService> AVCodecClient::CreateDemuxerService()
     sptr<IStandardDemuxerService> demuxerProxy = iface_cast<IStandardDemuxerService>(object);
     CHECK_AND_RETURN_RET_LOG(demuxerProxy != nullptr, nullptr, "demuxer proxy is nullptr.");
 
-    std::shared_ptr<DemuxerClient> demuxer = DemuxerClient::Create(demuxerProxy);
-    CHECK_AND_RETURN_RET_LOG(demuxer != nullptr, nullptr, "failed to create demuxer client.");
+    std::shared_ptr<DemuxerClient> demuxerClient = DemuxerClient::Create(demuxerProxy);
+    CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, nullptr, "failed to create demuxer client.");
 
-    demuxerClientList_.push_back(demuxer);
-    return demuxer;
+    demuxerClientList_.push_back(demuxerClient);
+    return demuxerClient;
 }
 
-int32_t AVCodecClient::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)
+int32_t AVCodecClient::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxerClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(demuxer != nullptr, MSERR_NO_MEMORY, "input demuxer is nullptr.");
-    demuxerClientList_.remove(demuxer);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, AVCS_ERR_NO_MEMORY, "demuxer client is nullptr.");
+    demuxerClientList_.remove(demuxerClient);
+    return AVCS_ERR_OK;
 }
 #endif
 
@@ -134,7 +133,7 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateMuxerService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        av_logE("muxer service does not exist.");
+        AVCODEC_LOGE("av_codec service does not exist.");
         return nullptr;
     }
 
@@ -145,19 +144,19 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateMuxerService()
     sptr<IStandardMuxerService> muxerProxy = iface_cast<IStandardMuxerService>(object);
     CHECK_AND_RETURN_RET_LOG(muxerProxy != nullptr, nullptr, "muxer proxy is nullptr.");
 
-    std::shared_ptr<MuxerClient> muxer = MuxerClient::Create(muxerProxy);
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, nullptr, "failed to create muxer client.");
+    std::shared_ptr<MuxerClient> muxerClient = MuxerClient::Create(muxerProxy);
+    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, nullptr, "failed to create muxer client.");
 
-    muxerClientList_.push_back(muxer);
-    return muxer;
+    muxerClientList_.push_back(muxerClient);
+    return muxerClient;
 }
 
-int32_t AVCodecClient::DestroyMuxerService(std::shared_ptr<IMuxerService> muxer)
+int32_t AVCodecClient::DestroyMuxerService(std::shared_ptr<IMuxerService> muxerClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, MSERR_NO_MEMORY, "input muxer is nullptr.");
-    muxerClientList_.remove(muxer);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, AVCS_ERR_NO_MEMORY, "muxer client is nullptr.");
+    muxerClientList_.remove(muxerClient);
+    return AVCS_ERR_OK;
 }
 #endif
 
@@ -166,7 +165,7 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateSourceService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        av_logE("source service does not exist.");
+        AVCODEC_LOGE("av_codec service does not exist.");
         return nullptr;
     }
 
@@ -177,19 +176,19 @@ std::shared_ptr<IMuxerService> AVCodecClient::CreateSourceService()
     sptr<IStandardMuxerService> sourceProxy = iface_cast<IStandardMuxerService>(object);
     CHECK_AND_RETURN_RET_LOG(sourceProxy != nullptr, nullptr, "source proxy is nullptr.");
 
-    std::shared_ptr<MuxerClient> source = MuxerClient::Create(sourceProxy);
-    CHECK_AND_RETURN_RET_LOG(source != nullptr, nullptr, "failed to create source client.");
+    std::shared_ptr<MuxerClient> sourceClient = MuxerClient::Create(sourceProxy);
+    CHECK_AND_RETURN_RET_LOG(sourceClient != nullptr, nullptr, "failed to create source client.");
 
-    sourceClientList_.push_back(source);
+    sourceClientList_.push_back(sourceClient);
     return source;
 }
 
-int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> source)
+int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sourceClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(source != nullptr, MSERR_NO_MEMORY, "input source is nullptr.");
-    sourceClientList_.remove(source);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET_LOG(sourceClient != nullptr, AVCS_ERR_NO_MEMORY, "source client is nullptr.");
+    sourceClientList_.remove(sourceClient);
+    return AVCS_ERR_OK;
 }
 #endif
 
@@ -224,7 +223,7 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
 
 void AVCodecClient::AVCodecServerDied(pid_t pid)
 {
-    AVCODEC_LOGE("avcodec server is died, pid:%{public}d!", pid);
+    AVCODEC_LOGE("av_codec server is died, pid:%{public}d!", pid);
     avCodecClientInstance.DoAVCodecServerDied();
 }
 
