@@ -25,7 +25,7 @@
 // #include "avcodeclist_parcel.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVCodecListServiceStub : public IRemoteStub<IStandardAVCodecListService>, public NoCopyable {
 public:
     static sptr<AVCodecListServiceStub> Create();

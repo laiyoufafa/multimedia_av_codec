@@ -21,7 +21,7 @@
 #include "i_standard_avcodeclist_service.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVCodecListClient : public IAVCodecListService {
 public:
     static std::shared_ptr<AVCodecListClient> Create(const sptr<IStandardAVCodecListService> &ipcProxy);

@@ -17,8 +17,8 @@
 #include "avdemuxer.h"
 #include "native_avcodec_demuxer.h"
 #include "native_avmagic.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "av_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVDemuxer"}
@@ -55,7 +55,7 @@ OH_AVErrCode OH_AVDemuxer_Destroy(OH_AVDemuxer *demuxer)
 
     if (demuxerObj != nullptr && demuxerObj->demuxer_ != nullptr) {
         int32_t ret = demuxerObj->demuxer_->Destroy();
-        if (ret != MSERR_OK) {
+        if (ret != AVCS_ERR_OK) {
             AVCODEC_LOGE("demuxer Destroy failed!");
             delete demuxer;
             return AV_ERR_OPERATE_NOT_PERMIT;
@@ -77,7 +77,7 @@ OH_AVErrCode OH_AVDemuxer_AddSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t tra
     CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, nullptr, "demuxer_ is nullptr!");
 
     int32_t ret = demuxerObj->demuxer_->AddSourceTrackByID(trackId);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer AddSourceTrackByID failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer AddSourceTrackByID failed!");
 
     return AV_ERR_OK;
 }
@@ -91,7 +91,7 @@ OH_AVErrCode OH_AVDemuxer_RemoveSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t 
     CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, nullptr, "demuxer_ is nullptr!");
 
     int32_t ret = demuxerObj->demuxer_->RemoveSourceTrackByID(trackId);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer RemoveSourceTrackByID failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer RemoveSourceTrackByID failed!");
 
     return AV_ERR_OK;
 }
@@ -106,7 +106,7 @@ OH_AVErrCode OH_AVDemuxer_CopyCurrentSampleToBuf(OH_AVDemuxer *demuxer, OH_AVBuf
     CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, nullptr, "demuxer_ is nullptr!")
 
     int32_t ret = demuxerObj->demuxer_->CopyCurrentSampleToBuf(buffer, attr);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer RemoveSourceTrackByID failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer RemoveSourceTrackByID failed!");
 
     return AV_ERR_OK;
 }
@@ -120,7 +120,7 @@ OH_AVErrCode OH_AVDemuxer_SeekToTimeStamp(OH_AVDemuxer *demuxer, int64_t mSecond
     CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, nullptr, "demuxer_ is nullptr!")
 
     int32_t ret = demuxerObj->demuxer_->SeekToTimeStamp(mSeconds, mode);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer SeekToTimeStamp failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer SeekToTimeStamp failed!");
 
     return AV_ERR_OK;
 }

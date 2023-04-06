@@ -15,7 +15,7 @@
 
 #include "ffmpeg_demuxer_plugin.h"
 #include "avcodec_errors.h"
-#include "media_log.h"
+#include "av_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FFmpegDemuxerPlugin"};

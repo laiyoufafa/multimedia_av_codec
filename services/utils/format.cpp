@@ -15,8 +15,8 @@
 
 #include "format.h"
 #include "securec.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "Format"};

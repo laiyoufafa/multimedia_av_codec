@@ -16,15 +16,15 @@
 #include "avcodeclist_service_proxy.h"
 #include "media_parcel.h"
 // #include "avsharedmemory_ipc.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServiceProxy"};
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 AVCodecListServiceProxy::AVCodecListServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardAVCodecListService>(impl)
 {
@@ -47,7 +47,7 @@ std::string AVCodecListServiceProxy::FindVideoDecoder(const Format &format)
 
     (void)MediaParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_VIDEO_DECODER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, "", "FindVideoDecoder failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindVideoDecoder failed");
     return reply.ReadString();
 }
 
@@ -62,7 +62,7 @@ std::string AVCodecListServiceProxy::FindVideoEncoder(const Format &format)
 
     (void)MediaParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_VIDEO_ENCODER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, "", "FindVideoEncoder failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindVideoEncoder failed");
     return reply.ReadString();
 }
 
@@ -77,7 +77,7 @@ std::string AVCodecListServiceProxy::FindAudioDecoder(const Format &format)
 
     (void)MediaParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_AUDIO_DECODER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, "", "FindAudioDecoder failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindAudioDecoder failed");
 
     return reply.ReadString();
 }
@@ -93,7 +93,7 @@ std::string AVCodecListServiceProxy::FindAudioEncoder(const Format &format)
 
     (void)MediaParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_AUDIO_ENCODER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, "", "FindAudioEncoder failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindAudioEncoder failed");
 
     return reply.ReadString();
 }
@@ -110,7 +110,7 @@ CapabilityData AVCodecListServiceProxy::GetCapabilityData()
     CHECK_AND_RETURN_RET_LOG(token, capabilityData, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(GET_CAPABILITYDATA, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, capabilityData,
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, capabilityData,
         "GetCodecCapabilityInfos failed, error: %{public}d", ret);
     // (void)AVCodecListParcel::Unmarshalling(reply, capabilityData); // TODO
 
@@ -124,10 +124,10 @@ int32_t AVCodecListServiceProxy::DestroyStub()
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, MSERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(DESTROY, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, MSERR_INVALID_OPERATION,
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "DestroyStub failed, error: %{public}d", ret);
     return reply.ReadInt32();
 }

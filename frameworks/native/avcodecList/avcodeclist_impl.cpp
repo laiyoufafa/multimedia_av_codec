@@ -14,22 +14,22 @@
  */
 
 #include "avcodec_list_impl.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 #include "i_media_service.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListImpl"};
 }
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 std::shared_ptr<AVCodecList> AVCodecListFactory::CreateAVCodecList()
 {
     std::shared_ptr<AVCodecListImpl> impl = std::make_shared<AVCodecListImpl>();
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecListImpl");
 
     int32_t ret = impl->Init();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to init AVCodecListImpl");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecListImpl");
 
     return impl;
 }
@@ -37,8 +37,8 @@ std::shared_ptr<AVCodecList> AVCodecListFactory::CreateAVCodecList()
 int32_t AVCodecListImpl::Init()
 {
     codecListService_ = MediaServiceFactory::GetInstance().CreateAVCodecListService();
-    CHECK_AND_RETURN_RET_LOG(codecListService_ != nullptr, MSERR_UNKNOWN, "failed to create AVCodecList service");
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET_LOG(codecListService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create AVCodecList service");
+    return AVCS_ERR_OK;
 }
 
 AVCodecListImpl::AVCodecListImpl()

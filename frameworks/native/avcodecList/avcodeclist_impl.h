@@ -21,7 +21,7 @@
 #include "i_avcodeclist_service.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVCodecListImpl : public AVCodecList, public NoCopyable {
 public:
     AVCodecListImpl();

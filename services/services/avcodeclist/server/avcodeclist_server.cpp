@@ -14,14 +14,14 @@
  */
 
 #include "avcodeclist_server.h"
-#include "media_log.h"
+#include "av_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServer"};
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 std::shared_ptr<IAVCodecListService> AVCodecListServer::Create()
 {
     std::shared_ptr<AVCodecListServer> server = std::make_shared<AVCodecListServer>();

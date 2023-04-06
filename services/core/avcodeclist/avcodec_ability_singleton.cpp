@@ -14,14 +14,14 @@
  */
 
 #include "avcodec_ability_singleton.h"
-#include "media_log.h"
+#include "av_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecAbilitySingleton"};
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 AVCodecAbilitySingleton& AVCodecAbilitySingleton::GetInstance()
 {
     static AVCodecAbilitySingleton instance;

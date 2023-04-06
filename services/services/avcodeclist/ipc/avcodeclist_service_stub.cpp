@@ -16,8 +16,8 @@
 #include "avcodeclist_service_stub.h"
 #include <unistd.h>
 #include "avsharedmemory_ipc.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "av_log.h"
 #include "media_server_manager.h"
 
 namespace {
@@ -25,14 +25,14 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 sptr<AVCodecListServiceStub> AVCodecListServiceStub::Create()
 {
     sptr<AVCodecListServiceStub> codecListStub = new(std::nothrow) AVCodecListServiceStub();
     CHECK_AND_RETURN_RET_LOG(codecListStub != nullptr, nullptr, "failed to new AVCodecListServiceStub");
 
     int32_t ret = codecListStub->Init();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to codeclist stub init");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to codeclist stub init");
     return codecListStub;
 }
 
@@ -49,14 +49,14 @@ AVCodecListServiceStub::~AVCodecListServiceStub()
 int32_t AVCodecListServiceStub::Init()
 {
     codecListServer_ = AVCodecListServer::Create();
-    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, MSERR_NO_MEMORY, "failed to create AVCodecListServer");
+    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, AVCS_ERR_NO_MEMORY, "failed to create AVCodecListServer");
     codecListFuncs_[FIND_VIDEO_DECODER] = &AVCodecListServiceStub::FindVideoDecoder;
     codecListFuncs_[FIND_VIDEO_ENCODER] = &AVCodecListServiceStub::FindVideoEncoder;
     codecListFuncs_[FIND_AUDIO_DECODER] = &AVCodecListServiceStub::FindAudioDecoder;
     codecListFuncs_[FIND_AUDIO_ENCODER] = &AVCodecListServiceStub::FindAudioEncoder;
     codecListFuncs_[GET_CAPABILITYDATA] = &AVCodecListServiceStub::GetCapabilityData;
     codecListFuncs_[DESTROY] = &AVCodecListServiceStub::DestroyStub;
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::DestroyStub()
@@ -64,7 +64,7 @@ int32_t AVCodecListServiceStub::DestroyStub()
     codecListServer_ = nullptr;
     // TODO AVCodecList
     // MediaServerManager::GetInstance().DestroyStubObject(MediaServerManager::AVCODECLIST, AsObject());
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
@@ -75,7 +75,7 @@ int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, 
     auto remoteDescriptor = data.ReadInterfaceToken();
     if (AVCodecListServiceStub::GetDescriptor() != remoteDescriptor) {
         MEDIA_LOGE("Invalid descriptor");
-        return MSERR_INVALID_OPERATION;
+        return AVCS_ERR_INVALID_OPERATION;
     }
 
     auto itFunc = codecListFuncs_.find(code);
@@ -83,10 +83,10 @@ int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, 
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
             int32_t ret = (this->*memberFunc)(data, reply);
-            if (ret != MSERR_OK) {
+            if (ret != AVCS_ERR_OK) {
                 MEDIA_LOGE("calling memberFunc is failed.");
             }
-            return MSERR_OK;
+            return AVCS_ERR_OK;
         }
     }
     MEDIA_LOGW("AVCodecListServiceStub: no member func supporting, applying default process");
@@ -130,7 +130,7 @@ int32_t AVCodecListServiceStub::FindVideoDecoder(MessageParcel &data, MessagePar
     Format format;
     (void)MediaParcel::Unmarshalling(data, format);
     reply.WriteString(FindVideoDecoder(format));
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::FindVideoEncoder(MessageParcel &data, MessageParcel &reply)
@@ -138,7 +138,7 @@ int32_t AVCodecListServiceStub::FindVideoEncoder(MessageParcel &data, MessagePar
     Format format;
     (void)MediaParcel::Unmarshalling(data, format);
     reply.WriteString(FindVideoEncoder(format));
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::FindAudioDecoder(MessageParcel &data, MessageParcel &reply)
@@ -146,7 +146,7 @@ int32_t AVCodecListServiceStub::FindAudioDecoder(MessageParcel &data, MessagePar
     Format format;
     (void)MediaParcel::Unmarshalling(data, format);
     reply.WriteString(FindAudioDecoder(format));
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::FindAudioEncoder(MessageParcel &data, MessageParcel &reply)
@@ -154,7 +154,7 @@ int32_t AVCodecListServiceStub::FindAudioEncoder(MessageParcel &data, MessagePar
     Format format;
     (void)MediaParcel::Unmarshalling(data, format);
     reply.WriteString(FindAudioEncoder(format));
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::GetCapabilityData(MessageParcel &data, MessageParcel &reply)
@@ -163,14 +163,14 @@ int32_t AVCodecListServiceStub::GetCapabilityData(MessageParcel &data, MessagePa
     CapabilityData capabilityData = GetCapabilityData(codecName);
     // (void)AVCodecListParcel::Marshalling(reply, capabilityData); // vector<CapabilityData> to MessageParcel TODO
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(DestroyStub());
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 } // namespace Media
 } // namespace OHOS

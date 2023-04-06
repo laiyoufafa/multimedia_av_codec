@@ -16,7 +16,7 @@
 #include <cmath> // fabs
 #include "avcodeclist_core.h"
 #include "avcodec_ability_singleton.h"
-#include "media_log.h"
+#include "av_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListCore"};
@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 AVCodecListCore::AVCodecListCore()
 {
     MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));

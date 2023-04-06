@@ -21,7 +21,7 @@
 // #include "avcodeclist_parcel.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVCodecListServiceProxy : public IRemoteProxy<IStandardAVCodecListService>, public NoCopyable {
 public:
     explicit AVCodecListServiceProxy(const sptr<IRemoteObject> &impl);

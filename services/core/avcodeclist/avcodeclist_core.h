@@ -20,7 +20,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class __attribute__((visibility("default"))) AVCodecListCore : public NoCopyable {
 public:
     AVCodecListCore();

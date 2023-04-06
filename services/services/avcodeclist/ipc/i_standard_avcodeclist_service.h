@@ -23,7 +23,7 @@
 #include "avcodec_info.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class IStandardAVCodecListService : public IRemoteBroker {
 public:
     virtual ~IStandardAVCodecListService() = default;

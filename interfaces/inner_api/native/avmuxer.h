@@ -20,7 +20,7 @@
 #include "av_base.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVMuxer {
 public:
     virtual ~AVMuxer() = default;

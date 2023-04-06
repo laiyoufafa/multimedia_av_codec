@@ -15,8 +15,8 @@
 
 #include "avsharedmemorypool.h"
 #include "avsharedmemorybase.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVShMemPool"};
@@ -40,9 +40,9 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
 {
     std::unique_lock<std::mutex> lock(mutex_);
 
-    CHECK_AND_RETURN_RET(!inited_, MSERR_INVALID_OPERATION);
-    CHECK_AND_RETURN_RET(option.memSize < MAX_MEM_SIZE, MSERR_INVALID_VAL);
-    CHECK_AND_RETURN_RET(option.maxMemCnt != 0, MSERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET(!inited_, AVCS_ERR_INVALID_OPERATION);
+    CHECK_AND_RETURN_RET(option.memSize < MAX_MEM_SIZE, AVCS_ERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET(option.maxMemCnt != 0, AVCS_ERR_INVALID_VAL);
 
     option_ = option;
     if (option.preAllocMemCnt > option.maxMemCnt) {
@@ -69,12 +69,12 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
             delete *iter;
             *iter = nullptr;
         }
-        return MSERR_NO_MEMORY;
+        return AVCS_ERR_NO_MEMORY;
     }
 
     inited_ = true;
     notifier_ = option.notifier;
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 AVSharedMemory *AVSharedMemoryPool::AllocMemory(int32_t size)
@@ -82,7 +82,7 @@ AVSharedMemory *AVSharedMemoryPool::AllocMemory(int32_t size)
     AVSharedMemoryBase *memory = new (std::nothrow) AVSharedMemoryBase(size, option_.flags, name_);
     CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "create object failed");
 
-    if (memory->Init() != MSERR_OK) {
+    if (memory->Init() != AVCS_ERR_OK) {
         delete memory;
         memory = nullptr;
         AVCODEC_LOGE("init avsharedmemorybase failed");

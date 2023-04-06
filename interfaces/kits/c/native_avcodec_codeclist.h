@@ -17,6 +17,7 @@
 #define NATIVE_AVCODEC_CODECLIST_H
 
 #include "native_avformat.h"
+#include "native_avcapablility.h"
 
 #ifdef __cplusplus
 extern "C" {
