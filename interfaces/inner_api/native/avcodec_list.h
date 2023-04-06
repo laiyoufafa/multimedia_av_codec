@@ -27,38 +27,38 @@ public:
     virtual ~AVCodecList() = default;
 
     /**
-     * @brief Find the supported video decoder name by format(usually contains video MIME).
+     * @brief Find the supported video decoder name by format(must contains video MIME).
      * @param format Indicates a media description which contains required video decoder capability.
      * @return  Returns video decoder name, if not find, return empty string.
-     * @since 1.0
-     * @version 4.0
+     * @since 10
+     * @version 1.0
      */
     virtual std::string FindVideoDecoder(const Format &format) = 0;
 
     /**
-     * @brief Find the supported video encoder name by format(usually contains video MIME).
+     * @brief Find the supported video encoder name by format(must contains video MIME).
      * @param format Indicates a media description which contains required video encoder capability.
      * @return  Returns video encoder name, if not find, return empty string.
-     * @since 1.0
-     * @version 4.0
+     * @since 10
+     * @version 1.0
      */
     virtual std::string FindVideoEncoder(const Format &format) = 0;
 
     /**
-     * @brief Find the supported audio decoder name by format(usually contains audio MIME).
+     * @brief Find the supported audio decoder name by format(must contains audio MIME).
      * @param format Indicates a media description which contains required audio decoder capability.
      * @return  Returns audio decoder name, if not find, return empty string.
-     * @since 1.0
-     * @version 4.0
+     * @since 10
+     * @version 1.0
      */
     virtual std::string FindAudioDecoder(const Format &format) = 0;
 
     /**
-     * @brief Find the supported audio encoder name by format(usually contains audio MIME).
+     * @brief Find the supported audio encoder name by format(must contains audio MIME).
      * @param format Indicates a media description which contains required audio encoder capability.
      * @return  Returns audio encoder name, if not find, return empty string.
-     * @since 1.0
-     * @version 4.0
+     * @since 10
+     * @version 1.0
      */
     virtual std::string FindAudioEncoder(const Format &format) = 0;
 
@@ -66,8 +66,8 @@ public:
      * @brief Get the capabilities by codec name
      * @param codeName Codec name
      * @return Returns an array of supported video decoder capability, if not find, return invalid CapabilityData.
-     * @since 1.0
-     * @version 4.0
+     * @since 10
+     * @version 1.0
      */
     virtual CapabilityData GetCapabilityData(std::string codecName) = 0;
 

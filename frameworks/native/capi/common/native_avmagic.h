@@ -19,6 +19,7 @@
 #include <refbase.h>
 #include "format.h"
 #include "avsharedmemory.h"
+#include "avcodec_info.h"
 
 struct OH_AVFormat : public OHOS::RefBase {
     OH_AVFormat();
@@ -39,5 +40,11 @@ struct OH_AVMemory : public OHOS::RefBase {
 struct OH_AVCodec : public OHOS::RefBase {
     explicit OH_AVCodec();
     virtual ~OH_AVCodec() = default;
+};
+
+struct OH_AVCapability : public OHOS::RefBase {
+    explicit OH_AVCapability(const CapabilityData &capabilityData);
+    ~OH_AVCapability() override;
+    CapabilityData capabilityData_;
 };
 #endif // NATIVE_AVMAGIC_H
