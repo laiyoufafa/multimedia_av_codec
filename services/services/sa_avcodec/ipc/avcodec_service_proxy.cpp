@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 #include "avcodec_service_proxy.h"
-#include "av_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceProxy"};
@@ -22,15 +22,14 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 
 namespace OHOS {
 namespace AVCodec {
-AVCodecServiceProxy::AVCodecServiceProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardAVCodecService>(impl)
+AVCodecServiceProxy::AVCodecServiceProxy(const sptr<IRemoteObject> &impl) : IRemoteProxy<IStandardAVCodecService>(impl)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecServiceProxy::~AVCodecServiceProxy()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 sptr<IRemoteObject> AVCodecServiceProxy::GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
@@ -41,20 +40,20 @@ sptr<IRemoteObject> AVCodecServiceProxy::GetSubSystemAbility(IStandardAVCodecSer
     MessageOption option;
 
     if (listener == nullptr) {
-        MEDIA_LOGE("listener is nullptr");
+        AVCODEC_LOGE("listener is nullptr");
         return nullptr;
     }
 
     if (!data.WriteInterfaceToken(AVCodecServiceProxy::GetDescriptor())) {
-        MEDIA_LOGE("Failed to write descriptor");
+        AVCODEC_LOGE("Failed to write descriptor");
         return nullptr;
     }
 
     (void)data.WriteInt32(static_cast<int32_t>(subSystemId));
     (void)data.WriteRemoteObject(listener);
     int error = Remote()->SendRequest(AVCodecServiceMsg::GET_SUBSYSTEM, data, reply, option);
-    if (error != MSERR_OK) {
-        MEDIA_LOGE("Create avcodec proxy failed, error: %{public}d", error);
+    if (error != AVCS_ERR_OK) {
+        AVCODEC_LOGE("Create av_codec proxy failed, error: %{public}d", error);
         return nullptr;
     }
 
