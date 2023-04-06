@@ -72,7 +72,7 @@ private:
     static void AVCodecServerDied(pid_t pid);
     void DoAVCodecServerDied();
 
-    sptr<IStandardAVCodecService> avcodecProxy_ = nullptr;
+    sptr<IStandardAVCodecService> avCodecProxy_ = nullptr;
     sptr<AVCodecListenerStub> listenerStub_ = nullptr;
     sptr<AVCodecDeathRecipient> deathRecipient_ = nullptr;
 

@@ -40,36 +40,36 @@ namespace {
 namespace OHOS {
 namespace AVCodec {
 
-static AVCodecClient avcodecClientInstance;
+static AVCodecClient avCodecClientInstance;
 IAVCodecService &AVCodecServiceFactory::GetInstance()
 {
-    return avcodecClientInstance;
+    return avCodecClientInstance;
 }
 
 AVCodecClient::AVCodecClient() noexcept
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecClient::~AVCodecClient()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 bool AVCodecClient::IsAlived()
 {
-    if (avcodecProxy_ == nullptr) {
-        avcodecProxy_ = GetAVCodecProxy();
+    if (avCodecProxy_ == nullptr) {
+        avCodecProxy_ = GetAVCodecProxy();
     }
 
-    return (avcodecProxy_ != nullptr) ? true : false;
+    return (avCodecProxy_ != nullptr) ? true : false;
 }
 #ifdef SUPPORT_CODEC
 std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        MEDIA_LOGE("codec service does not exist.");
+        AVCODEC_LOGE("codec service does not exist.");
         return nullptr;
     }
 
@@ -101,7 +101,7 @@ std::shared_ptr<IDemuxerService> AVCodecClient::CreateDemuxerService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
-        MEDIA_LOGE("demuxer service does not exist.");
+        AVCODEC_LOGE("demuxer service does not exist.");
         printf("demuxer service does not exist\n");
         return nullptr;
     }
@@ -195,16 +195,16 @@ int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sour
 
 sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
 {
-    MEDIA_LOGD("enter");
+    AVCODEC_LOGD("enter");
     auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     CHECK_AND_RETURN_RET_LOG(samgr != nullptr, nullptr, "system ability manager is nullptr.");
 
     sptr<IRemoteObject> object = samgr->GetSystemAbility(OHOS::AVCODEC_SERVICE_ID);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "avcodec object is nullptr.");
 
-    avcodecProxy_ = iface_cast<IStandardAVCodecService>(object);
+    avCodecProxy_ = iface_cast<IStandardAVCodecService>(object);
     
-    CHECK_AND_RETURN_RET_LOG(avcodecProxy_ != nullptr, nullptr, "avcodec proxy is nullptr.");
+    CHECK_AND_RETURN_RET_LOG(avCodecProxy_ != nullptr, nullptr, "avcodec proxy is nullptr.");
 
     pid_t pid = 0;
     deathRecipient_ = new(std::nothrow) AVCodecDeathRecipient(pid);
@@ -213,27 +213,27 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
     deathRecipient_->SetNotifyCb(std::bind(&AVCodecClient::AVCodecServerDied, std::placeholders::_1));
     bool result = object->AddDeathRecipient(deathRecipient_);
     if (!result) {
-        MEDIA_LOGE("failed to add deathRecipient");
+        AVCODEC_LOGE("failed to add deathRecipient");
         return nullptr;
     }
 
     listenerStub_ = new(std::nothrow) AVCodecListenerStub();
     CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, nullptr, "failed to new AVCodecListenerStub");
-    return avcodecProxy_;
+    return avCodecProxy_;
 }
 
 void AVCodecClient::AVCodecServerDied(pid_t pid)
 {
-    MEDIA_LOGE("avcodec server is died, pid:%{public}d!", pid);
-    avcodecClientInstance.DoAVCodecServerDied();
+    AVCODEC_LOGE("avcodec server is died, pid:%{public}d!", pid);
+    avCodecClientInstance.DoAVCodecServerDied();
 }
 
 void AVCodecClient::DoAVCodecServerDied()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (avcodecProxy_ != nullptr) {
-        (void)avcodecProxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
-        avcodecProxy_ = nullptr;
+    if (avCodecProxy_ != nullptr) {
+        (void)avCodecProxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
+        avCodecProxy_ = nullptr;
     }
     listenerStub_ = nullptr;
     deathRecipient_ = nullptr;
