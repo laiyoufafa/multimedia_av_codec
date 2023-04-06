@@ -1,0 +1,110 @@
+# Copyright (C) 2023 Huawei Device Co., Ltd.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import("//build/ohos.gni")
+import("//foundation/multimedia/av_codec/config.gni")
+
+AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
+
+config("av_codec_client_local_config") {
+  include_dirs = [
+    "$AV_CODEC_ROOT_DIR/services/services/factory",
+    "$AV_CODEC_ROOT_DIR/services/engine/muxer",
+    "$AV_CODEC_ROOT_DIR/services/engine/factory",
+    "$AV_CODEC_ROOT_DIR/services/engine/muxer",
+    "$AV_CODEC_ROOT_DIR/services/engine/plugin/common",
+    "$AV_CODEC_ROOT_DIR/services/engine/plugin/core",
+    "$AV_CODEC_ROOT_DIR/services/engine/plugin/interface",
+  ]
+}
+
+config("av_codec_client_public_config") {
+  include_dirs = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer",
+    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+    "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
+    "$AV_CODEC_ROOT_DIR/services/utils",
+    "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
+    "//utils/system/safwk/native/include",
+    "//third_party/bounds_checking_function/include",
+    "//commonlibrary/c_utils/base/include",
+  ]
+
+  cflags = [
+    "-fno-exceptions",
+    "-Wall",
+    "-fno-common",
+    "-fstack-protector-strong",
+    "-Wshadow",
+    "-FPIC",
+    "-FS",
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+    "-Wformat=2",
+    "-Wdate-time",
+  ]
+
+  cflags_cc = [
+    "-std=c++17",
+    "-fno-rtti",
+  ]
+
+  if (target_cpu == "arm") {
+    cflags += [ "-DBINDER_IPC_32BIT" ]
+  }
+
+  defines = []
+  defines += av_codec_defines
+
+  if (target_cpu == "arm64") {
+    av_codec_plugin_path = "\"/system/lib64/media/av_codec_plugins\""
+  } else {
+    av_codec_plugin_path = "\"/system/lib/media/av_codec_plugins\""
+  }
+
+  defines += [
+    "AV_CODEC_PLUGIN_PATH=${av_codec_plugin_path}",
+    "AV_CODEC_PLUGIN_FILE_TAIL=\".z.so\"",
+  ]
+}
+
+ohos_shared_library("av_codec_client") {
+  install_enable = true
+  
+  sources = [
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer/avmuxer_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/services/engine/muxer/muxer_engine_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/services/engine/factory/muxer_factory.cpp",
+      "$AV_CODEC_ROOT_DIR/services/engine/plugin/core/muxer.cpp",
+      "$AV_CODEC_ROOT_DIR/services/engine/plugin/core/plugin_loader.cpp",
+  ]
+
+  public_configs = [
+      ":av_codec_client_local_config",
+      ":av_codec_client_public_config",
+  ]
+
+  deps = [
+      "$AV_CODEC_ROOT_DIR/services/engine/plugin:av_codec_plugin",
+      "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
+      "//third_party/bounds_checking_function:libsec_static",
+  ]
+
+  external_deps = [
+      "c_utils:utils",
+      "hiviewdfx_hilog_native:libhilog",
+  ]
+
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
