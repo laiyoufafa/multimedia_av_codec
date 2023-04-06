@@ -216,13 +216,14 @@ OH_AVCodecErrCode OH_AVCodec_QueueInputBuffer(OH_AVCodec *codec, uint32_t index,
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param index Pointer to an uint32_t instance
+ * @param attr Pointer to an OH_AVCodecBufferAttr instance
  * @param timeoutUs timeoutUs
  * @return Returns AVCODEC_ERR_OK if the execution is successful,
  * otherwise returns negtive value for invalid buffer index
  * @since 10
  * @version 4.0
  */
-OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t *index, int64_t timeoutUs);
+OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t *index, OH_AVCodecBufferAttr *attr, int64_t timeoutUs);
 
 /**
  * @brief Get an output buffer. 
