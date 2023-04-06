@@ -62,7 +62,7 @@ bool AVCodecClient::IsAlived()
         avCodecProxy_ = GetAVCodecProxy();
     }
 
-    return (avCodecProxy_ != nullptr) ? true : false;
+    return avCodecProxy_ != nullptr;
 }
 #ifdef SUPPORT_CODEC
 std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
