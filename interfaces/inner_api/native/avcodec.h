@@ -32,7 +32,7 @@ public:
      * @brief Configure the codec.
      *
      * @param format The format of the input data and the desired format of the output data.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -41,7 +41,7 @@ public:
     /**
      * @brief Start codec.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -52,7 +52,7 @@ public:
      *
      * This function must be called during running
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -61,7 +61,7 @@ public:
     /**
      * @brief Flush both input and output buffers of the codec.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -70,7 +70,7 @@ public:
     /**
      * @brief Notify eos of the encoder.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -79,7 +79,7 @@ public:
     /**
      * @brief Restores the codec to the initial state.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -88,7 +88,7 @@ public:
     /**
      * @brief Releases codec resources. All methods are unavailable after calling this.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -111,7 +111,7 @@ public:
      * This function must be called before {@link Start}
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -123,7 +123,7 @@ public:
      * This function must be called before {@link Start}
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -149,7 +149,7 @@ public:
      * @param index The index of the input buffer.
      * @param info The info of the input buffer. For details, see {@link AVCodecBufferInfo}
      * @param flag The flag of the input buffer. For details, see {@link AVCodecBufferFlag}
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -162,7 +162,7 @@ public:
      *
      * @param index The index of the input buffer.
      * @param timeUs timeoutUs
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -174,12 +174,13 @@ public:
      * This function must be called during running
      *
      * @param index The index of the output buffer.
+     * @param attr Pointer to an OH_AVCodecBufferAttr instance
      * @param timeUs timeoutUs
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueOutputBuffer(size_t *index, AVCodecBufferInfo *attr, int64_t timetUs) = 0;
 
     /**
      * @brief Returns a {@link AVSharedMemory} object for a output buffer index that contains the data.
@@ -199,7 +200,7 @@ public:
      * This function must be called after {@link Configure}
      *
      * @param format
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -211,7 +212,7 @@ public:
      * This function must be called during running
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -223,7 +224,7 @@ public:
      * This function must be called after {@link Configure}
      *
      * @param format The parameters.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -235,7 +236,7 @@ public:
      * This function must be called before {@link Configure}
      *
      * @param callback Indicates the codec listener to register. For details, see {@link AVCodecCallback}.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */

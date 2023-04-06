@@ -14,9 +14,9 @@
  */
 
 #include "avcodec_impl.h"
-#include "i_avcodec_service.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "i_media_service.h"
+#include "av_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecImpl"};
@@ -30,8 +30,8 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, boo
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecImpl");
 
     AVCodecType codeType = encoder ? AVCODEC_TYPE_ENCODER : AVCODEC_TYPE_DECODER;
-    int32_t ret = impl->Init(codeType, true, mime);;
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to init AVCodecImpl");
+    int32_t ret = impl->Init(codeType, true, mime);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecImpl");
 
     return impl;
 }
@@ -42,7 +42,7 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByName(const std::string &name)
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecImpl");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_NONE, false, name);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed to init AVCodecImpl");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecImpl");
 
     return impl;
 }

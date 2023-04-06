@@ -60,12 +60,12 @@ OH_AVCodec *OH_AVCodec_CreateByName(const char *name);
  * @brief destroy the codec and free its resources.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Destroy(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_Destroy(OH_AVCodec *codec);
 
 /**
  * @brief Set the asynchronous callback function so that your application can respond to the events
@@ -74,12 +74,12 @@ OH_AVErrCode OH_AVCodec_Destroy(OH_AVCodec *codec);
  * @param codec Pointer to an OH_AVCodec instance
  * @param callback A collection of all callback functions, see {@link OH_AVCodecCallback}
  * @param userData User specific data
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_SetCallback(OH_AVCodec *codec, OH_AVCodecCallback callback, void *userData);
+OH_AVCodecErrCode OH_AVCodec_SetCallback(OH_AVCodec *codec, OH_AVCodecCallback callback, void *userData);
 
 /**
  * @brief To configure the codec, typically, you would get the fotmat from an extractor for decoding.
@@ -87,36 +87,36 @@ OH_AVErrCode OH_AVCodec_SetCallback(OH_AVCodec *codec, OH_AVCodecCallback callba
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param format A pointer to an OH_AVFormat to give the description of the video track to be decoded
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Configure(OH_AVCodec *codec, OH_AVFormat *format);
+OH_AVCodecErrCode OH_AVCodec_Configure(OH_AVCodec *codec, OH_AVFormat *format);
 
 /**
  * @brief Start the codec, this interface must be called after the OH_AVCodec_Configure is successful.
  * After being successfully started, the codec will start reporting InputDataReady events.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Start(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_Start(OH_AVCodec *codec);
 
 /**
  * @brief Stop the codec. After stopping, you can re-enter the Started state through Start,
  * but it should be noted that if Codec-Specific-Data has been input to the decoder before, it needs to be input again.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Stop(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_Stop(OH_AVCodec *codec);
 
 /**
  * @brief Clear the input and output data buffered in the codec. After this interface is called, all the Buffer
@@ -124,24 +124,24 @@ OH_AVErrCode OH_AVCodec_Stop(OH_AVCodec *codec);
  * the Buffers corresponding to these indexes.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Flush(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_Flush(OH_AVCodec *codec);
 
 /**
  * @brief Reset the codec. To continue decoding, you need to call the Configure interface again
  * to configure the codec instance.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_Reset(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_Reset(OH_AVCodec *codec);
 
 /**
  * @brief Get the format information of the output data of the codec, refer to {@link OH_AVFormat}
@@ -161,24 +161,25 @@ OH_AVFormat *OH_AVCodec_GetOutputFormat(OH_AVCodec *codec);
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param format pointer to an OH_AVFormat instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_SetParameter(OH_AVCodec *codec, OH_AVFormat *format);
+OH_AVCodecErrCode OH_AVCodec_SetParameter(OH_AVCodec *codec, OH_AVFormat *format);
 
 /**
  * @brief Get the index of the next ready input buffer. 
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
+ * @param index Pointer to an uint32_t instance
  * @param timeoutUs timeoutUs
- * @return Returns non-negtive value of the buffer index,
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
  * otherwise returns negtive value for invalid buffer index
  * @since 10
  * @version 4.0
  */
-int32_t OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
+OH_AVCodecErrCode OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, uint32_t *index, int64_t timeoutUs);
 
 /**
  * @brief Get an input buffer. 
@@ -190,7 +191,7 @@ int32_t OH_AVCodec_DequeueInputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
  * @since 10
  * @version 4.0
  */
-OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index);
+OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, uint32_t index);
 
 /**
  * @brief Submit the input buffer filled with data to the codec. The {@link OH_AVCodecOnInputDataReady} callback
@@ -203,24 +204,26 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index);
  * @param codec Pointer to an OH_AVCodec instance
  * @param index Enter the index value corresponding to the Buffer
  * @param attr Information describing the data contained in the Buffer
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_QueueInputBuffer(OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr);
+OH_AVCodecErrCode OH_AVCodec_QueueInputBuffer(OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr);
 
 /**
  * @brief Get the index of the next ready output buffer of processed data. 
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
+ * @param index Pointer to an uint32_t instance
+ * @param attr Pointer to an OH_AVCodecBufferAttr instance
  * @param timeoutUs timeoutUs
- * @return Returns non-negtive value of the buffer index,
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
  * otherwise returns negtive value for invalid buffer index
  * @since 10
  * @version 4.0
  */
-int32_t OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
+OH_AVCodecErrCode OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, uint32_t *index, OH_AVCodecBufferAttr *attr, int64_t timeoutUs);
 
 /**
  * @brief Get an output buffer. 
@@ -232,31 +235,31 @@ int32_t OH_AVCodec_DequeueOutputBuffer(OH_AVCodec *codec, int64_t timeoutUs);
  * @since 10
  * @version 4.0
  */
-OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index);
+OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, uint32_t index);
 
 /**
  * @brief Return the processed output Buffer to the codec.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param index The index value corresponding to the output Buffer
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_ReleaseOutputData(OH_AVCodec *codec, uint32_t index);
+OH_AVCodecErrCode OH_AVCodec_ReleaseOutputData(OH_AVCodec *codec, uint32_t index);
 
 /**
  * @brief Get the input Surface from the video encoder, this interface must be called before Configure is called.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param window A pointer to a OHNativeWindow instance, see {@link OHNativeWindow}
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoEncoderGetSurface(OH_AVCodec *codec, OHNativeWindow **window);
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetSurface(OH_AVCodec *codec, OHNativeWindow **window);
 
 /**
  * @brief Create a persistent surface that can be used as the input to encoder.
@@ -264,12 +267,12 @@ OH_AVErrCode OH_AVCodec_VideoEncoderGetSurface(OH_AVCodec *codec, OHNativeWindow
  * A persistent surface can be connected to at most one instance of AVCodec.
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param window A pointer to a OHNativeWindow instance, see {@link OHNativeWindow}
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoEncoderGetPersistentSurface(OHNativeWindow **window);
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderGetPersistentSurface(OHNativeWindow **window);
 
 /**
  * @brief Set a persistent surface that can be used as the input to encoder, inplaces of input buffers.
@@ -278,12 +281,12 @@ OH_AVErrCode OH_AVCodec_VideoEncoderGetPersistentSurface(OHNativeWindow **window
  * @param codec Pointer to an OH_AVCodec instance
  * @param window A pointer to a OHNativeWindow instance, see {@link OHNativeWindow}, 
  * which must be a presistent surface created by OH_AVCodec_VideoEncoderGetPersistentSurface()
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoEncoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window);
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window);
 
 /**
  * @brief Specify the output Surface to provide video decoding output,
@@ -291,12 +294,12 @@ OH_AVErrCode OH_AVCodec_VideoEncoderSetSurface(OH_AVCodec *codec, OHNativeWindow
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param window A pointer to a OHNativeWindow instance, see {@link OHNativeWindow}
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoDecoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window);
+OH_AVCodecErrCode OH_AVCodec_VideoDecoderSetSurface(OH_AVCodec *codec, OHNativeWindow *window);
 
 /**
  * @brief Return the processed output Buffer to the decoder, and notify the decoder to finish rendering the
@@ -305,24 +308,36 @@ OH_AVErrCode OH_AVCodec_VideoDecoderSetSurface(OH_AVCodec *codec, OHNativeWindow
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
  * @param index The index value corresponding to the output Buffer
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoDecoderRenderFrame(OH_AVCodec *codec, uint32_t index);
+OH_AVCodecErrCode OH_AVCodec_VideoDecoderRenderFrame(OH_AVCodec *codec, uint32_t index);
 
 /**
  * @brief Notifies the video encoder that the input stream has ended. It is recommended to use this interface to notify
  * the encoder of the end of the stream in surface mode
  * @syscap SystemCapability.Multimedia.AVCodec.Codec
  * @param codec Pointer to an OH_AVCodec instance
- * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_AVCodec_VideoEncoderNotifyEndOfStream(OH_AVCodec *codec);
+OH_AVCodecErrCode OH_AVCodec_VideoEncoderNotifyEndOfStream(OH_AVCodec *codec);
+
+/**
+ * @brief Is used to check whether the current codec instance is valid. It can be used fault recovery or app 
+ * switchback from the background
+ * @syscap SystemCapability.Multimedia.AVCodec.Codec
+ * @param codec Pointer to an OH_AVCodec instance
+ * @return Returns AVCODEC_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVCodecErrCode}
+ * @since 10
+ * @version 4.0
+ */
+bool OH_AVCodec_IsValid(OH_AVCodec *codec);
 
 #ifdef __cplusplus
 }
