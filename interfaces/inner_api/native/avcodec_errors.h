@@ -76,25 +76,10 @@ typedef enum AVCodecServiceErrCode : ErrCode {
     AVCS_ERR_EXTEND_START      = AVCS_ERR_OFFSET + 0xF000, // extend err start.
 } AVCodecServiceErrCode;
 
-// avcodec api error code
-typedef enum AVCodecServiceExtErrCode : ErrCode {
-    AVCS_ERR_EXT_OK = 0,
-    AVCS_ERR_EXT_NO_MEMORY = 1,           // no memory.
-    AVCS_ERR_EXT_OPERATE_NOT_PERMIT = 2,  // opertation not be permitted.
-    AVCS_ERR_EXT_INVALID_VAL = 3,         // invalid argument.
-    AVCS_ERR_EXT_IO = 4,                  // IO error.
-    AVCS_ERR_EXT_TIMEOUT = 5,             // network timeout.
-    AVCS_ERR_EXT_UNKNOWN = 6,             // unknown error.
-    AVCS_ERR_EXT_SERVICE_DIED = 7,        // avcodec service died.
-    AVCS_ERR_EXT_INVALID_STATE = 8,       // the state is not support this operation.
-    AVCS_ERR_EXT_UNSUPPORT = 9,           // unsupport interface.
-    AVCS_ERR_EXT_EXTEND_START = 100,      // extend err start.
-} AVCodecServiceExtErrCode;
-
 __attribute__((visibility("default"))) std::string AVCSErrorToString(AVCodecServiceErrCode code);
-__attribute__((visibility("default"))) std::string AVCSExtErrorToString(AVCodecServiceExtErrCode code);
-__attribute__((visibility("default"))) std::string AVCSErrorToExtErrorString(AVCodecServiceErrCode code);
-__attribute__((visibility("default"))) AVCodecServiceExtErrCode AVCSErrorToExtError(AVCodecServiceErrCode code);
+__attribute__((visibility("default"))) std::string OHAVErrCodeToString(OH_AVErrCode code);
+__attribute__((visibility("default"))) std::string AVCSErrorToOHAVErrCodeString(AVCodecServiceErrCode code);
+__attribute__((visibility("default"))) OH_AVErrCode AVCSErrorToOHAVErrCode(AVCodecServiceErrCode code);
 
 } // namespace AVCodec
 } // namespace OHOS
