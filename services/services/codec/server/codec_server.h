@@ -18,7 +18,6 @@
 
 #include <queue>
 #include "i_codec_service.h"
-#include "time_monitor.h"
 #include "nocopyable.h"
 
 namespace OHOS {
