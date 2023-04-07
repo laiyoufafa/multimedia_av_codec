@@ -36,13 +36,13 @@ protected:
 
 private:
     void InitStub();
-    int32_t GetSystemAbility(MessageParcel &data, MessageParcel &reply);
+    int32_t GetSubSystemAbility(MessageParcel &data, MessageParcel &reply);
     void ClientDied(pid_t pid);
     int32_t DestroyStubForPid(pid_t pid);
 
     std::map<pid_t, sptr<AVCodecDeathRecipient>> deathRecipientMap_;
-    std::map<pid_t, sptr<IStandardAVCodecListener>> avcodecListenerMap_;
-    std::map<uint32_t, AVCodecStubFunc> avcodecFuncs_;
+    std::map<pid_t, sptr<IStandardAVCodecListener>> avCodecListenerMap_;
+    std::map<uint32_t, AVCodecStubFunc> avCodecFuncs_;
     std::mutex mutex_;
 };
 } // namespace AVCodec
