@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include "ashmem.h"
 #include "avcodec_errors.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "scope_guard.h"
 
 namespace {

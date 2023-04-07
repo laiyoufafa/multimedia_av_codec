@@ -16,7 +16,7 @@
 #include "avcodeclist_service_proxy.h"
 #include "media_parcel.h"
 // #include "avsharedmemory_ipc.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {
@@ -28,12 +28,12 @@ namespace AVCodec {
 AVCodecListServiceProxy::AVCodecListServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardAVCodecListService>(impl)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListServiceProxy::~AVCodecListServiceProxy()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 std::string AVCodecListServiceProxy::FindVideoDecoder(const Format &format)

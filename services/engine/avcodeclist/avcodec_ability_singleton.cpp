@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_ability_singleton.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecAbilitySingleton"};
@@ -30,12 +30,12 @@ AVCodecAbilitySingleton& AVCodecAbilitySingleton::GetInstance()
 
 AVCodecAbilitySingleton::AVCodecAbilitySingleton()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecAbilitySingleton::~AVCodecAbilitySingleton()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void AVCodecAbilitySingleton::RegisterCapabilitys(const std::vector<CapabilityData> &capaArray)
@@ -43,7 +43,7 @@ void AVCodecAbilitySingleton::RegisterCapabilitys(const std::vector<CapabilityDa
     std::lock_guard<std::mutex> lock(mutex_);
     capabilityDataArray_.insert(capabilityDataArray_.end(), capaArray.begin(),
         capaArray.end());
-    MEDIA_LOGD("RegisterCapability success");
+    AVCODEC_LOGD("RegisterCapability success");
 }
 
 std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilitys()

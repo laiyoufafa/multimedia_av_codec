@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include "avsharedmemory_ipc.h"
 #include "avcodec_errors.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "media_server_manager.h"
 
 namespace {
@@ -38,12 +38,12 @@ sptr<AVCodecListServiceStub> AVCodecListServiceStub::Create()
 
 AVCodecListServiceStub::AVCodecListServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListServiceStub::~AVCodecListServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t AVCodecListServiceStub::Init()
@@ -70,11 +70,11 @@ int32_t AVCodecListServiceStub::DestroyStub()
 int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {
-    MEDIA_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
+    AVCODEC_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
     if (AVCodecListServiceStub::GetDescriptor() != remoteDescriptor) {
-        MEDIA_LOGE("Invalid descriptor");
+        AVCODEC_LOGE("Invalid descriptor");
         return AVCS_ERR_INVALID_OPERATION;
     }
 
@@ -84,12 +84,12 @@ int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, 
         if (memberFunc != nullptr) {
             int32_t ret = (this->*memberFunc)(data, reply);
             if (ret != AVCS_ERR_OK) {
-                MEDIA_LOGE("calling memberFunc is failed.");
+                AVCODEC_LOGE("calling memberFunc is failed.");
             }
             return AVCS_ERR_OK;
         }
     }
-    MEDIA_LOGW("AVCodecListServiceStub: no member func supporting, applying default process");
+    AVCODEC_LOGW("AVCodecListServiceStub: no member func supporting, applying default process");
 
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }

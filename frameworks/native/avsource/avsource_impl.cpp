@@ -16,7 +16,7 @@
 #include "avsource_impl.h"
 #include "i_media_service.h"
 #include "avcodec_errors.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSourceImpl"}
@@ -51,7 +51,7 @@ uint8_t GetSourceAttr()
 
 AVSourceImpl::AVSourceImpl()
 {
-    MEDIA_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
 }
 
 AVSourceImpl::~AVSourceImpl()
@@ -60,7 +60,7 @@ AVSourceImpl::~AVSourceImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVSourceService(sourceService_);
         sourceService_ = nullptr;
     }
-    MEDIA_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
 }
 
 uint32_t AVSourceImpl::GetTrackCount()
@@ -97,7 +97,7 @@ AVSourceTrack::AVSourceTrackImpl(AVSource* source, uint32_t trackId)
 {
     trackId_ = trackId;
     sourceImpl_ = std::make_shared<AVSource>(source);
-    MEDIA_LOGD("AVSourceTrackImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVSourceTrackImpl:0x%{public}06" PRIXPTR " Instances create". FAKE_POINTER(this));
 }
 
 AVSourceTrack::~AVSourceTrackImpl()
@@ -105,7 +105,7 @@ AVSourceTrack::~AVSourceTrackImpl()
     if (sourceImpl_ != nullptr) {
         delete sourceImpl_;
     }
-    MEDIA_LOGD("AVSourceTrackImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
+    AVCODEC_LOGD("AVSourceTrackImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));
 }
 
 int32_t SetParameter(const Format &param)

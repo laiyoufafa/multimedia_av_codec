@@ -20,7 +20,7 @@
 #include "native_avmagic.h"
 #include "avcodec.h"
 #include "avsharedmemory.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {

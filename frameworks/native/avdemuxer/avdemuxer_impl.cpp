@@ -16,7 +16,7 @@
 #include "avdemuxer_impl.h"
 #include "i_media_service.h"
 #include "avcodec_errors.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerImpl"}

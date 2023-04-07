@@ -15,7 +15,7 @@
 
 #include "avsharedmemorypool.h"
 #include "avsharedmemorybase.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {

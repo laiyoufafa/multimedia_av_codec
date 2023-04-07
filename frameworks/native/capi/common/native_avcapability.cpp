@@ -16,7 +16,7 @@
 #include "native_avcapability.h"
 
 #include "native_avmagic.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {

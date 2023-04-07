@@ -14,7 +14,7 @@
  */
 
 #include "avcodeclist_client.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListClient"};
@@ -35,7 +35,7 @@ std::shared_ptr<AVCodecListClient> AVCodecListClient::Create(const sptr<IStandar
 AVCodecListClient::AVCodecListClient(const sptr<IStandardAVCodecListService> &ipcProxy)
     : codecListProxy_(ipcProxy)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListClient::~AVCodecListClient()
@@ -44,7 +44,7 @@ AVCodecListClient::~AVCodecListClient()
     if (codecListProxy_ != nullptr) {
         (void)codecListProxy_->DestroyStub();
     }
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void AVCodecListClient::MediaServerDied()

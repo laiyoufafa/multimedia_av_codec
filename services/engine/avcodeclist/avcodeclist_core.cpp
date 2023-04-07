@@ -16,7 +16,7 @@
 #include <cmath> // fabs
 #include "avcodeclist_core.h"
 #include "avcodec_ability_singleton.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListCore"};
@@ -27,19 +27,19 @@ namespace OHOS {
 namespace AVCodec {
 AVCodecListCore::AVCodecListCore()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListCore::~AVCodecListCore()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 bool AVCodecListCore::CheckBitrate(const Format &format, const CapabilityData &data)
 {
     int32_t targetBitrate;
     if (!format.ContainKey("bitrate")) {
-        MEDIA_LOGD("The bitrate of the format are not specified");
+        AVCODEC_LOGD("The bitrate of the format are not specified");
         return true;
     }
     (void)format.GetIntValue("bitrate", targetBitrate);
@@ -54,7 +54,7 @@ bool AVCodecListCore::CheckVideoResolution(const Format &format, const Capabilit
     int32_t targetWidth;
     int32_t targetHeight;
     if ((!format.ContainKey("width")) || (!format.ContainKey("height"))) {
-        MEDIA_LOGD("The width and height of the format are not specified");
+        AVCODEC_LOGD("The width and height of the format are not specified");
         return true;
     }
     (void)format.GetIntValue("width", targetWidth);
@@ -70,7 +70,7 @@ bool AVCodecListCore::CheckVideoPixelFormat(const Format &format, const Capabili
 {
     int32_t targetPixelFormat;
     if (!format.ContainKey("pixel_format")) {
-        MEDIA_LOGD("The pixel_format of the format are not specified");
+        AVCODEC_LOGD("The pixel_format of the format are not specified");
         return true;
     }
     (void)format.GetIntValue("pixel_format", targetPixelFormat);
@@ -83,7 +83,7 @@ bool AVCodecListCore::CheckVideoPixelFormat(const Format &format, const Capabili
 bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const CapabilityData &data)
 {
     if (!format.ContainKey("frame_rate")) {
-        MEDIA_LOGD("The frame_rate of the format are not specified");
+        AVCODEC_LOGD("The frame_rate of the format are not specified");
         return true;
     }
 
@@ -116,7 +116,7 @@ bool AVCodecListCore::CheckAudioChannel(const Format &format, const CapabilityDa
 {
     int32_t targetChannel;
     if (!format.ContainKey("channel_count")) {
-        MEDIA_LOGD("The channel_count of the format are not specified");
+        AVCODEC_LOGD("The channel_count of the format are not specified");
         return true;
     }
     (void)format.GetIntValue("channel_count", targetChannel);
@@ -130,7 +130,7 @@ bool AVCodecListCore::CheckAudioSampleRate(const Format &format, const Capabilit
 {
     int32_t targetSampleRate;
     if (!format.ContainKey("samplerate")) {
-        MEDIA_LOGD("The samplerate of the format are not specified");
+        AVCODEC_LOGD("The samplerate of the format are not specified");
         return true;
     }
     (void)format.GetIntValue("samplerate", targetSampleRate);
@@ -160,7 +160,7 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!format.ContainKey("codec_mime")) {
-        MEDIA_LOGD("Get MimeType from format failed");
+        AVCODEC_LOGD("Get MimeType from format failed");
         return "";
     }
     std::string targetMimeType;

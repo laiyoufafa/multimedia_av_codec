@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_list_impl.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "i_media_service.h"
 
@@ -43,7 +43,7 @@ int32_t AVCodecListImpl::Init()
 
 AVCodecListImpl::AVCodecListImpl()
 {
-    MEDIA_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListImpl::~AVCodecListImpl()
@@ -52,7 +52,7 @@ AVCodecListImpl::~AVCodecListImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVCodecListService(codecListService_);
         codecListService_ = nullptr;
     }
-    MEDIA_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 std::string AVCodecListImpl::FindVideoDecoder(const Format &format)

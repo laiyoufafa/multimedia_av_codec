@@ -16,7 +16,7 @@
 #include "native_avmuxer.h"
 #include "native_avmagic.h"
 #include "avmuxer.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVMuxer"};

@@ -15,7 +15,7 @@
 
 #include "format.h"
 #include "securec.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {

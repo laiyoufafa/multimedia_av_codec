@@ -14,7 +14,7 @@
  */
 
 #include "avcodeclist_server.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServer"};
@@ -26,7 +26,7 @@ std::shared_ptr<IAVCodecListService> AVCodecListServer::Create()
 {
     std::shared_ptr<AVCodecListServer> server = std::make_shared<AVCodecListServer>();
     if (!server->Init()) {
-        MEDIA_LOGE("failed to init AVCodecListServer");
+        AVCODEC_LOGE("failed to init AVCodecListServer");
         return nullptr;
     }
     return server;
@@ -34,12 +34,12 @@ std::shared_ptr<IAVCodecListService> AVCodecListServer::Create()
 
 AVCodecListServer::AVCodecListServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListServer::~AVCodecListServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 bool AVCodecListServer::Init()
