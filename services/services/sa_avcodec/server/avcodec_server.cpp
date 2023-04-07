@@ -27,8 +27,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 namespace OHOS {
 namespace AVCodec {
 REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AVCODEC_SERVICE_ID, true)
-AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate)
-    : SystemAbility(systemAbilityId, runOnCreate)
+AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate) : SystemAbility(systemAbilityId, runOnCreate)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
@@ -61,10 +60,10 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     const sptr<IRemoteObject> &listener)
 {
     int32_t ret = AVCodecServiceStub::SetDeathListener(listener);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "failed set death listener");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed set death listener");
 
     switch (subSystemId) {
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
         case AVCodecSystemAbility::AVCODEC_CODECLIST: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
         }
