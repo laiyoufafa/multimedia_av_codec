@@ -52,7 +52,7 @@ namespace AVCodec {
             AVCODEC_LOGE("%{public}s, check failed! ret = %{public}s", #cond, #ret); \
             return ret;                                       \
         }                                                     \
-    } while
+    } while (0)
 
 #define CHECK_AND_RETURN_RET_LOG(cond, ret, fmt, ...)         \
     do {                                                      \
@@ -60,7 +60,7 @@ namespace AVCodec {
             AVCODEC_LOGE(fmt, ##__VA_ARGS__);                 \
             return ret;                                       \
         }                                                     \
-    } while (0);
+    } while (0)
        
 #define CHECK_AND_RETURN_LOG(cond, fmt, ...)                  \
     do {                                                      \
@@ -68,7 +68,7 @@ namespace AVCodec {
             AVCODEC_LOGE(fmt, ##__VA_ARGS__);                 \
             return;                                           \
         }                                                     \
-    } while (0);       
+    } while (0)      
 
 #define CHECK_AND_BREAK_LOG(cond, fmt, ...)                   \
     if (1) {                                                  \
