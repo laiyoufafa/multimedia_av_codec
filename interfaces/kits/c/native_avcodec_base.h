@@ -40,9 +40,9 @@ typedef struct OH_AVSourceTrack OH_AVSourceTrack;
  */
 typedef struct OH_AVBufferElement {
     /* pointer to the buffer*/
-    OH_AVMemory *buffer,
+    OH_AVMemory *buffer;
     /* pointer to the metadata*/
-    OH_AVMemory *metadata,
+    OH_AVMemory *metadata;
 } OH_AVBufferElement;
 
 
