@@ -167,6 +167,43 @@ private:
     std::mutex mutex_;
 };
 
+char *OH_AVCodec_FindVideoEncoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindVideoEncoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindVideoDecoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindVideoDecoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindAudioEncoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindAudioEncoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindAudioDecoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindAudioDecoder(format->format_);
+    return nullptr;
+}
+
+OH_AVCapability *OH_AVCodec_GetCapability(const char *name)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    std::string nameStr;
+    nameStr.push_back(name)
+    CapabilityData capabilityData = codeclist->GetCapability(nameStr);
+    return OH_AVCapability(capabilityData);
+}
+
 struct OH_AVCodec *OH_AVCodec_CreateEncoderByMime(const char *mime)
 {
     CHECK_AND_RETURN_RET_LOG(mime != nullptr, nullptr, "input mime is nullptr!");
