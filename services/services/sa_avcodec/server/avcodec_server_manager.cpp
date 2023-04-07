@@ -13,13 +13,13 @@
  * limitations under the License.
  */
 
+#include "avcodec_server_manager.h"
 #include <thread>
 #include <unistd.h>
 #include <unordered_set>
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-#include "avcodec_server_manager.h"
 #include "service_dump_manager.h"
 #include "source_service_stub.h"
 #ifdef SUPPORT_CODECLIST
