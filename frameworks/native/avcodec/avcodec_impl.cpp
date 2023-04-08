@@ -15,7 +15,7 @@
 
 #include "avcodec_impl.h"
 #include "i_media_service.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {
@@ -50,7 +50,7 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByName(const std::string &name)
 int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     codecService_ = MediaServiceFactory::GetInstance().CreateAVCodecService();
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_UNKNOWN, "failed to create avcodec service");
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avcodec service");
 
     return codecService_->InitParameter(type, isMimeType, name);
 }
@@ -71,7 +71,7 @@ AVCodecImpl::~AVCodecImpl()
 
 int32_t AVCodecImpl::Configure(const Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
     return codecService_->Configure(format);
 }
 
@@ -161,11 +161,11 @@ sptr<Surface> AVCodecImpl::CreateInputSurface()
     return surface_;
 }
 
-int32_t AVCodecImpl::SetInputSurface(sptr<PersistentSurface> surface)
-{
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
-    return codecService_->SetInputSurface(surface);
-}
+// int32_t AVCodecImpl::SetInputSurface(sptr<PersistentSurface> surface)
+// {
+//     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
+//     return codecService_->SetInputSurface(surface);
+// }
 
 int32_t AVCodecImpl::DequeueInputBuffer(size_t *index, int64_t timetUs)
 {

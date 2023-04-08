@@ -247,7 +247,7 @@ OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, uint32_t index
  * @since 10
  * @version 4.0
  */
-OH_AVCodecErrCode OH_AVCodec_ReleaseOutputData(OH_AVCodec *codec, uint32_t index);
+OH_AVCodecErrCode OH_AVCodec_ReleaseOutputBuffer(OH_AVCodec *codec, uint32_t index);
 
 /**
  * @brief Get the input Surface from the video encoder, this interface must be called before Configure is called.
