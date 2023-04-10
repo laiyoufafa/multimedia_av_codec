@@ -32,6 +32,7 @@ config("av_codec_capi_config") {
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avmuxer",
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common",
     "$AV_CODEC_ROOT_DIR/services/utils",
+    "$AV_CODEC_ROOT_DIR/services/dfx/include",
   ]
 
   cflags = [

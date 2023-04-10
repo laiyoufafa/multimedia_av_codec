@@ -17,7 +17,6 @@
 #define AVSOURCE_H
 
 #include <memory>
-#include <stdint>
 #include <string>
 #include "avcodec_common.h"
 #include "format.h"

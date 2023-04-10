@@ -17,8 +17,8 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "ashmem.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 #include "scope_guard.h"
 
 namespace {

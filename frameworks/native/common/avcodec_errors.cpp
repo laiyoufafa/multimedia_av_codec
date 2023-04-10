@@ -199,8 +199,8 @@ std::string AVCSErrorToString(AVCodecServiceErrCode code)
         return AVCS_ERRCODE_INFOS.at(code);
     }
 
-    if (code > AVCODEC_ERR_EXTEND_START) {
-        return "extend error:" + std::to_string(static_cast<int32_t>(code - AVCODEC_ERR_EXTEND_START));
+    if (code > static_cast<int32_t>(AVCODEC_ERR_EXTEND_START)) {
+        return "extend error:" + std::to_string(code - static_cast<int32_t>(AVCODEC_ERR_EXTEND_START));
     }
 
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
@@ -212,8 +212,8 @@ std::string OHAVErrCodeToString(OH_AVErrCode code)
         return OHAVCODECERRCODE_INFOS.at(code);
     }
 
-    if (code > AVCODEC_ERR_EXTEND_START) {
-        return "extend error:" + std::to_string(static_cast<int32_t>(code - AVCODEC_ERR_EXTEND_START));
+    if (code > static_cast<int32_t>(AVCODEC_ERR_EXTEND_START)) {
+        return "extend error:" + std::to_string(code - static_cast<int32_t>(AVCODEC_ERR_EXTEND_START));
     }
 
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));

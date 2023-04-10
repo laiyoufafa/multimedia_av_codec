@@ -18,7 +18,7 @@ group("av_codec_engine_plugins") {
   deps = []
   if (multimedia_av_codec_support_demuxer) {
     deps += [
-      "plugins/demuxer:av_codec_engine_demuxer",
+      #"plugins/demuxer:av_codec_engine_demuxer",
     ]
   }
 }

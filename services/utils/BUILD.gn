@@ -19,7 +19,9 @@ ohos_static_library("av_codec_format") {
 
   include_dirs = [
     "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/interfaces/kits/c",
     "//foundation/multimedia/av_codec/services/utils/include",
+    "//foundation/multimedia/av_codec/services/dfx/include",
     "//commonlibrary/c_utils/base/include",
   ]
 
@@ -49,15 +51,18 @@ ohos_shared_library("av_codec_service_utils") {
     debug = false
   }
 
+  include_dirs = [
+    "//commonlibrary/c_utils/base/include",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/interfaces/kits/c",
+    "//foundation/multimedia/av_codec/services/utils/include",
+    "//foundation/multimedia/av_codec/services/dfx/include",
+  ]
+  
   sources = [
     "avdatasrcmemory.cpp",
     "avsharedmemorybase.cpp",
     "avsharedmemorypool.cpp"
-  ]
-
-  include_dirs = [
-    "//commonlibrary/c_utils/base/include",
-    "//foundation/multimedia/av_codec/interfaces/inner_api/native"
   ]
 
   cflags = [

@@ -37,7 +37,8 @@
           "ipc",
           "hisysevent_native",
           "c_utils",
-          "hilog_native"
+          "hilog_native",
+          "hitrace_native"
         ],
         "third_party": [
           "glib",

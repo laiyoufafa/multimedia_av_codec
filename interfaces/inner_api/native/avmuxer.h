@@ -17,10 +17,11 @@
 #define AVMUXER_H
 
 #include "format.h"
-#include "av_base.h"
+#include "avcodec_errors.h"
+#include "avcodec_base.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVMuxer {
 public:
     virtual ~AVMuxer() = default;

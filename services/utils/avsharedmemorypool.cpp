@@ -15,8 +15,8 @@
 
 #include "avsharedmemorypool.h"
 #include "avsharedmemorybase.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVShMemPool"};

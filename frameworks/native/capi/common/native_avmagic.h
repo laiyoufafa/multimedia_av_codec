@@ -19,6 +19,7 @@
 #include <refbase.h>
 #include "format.h"
 #include "avsharedmemory.h"
+#include "avcodec_common.h"
 
 
 #define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
@@ -55,7 +56,7 @@ struct OH_AVBufferElement : public OHOS::RefBase {
     ~OH_AVBufferElement() override;
     bool IsEqualBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
     const std::shared_ptr<OHOS::AVCodec::AVBufferElement> bufferElement_;
-}
+};
 
 struct OH_AVCodec : public OHOS::RefBase {
     explicit OH_AVCodec();

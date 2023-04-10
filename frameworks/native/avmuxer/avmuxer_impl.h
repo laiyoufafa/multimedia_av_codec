@@ -16,11 +16,11 @@
 #define AVMUXER_IMPL_H
 
 #include "avmuxer.h"
-#include "i_muxer_engine.h"
+#include "i_muxer_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVMuxerImpl : public AVMuxer, public NoCopyable {
 public:
     AVMuxerImpl(int32_t fd, OutputFormat format);
