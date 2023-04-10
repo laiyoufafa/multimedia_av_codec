@@ -99,10 +99,12 @@ bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const Capability
         case FORMAT_TYPE_DOUBLE:
             double targetFrameRateDouble;
             (void)format.GetDoubleValue("frame_rate", targetFrameRateDouble);
-            if ((static_cast<double>(data.frameRate.minVal) > targetFrameRateDouble &&
-                fabs(static_cast<double>(data.frameRate.minVal) - targetFrameRateDouble) >= EPSINON) ||
-                (static_cast<double>(data.frameRate.maxVal) < targetFrameRateDouble &&
-                fabs(static_cast<double>(data.frameRate.maxVal) - targetFrameRateDouble) >= EPSINON)) {
+            double minValDouble{data.frameRate.minVal};
+            double maxValDouble{data.frameRate.maxVal};
+            if ((minValDouble > targetFrameRateDouble &&
+                fabs(minValDouble - targetFrameRateDouble) >= EPSINON) ||
+                (maxValDouble < targetFrameRateDouble &&
+                fabs(maxValDouble - targetFrameRateDouble) >= EPSINON)) {
                 return false;
             }
             break;
@@ -228,5 +230,5 @@ CapabilityData AVCodecListCore::GetCapabilityData(std::string codecName)
     return capData;
 }
 
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

@@ -37,6 +37,6 @@ public:
 private:
     static inline BrokerDelegator<AVCodecListServiceProxy> delegator_;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_SERVICE_PROXY_H

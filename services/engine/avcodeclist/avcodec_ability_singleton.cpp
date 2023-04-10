@@ -51,5 +51,5 @@ std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilitys()
     std::lock_guard<std::mutex> lock(mutex_);
     return capabilityDataArray_;
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

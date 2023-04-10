@@ -48,6 +48,6 @@ public:
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardAVCodecListService");
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // I_STANDARD_AVCODECLIST_SERVICE_H

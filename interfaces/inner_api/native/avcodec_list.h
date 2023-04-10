@@ -88,6 +88,6 @@ private:
     ~AVCodecListFactory() = default;
 };
 
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODEC_LIST_H

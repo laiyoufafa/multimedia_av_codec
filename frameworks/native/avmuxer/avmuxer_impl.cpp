@@ -96,5 +96,5 @@ int32_t AVMuxerImpl::Stop()
     CHECK_AND_RETURN_RET_LOG(muxerEngine_ != nullptr, Status::CSERR_INVALID_OPERATION, "AVMuxer Engine does not exist");
     return muxerEngine_->Stop();
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

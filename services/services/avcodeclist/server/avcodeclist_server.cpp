@@ -74,5 +74,5 @@ CapabilityData AVCodecListServer::GetCapabilityData(std::string codecName)
 {
     return codecListCore_->GetCapabilityData(codecName);
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

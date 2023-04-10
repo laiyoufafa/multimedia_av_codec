@@ -32,6 +32,6 @@ private:
     std::vector<CapabilityData> capabilityDataArray_;
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODEABILITY_SINGLETON_H

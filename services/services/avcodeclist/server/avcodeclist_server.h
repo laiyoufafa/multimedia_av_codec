@@ -38,6 +38,6 @@ private:
     bool Init();
     std::shared_ptr<AVCodecListCore> codecListCore_;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_SERVER_H

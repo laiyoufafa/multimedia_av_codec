@@ -172,5 +172,5 @@ int32_t AVCodecListServiceStub::DestroyStub(MessageParcel &data, MessageParcel &
     reply.WriteInt32(DestroyStub());
     return AVCS_ERR_OK;
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

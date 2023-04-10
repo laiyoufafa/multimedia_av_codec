@@ -39,6 +39,6 @@ private:
     sptr<IStandardAVCodecListService> codecListProxy_ = nullptr;
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_SERVICE_CLIENT_H

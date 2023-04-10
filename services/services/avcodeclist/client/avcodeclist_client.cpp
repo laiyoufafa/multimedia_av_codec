@@ -89,5 +89,5 @@ CapabilityData AVCodecListClient::GetCapabilityData(std::string codecName)
         "codeclist service does not exist.");
     return codecListProxy_->GetCapabilityData(codecName);
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

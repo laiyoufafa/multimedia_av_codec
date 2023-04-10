@@ -43,6 +43,6 @@ private:
     std::string FindCodec(const Format &format, const AVCodecType &codecType);
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_CORE_H
