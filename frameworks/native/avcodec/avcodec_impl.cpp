@@ -161,11 +161,11 @@ sptr<Surface> AVCodecImpl::CreateInputSurface()
     return surface_;
 }
 
-int32_t AVCodecImpl::SetInputSurface(sptr<PersistentSurface> surface)
-{
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
-    return codecService_->SetInputSurface(surface);
-}
+// int32_t AVCodecImpl::SetInputSurface(sptr<PersistentSurface> surface)
+// {
+//     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
+//     return codecService_->SetInputSurface(surface);
+// }
 
 int32_t AVCodecImpl::DequeueInputBuffer(size_t *index, int64_t timetUs)
 {

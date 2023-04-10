@@ -115,7 +115,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
+    // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
 
     /**
      * @brief Sets the surface on which to render the output of this codec.
@@ -130,16 +130,16 @@ public:
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
 
     /**
-     * @brief Returns a {@link AVSharedMemory} object for a input buffer index that contains the data.
+     * @brief Returns a {@link AVBufferElement} object for a input buffer index that contains the data.
      *
      * This function must be called during running
      *
      * @param index The index of the input buffer.
-     * @return Returns {@link AVSharedMemory} if success; returns nullptr otherwise.
+     * @return Returns {@link AVBufferElement} if success; returns nullptr otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) = 0;
 
     /**
      * @brief Submits input buffer to codec.
@@ -166,7 +166,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) = 0;
 
     /**
      * @brief Get the index of the next ready Output buffer.
@@ -180,19 +180,19 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DequeueOutputBuffer(size_t *index, AVCodecBufferInfo *attr, int64_t timetUs) = 0;
+    virtual int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timetUs) = 0;
 
     /**
-     * @brief Returns a {@link AVSharedMemory} object for a output buffer index that contains the data.
+     * @brief Returns a {@link AVBufferElement} object for a output buffer index that contains the data.
      *
      * This function must be called during running
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link AVSharedMemory} if success; returns nullptr otherwise.
+     * @return Returns {@link AVBufferElement} if success; returns nullptr otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) = 0;
 
     /**
      * @brief Gets the format of the output data.

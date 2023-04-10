@@ -427,9 +427,9 @@ OH_AVCodecErrCode OH_AVCodec_VideoDecoderRenderFrame(struct OH_AVCodec *codec, u
     return AVCODEC_ERR_OK;
 }
 
-OH_AVCodecErrCode OH_AVCodec_ReleaseOutputData(struct OH_AVCodec *codec, uint32_t index)
+OH_AVCodecErrCode OH_AVCodec_ReleaseOutputBuffer(struct OH_AVCodec *codec, uint32_t index)
 {
-    AVCODEC_LOGD("In OH_AVCodec_ReleaseOutputData");
+    AVCODEC_LOGD("In OH_AVCodec_ReleaseOutputBuffer");
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
@@ -472,7 +472,7 @@ OH_AVCodecErrCode OH_AVCodec_SetCallback(
     return AVCODEC_ERR_OK;
 }
 
-OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
+OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
@@ -485,7 +485,7 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
     return bufferElement
 }
 
-OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
+OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
