@@ -20,7 +20,7 @@
 #include "native_avbase.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 using AudioSampleFormat = OH_AudioSampleFormat;
 using AudioChannelSet = OH_AudioChannelSet;
 using AudioChannelMask = OH_AudioChannelMask;
@@ -54,6 +54,6 @@ enum Status : int32_t {
     CSERR_SERVER = -19,               ///< Http server error
     CSERR_DELAY_READY = -20,          ///< Delay ready event
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 #endif // AV_BASE_H

@@ -15,7 +15,7 @@
 
 #include "avmuxer_impl.h"
 #include <unistd.h>
-#include "av_log.h"
+#include "avcodec_log.h"
 
 
 namespace {
@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat format)
 {
     CHECK_AND_RETURN_RET_LOG((fcntl(fd, F_GETFL, 0) & O_RDWR) == O_RDWR, nullptr, "No permission to read and write fd");
@@ -96,5 +96,5 @@ int32_t AVMuxerImpl::Stop()
     CHECK_AND_RETURN_RET_LOG(muxerEngine_ != nullptr, Status::CSERR_INVALID_OPERATION, "AVMuxer Engine does not exist");
     return muxerEngine_->Stop();
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

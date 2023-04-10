@@ -21,10 +21,56 @@
 #include "native_averrors.h"
 #include "native_avformat.h"
 #include "native_avcodec_base.h"
+#include "native_avcapablility.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Find the supported video encoder name by format(must contains video MIME).
+ * @param format Indicates a media description which contains required video encoder capability.
+ * @return  Returns video encoder name, if not find, return null.
+ * @since 10
+ * @version 1.0
+ */
+char *OH_AVCodec_FindVideoDecoder(const OH_AVFormat *format);
+
+/**
+ * @brief Find the supported video decoder name by format(must contains video MIME).
+ * @param format Indicates a media description which contains required video decoder capability.
+ * @return  Returns video decoder name, if not find, return null.
+ * @since 10
+ * @version 1.0
+ */
+char *OH_AVCodec_FindVideoDecoder(const OH_AVFormat *format);
+
+/**
+ * @brief Find the supported audio encoder name by format(must contains audio MIME).
+ * @param format Indicates a media description which contains required audio encoder capability.
+ * @return  Returns audio encoder name, if not find, return null.
+ * @since 10
+ * @version 1.0
+ */
+char *OH_AVCodec_FindAudioEncoder(const OH_AVFormat *format);
+
+/**
+ * @brief Find the supported audio decoder name by format(must contains audio MIME).
+ * @param format Indicates a media description which contains required audio decoder capability.
+ * @return  Returns audio decoder name, if not find, return empty string.
+ * @since 10
+ * @version 1.0
+ */
+char *OH_AVCodec_FindAudioDecoder(const OH_AVFormat *format);
+
+/**
+ * @brief Get the capabilities by codec name
+ * @param codeName Codec name
+ * @return Returns an array of supported video decoder capability, if not find, return null.
+ * @since 10
+ * @version 1.0
+ */
+OH_AVCapability *OH_AVCodec_GetCapability(const char *name);
 
 /**
  * @brief Creates encoder by mime type, which is recommended in most cases.

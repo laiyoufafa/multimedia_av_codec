@@ -20,7 +20,7 @@
 #include "av_base.h"
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 class AVMuxer {
 public:
     virtual ~AVMuxer() = default;
@@ -40,7 +40,7 @@ private:
     AVMuxerFactory() = default;
     ~AVMuxerFactory() = default;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 
 #endif // AVMUXER_H

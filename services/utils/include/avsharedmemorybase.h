@@ -62,7 +62,7 @@ public:
 
     /**
      * @brief Intialize the memory. Call this interface firstly before the other interface.
-     * @return MSERR_OK if success, otherwise the errcode.
+     * @return AVCS_ERR_OK if success, otherwise the errcode.
      */
     int32_t Init();
 

@@ -15,8 +15,8 @@
 
 #include "avdemuxer_impl.h"
 #include "i_media_service.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerImpl"}
@@ -30,7 +30,7 @@ std::shared_ptr<AVDemuxer> DemuxerFactory::CreateWithSource(Source *source)
     CHECK_AND_RETURN_RET_LOG(demuxerImpl != nullptr, nullptr, "failed to new AVDemuxerImpl");
 
     int32_t ret = demuxerImpl->Init(source);
-    CHECK_AND_RETURN_RET_LOG(ret !== MSERR_OK, nullptr, "failed to init AVDemuxerImpl");
+    CHECK_AND_RETURN_RET_LOG(ret !== AVCS_ERR_OK, nullptr, "failed to init AVDemuxerImpl");
 
     return demuxerImpl;
 }
@@ -38,7 +38,7 @@ std::shared_ptr<AVDemuxer> DemuxerFactory::CreateWithSource(Source *source)
 int32_t AVDemuxerImpl::Init(Source *source)
 {
     demuxerService_ = MediaServiceFactory::GetInstance().CreateAVDemuxerService();
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avdemuxer service");
     uint8_t sourceAttr = source->GetSourceAttr();
     return demuxerService_->Init(sourceAttr);
 }
@@ -59,25 +59,25 @@ AVDemuxerImpl::~AVDemuxerImpl()
 
 int32_t AVDemuxerImpl::AddSourceTrackByID(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->AddSourceTrackByID(index);
 }
 
 int32_t AVDemuxerImpl::RemoveSourceTrackByID(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->RemoveSourceTrackByID(index);
 }
 
 int32_t AVDemuxerImpl::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->CopyCurrentSampleToBuf(buffer, bufferInfo);
 }
 
 int32_t AVDemuxerImpl::SeekToTimeStamp(int64_t mSeconds, SeekMode mode)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_INVALID_OPERATION, "avdemuxer service died!");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "avdemuxer service died!");
     return demuxerService_->SeekToTimeStamp(mSeconds, mode);
 }
 
