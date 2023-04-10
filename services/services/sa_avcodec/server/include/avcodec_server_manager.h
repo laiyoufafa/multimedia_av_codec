@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AV_CODEC_SERVER_MANAGER_H
-#define AV_CODEC_SERVER_MANAGER_H
+#ifndef AVCODEC_SERVER_MANAGER_H
+#define AVCODEC_SERVER_MANAGER_H
 
 #include <memory>
 #include <functional>
@@ -55,11 +55,26 @@ public:
 
 private:
     AVCodecServerManager();
-    sptr<IRemoteObject> CreateCodecListStubObject();
-    sptr<IRemoteObject> CreateCodecStubObject();
-    sptr<IRemoteObject> CreateMuxerStubObject();
+
+#ifdef SUPPORT_DEMUXER
     sptr<IRemoteObject> CreateDemuxerStubObject();
+#endif
+
+#ifdef SUPPORT_MUXER
+    sptr<IRemoteObject> CreateMuxerStubObject();
+#endif
+
+#ifdef SUPPORT_CODEC
+    sptr<IRemoteObject> CreateCodecStubObject();
+#endif
+
+#ifdef SUPPORT_CODECLIST
+    sptr<IRemoteObject> CreateCodecListStubObject();
+#endif
+
+#ifdef SUPPORT_SOURCE
     sptr<IRemoteObject> CreateSourceStubObject();
+#endif
 
     class AsyncExecutor {
     public:
@@ -72,10 +87,11 @@ private:
         std::list<sptr<IRemoteObject>> freeList_;
         std::mutex listMutex_;
     };
-    std::map<sptr<IRemoteObject>, pid_t> codecListStubMap_;
-    std::map<sptr<IRemoteObject>, pid_t> codecStubMap_;
+
     std::map<sptr<IRemoteObject>, pid_t> demuxerStubMap_;
     std::map<sptr<IRemoteObject>, pid_t> muxerStubMap_;
+    std::map<sptr<IRemoteObject>, pid_t> codecStubMap_;
+    std::map<sptr<IRemoteObject>, pid_t> codecListStubMap_;
     std::map<sptr<IRemoteObject>, pid_t> sourceStubMap_;
     std::map<StubType, std::vector<Dumper>> dumperTbl_;
     AsyncExecutor executor_;
@@ -84,4 +100,4 @@ private:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AV_CODEC_SERVER_MANAGER_H
+#endif // AVCODEC_SERVER_MANAGER_H

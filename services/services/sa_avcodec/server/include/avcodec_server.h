@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AV_CODEC_SERVER_H
-#define AV_CODEC_SERVER_H
+#ifndef AVCODEC_SERVER_H
+#define AVCODEC_SERVER_H
 
 #include "avcodec_service_stub.h"
 #include "system_ability.h"
@@ -41,4 +41,4 @@ protected:
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // AV_CODEC_SERVER_H
+#endif // AVCODEC_SERVER_H

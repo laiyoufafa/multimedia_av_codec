@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
-#include <unordered_set>
 #include "avcodec_server_manager.h"
-#include "source_service_stub.h"
-#include "avcodec_log.h"
-#include "avcodec_errors.h"
+#include <thread>
+#include <unistd.h>
+#include <unordered_set>
 #include "avcodec_dfx.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 #include "service_dump_manager.h"
-
+#include "source_service_stub.h"
 #ifdef SUPPORT_CODECLIST
 #include "codeclist_service_stub.h"
 #endif
@@ -36,14 +37,7 @@
 #ifdef SUPPORT_SOURCE
 #include "source_service_stub.h"
 #endif
-#ifdef SUPPORT_SOURCE
-#include "source_service_stub.h"
-#endif
 
-#include "av_log.h"
-#include "media_errors.h"
-#include <thread>
-#include <unistd.h>
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServerManager"};
 }
@@ -80,7 +74,7 @@ int32_t WriteInfo(int32_t fd, std::string &dumpString, std::vector<Dumper> dumpe
     if (fd != -1) {
         write(fd, dumpString.c_str(), dumpString.size());
     } else {
-        AVCodec_LOGI("%{public}s", dumpString.c_str());
+        AVCODEC_LOGI("%{public}s", dumpString.c_str());
     }
     dumpString.clear();
 
@@ -354,7 +348,7 @@ void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> 
     pid_t pid = IPCSkeleton::GetCallingPid();
     DestroyDumper(type, object);
     
-    auto compare_func = [object](pair<sptr<IRemoteObject>, pid_t> v) -> bool { return v.first == object };
+    auto compare_func = [object](pair<sptr<IRemoteObject>, pid_t> object) -> bool { return object.first == object };
     switch (type) {
         case CODEC: {
             auto it = find_if(codecStubMap_.begin(), codecStubMap_.end(), compare_func);
