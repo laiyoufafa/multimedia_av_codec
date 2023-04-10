@@ -38,6 +38,7 @@ config("av_codec_client_public_config") {
     "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
     "$AV_CODEC_ROOT_DIR/services/utils",
     "$AV_CODEC_ROOT_DIR/services/include",
+    "$AV_CODEC_ROOT_DIR/services/dfx/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
     "//utils/system/safwk/native/include",
     "//third_party/bounds_checking_function/include",

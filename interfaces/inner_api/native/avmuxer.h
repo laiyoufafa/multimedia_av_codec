@@ -19,6 +19,7 @@
 #include "format.h"
 #include "avcodec_errors.h"
 #include "avcodec_base.h"
+#include "avcodec_common.h"
 
 namespace OHOS {
 namespace AVCodec {

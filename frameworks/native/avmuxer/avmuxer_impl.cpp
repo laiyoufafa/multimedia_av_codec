@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace AVCodec {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat format)
 {
     std::shared_ptr<AVMuxerImpl> muxerImpl = std::make_shared<AVMuxerImpl>(fd, format);
