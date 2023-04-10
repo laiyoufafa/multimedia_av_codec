@@ -40,9 +40,10 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
 {
     std::unique_lock<std::mutex> lock(mutex_);
 
-    CHECK_AND_RETURN_RET(!inited_, MSERR_INVALID_OPERATION);
-    CHECK_AND_RETURN_RET(option.memSize < MAX_MEM_SIZE, MSERR_INVALID_VAL);
-    CHECK_AND_RETURN_RET(option.maxMemCnt != 0, MSERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET_LOG(!inited_, AVCS_ERR_INVALID_OPERATION, "already init, please do not init again.");
+    CHECK_AND_RETURN_RET_LOG(option.memSize < MAX_MEM_SIZE, AVCS_ERR_INVALID_VAL, "memSize = %{public}d is more than "
+                            "maxSize = %{public}d.", option.memSize, MAX_MEM_SIZE);
+    CHECK_AND_RETURN_RET_LOG(option.maxMemCnt != 0, AVCS_ERR_INVALID_VAL, "maxMemCnt is equal 0.");
 
     option_ = option;
     if (option.preAllocMemCnt > option.maxMemCnt) {
@@ -69,12 +70,12 @@ int32_t AVSharedMemoryPool::Init(const InitializeOption &option)
             delete *iter;
             *iter = nullptr;
         }
-        return MSERR_NO_MEMORY;
+        return AVCS_ERR_NO_MEMORY;
     }
 
     inited_ = true;
     notifier_ = option.notifier;
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 AVSharedMemory *AVSharedMemoryPool::AllocMemory(int32_t size)
@@ -82,7 +83,7 @@ AVSharedMemory *AVSharedMemoryPool::AllocMemory(int32_t size)
     AVSharedMemoryBase *memory = new (std::nothrow) AVSharedMemoryBase(size, option_.flags, name_);
     CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "create object failed");
 
-    if (memory->Init() != MSERR_OK) {
+    if (memory->Init() != AVCS_ERR_OK) {
         delete memory;
         memory = nullptr;
         AVCODEC_LOGE("init avsharedmemorybase failed");
@@ -143,7 +144,7 @@ bool AVSharedMemoryPool::DoAcquireMemory(int32_t size, AVSharedMemory **outMemor
         auto totalCnt = busyList_.size() + idleList_.size();
         if (totalCnt < option_.maxMemCnt) {
             result = AllocMemory(size);
-            CHECK_AND_RETURN_RET(result != nullptr, false);
+            CHECK_AND_RETURN_RET_LOG(result != nullptr, false, "result is nullptr, AllocMemory failed.");
         }
 
         if (!option_.enableFixedSize && minSizeIdleMem != idleList_.end()) {
@@ -151,7 +152,7 @@ bool AVSharedMemoryPool::DoAcquireMemory(int32_t size, AVSharedMemory **outMemor
             *minSizeIdleMem = nullptr;
             idleList_.erase(minSizeIdleMem);
             result = AllocMemory(size);
-            CHECK_AND_RETURN_RET(result != nullptr, false);
+            CHECK_AND_RETURN_RET_LOG(result != nullptr, false, "result is nullptr, AllocMemory failed.");
         }
     }
 

@@ -72,7 +72,6 @@ ohos_shared_library("av_codec_service") {
 
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
-    "$AV_CODEC_ROOT_DIR/services/utils/avsharedmemorybase.cpp",
   ]
 
   configs = [
