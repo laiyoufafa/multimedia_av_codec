@@ -179,6 +179,7 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
         if ((*iter).codecType != codecType ||
             (*iter).mimeType != targetMimeType ||
             (isVendorKey && (*iter).isVendor != isVendor)) {
+            ++iter;
             continue;
         }
 
