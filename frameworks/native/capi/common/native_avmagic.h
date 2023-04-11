@@ -63,6 +63,12 @@ struct OH_AVCodec : public OHOS::RefBase {
     virtual ~OH_AVCodec() = default;
 };
 
+struct OH_AVCapability : public OHOS::RefBase {
+    explicit OH_AVCapability(const CapabilityData &capabilityData);
+    ~OH_AVCapability() override;
+    CapabilityData capabilityData_;
+};
+
 struct OH_AVMuxer : public AVObjectMagic {
     explicit OH_AVMuxer(enum AVMagic m) : AVObjectMagic(m) {}
     virtual ~OH_AVMuxer() = default;

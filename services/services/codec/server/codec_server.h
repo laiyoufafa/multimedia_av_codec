@@ -17,6 +17,7 @@
 #define CODEC_SERVER_H
 
 #include <queue>
+#include "codecbase.h"
 #include "i_codec_service.h"
 #include "nocopyable.h"
 
@@ -44,13 +45,13 @@ public:
     virtual ~CodecServer();
 
     enum CodecStatus {
-        CODEC_UNINITIALIZED = 0,
-        CODEC_INITIALIZED,
-        CODEC_CONFIGURED,
-        CODEC_RUNNING,
-        CODEC_FLUSHED,
-        CODEC_END_OF_STREAM,
-        CODEC_ERROR,
+        UNINITIALIZED = 0,
+        INITIALIZED,
+        CONFIGURED,
+        RUNNING,
+        FLUSHED,
+        END_OF_STREAM,
+        ERROR,
     };
 
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name) override;
@@ -88,11 +89,11 @@ private:
     void ExitProcessor();
     const std::string &GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status);
 
-    CodecStatus status_ = CODEC_UNINITIALIZED;
+    CodecStatus status_ = UNINITIALIZED;
     
     // std::unique_ptr<IAVCodecEngine> codecEngine_;
-    std::unique_ptr<AVCodecBase> codecBase_;
-    std::shared_ptr<AVCodecCallback> codecCb_;
+    std::unique_ptr<CodecBase> codec_;
+    std::shared_ptr<CodecCallback> codecCb_;
     std::mutex mutex_;
     std::mutex cbMutex_;
     std::queue<uint32_t> inQueue_;

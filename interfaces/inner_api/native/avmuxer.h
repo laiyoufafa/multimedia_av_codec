@@ -42,7 +42,7 @@ private:
     AVMuxerFactory() = default;
     ~AVMuxerFactory() = default;
 };
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS
 
 #endif // AVMUXER_H

@@ -12,18 +12,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef AVCODECLISTBASE_H
-#define AVCODECLISTBASE_H
 
-#include <string>
+#ifndef AVCODEABILITY_SINGLETON_H
+#define AVCODEABILITY_SINGLETON_H
+
+#include <mutex>
 #include "avcodec_info.h"
-
 namespace OHOS {
 namespace AVCodec {
-class CodecListBase {
-    virtual ~CodecListBase() = default;
-    virtual int32_t GetCapabilityList(std::vector<CapabilityData>& caps) = 0;
+class __attribute__((visibility("default"))) AVCodecAbilitySingleton : public NoCopyable {
+public:
+    ~AVCodecAbilitySingleton();
+    static AVCodecAbilitySingleton& GetInstance();
+    bool RegisterCapabilitys(const std::vector<CapabilityData> &capaArray);
+    std::vector<CapabilityData> GetCapabilitys();
+
+private:
+    AVCodecAbilitySingleton();
+    std::vector<CapabilityData> capabilityDataArray_;
+    std::mutex mutex_;
 };
 } // namespace AVCodec
 } // namespace OHOS
-#endif // CODECLISTBASE_H
+#endif // AVCODEABILITY_SINGLETON_H

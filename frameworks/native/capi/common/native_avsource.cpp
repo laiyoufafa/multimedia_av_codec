@@ -16,8 +16,8 @@
 #include "avsource.h"
 #include "native_avmagic.h"
 #include "native_avsource.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVSource"}
@@ -72,7 +72,7 @@ OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source)
 
     if (sourceObj != nullptr && sourceObj->source_ != nullptr) {
         int32_t ret = sourceObj->source_->Destroy();
-        if (ret != MSERR_OK) {
+        if (ret != AVCS_ERR_OK) {
             AVCODEC_LOGE("source Destroy failed!");
             delete source;
             return AV_ERR_OPERATE_NOT_PERMIT;
@@ -93,7 +93,7 @@ uint32_t OH_AVSource_GetTrackCount(OH_AVSource *source)
     CHECK_AND_RETURN_RET_LOG(sourceObj->source_ != nullptr, nullptr, "source_ is nullptr!");
 
     int32_t ret = sourceObj->source_->GetTrackCount();
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source GetTrackCount failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source GetTrackCount failed!");
 
     return AV_ERR_OK;
 }
@@ -107,7 +107,7 @@ struct OH_AVSourceTrack *OH_AVSource_LoadSourceTrackByID(OH_AVSource *source, ui
     CHECK_AND_RETURN_RET_LOG(sourceObj->source_ != nullptr, nullptr, "source_ is nullptr!");
 
     int32_t ret = sourceObj->source_->LoadSourceTrackByID(trackId);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source LoadSourceTrackByID failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source LoadSourceTrackByID failed!");
 
     return AV_ERR_OK;
 }
@@ -130,7 +130,7 @@ OH_AVErrCode OH_AVSourceTrack_SetParameter(OH_AVSourceTrack *sourceTrack, OH_AVF
     CHECK_AND_RETURN_RET_LOG(sourceTrackObj->sourceTrack_ != nullptr, nullptr, "sourceTrack_ is nullptr!");
 
     int32_t ret = sourceTrackObj->sourceTrack_->SetParameter(param->format_);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack SetParameter failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack SetParameter failed!");
 
     return AV_ERR_OK;
 }
@@ -144,7 +144,7 @@ OH_AVFormat *OH_AVSourceTrack_GetTrackFormat(OH_AVSourceTrack *sourceTrack)
     
     Format format;
     int32_t ret = sourceTrackObj->sourceTrack_->GetTrackFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret != MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack GetTrackFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack GetTrackFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;

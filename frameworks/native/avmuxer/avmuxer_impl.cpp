@@ -96,5 +96,5 @@ int32_t AVMuxerImpl::Stop()
     CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
     return muxerService_->Stop();
 }
-} // namespace Media
+} // namespace AVCodec
 } // namespace OHOS

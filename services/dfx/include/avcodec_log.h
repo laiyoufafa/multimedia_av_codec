@@ -27,9 +27,9 @@ namespace AVCodec {
 
 #define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
-#define AVCODEC_LOG(func, fmt, args...)                       \
-    do {                                                      \
-        (void)func(LABEL, fmt, ##args);                       \
+#define AVCODEC_LOG(func, fmt, args...)                  \
+    do {                                                 \
+        (void)func(LABEL, "{%{public}s():%{public}d} " fmt, __FUNCTION__, __LINE__, ##args);   \
     } while (0)
 
 #define AVCODEC_LOGD(fmt, ...) AVCODEC_LOG(::OHOS::HiviewDFX::HiLog::Debug, fmt, ##__VA_ARGS__)
@@ -38,60 +38,36 @@ namespace AVCodec {
 #define AVCODEC_LOGE(fmt, ...) AVCODEC_LOG(::OHOS::HiviewDFX::HiLog::Error, fmt, ##__VA_ARGS__)
 #define AVCODEC_LOGF(fmt, ...) AVCODEC_LOG(::OHOS::HiviewDFX::HiLog::Fatal, fmt, ##__VA_ARGS__)
 
-#define CHECK_AND_RETURN(cond)                                \
-    do {                                                      \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE("%{public}s, check failed!", #cond); \
-            return;                                           \
-        }                                                     \
-    } while (0)
-
-#define CHECK_AND_RETURN_RET(cond, ret)                       \
-    do {                                                      \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE("%{public}s, check failed! ret = %{public}s", #cond, #ret); \
-            return ret;                                       \
-        }                                                     \
-    } while
-
-#define CHECK_AND_RETURN_RET_LOG(cond, ret, fmt, ...)         \
-    do {                                                      \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE(fmt, ##__VA_ARGS__);                 \
-            return ret;                                       \
-        }                                                     \
+#define CHECK_AND_RETURN_RET_LOG(cond, ret, fmt, ...)   \
+    do {                                                \
+        if (!(cond)) {                                  \
+            AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
+            return ret;                                 \
+        }                                               \
     } while (0);
        
-#define CHECK_AND_RETURN_LOG(cond, fmt, ...)                  \
-    do {                                                      \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE(fmt, ##__VA_ARGS__);                 \
-            return;                                           \
-        }                                                     \
+#define CHECK_AND_RETURN_LOG(cond, fmt, ...)            \
+    do {                                                \
+        if (!(cond)) {                                  \
+            AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
+            return;                                     \
+        }                                               \
     } while (0);       
 
-#define CHECK_AND_BREAK_LOG(cond, fmt, ...)                   \
-    if (1) {                                                  \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE(fmt, ##__VA_ARGS__);                 \
-            break;                                            \
-        }                                                     \
+#define CHECK_AND_BREAK_LOG(cond, fmt, ...)             \
+    if (1) {                                            \
+        if (!(cond)) {                                  \
+            AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
+            break;                                      \
+        }                                               \
     } else void (0)       
 
-#define CHECK_AND_BREAK(cond)                                 \
-    if (1) {                                                  \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE("%{public}s, check failed!", #cond); \
-            break;                                            \
-        }                                                     \
-    } else void (0)
-
-#define CHECK_AND_CONTINUE(cond)                              \
-    if (1) {                                                  \
-        if (!(cond)) {                                        \
-            AVCODEC_LOGE("%{public}s, check failed!", #cond); \
-            continue;                                         \
-        }                                                     \
+#define CHECK_AND_CONTINUE_LOG(cond, fmt, ...)          \
+    if (1) {                                            \
+        if (!(cond)) {                                  \
+            AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
+            continue;                                   \
+        }                                               \
     } else void (0)
 
 #define POINTER_MASK 0x00FFFFFF

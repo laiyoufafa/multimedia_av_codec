@@ -20,7 +20,7 @@
 #include "native_avmagic.h"
 #include "avcodec.h"
 #include "avsharedmemory.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {
@@ -166,6 +166,43 @@ private:
     void *userData_;
     std::mutex mutex_;
 };
+
+char *OH_AVCodec_FindVideoEncoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindVideoEncoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindVideoDecoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindVideoDecoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindAudioEncoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindAudioEncoder(format->format_);
+    return nullptr;
+}
+
+char *OH_AVCodec_FindAudioDecoder(const OH_AVFormat *format)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    codeclist->FindAudioDecoder(format->format_);
+    return nullptr;
+}
+
+OH_AVCapability *OH_AVCodec_GetCapability(const char *name)
+{
+    std::shared_ptr<AVCodecList> codeclist = AVCodecListFactory::CreateAVCodecList();
+    std::string nameStr;
+    nameStr.push_back(name)
+    CapabilityData capabilityData = codeclist->GetCapability(nameStr);
+    return OH_AVCapability(capabilityData);
+}
 
 struct OH_AVCodec *OH_AVCodec_CreateEncoderByMime(const char *mime)
 {
@@ -390,9 +427,9 @@ OH_AVCodecErrCode OH_AVCodec_VideoDecoderRenderFrame(struct OH_AVCodec *codec, u
     return AVCODEC_ERR_OK;
 }
 
-OH_AVCodecErrCode OH_AVCodec_ReleaseOutputData(struct OH_AVCodec *codec, uint32_t index)
+OH_AVCodecErrCode OH_AVCodec_ReleaseOutputBuffer(struct OH_AVCodec *codec, uint32_t index)
 {
-    AVCODEC_LOGD("In OH_AVCodec_ReleaseOutputData");
+    AVCODEC_LOGD("In OH_AVCodec_ReleaseOutputBuffer");
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AVCODEC_ERR_INVALID_VAL, "input codec is nullptr!");
 
     struct CodecObject *codecObj = reinterpret_cast<CodecObject *>(codec);
@@ -435,7 +472,7 @@ OH_AVCodecErrCode OH_AVCodec_SetCallback(
     return AVCODEC_ERR_OK;
 }
 
-OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
+OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 
@@ -448,7 +485,7 @@ OH_AVBufferElement* OH_AVCodec_GetInputBuffer(OH_AVCodec *codec, size_t index)
     return bufferElement
 }
 
-OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, size_t index)
+OH_AVBufferElement* OH_AVCodec_GetOutputBuffer(OH_AVCodec *codec, uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
 

@@ -34,7 +34,7 @@ public:
      * This function can only by called before {@link CopyCurrentSampleToBuf}.
      * 
      * @param index The index of the track to add.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -46,7 +46,7 @@ public:
      * This function can only by called before {@link CopyCurrentSampleToBuf}.
      * 
      * @param index The index of the track to remove.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -57,7 +57,7 @@ public:
      *
      * @param buffer The BufferElement pointer to store data.
      * @param attr The CodecBufferAttr pointer to store data attribute.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
@@ -68,7 +68,7 @@ public:
      * 
      * @param mSeconds The seconds for seeking.
      * @param mode The mode for seeking. Value. For details, see {@link SeekMode}.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
