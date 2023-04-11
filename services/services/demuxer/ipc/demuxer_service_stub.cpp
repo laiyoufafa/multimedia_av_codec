@@ -19,7 +19,7 @@
 #include "avsharedmemory_ipc.h"
 // #include "avcodec_parcel.h"
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServiceStub"};
 }
@@ -172,5 +172,5 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const SeekMode mod
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
 }
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS  

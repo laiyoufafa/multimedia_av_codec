@@ -5,7 +5,7 @@
 #include <memory>
 #include "avcodec_base.h"
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class IMuxerService {
 public:
     virtual ~IMuxerService() = default;
@@ -20,6 +20,6 @@ public:
     virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
     virtual int32_t Stop() = 0;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_MUXER_SERVICE_H

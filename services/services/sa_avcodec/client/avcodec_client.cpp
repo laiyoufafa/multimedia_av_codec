@@ -38,7 +38,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 
 static AVCodecClient avCodecClientInstance;
 IAVCodecService &AVCodecServiceFactory::GetInstance()
@@ -271,5 +271,5 @@ void AVCodecClient::DoAVCodecServerDied()
 #endif
 
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

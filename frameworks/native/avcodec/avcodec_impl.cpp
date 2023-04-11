@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_impl.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, bool encoder)
 {
     std::shared_ptr<AVCodecImpl> impl = std::make_shared<AVCodecImpl>();
@@ -180,5 +180,5 @@ int32_t AVCodecImpl::DequeueOutputBuffer(size_t *index, int64_t timetUs)
 }
 
 
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

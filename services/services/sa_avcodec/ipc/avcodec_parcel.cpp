@@ -21,7 +21,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecPar
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 bool AVCodecParcel::Marshalling(MessageParcel &parcel, const Format &format)
 {
     auto dataMap = format.GetFormatMap();
@@ -99,5 +99,5 @@ bool AVCodecParcel::Unmarshalling(MessageParcel &parcel, Format &format)
 
     return true;
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

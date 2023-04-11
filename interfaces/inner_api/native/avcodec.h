@@ -23,7 +23,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 using PersistentSurface = Surface; // not achieve PersistentSurface, this code just for compile.
 class AVCodec {
 public:
@@ -285,6 +285,6 @@ private:
     CodecFactory() = default;
     ~CodecFactory() = default;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_H

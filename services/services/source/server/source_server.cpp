@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOSmuxerServer {
-namespace AVCodec {
+namespace Media {
 std::shared_ptr<ISourceService> SourceServer::Create()
 {
     std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
@@ -99,5 +99,5 @@ uint64_t SourceServer::GetSourceAttr()
 
     return MSERR_OK;
 }
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS

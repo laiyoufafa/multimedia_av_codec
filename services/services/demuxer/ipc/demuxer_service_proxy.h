@@ -18,7 +18,7 @@
 #include "i_standard_demuxer_service.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class DemuxerServiceProxy : public IRemoteProxy<IStandardDemuxerService>, public NoCopyable {
 public:
     explicit DemuxerServiceProxy(const sptr<IRemoteObject> &impl);
@@ -37,6 +37,6 @@ private:
     static inline BrokerDelegator<DemuxerServiceProxy> delegator_;
 };
 
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif  // DEMUXER_SERVICE_PROXY_H

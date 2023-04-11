@@ -24,7 +24,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class CodecServiceStub : public IRemoteStub<IStandardCodecService>, public NoCopyable {
 public:
     static sptr<CodecServiceStub> Create();
@@ -96,6 +96,6 @@ private:
     std::unique_ptr<CodecBufferCache> inputBufferCache_;
     std::unique_ptr<CodecBufferCache> outputBufferCache_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // CODEC_SERVICE_STUB_H

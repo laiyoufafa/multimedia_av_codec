@@ -20,7 +20,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class CodecBase {
     virtual ~CodecBase() = default;
     static std::shared_ptr<CodecBase> Create(const std::string& name);
@@ -47,6 +47,6 @@ class CodecBase {
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
     virtual int32_t SignalRequestIDRFrame() = 0;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // CODECBASE_H

@@ -24,7 +24,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class ICodecService {
 public:
     virtual ~ICodecService() = default;
@@ -53,6 +53,6 @@ public:
     // virtual int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) = 0;
 
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_CODEC_SERVICE_H

@@ -19,12 +19,12 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class AVCodecListenerStub : public IRemoteStub<IStandardAVCodecListener>, public NoCopyable {
 public:
     AVCodecListenerStub();
     virtual ~AVCodecListenerStub();
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_LISTENER_STUB_H

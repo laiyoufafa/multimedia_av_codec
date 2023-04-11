@@ -20,7 +20,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class __attribute__((visibility("default"))) AVCodecListCore : public NoCopyable {
 public:
     AVCodecListCore();
@@ -43,6 +43,6 @@ private:
     std::string FindCodec(const Format &format, const AVCodecType &codecType);
     std::mutex mutex_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODECLIST_CORE_H

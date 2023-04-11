@@ -20,7 +20,7 @@
 
 #ifdef SUPPORT_CODEC
 #include "i_avcodec_service.h"
-// #include "i_avcodeclist_service.h"
+#include "i_avcodeclist_service.h"
 #endif
 
 #ifdef SUPPORT_DEMUXER
@@ -36,7 +36,7 @@
 #endif
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class IAVCodecService {
 public:
     virtual ~IAVCodecService() = default;
@@ -145,6 +145,6 @@ private:
     AVCodecServiceFactory() = delete;
     ~AVCodecServiceFactory() = delete;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_AVCODEC_SERVICE_H

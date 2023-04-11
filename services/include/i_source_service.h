@@ -5,7 +5,7 @@
 #include <memory>
 #include "av_base.h"
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class ISourceService {
 public:
     virtual ~ISourceService() = default;
@@ -18,6 +18,6 @@ public:
     virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
     virtual uint64_t GetSourceAttr() = 0;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_SOURCE_SERVICE_H

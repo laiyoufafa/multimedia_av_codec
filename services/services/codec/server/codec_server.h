@@ -22,7 +22,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 
 class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
 public:
@@ -105,6 +105,6 @@ private:
     bool isFirstFrameIn_ = true;
     bool isFirstFrameOut_ = true;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // CODEC_SERVER_H

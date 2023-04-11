@@ -19,7 +19,7 @@
 #include "i_standard_demuxer_service.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class DemuxerClient : public IDemuxerService, public NoCopyable {
 public:
     static std::shared_ptr<DemuxerClient> Create(const sptr<IStandardDemuxerService> &ipcProxy);
@@ -39,6 +39,6 @@ private:
     sptr<IStandardDemuxerService> demuxerProxy_ = nullptr;
 };
 
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif  // DEMUXER_CLIENT_H

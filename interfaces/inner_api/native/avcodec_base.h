@@ -20,7 +20,7 @@
 #include "native_avbase.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 using AudioSampleFormat = OH_AudioSampleFormat;
 using AudioChannelSet = OH_AudioChannelSet;
 using AudioChannelMask = OH_AudioChannelMask;
@@ -30,6 +30,6 @@ using VideoH264Profile = OH_VideoH264Profile;
 using OutputFormat = OH_AVOutputFormat ;
 // using AVCodecBufferFlags = OH_AVCodecBufferFlags;
 
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AV_BASE_H

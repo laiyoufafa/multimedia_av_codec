@@ -25,7 +25,7 @@
 #include "avsharedmemorybase.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 /**
  * @brief A simple pool implementation for shared memory.
  *
@@ -105,7 +105,7 @@ private:
     MemoryAvailableNotifier notifier_;
     bool forceNonBlocking_ = false;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 
 #endif

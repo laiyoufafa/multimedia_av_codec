@@ -20,7 +20,7 @@
 #include "iremote_proxy.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class IStandardSourceService : public IRemoteBroker {
 public:
     virtual ~IStandardSourceService() = default;
@@ -46,6 +46,6 @@ public:
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardSourceService");
 };
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif  // I_STANDARD_SOURCE_SERVICE_H

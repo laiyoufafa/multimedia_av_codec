@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 AVSharedMemoryPool::AVSharedMemoryPool(const std::string &name) : name_(name)
 {
     AVCODEC_LOGD("enter ctor, 0x%{public}06" PRIXPTR ", name: %{public}s", FAKE_POINTER(this), name_.c_str());
@@ -258,5 +258,5 @@ void AVSharedMemoryPool::Reset()
     cond_.notify_all();
     // for busylist, the memory will be released when the refcount of shared_ptr is zero.
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

@@ -22,7 +22,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 AVCodecServiceStub::AVCodecServiceStub()
 {
     deathRecipientMap_.clear();
@@ -140,5 +140,5 @@ int32_t AVCodecServiceStub::GetSubSystemAbility(MessageParcel &data, MessageParc
     // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
     return AVCS_ERR_OK;
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

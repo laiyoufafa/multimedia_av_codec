@@ -21,7 +21,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 std::shared_ptr<IAVCodecListService> AVCodecListServer::Create()
 {
     std::shared_ptr<AVCodecListServer> server = std::make_shared<AVCodecListServer>();
@@ -74,5 +74,5 @@ CapabilityData AVCodecListServer::GetCapabilityData(std::string codecName)
 {
     return codecListCore_->GetCapabilityData(codecName);
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

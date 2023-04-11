@@ -21,7 +21,7 @@
 #include <vector>
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 enum FormatDataType : uint32_t {
     /* None */
     FORMAT_TYPE_NONE,
@@ -250,6 +250,6 @@ public:
 private:
     FormatDataMap formatMap_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // FORMAT_H

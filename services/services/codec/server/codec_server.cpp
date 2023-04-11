@@ -34,7 +34,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
     std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
@@ -453,5 +453,5 @@ void CodecBaseCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInf
     }
 }
 
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

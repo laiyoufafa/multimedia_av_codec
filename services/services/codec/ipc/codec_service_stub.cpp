@@ -27,7 +27,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class CodecServiceStub::CodecBufferCache : public NoCopyable {
 public:
     CodecBufferCache() = default;
@@ -491,5 +491,5 @@ int32_t CodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel
     reply.WriteUint32(index);
     return AVCS_ERR_OK;
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

@@ -19,7 +19,7 @@
 #include "demuxer_server.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 IAVCodecService &AVCodecServiceFactory::GetInstance()
 {
     static AVCodecLocal instance;
@@ -36,5 +36,5 @@ int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> dem
     return MSERR_OK;
 }
 
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

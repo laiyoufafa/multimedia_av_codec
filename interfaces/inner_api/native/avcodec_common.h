@@ -20,7 +20,7 @@
 #include "avsharedmemory.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 /**
  * @brief Error type of AVCodec
  *
@@ -123,6 +123,6 @@ private:
     SurfaceBufferExtratDataKey() = delete;
     ~SurfaceBufferExtratDataKey() = delete;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_COMMOM_H

@@ -21,7 +21,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 AVCodecServiceProxy::AVCodecServiceProxy(const sptr<IRemoteObject> &impl) : IRemoteProxy<IStandardAVCodecService>(impl)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
@@ -59,5 +59,5 @@ sptr<IRemoteObject> AVCodecServiceProxy::GetSubSystemAbility(IStandardAVCodecSer
 
     return reply.ReadRemoteObject();
 }
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS

@@ -22,7 +22,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class AVCodecServiceStub : public IRemoteStub<IStandardAVCodecService>, public NoCopyable {
 public:
     AVCodecServiceStub();
@@ -45,6 +45,6 @@ private:
     std::map<uint32_t, AVCodecStubFunc> avCodecFuncs_;
     std::mutex mutex_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_SERVICE_STUB_H

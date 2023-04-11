@@ -21,7 +21,7 @@
 // #include "avcodeclist_parcel.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class AVCodecListServiceProxy : public IRemoteProxy<IStandardAVCodecListService>, public NoCopyable {
 public:
     explicit AVCodecListServiceProxy(const sptr<IRemoteObject> &impl);
@@ -37,6 +37,6 @@ public:
 private:
     static inline BrokerDelegator<AVCodecListServiceProxy> delegator_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODECLIST_SERVICE_PROXY_H

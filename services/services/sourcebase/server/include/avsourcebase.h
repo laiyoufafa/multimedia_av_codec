@@ -22,7 +22,7 @@
 #include "libavformat/avformat.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class AVSourceBase {
 public:
     static std::shared_ptr<AVSourceBase> Create(const std::string& uri);
@@ -35,6 +35,6 @@ public:
 private:
     std::shared_ptr<AVFormatContext> formatContext_;
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVSOURCEBASE_H

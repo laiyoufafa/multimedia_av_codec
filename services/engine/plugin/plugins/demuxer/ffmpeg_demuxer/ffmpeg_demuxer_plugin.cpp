@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec{
+namespace Media{
 namespace Plugin {
 namespace Ffmpeg {
 FFmpegDemuxerPlugin::FFmpegDemuxerPlugin(size_t sourceAttr)

@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 std::shared_ptr<IMuxerService> MuxerServer::Create()
 {
     std::shared_ptr<MuxerServer> muxerServer = std::make_shared<MuxerServer>();
@@ -109,5 +109,5 @@ int32_t MuxerServer::Stop()
 
     return MSERR_OK;
 }
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS

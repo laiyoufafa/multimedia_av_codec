@@ -21,7 +21,7 @@
 #include "iremote_stub.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class MuxerServiceStub : public IRemoteStub<IStandardMuxerService>, public NoCopyable {
 public:
     static sptr<MuxerServiceStub> Create();
@@ -57,6 +57,6 @@ private:
     std::shared_ptr<IMuxerService> muxerServer_ = nullptr;
     std::map<uint32_t, MuxerStubFunc> muxerFuncs_;
 };
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif

@@ -20,7 +20,7 @@
 #include "iremote_stub.h"
 #include <map>
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 class DemuxerServiceStub : public IRemoteStub<IStandardDemuxerService>, public NoCopyable {
 public:
     static sptr<DemuxerServiceStub> Create();
@@ -53,6 +53,6 @@ private:
     std::shared_ptr<IDemuxerService> demuxerServer_ = nullptr;
     std::map<uint32_t, DemuxerStubFunc> demuxerFuncs_;
 };
-}  // namespace AVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif

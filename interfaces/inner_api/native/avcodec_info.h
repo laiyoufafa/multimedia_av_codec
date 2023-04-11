@@ -23,7 +23,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace AVCodec {
+namespace Media {
 /**
  * @brief AVCodec Type
  *
@@ -724,6 +724,6 @@ enum VideoEncodeBitrateMode : int32_t {
     */
     CQ = 2,
 };
-} // namespace AVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_INFO_H

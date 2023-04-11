@@ -37,25 +37,25 @@ struct AVObjectMagic : public OHOS::RefBase {
 
 struct OH_AVFormat : public OHOS::RefBase {
     OH_AVFormat();
-    explicit OH_AVFormat(const OHOS::AVCodec::Format &fmt);
+    explicit OH_AVFormat(const OHOS::Media::Format &fmt);
     ~OH_AVFormat() override;
-    OHOS::AVCodec::Format format_;
+    OHOS::Media::Format format_;
     char *outString_ = nullptr;
     char *dumpInfo_ = nullptr;
 };
 
 struct OH_AVMemory : public OHOS::RefBase {
-    explicit OH_AVMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem);
+    explicit OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem);
     ~OH_AVMemory() override;
-    bool IsEqualMemory(const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> &mem);
-    const std::shared_ptr<OHOS::AVCodec::AVSharedMemory> memory_;
+    bool IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem);
+    const std::shared_ptr<OHOS::Media::AVSharedMemory> memory_;
 };
 
 struct OH_AVBufferElement : public OHOS::RefBase {
-    explicit OH_AVBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
+    explicit OH_AVBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
     ~OH_AVBufferElement() override;
-    bool IsEqualBufferElement(const std::shared_ptr<OHOS::AVCodec::AVBufferElement> &bufferElement);
-    const std::shared_ptr<OHOS::AVCodec::AVBufferElement> bufferElement_;
+    bool IsEqualBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
+    const std::shared_ptr<OHOS::Media::AVBufferElement> bufferElement_;
 };
 
 struct OH_AVCodec : public OHOS::RefBase {
