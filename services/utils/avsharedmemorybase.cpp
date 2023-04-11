@@ -89,20 +89,21 @@ int32_t AVSharedMemoryBase::Init()
         Close();
     };
 
-    CHECK_AND_RETURN_RET(size_ > 0, AVCS_ERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET_LOG(size_ > 0, AVCS_ERR_INVALID_VAL, "size is invalid, size = %{public}d", size_);
 
     bool isRemote = false;
     if (fd_ > 0) {
         int size = AshmemGetSize(fd_);
-        CHECK_AND_RETURN_RET(size == size_, AVCS_ERR_INVALID_VAL);
+        CHECK_AND_RETURN_RET_LOG(size == size_, AVCS_ERR_INVALID_VAL, "size not equal size_, size = %{public}d, "
+                                "size_ = %{public}d", size, size_);
         isRemote = true;
     } else {
         fd_ = AshmemCreate(name_.c_str(), static_cast<size_t>(size_));
-        CHECK_AND_RETURN_RET(fd_ > 0, AVCS_ERR_INVALID_VAL);
+        CHECK_AND_RETURN_RET_LOG(fd_ > 0, AVCS_ERR_INVALID_VAL, "fd is invalid, fd = %{public}d", fd_);
     }
 
     int32_t ret = MapMemory(isRemote);
-    CHECK_AND_RETURN_RET(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_VAL, "MapMemory failed, ret = %{plublic}d", ret);
 
     CANCEL_SCOPE_EXIT_GUARD(0);
     return AVCS_ERR_OK;
@@ -116,10 +117,10 @@ int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
     }
 
     int result = AshmemSetProt(fd_, static_cast<int>(prot));
-    CHECK_AND_RETURN_RET(result >= 0, AVCS_ERR_INVALID_OPERATION);
+    CHECK_AND_RETURN_RET_LOG(result >= 0, AVCS_ERR_INVALID_OPERATION, "AshmemSetProt failed, result = %{public}d", result);
 
     void *addr = ::mmap(nullptr, static_cast<size_t>(size_), static_cast<int>(prot), MAP_SHARED, fd_, 0);
-    CHECK_AND_RETURN_RET(addr != MAP_FAILED, AVCS_ERR_INVALID_OPERATION);
+    CHECK_AND_RETURN_RET_LOG(addr != MAP_FAILED, AVCS_ERR_INVALID_OPERATION, "mmap failed, please check params");
 
     base_ = reinterpret_cast<uint8_t*>(addr);
     return AVCS_ERR_OK;

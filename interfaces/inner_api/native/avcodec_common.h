@@ -16,8 +16,8 @@
 #define AVCODEC_COMMOM_H
 
 #include <string>
-#include "av_common.h"
 #include "format.h"
+#include "avsharedmemory.h"
 
 namespace OHOS {
 namespace AVCodec {

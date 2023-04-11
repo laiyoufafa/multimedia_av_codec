@@ -24,6 +24,7 @@
 
 namespace OHOS {
 namespace AVCodec {
+using PersistentSurface = Surface; // not achieve PersistentSurface, this code just for compile.
 class AVCodec {
 public:
     virtual ~AVCodec() = default;

@@ -22,7 +22,7 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVMuxer"};
 }
 
-using namespace OHOS::Media;
+using namespace OHOS::AVCodec;
 
 struct AVMuxerObject : public OH_AVMuxer {
     explicit AVMuxerObject(const std::shared_ptr<AVMuxer> &muxer)
@@ -41,110 +41,110 @@ struct OH_AVMuxer *OH_AVMuxer_Create(int32_t fd, OH_AVOutputFormat format) {
 }
 
 OH_AVErrCode OH_AVMuxer_SetLocation(OH_AVMuxer *muxer, float latitude, float longitude) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     int32_t ret = object->muxer_->SetLocation(latitude, longitude);
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ SetLocation failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ SetLocation failed!");
 
-    return AV_ERR_OK;
+    return AVCODEC_ERR_OK;
 }
 
 OH_AVErrCode OH_AVMuxer_SetRotation(OH_AVMuxer *muxer, int32_t rotation) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     if (rotation != V_ROTATION_0 && rotation != V_ROTATION_90 &&
         rotation != V_ROTATION_180 &&rotation != V_ROTATION_270) {
-        CHECK_AND_RETURN_RET_LOG(false, AV_ERR_INVALID_VAL, "rotation is invalid value!");
+        CHECK_AND_RETURN_RET_LOG(false, AVCODEC_ERR_INVALID_VAL, "rotation is invalid value!");
     }
 
     int32_t ret = object->muxer_->SetRotation(rotation);
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ SetRotation failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ SetRotation failed!");
 
-    return AV_ERR_OK;    
+    return AVCODEC_ERR_OK;    
 }
 
 OH_AVErrCode OH_AVMuxer_SetParameter(OH_AVMuxer *muxer, OH_AVFormat *generalFormat) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
-    CHECK_AND_RETURN_RET_LOG(generalFormat != nullptr, AV_ERR_INVALID_VAL, "input general format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(generalFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(generalFormat != nullptr, AVCODEC_ERR_INVALID_VAL, "input general format is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(generalFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AVCODEC_ERR_INVALID_VAL, "magic error!");
     
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     int32_t ret = object->muxer_->SetParameter(generalFormat->format_);
 
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ SetParameter failed!");
-    return AV_ERR_OK;  
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ SetParameter failed!");
+    return AVCODEC_ERR_OK;  
 }
 
 int32_t OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, OH_AVFormat *trackFormat) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
-    CHECK_AND_RETURN_RET_LOG(trackFormat != nullptr, AV_ERR_INVALID_VAL, "input track format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(trackFormat != nullptr, AVCODEC_ERR_INVALID_VAL, "input track format is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AVCODEC_ERR_INVALID_VAL, "magic error!");
     
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     int32_t ret = object->muxer_->AddTrack(trackFormat->format_);
-    CHECK_AND_RETURN_RET_LOG(ret >= Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ AddTrack failed!");
+    CHECK_AND_RETURN_RET_LOG(ret >= AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ AddTrack failed!");
 
     return ret;
 }
 
 OH_AVErrCode OH_AVMuxer_Start(OH_AVMuxer *muxer) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     int32_t ret = object->muxer_->Start();
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ Start failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ Start failed!");
 
-    return AV_ERR_OK;   
+    return AVCODEC_ERR_OK;   
 }
 
 OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex, uint8_t *sampleBuffer, OH_AVCodecBufferInfo info) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
     
     int32_t ret = object->muxer_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ WriteSampleBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ WriteSampleBuffer failed!");
 
-    return AV_ERR_OK;   
+    return AVCODEC_ERR_OK;   
 }
 
 OH_AVErrCode OH_AVMuxer_Stop(OH_AVMuxer *muxer) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
-    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
     int32_t ret = object->muxer_->Stop();
-    CHECK_AND_RETURN_RET_LOG(ret == Status::CSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ Stop failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ Stop failed!");
 
-    return AV_ERR_OK;  
+    return AVCODEC_ERR_OK;  
 }
 
 OH_AVErrCode OH_AVMuxer_Destroy(OH_AVMuxer *muxer) {
-    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
 
     delete muxer;
 
-    return AV_ERR_OK;
+    return AVCODEC_ERR_OK;
 }

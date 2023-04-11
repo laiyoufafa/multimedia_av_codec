@@ -7,9 +7,11 @@
 // #include "avsharedmemory.h"
 // #include "avcontainer_common.h"
 // #include "media_description.h"
-#include "av_base.h"
+# include "native_avcodec_base.h"
+#include "avcodec_base.h"
 namespace OHOS {
 namespace AVCodec {
+using AVSeekMode = OH_AVSeekMode;
 class IDemuxerService {
 public:
     virtual ~IDemuxerService() = default;
@@ -19,7 +21,7 @@ public:
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
-    virtual int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) = 0;
+    virtual int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) = 0;
 };
 } // namespace AVCodec
 } // namespace OHOS

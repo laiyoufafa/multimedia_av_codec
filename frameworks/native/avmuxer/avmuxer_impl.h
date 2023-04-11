@@ -16,7 +16,7 @@
 #define AVMUXER_IMPL_H
 
 #include "avmuxer.h"
-#include "i_muxer_engine.h"
+#include "i_muxer_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {

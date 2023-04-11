@@ -16,7 +16,7 @@
 #ifndef AVSOURCE_IMPL_H
 #define AVSOURCE_IMPL_H
 
-#include <avsource>
+#include "avsource.h"
 #include "nocopyable.h"
 #include "i_avsource_service.h"
 
