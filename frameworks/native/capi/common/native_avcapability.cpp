@@ -37,91 +37,221 @@ OH_AVCapability::~OH_AVCapability()
 
 bool OH_AVCapability_IsVendor(const struct OH_AVCapability *capability)
 {
+    if (capability == nullptr) {
+        return false;
+    }
     return capability->capability_.isVendor;
 }
 
-bool OH_AVCapability_IsResolutionSupported(const struct OH_AVCapability *capability, int32_t width, int32_t height)
+bool OH_AVCapability_IsSizeSupported(const struct OH_AVCapability *capability, int32_t width, int32_t height)
 {
-    return width >= capability->capability_.width.minVal &&
-       width <= capability->capability_.width.maxVal &&
-       height >= capability->capability_.height.minVal &&
-       height <= capability->capability_.height.maxVal;
+    if (capability == nullptr) {
+        return false;
+    }
+
+    auto &alignment = capability->capability_.alignment;
+    if (blockSize.width == 0 || blockSize.height == 0 ||
+        alignment.width == 0 || alignment.height == 0 ||
+        width % alignment.width != 0 || height % alignment.height != 0) {
+        return false;
+    }
+
+    auto &widthRange = capability->capability_.width;
+    auto &heightRange = capability->capability_.height;
+    if (width < widthRange.minVal || width > widthRange.maxVal ||
+        height < heightRange.minVal || height > heightRange.maxVal) {
+        return false;
+    }
+
+    auto &blockSize = capability->capability_.blockSize;
+    if (blockSize.width == 0 || blockSize.height == 0) {
+        return false;
+    }
+    int blockNum = ((width + blockSize.width - 1) / blockSize.width) * 
+        ((height + blockSize.height - 1) / blockSize.height);
+    
+    auto &blockPerFrame = capability->capability_.blockPerFrame;
+    if (blockNum < blockPerFrame.minVal || blockNum > blockPerFrame.maxVal) {
+        return false;
+    }
+
+    return true;
+}
+
+bool OH_AVCapability_AreSizeAndFrameRateSupported(const struct OH_AVCapability *capability,
+    int32_t width, int32_t height, int32_t fps)
+{
+    if (capability == nullptr) {
+        return false;
+    }
+
+    auto &alignment = capability->capability_.alignment;
+    if (blockSize.width == 0 || blockSize.height == 0 ||
+        alignment.width == 0 || alignment.height == 0 ||
+        width % alignment.width != 0 || height % alignment.height != 0) {
+        return false;
+    }
+
+    auto &widthRange = capability->capability_.width;
+    auto &heightRange = capability->capability_.height;
+    auto &fpsRange = capability->capabilityData_.frameRate;
+    if (width < widthRange.minVal || width > widthRange.maxVal ||
+        height < heightRange.minVal || height > heightRange.maxVal ||
+        fps < fpsRange.minVal || fps > fpsRange.maxVal) {
+        return false;
+    }
+
+    auto &blockSize = capability->capability_.blockSize;
+    if (blockSize.width == 0 || blockSize.height == 0) {
+        return false;
+    }
+    int blockNum = ((width + blockSize.width - 1) / blockSize.width) *
+        ((height + blockSize.height - 1) / blockSize.height);
+    int blockOneSecond = blockNum * fps;
+    auto &blockPerFrame = capability->capability_.blockPerFrame;
+    auto &blockPerSecond = capability->capability_.blockPerSecond;
+    if (blockNum < blockPerFrame.minVal || blockNum > blockPerFrame.maxVal ||
+        blockOneSecond < blockPerSecond.minVal || blockOneSecond > blockPerSecond.maxVal ) {
+        return false;
+    }
+    return true;
 }
 
 bool OH_AVCapability_IsSampleRateSupported(const struct OH_AVCapability *capability, int32_t sampleRate)
 {
+    if (capability == nullptr) {
+        return false;
+    }
     std::vector<int32_t> &sampleRateVec = capability->capability_.sampleRate;
     return find(sampleRateVec.begin(), sampleRateVec.end(), sampleRate) != sampleRateVec.end();
 }
 
 void OH_AVCapability_GetBitrateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.bitrate.minVal;
     *maxVal = capability->capability_.bitrate.maxVal;
 }
 
 void OH_AVCapability_GetChannelsRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.channels.minVal;
     *maxVal = capability->capability_.channels.maxVal;
 }
 
 void OH_AVCapability_GetComplexityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.complexity.minVal;
     *maxVal = capability->capability_.complexity.maxVal;
 }
 
-void OH_AVCapability_GetAlignmentRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
+int32_t OH_AVCapability_GetWidthAlignment(const struct OH_AVCapability *capability)
 {
-    *minVal = capability->capability_.alignment.minVal;
-    *maxVal = capability->capability_.alignment.maxVal;
+    if (capability == nullptr) {
+        return 0;
+    }
+    return capability->capability_.alignment.width;
+}
+
+int32_t OH_AVCapability_GetHeightAlignment(const struct OH_AVCapability *capability)
+{
+    if (capability == nullptr) {
+        return 0;
+    }
+    return capability->capability_.alignment.height;
 }
 
 void OH_AVCapability_GetWidthRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.width.minVal;
     *maxVal = capability->capability_.width.maxVal;
 }
 
 void OH_AVCapability_GetHeightRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.width.minVal;
     *maxVal = capability->capability_.width.maxVal;
 }
 
 void OH_AVCapability_GetFrameRateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.frameRate.minVal;
     *maxVal = capability->capability_.frameRate.maxVal;
 }
 
+void OH_AVCapability_GetSupportedFrameRateRangeForSize(const struct OH_AVCapability *capability, 
+    int32_t width, int32_t height, int32_t *minVal, int32_t *maxVal)
+{
+    *minVal = 0;
+    *maxVal = 0;
+    if (capability == nullptr) {
+        return;
+    }
+
+    if (!OH_AVCapability_IsSizeSupported(capability, width, height)) {
+        return;
+    }
+
+    auto &blockSize = capability->capability_.blockSize;
+    auto &blockPerSecond = capability->capability_.blockPerSecond;
+    if (blockSize.width == 0 || blockSize.height == 0 ||
+        blockPerSecond.minVal <= 0 || blockPerSecond.maxVal <= 0) {
+        return;
+    }
+    int blockNum = ((width + blockSize.width - 1) / blockSize.width) *
+        ((height + blockSize.height - 1) / blockSize.height);
+
+    auto &fpsRange = capability->capability_.frameRate;
+    *minVal = std::max((blockPerSecond.minVal + blockNum - 1) / blockNum, fpsRange.minVal);
+    *maxVal = std::min(blockPerSecond.maxVal / blockNum, fpsRange.maxVal);
+}
+
 void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
+    if (capability == nullptr) {
+        *minVal = 0;
+        *maxVal = 0;
+        return;
+    }
     *minVal = capability->capability_.encodeQuality.minVal;
     *maxVal = capability->capability_.encodeQuality.maxVal;
 }
 
-void OH_AVCapability_GetBlockPerFrameRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
-{
-    *minVal = capability->capability_.blockPerFrame.minVal;
-    *maxVal = capability->capability_.blockPerFrame.maxVal;
-}
-
-void OH_AVCapability_GetBlockPerSecondRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
-{
-    *minVal = capability->capability_.blockPerSecond.minVal;
-    *maxVal = capability->capability_.blockPerSecond.maxVal;
-}
-
-void OH_AVCapability_GetBlockSize(const struct OH_AVCapability *capability, int32_t *blockWidth, int32_t *blockHeight)
-{
-    *blockWidth = capability->capability_.blockSize.width;
-    *blockHeight = capability->capability_.blockSize.height;
-}
-
 int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
+    if (capability == nullptr) {
+        *arraySize = 0;
+        return nullptr;
+    }
     std::vector<int32_t> &vec = capability->capability_.sampleRate;
     *arraySize = vec.size();
     return vec.data();
@@ -129,6 +259,10 @@ int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capabi
 
 int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
+    if (capability == nullptr) {
+        *arraySize = 0;
+        return nullptr;
+    }
     std::vector<int32_t> &vec = capability->capability_.format;
     *arraySize = vec.size();
     return vec.data();
@@ -136,6 +270,10 @@ int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability
 
 int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
+    if (capability == nullptr) {
+        *arraySize = 0;
+        return nullptr;
+    }
     std::vector<int32_t> &vec = capability->capability_.profiles;
     *arraySize = vec.size();
     return vec.data();
@@ -143,6 +281,9 @@ int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capabili
 
 bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capability, OH_BitrateMode bitrateMode)
 {
+    if (capability == nullptr) {
+        return false;
+    }
     std::vector<int32_t> &bitrateModeVec = capability->capability_.bitrateMode;
     return find(bitrateModeVec.begin(), bitrateModeVec.end(), bitrateMode) != bitrateModeVec.end();
 }
@@ -156,46 +297,46 @@ int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability
 
 // TODO std::map<int32_t, std::vector<int32_t>> profileLevelsMap;
 
-int32_t OH_AVCapability_GetMaxSupportedFrameRate(const struct OH_AVCapability *capability, int32_t width, int32_t height)
+void OH_AVCapability_GetPreferredFrameRateRangeForSize(const struct OH_AVCapability *capability,
+    int32_t width, int32_t height, int32_t *minVal, int32_t *maxVal)
 {
-    if (width <= 0 || height <= 0) {
-        return 0;
+    *minVal = 0;
+    *maxVal = 0;
+    if (capability == nullptr) {
+        return;
     }
 
-    int32_t minVal;
-    int32_t maxVal;
-    OH_AVCapability_GetWidthRange(capability, &minVal, &maxVal);
-    if (width < minVal || width > maxVal) {
-        return 0;
+    if (!OH_AVCapability_IsSizeSupported(capability, width, height)) {
+        return;
     }
 
-    OH_AVCapability_GetHeightRange(capability, &minVal, &maxVal);
-    if (height < minVal || height > maxVal) {
-        return 0;
+    auto &blockSize = capability->capability_.blockSize;
+    if (blockSize.width == 0 || blockSize.height == 0) {
+        return;
     }
+    int32_t blockNum = ((width + blockSize.width - 1) / blockSize.width) *
+        ((height + blockSize.height - 1) / blockSize.height);
 
-    int32_t blockWidth;
-    int32_t blockHeight;
-    OH_AVCapability_GetBlockSize(capability, &blockWidth, &blockHeight);
-    if (blockWidth <= 0 || blockHeight <= 0) {
-        return 0;
-    }
-
-    int32_t targetBlockSum = (width + blockWidth - 1) / blockWidth * ((height + blockHeight - 1) / blockHeight);
     int32_t minDiff = INT32_MAX;
-    Range fps;
-    auto iter = capability->capability_.measuredFrameRate.first();
-    while (iter != capability->capability_.measuredFrameRate.end()) {
-        int32_t curBlockNum = (iter->first.width + blockWidth - 1) / blockWidth *
-            ((iter->first.height + blockHeight - 1) / blockHeight);
-        if (curBlockNum >= targetBlockSum) {
-            minDiff = minDiff > curBlockNum - targetBlockSum ? (curBlockNum - targetBlockSum) : minDiff;
-            fps = iter->second;
+    Range fpsRange;
+    float factor = 1.0f;
+    float blockNumFloat{blockNum};
+    auto &measureFps = capability->capability_.measuredFrameRate;
+    auto iter = measureFps.first();
+    while (iter != measureFps.end()) {
+        int32_t curBlockNum = (iter->first.width + blockSize.width - 1) / blockSize.width *
+            ((iter->first.height + blockSize.height - 1) / blockSize.height);
+        int32_t curDiff = std::abs(curBlockNum - blockNum);
+        if (curDiff < minDiff) {
+            minDiff = curDiff;
+            fpsRange = iter->second;
+            factor = blockNumFloat / curBlockNum;
         }
         iter++;
     }
 
-    return fps.maxVal;
+    *minVal = static_cast<int32_t>(fpsRange.minVal * factor);
+    *maxVal = static_cast<int32_t>(fpsRange.maxVal * factor);
 }
 
 bool OH_AVCapability_GetSwapWidthHeightFlag(const struct OH_AVCapability *capability)
