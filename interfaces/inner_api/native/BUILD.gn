@@ -92,10 +92,21 @@ ohos_shared_library("av_codec_client") {
   sources = [
 #      "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
       "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/common/avsharedmemory_ipc.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/client/avcodec_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/ipc/avcodec_listener_stub.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/ipc/avcodec_parcel.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/ipc/avcodec_service_proxy.cpp",
   ]
   if (multimedia_av_codec_support_codec) {
     sources += [
       "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodeclist/avcodec_list_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodec/client/avcodec_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodec/ipc/avcodec_listener_stub.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodec/ipc/avcodec_service_proxy.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/client/avcodeclist_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/ipc/avcodeclist_service_proxy.cpp",
     ]
   }
   if (multimedia_av_codec_support_demuxer) {
@@ -106,6 +117,8 @@ ohos_shared_library("av_codec_client") {
   if (multimedia_av_codec_support_muxer) {
     sources += [
       "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer/avmuxer_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avmuxer/client/avmuxer_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avmuxer/ipc/avmuxer_service_proxy.cpp",
     ]
   }
 
