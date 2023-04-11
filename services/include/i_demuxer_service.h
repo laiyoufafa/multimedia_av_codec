@@ -7,11 +7,17 @@
 // #include "avsharedmemory.h"
 // #include "avcontainer_common.h"
 // #include "media_description.h"
-# include "native_avcodec_base.h"
+// # include "native_avcodec_base.h"
 #include "avcodec_base.h"
 namespace OHOS {
 namespace AVCodec {
-using AVSeekMode = OH_AVSeekMode;
+// using AVSeekMode = OH_AVSeekMode;
+enum AVSeekMode {
+    SEEK_MODE_NEXT_SYNC = 0,
+    SEEK_MODE_PREVIOUS_SYNC,
+    SEEK_MODE_CLOSEST_SYNC,
+    SEEK_MODE_CLOSEST
+};
 class IDemuxerService {
 public:
     virtual ~IDemuxerService() = default;

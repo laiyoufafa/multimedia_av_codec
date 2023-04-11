@@ -75,7 +75,6 @@ OH_AVErrCode OH_AVMuxer_SetParameter(OH_AVMuxer *muxer, OH_AVFormat *generalForm
     CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
     CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
     CHECK_AND_RETURN_RET_LOG(generalFormat != nullptr, AVCODEC_ERR_INVALID_VAL, "input general format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(generalFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AVCODEC_ERR_INVALID_VAL, "magic error!");
     
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
@@ -90,7 +89,6 @@ int32_t OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, OH_AVFormat *trackFormat) {
     CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AVCODEC_ERR_INVALID_VAL, "input muxer is nullptr!");
     CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AVCODEC_ERR_INVALID_VAL, "magic error!");
     CHECK_AND_RETURN_RET_LOG(trackFormat != nullptr, AVCODEC_ERR_INVALID_VAL, "input track format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AVCODEC_ERR_INVALID_VAL, "magic error!");
     
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
@@ -120,8 +118,12 @@ OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AVCODEC_ERR_INVALID_VAL, "muxer_ is nullptr!");
-    
-    int32_t ret = object->muxer_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
+    struct AVCodecBufferInfo bufferInfo;
+    bufferInfo.presentationTimeUs = info.pts;
+    bufferInfo.size = info.size;
+    bufferInfo.offset = info.offset;
+    bufferInfo.flags = info.flags;
+    int32_t ret = object->muxer_->WriteSampleBuffer(trackIndex, sampleBuffer, bufferInfo);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCODEC_ERR_OPERATE_NOT_PERMIT, "muxer_ WriteSampleBuffer failed!");
 
     return AVCODEC_ERR_OK;   

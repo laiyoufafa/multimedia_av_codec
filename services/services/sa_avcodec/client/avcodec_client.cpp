@@ -65,7 +65,7 @@ bool AVCodecClient::IsAlived()
     return avCodecProxy_ != nullptr;
 }
 #ifdef SUPPORT_CODEC
-std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
+std::shared_ptr<IAVCodecService> AVCodecClient::CreateCodecService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {

@@ -15,6 +15,7 @@
 
 #include "avmuxer_impl.h"
 #include "avcodec_log.h"
+#include "i_avcodec_service.h"
 
 
 namespace {
@@ -35,6 +36,8 @@ std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat 
 
 AVMuxerImpl::AVMuxerImpl(int32_t fd, OutputFormat format) : fd_(fd), format_(format)
 {
+    (void)fd_;
+    (void)format_;
     AVCODEC_LOGD("AVMuxerImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
@@ -83,7 +86,8 @@ int32_t AVMuxerImpl::Start()
 int32_t AVMuxerImpl::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
     CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr && info.size >= 0 && info.pts >= 0, AVCS_ERR_NO_MEMORY, "Invalid memory");
+    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr && info.size >= 0 && info.presentationTimeUs >= 0, 
+                            AVCS_ERR_NO_MEMORY, "Invalid memory");
     return muxerService_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
 }
 

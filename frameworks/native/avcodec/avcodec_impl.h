@@ -48,7 +48,7 @@ public:
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name);
 
 private:
-    std::shared_ptr<ICodecService> codecService_ = nullptr;
+    std::shared_ptr<IAVCodecService> codecService_ = nullptr;
 };
 } // namespace AVCodec
 } // namespace OHOS

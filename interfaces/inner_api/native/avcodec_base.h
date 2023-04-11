@@ -28,7 +28,7 @@ using AudioAacProfile = OH_AudioAacProfile;
 using VideoPixelFormat = OH_VideoPixelFormat;
 using VideoH264Profile = OH_VideoH264Profile;
 using OutputFormat = OH_AVOutputFormat ;
-using AVCodecBufferFlags = OH_AVCodecBufferFlags;
+// using AVCodecBufferFlags = OH_AVCodecBufferFlags;
 
 } // namespace AVCodec
 } // namespace OHOS

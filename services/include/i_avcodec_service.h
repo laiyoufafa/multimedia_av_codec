@@ -74,7 +74,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<ICodecService> CreateCodecService() = 0;
+    virtual std::shared_ptr<IAVCodecService> CreateCodecService() = 0;
 
     /**
      * @brief Destroy a avcodec service.
@@ -86,7 +86,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) = 0;
+    virtual int32_t DestroyCodecService(std::shared_ptr<IAVCodecService> codec) = 0;
 #endif
 #ifdef SUPPORT_DEMUXER
     virtual std::shared_ptr<IDemuxerService> CreateDemuxerService() = 0;
