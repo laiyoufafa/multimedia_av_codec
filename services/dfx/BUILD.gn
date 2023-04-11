@@ -16,55 +16,7 @@ import("//foundation/multimedia/av_codec/config.gni")
 
 config("av_codec_service_log_dfx_public_config") {
   cflags = [ "-DOHOS_AV_CODEC_LOG_DFX" ]
-  include_dirs = [ "//foundation/multimedia/av_codec/services/dfx" ]
-}
-
-ohos_shared_library("av_codec_service_log_dfx") {
-  install_enable = true
-
-  sanitize = {
-    cfi = true
-    cfi_cross_dso = true
-    debug = false
-  }
-
-  sources = [ "av_codec_log.cpp" ]
-
-  include_dirs = [
-    "include",
-    "//commonlibrary/c_utils/base/include",
-  ]
-
-  cflags = [
-    "-std=c++17",
-    "-fno-rtti",
-    "-fno-exceptions",
-    "-Wall",
-    "-fno-common",
-    "-fstack-protector-strong",
-    "-Wshadow",
-    "-FPIC",
-    "-FS",
-    "-O2",
-    "-D_FORTIFY_SOURCE=2",
-    "-fvisibility=hidden",
-    "-Wformat=2",
-    "-Wfloat-equal",
-    "-Wdate-time",
-    "-Werror",
-    "-Wextra",
-    "-Wimplicit-fallthrough",
-    "-Wsign-compare",
-    "-Wunused-parameter",
-  ]
-
-  external_deps = [
-    "c_utils:utils",
-    "hiviewdfx_hilog_native:libhilog",
-  ]
-
-  subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  include_dirs = [ "//foundation/multimedia/av_codec/services/dfx/include" ]
 }
 
 ohos_shared_library("av_codec_service_dfx") {
@@ -76,12 +28,13 @@ ohos_shared_library("av_codec_service_dfx") {
     debug = false
   }
 
-  sources = [ "av_codec_dfx.cpp" ]
+  sources = [ "avcodec_dfx.cpp" ]
 
   include_dirs = [
     "include",
     "//commonlibrary/c_utils/base/include",
     "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/interfaces/kits/c",
   ]
 
   defines = []
@@ -112,9 +65,11 @@ ohos_shared_library("av_codec_service_dfx") {
 
   external_deps = [
     "c_utils:utils",
-    #"hicollie_native:libhicollie",
-    #"hiviewdfx_hilog_native:libhilog",
-    #"init:libbegetutil",
+    "hicollie_native:libhicollie",
+    "hisysevent_native:libhisysevent",
+    "hitrace_native:hitrace_meter",
+    "hiviewdfx_hilog_native:libhilog",
+    "init:libbegetutil",
   ]
 
   subsystem_name = "multimedia"

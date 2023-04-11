@@ -48,6 +48,9 @@ config("av_codec_service_config") {
     "$AV_CODEC_ROOT_DIR/services/include",
     "$AV_CODEC_ROOT_DIR/services/services/codec",
     "$AV_CODEC_ROOT_DIR/services/services/source",
+    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+    "$AV_CODEC_ROOT_DIR/services/dfx/include",
+    "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
   ]
 
   defines = []
@@ -69,7 +72,6 @@ ohos_shared_library("av_codec_service") {
 
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
-    "$AV_CODEC_ROOT_DIR/services/utils/avsharedmemorybase.cpp",
   ]
 
   configs = [
@@ -79,7 +81,6 @@ ohos_shared_library("av_codec_service") {
 
   deps = [
     "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_dfx",
-    "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_log_dfx",
     "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
     "$AV_CODEC_ROOT_DIR/services/utils:av_codec_service_utils",
   ]

@@ -17,8 +17,8 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include "ashmem.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 #include "scope_guard.h"
 
 namespace {
@@ -38,7 +38,7 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromLocal(
 {
     std::shared_ptr<AVSharedMemoryBase> memory = std::make_shared<AVSharedMemoryBase>(size, flags, name);
     int32_t ret = memory->Init();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         AVCODEC_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
         return nullptr;
     }
@@ -51,7 +51,7 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromRemote(
 {
     std::shared_ptr<AVSharedMemoryBase> memory = std::make_shared<AVSharedMemoryBaseImpl>(fd, size, flags, name);
     int32_t ret = memory->Init();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         AVCODEC_LOGE("Create avsharedmemory failed, ret = %{public}d", ret);
         return nullptr;
     }
@@ -89,23 +89,24 @@ int32_t AVSharedMemoryBase::Init()
         Close();
     };
 
-    CHECK_AND_RETURN_RET(size_ > 0, MSERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET_LOG(size_ > 0, AVCS_ERR_INVALID_VAL, "size is invalid, size = %{public}d", size_);
 
     bool isRemote = false;
     if (fd_ > 0) {
         int size = AshmemGetSize(fd_);
-        CHECK_AND_RETURN_RET(size == size_, MSERR_INVALID_VAL);
+        CHECK_AND_RETURN_RET_LOG(size == size_, AVCS_ERR_INVALID_VAL, "size not equal size_, size = %{public}d, "
+                                "size_ = %{public}d", size, size_);
         isRemote = true;
     } else {
         fd_ = AshmemCreate(name_.c_str(), static_cast<size_t>(size_));
-        CHECK_AND_RETURN_RET(fd_ > 0, MSERR_INVALID_VAL);
+        CHECK_AND_RETURN_RET_LOG(fd_ > 0, AVCS_ERR_INVALID_VAL, "fd is invalid, fd = %{public}d", fd_);
     }
 
     int32_t ret = MapMemory(isRemote);
-    CHECK_AND_RETURN_RET(ret == MSERR_OK, MSERR_INVALID_VAL);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_VAL, "MapMemory failed, ret = %{plublic}d", ret);
 
     CANCEL_SCOPE_EXIT_GUARD(0);
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
@@ -116,13 +117,13 @@ int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
     }
 
     int result = AshmemSetProt(fd_, static_cast<int>(prot));
-    CHECK_AND_RETURN_RET(result >= 0, MSERR_INVALID_OPERATION);
+    CHECK_AND_RETURN_RET_LOG(result >= 0, AVCS_ERR_INVALID_OPERATION, "AshmemSetProt failed, result = %{public}d", result);
 
     void *addr = ::mmap(nullptr, static_cast<size_t>(size_), static_cast<int>(prot), MAP_SHARED, fd_, 0);
-    CHECK_AND_RETURN_RET(addr != MAP_FAILED, MSERR_INVALID_OPERATION);
+    CHECK_AND_RETURN_RET_LOG(addr != MAP_FAILED, AVCS_ERR_INVALID_OPERATION, "mmap failed, please check params");
 
     base_ = reinterpret_cast<uint8_t*>(addr);
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 void AVSharedMemoryBase::Close() noexcept

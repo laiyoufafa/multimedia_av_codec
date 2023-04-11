@@ -20,7 +20,7 @@
 
 #ifdef SUPPORT_CODEC
 #include "i_avcodec_service.h"
-#include "i_avcodeclist_service.h"
+// #include "i_avcodeclist_service.h"
 #endif
 
 #ifdef SUPPORT_DEMUXER

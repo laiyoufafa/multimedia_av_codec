@@ -17,7 +17,6 @@
 #define FFMPEG_DEMUXER_PLUGIN_H
 
 #include <memory>
-#include <stdint>
 #include <vector>
 #include "avcodec_common.h"
 #include "demuxer_plugin.h"

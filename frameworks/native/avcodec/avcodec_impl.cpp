@@ -15,7 +15,7 @@
 
 #include "avcodec_impl.h"
 #include "i_media_service.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {

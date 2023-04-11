@@ -19,7 +19,7 @@
 #include <cstdint>
 #include <memory>
 #include <vector>
-#include "av_common.h"
+#include "avcodec_common.h"
 #include "nocopyable.h"
 
 namespace OHOS {
