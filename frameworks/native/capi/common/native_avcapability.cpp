@@ -50,7 +50,7 @@ bool OH_AVCapability_IsResolutionSupported(const struct OH_AVCapability *capabil
 
 bool OH_AVCapability_IsSampleRateSupported(const struct OH_AVCapability *capability, int32_t sampleRate)
 {
-    std::vector<int32_t> sampleRateVec = capability->capability_.sampleRate;
+    std::vector<int32_t> &sampleRateVec = capability->capability_.sampleRate;
     return find(sampleRateVec.begin(), sampleRateVec.end(), sampleRate) != sampleRateVec.end();
 }
 
@@ -122,34 +122,34 @@ void OH_AVCapability_GetBlockSize(const struct OH_AVCapability *capability, int3
 
 int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.sampleRate;
+    std::vector<int32_t> &vec = capability->capability_.sampleRate;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.format;
+    std::vector<int32_t> &vec = capability->capability_.format;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.profiles;
+    std::vector<int32_t> &vec = capability->capability_.profiles;
     *arraySize = vec.size();
     return vec.data();
 }
 
 bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capability, OH_BitrateMode bitrateMode)
 {
-    std::vector<int32_t> bitrateModeVec = capability->capability_.bitrateMode;
+    std::vector<int32_t> &bitrateModeVec = capability->capability_.bitrateMode;
     return find(bitrateModeVec.begin(), bitrateModeVec.end(), bitrateMode) != bitrateModeVec.end();
 }
 
 int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.levels;
+    std::vector<int32_t> &vec = capability->capability_.levels;
     *arraySize = vec.size();
     return vec.data();
 }
