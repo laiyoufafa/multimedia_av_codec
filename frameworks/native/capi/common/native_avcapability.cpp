@@ -14,7 +14,7 @@
  */
 
 #include "native_avcapability.h"
-
+#include <algorithm>
 #include "native_avmagic.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
@@ -40,12 +40,18 @@ bool OH_AVCapability_IsVendor(const struct OH_AVCapability *capability)
     return capability->capability_.isVendor;
 }
 
-bool OH_AVCapability_IsResolutionSupport(const struct OH_AVCapability *capability, int32_t width, int32_t height)
+bool OH_AVCapability_IsResolutionSupported(const struct OH_AVCapability *capability, int32_t width, int32_t height)
 {
     return width >= capability->capability_.width.minVal &&
        width <= capability->capability_.width.maxVal &&
        height >= capability->capability_.height.minVal &&
        height <= capability->capability_.height.maxVal;
+}
+
+bool OH_AVCapability_IsSampleRateSupported(const struct OH_AVCapability *capability, int32_t sampleRate)
+{
+    std::vector<int32_t> &sampleRateVec = capability->capability_.sampleRate;
+    return find(sampleRateVec.begin(), sampleRateVec.end(), sampleRate) != sampleRateVec.end();
 }
 
 void OH_AVCapability_GetBitrateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
@@ -96,12 +102,6 @@ void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capabil
     *maxVal = capability->capability_.encodeQuality.maxVal;
 }
 
-void OH_AVCapability_GetQualityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
-{
-    *minVal = capability->capability_.quality.minVal;
-    *maxVal = capability->capability_.quality.maxVal;
-}
-
 void OH_AVCapability_GetBlockPerFrameRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
     *minVal = capability->capability_.blockPerFrame.minVal;
@@ -122,35 +122,34 @@ void OH_AVCapability_GetBlockSize(const struct OH_AVCapability *capability, int3
 
 int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.sampleRate;
+    std::vector<int32_t> &vec = capability->capability_.sampleRate;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.format;
+    std::vector<int32_t> &vec = capability->capability_.format;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.profiles;
+    std::vector<int32_t> &vec = capability->capability_.profiles;
     *arraySize = vec.size();
     return vec.data();
 }
 
-int32_t *OH_AVCapability_GetBitrateModeArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
+bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capability, OH_BitrateMode bitrateMode)
 {
-    std::vector<int32_t> vec = capability->capability_.bitrateMode;
-    *arraySize = vec.size();
-    return vec.data();
+    std::vector<int32_t> &bitrateModeVec = capability->capability_.bitrateMode;
+    return find(bitrateModeVec.begin(), bitrateModeVec.end(), bitrateMode) != bitrateModeVec.end();
 }
 
 int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.levels;
+    std::vector<int32_t> &vec = capability->capability_.levels;
     *arraySize = vec.size();
     return vec.data();
 }
