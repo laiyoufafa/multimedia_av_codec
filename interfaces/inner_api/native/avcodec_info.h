@@ -117,12 +117,11 @@ struct CapabilityData {
     Range bitrate;
     Range channels;
     Range complexity;
-    Range alignment;
+    ImgSize alignment;
     Range width;
     Range height;
     Range frameRate;
     Range encodeQuality;
-    Range quality;
     Range blockPerFrame;
     Range blockPerSecond;
     ImgSize blockSize;

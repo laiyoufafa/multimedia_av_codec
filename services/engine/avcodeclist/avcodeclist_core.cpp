@@ -168,10 +168,18 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
     std::string targetMimeType;
     (void)format.GetStringValue("codec_mime", targetMimeType);
 
+    int isVendor = -1;
+    bool isVendorKey = format.ContainKey("codec_vendor_flag");
+    if (isVendorKey) {
+        (void)format.GetIntValue("codec_vendor_flag", isVendor);
+    }
     std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
     auto iter = capabilityDataArray.begin()
     while (iter != capabilityDataArray.end()) {
-        if ((*iter).codecType != codecType || (*iter).mimeType != targetMimeType) { // TODO: 是否新增isVendor判断
+        if ((*iter).codecType != codecType ||
+            (*iter).mimeType != targetMimeType ||
+            (isVendorKey && (*iter).isVendor != isVendor)) {
+            ++iter;
             continue;
         }
 
