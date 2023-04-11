@@ -46,7 +46,7 @@ static const char *OH_AV_MIME_VIDEO_MPEG4 = "video/mp4v-es";
 /* format keys */
 static const char *OH_AV_KEY_MIME = "mime"; ///< mime type
 static const char *OH_AV_KEY_BIT_RATE = "bitrate"; ///< int64_t
-static const char *OH_AV_KEY_CODEC_CONFIG = "codec-config"; ///< uint8_t* codec specific data buffer
+static const char *OH_AV_KEY_CODEC_CONFIG = "codec-config"; ///< uint8_t* buffer
 
 /* audio format keys */
 static const char *OH_AV_KEY_AUDIO_SAMPLE_FORMAT = "audio-sample-format"; ///< @OH_AudioSampleFormat int32_t
@@ -330,7 +330,9 @@ typedef enum OH_AVCodecBufferFlags : uint32_t {
     /* Indicates that the Buffer contains keyframes */
     AVCODEC_BUFFER_FLAGS_SYNC_FRAME = 1 << 1,
     /* Indicates that the data contained in the Buffer is only part of a frame */
-    AVCODEC_BUFFER_FLAGS_PARTIAL_FRAME = 1 << 2,
+    AVCODEC_BUFFER_FLAGS_INCOMPLETE_FRAME = 1 << 2,
+    /* Indicates that the Buffer contains Codec-Specific-Data */
+    AVCODEC_BUFFER_FLAGS_CODEC_DATA = 1 << 3,
 } OH_AVCodecBufferFlags;
 
 /**

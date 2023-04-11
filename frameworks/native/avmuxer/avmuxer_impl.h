@@ -35,7 +35,8 @@ public:
     int32_t Stop() override;
 
 private:
-    std::shared_ptr<IMuxerEngine> muxerEngine_ = nullptr;
+    // std::shared_ptr<IMuxerEngine> muxerEngine_ = nullptr;
+    std::shared_ptr<IMuxerService> muxerService_ = nullptr;
     int32_t fd_ = -1;
     OutputFormat format_ = AV_OUTPUT_FORMAT_UNKNOWN;
 };

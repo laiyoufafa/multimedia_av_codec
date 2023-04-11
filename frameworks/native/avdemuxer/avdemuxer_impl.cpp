@@ -14,9 +14,9 @@
  */
 
 #include "avdemuxer_impl.h"
-#include "i_media_service.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "i_avcodec_service.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerImpl"}
@@ -37,9 +37,9 @@ std::shared_ptr<AVDemuxer> DemuxerFactory::CreateWithSource(Source *source)
 
 int32_t AVDemuxerImpl::Init(Source *source)
 {
-    demuxerService_ = MediaServiceFactory::GetInstance().CreateAVDemuxerService();
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avdemuxer service");
-    uint8_t sourceAttr = source->GetSourceAttr();
+    demuxerService_ = AVCodecServiceFactory::GetInstance().CreateAVDemuxerService();
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
+    uint64_t sourceAttr = source->GetSourceAttr();
     return demuxerService_->Init(sourceAttr);
 }
 
@@ -51,7 +51,7 @@ AVDemuxerImpl::AVDemuxerImpl()
 AVDemuxerImpl::~AVDemuxerImpl()
 {
     if (demuxerService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVDemuxerService(demuxerService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyAVDemuxerService(demuxerService_);
         demuxerService_ = nullptr;
     }
     AVCODEC_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));

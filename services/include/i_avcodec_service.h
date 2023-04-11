@@ -16,12 +16,24 @@
 #ifndef I_AVCODEC_SERVICE_H
 #define I_AVCODEC_SERVICE_H
 
-#include <string>
-#include "avcodec_common.h"
-#include "avcodec_info.h"
-#include "avsharedmemory.h"
-#include "refbase.h"
-#include "surface.h"
+#include <memory>
+
+#ifdef SUPPORT_CODEC
+#include "i_avcodec_service.h"
+#include "i_avcodeclist_service.h"
+#endif
+
+#ifdef SUPPORT_DEMUXER
+#include "i_demuxer_service.h"
+#endif
+
+#ifdef SUPPORT_MUXER
+#include "i_muxer_service.h"
+#endif
+
+#ifdef SUPPORT_SOURCE
+#include "i_source_service.h"
+#endif
 
 namespace OHOS {
 namespace AVCodec {
@@ -29,27 +41,109 @@ class IAVCodecService {
 public:
     virtual ~IAVCodecService() = default;
 
-    virtual int32_t InitParameter(AVCodecType type, bool isMimeType, const std::string &name) = 0;
-    virtual int32_t Configure(const Format &format) = 0;
-    virtual int32_t Start() = 0;
-    virtual int32_t Stop() = 0;
-    virtual int32_t Flush() = 0;
-    virtual int32_t Reset() = 0;
-    virtual int32_t Release() = 0;
-    virtual int32_t NotifyEos() = 0;
-    virtual sptr<Surface> CreateInputSurface() = 0;
-    virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) = 0;
-    virtual int32_t QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) = 0;
-    virtual int32_t GetOutputFormat(Format &format) = 0;
-    virtual int32_t ReleaseOutputBuffer(uint32_t index, bool render = false) = 0;
-    virtual int32_t SetParameter(const Format &format) = 0;
-    virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
+#ifdef SUPPORT_CODEC
+    /**
+     * @brief Create a codeclist service.
+     *
+     * All player functions must be created and obtained first.
+     *
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual std::shared_ptr<IAVCodecListService> CreateAVCodecListService() = 0;
 
-    // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
-    virtual int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) = 0;
-    virtual int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) = 0;
+    /**
+     * @brief Destroy a codeclist service.
+     *
+     * call the API to destroy the codeclist service.
+     *
+     * @param pointer to the codeclist service.
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual int32_t DestroyAVCodecListService(std::shared_ptr<IAVCodecListService> avCodecList) = 0;
+
+    /**
+     * @brief Create an avcodec service.
+     *
+     * All player functions must be created and obtained first.
+     *
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual std::shared_ptr<ICodecService> CreateCodecService() = 0;
+
+    /**
+     * @brief Destroy a avcodec service.
+     *
+     * call the API to destroy the avcodec service.
+     *
+     * @param pointer to the avcodec service.
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) = 0;
+#endif
+#ifdef SUPPORT_DEMUXER
+    virtual std::shared_ptr<IDemuxerService> CreateDemuxerService() = 0;
+    virtual int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) = 0;
+#endif
+
+#ifdef SUPPORT_MUXER
+    virtual std::shared_ptr<IMuxerService> CreateMuxerService() = 0;
+    virtual int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) = 0;
+#endif
+
+#ifdef SUPPORT_SOURCE
+    virtual std::shared_ptr<ISourceService> CreateSourceService() = 0;
+    virtual int32_t DestroySourceService(std::shared_ptr<ISourceService> source) = 0;
+#endif
+
+#ifdef SUPPORT_METADATA
+    /**
+     * @brief Create an avmetadatahelper service.
+     *
+     * All player functions must be created and obtained first.
+     *
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual std::shared_ptr<IAVMetadataHelperService> CreateAVMetadataHelperService() = 0;
+
+    /**
+     * @brief Destroy a avmetadatahelper service.
+     *
+     * call the API to destroy the avmetadatahelper service.
+     *
+     * @param pointer to the avmetadatahelper service.
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual int32_t DestroyAVMetadataHelperService(std::shared_ptr<IAVMetadataHelperService> avMetadataHelper) = 0;
+#endif
+};
+
+class __attribute__((visibility("default"))) AVCodecServiceFactory {
+public:
+    /**
+     * @brief IAVCodecService singleton
+     *
+     * Create Recorder Service and Player Service Through the Avcodec Service.
+     *
+     * @return Returns IAVCodecService singleton;
+     * @since 4.0
+     * @version 4.0
+     */
+    static IAVCodecService &GetInstance();
+private:
+    AVCodecServiceFactory() = delete;
+    ~AVCodecServiceFactory() = delete;
 };
 } // namespace AVCodec
 } // namespace OHOS

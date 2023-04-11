@@ -14,9 +14,15 @@
  */
 
 #include "avsource_impl.h"
+<<<<<<< HEAD
 #include "i_media_service.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+=======
+#include "i_avcodec_service.h"
+#include "media_errors.h"
+#include "media_log.h"
+>>>>>>> develop_test
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSourceImpl"}
@@ -38,12 +44,12 @@ std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 
 int32_t AVSourceImpl::Init(const std::string &uri)
 {
-    sourceService_ = MediaServiceFactory::GetInstance().CreateAVSourceService();
-    CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avsource service");
+    sourceService_ = AVCodecServiceFactory::GetInstance().CreateAVSourceService();
+    CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, MSERR_UNKNOWN, "failed to create avsource service");
     return sourceService_->Init(uri);
 }
 
-uint8_t GetSourceAttr()
+uint64_t AVSourceImpl::GetSourceAttr()
 {
     CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "avdemuxer service died!");
     return sourceService_->GetSourceAttr();
@@ -57,7 +63,7 @@ AVSourceImpl::AVSourceImpl()
 AVSourceImpl::~AVSourceImpl()
 {
     if (sourceService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVSourceService(sourceService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyAVSourceService(sourceService_);
         sourceService_ = nullptr;
     }
     AVCODEC_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances destroy". FAKE_POINTER(this));

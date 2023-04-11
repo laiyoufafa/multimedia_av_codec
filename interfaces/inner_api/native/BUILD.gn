@@ -30,7 +30,10 @@ config("av_codec_client_local_config") {
 
 config("av_codec_client_public_config") {
   include_dirs = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/avdemuxer",
     "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/avsource",
     "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
     "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
     "$AV_CODEC_ROOT_DIR/services/utils",
@@ -82,20 +85,31 @@ ohos_shared_library("av_codec_client") {
   install_enable = true
   
   sources = [
-      "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer/avmuxer_impl.cpp",
-      "$AV_CODEC_ROOT_DIR/services/engine/muxer/muxer_engine_impl.cpp",
-      "$AV_CODEC_ROOT_DIR/services/engine/factory/muxer_factory.cpp",
-      "$AV_CODEC_ROOT_DIR/services/engine/plugin/core/muxer.cpp",
-      "$AV_CODEC_ROOT_DIR/services/engine/plugin/core/plugin_loader.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
   ]
-
+  if (multimedia_av_codec_support_codec) {
+    sources += [
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_impl.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_demuxer) {
+    sources += [
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avdemuxer/avdemuxer_impl.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_muxer) {
+    sources += [
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer/avmuxer_impl.cpp",
+    ]
+  }
   public_configs = [
       ":av_codec_client_local_config",
       ":av_codec_client_public_config",
   ]
 
   deps = [
-      "$AV_CODEC_ROOT_DIR/services/engine/plugin:av_codec_plugin",
+      "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
       "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
       "//third_party/bounds_checking_function:libsec_static",
   ]
