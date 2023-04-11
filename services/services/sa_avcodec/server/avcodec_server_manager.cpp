@@ -22,11 +22,9 @@
 #include "avcodec_log.h"
 #include "service_dump_manager.h"
 #include "source_service_stub.h"
-#ifdef SUPPORT_CODECLIST
-#include "codeclist_service_stub.h"
-#endif
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
+#include "codeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
 #include "demuxer_service_stub.h"
@@ -147,12 +145,10 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     switch (type) {
-#ifdef SUPPORT_CODECLIST
+#ifdef SUPPORT_CODEC
         case CODECLIST: {
             return CreateCodecListStubObject();
         }
-#endif
-#ifdef SUPPORT_CODEC
         case CODEC: {
             return CreateCodecStubObject();
         }
@@ -179,7 +175,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
     }
 }
 
-#ifdef SUPPORT_CODECLIST
+#ifdef SUPPORT_CODEC
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
 {
     if (codecListStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -200,9 +196,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
     }
     return object;
 }
-#endif
 
-#ifdef SUPPORT_CODEC
 sptr<IRemoteObject> MediaServerManager::CreateCodecStubObject()
 {
     if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {

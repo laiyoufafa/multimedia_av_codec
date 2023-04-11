@@ -66,9 +66,6 @@ private:
 
 #ifdef SUPPORT_CODEC
     sptr<IRemoteObject> CreateCodecStubObject();
-#endif
-
-#ifdef SUPPORT_CODECLIST
     sptr<IRemoteObject> CreateCodecListStubObject();
 #endif
 

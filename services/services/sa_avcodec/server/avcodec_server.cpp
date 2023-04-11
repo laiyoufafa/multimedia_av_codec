@@ -63,12 +63,10 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed set death listener");
 
     switch (subSystemId) {
-#ifdef SUPPORT_CODECLIST
+#ifdef SUPPORT_CODEC
         case AVCodecSystemAbility::AVCODEC_CODECLIST: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
         }
-#endif
-#ifdef SUPPORT_CODEC
         case AVCodecSystemAbility::AVCODEC_CODEC: {
             return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
         }
