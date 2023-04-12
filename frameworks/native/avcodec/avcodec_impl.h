@@ -42,9 +42,9 @@ public:
     int32_t ReleaseOutputBuffer(uint32_t index, bool render) override;
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
-    int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
+    // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
     int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) override;
+    int32_t DequeueOutputBuffer(size_t *index, AVCodecBufferInfo *attr, int64_t timetUs) override;
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name);
 
 private:

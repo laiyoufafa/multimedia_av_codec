@@ -17,6 +17,7 @@
 #include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
+#include "avcodec_info.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecImpl"};
@@ -50,7 +51,7 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByName(const std::string &name)
 int32_t AVCodecImpl::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     codecService_ = AVCodecServiceFactory::GetInstance().CreateCodecService();
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_UNKNOWN, "failed to create avcodec service");
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avcodec service");
 
     return codecService_->Init(type, isMimeType, name);
 }

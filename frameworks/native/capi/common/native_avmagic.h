@@ -20,6 +20,7 @@
 #include "format.h"
 #include "avsharedmemory.h"
 #include "avcodec_common.h"
+#include "avcodec_info.h"
 
 
 #define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
@@ -64,9 +65,9 @@ struct OH_AVCodec : public OHOS::RefBase {
 };
 
 struct OH_AVCapability : public OHOS::RefBase {
-    explicit OH_AVCapability(const CapabilityData &capabilityData);
+    explicit OH_AVCapability(const OHOS::Media::CapabilityData &capabilityData);
     ~OH_AVCapability() override;
-    CapabilityData capabilityData_;
+    OHOS::Media::CapabilityData capabilityData_;
 };
 
 struct OH_AVMuxer : public AVObjectMagic {
