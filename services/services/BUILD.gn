@@ -43,13 +43,15 @@ config("av_codec_service_config") {
   ]
 
   include_dirs = [
+    "avcodeclist/client",
     "codec/server/include",
     "source/server/include",
     "$AV_CODEC_ROOT_DIR/services/include",
     "$AV_CODEC_ROOT_DIR/services/services/codec",
     "$AV_CODEC_ROOT_DIR/services/services/source",
-    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
     "$AV_CODEC_ROOT_DIR/services/dfx/include",
+    "$AV_CODEC_ROOT_DIR/services/engine/avcodeclist"
+    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
     "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
   ]
 
@@ -111,6 +113,7 @@ ohos_shared_library("av_codec_service") {
   external_deps = [
     "c_utils:utils",
     "ipc:ipc_single",
+    "hiviewdfx_hilog_native:libhilog",
   ]
 
   subsystem_name = "multimedia"

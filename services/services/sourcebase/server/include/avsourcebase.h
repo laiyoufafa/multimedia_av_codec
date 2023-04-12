@@ -16,7 +16,7 @@
 #define AVSOURCEBASE_H
 
 #include <memory>
-#include <stdint>
+#include <cstdint>
 #include <string>
 #include "avcodec_common.h"
 #include "libavformat/avformat.h"

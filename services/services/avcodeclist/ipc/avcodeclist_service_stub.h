@@ -21,7 +21,7 @@
 #include "media_death_recipient.h"
 #include "avcodeclist_server.h"
 #include "nocopyable.h"
-#include "media_parcel.h"
+#include "avcodec_parcel.h"
 // #include "avcodeclist_parcel.h"
 
 namespace OHOS {
