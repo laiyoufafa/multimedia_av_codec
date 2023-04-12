@@ -55,7 +55,6 @@ ohos_static_library("av_codec_engine_avcodeclist") {
 
   configs = [
     ":av_codec_engine_avcodeclist_config",
-    "//foundation/multimedia/av_codec/services/dfx:av_codec_service_dfx",
   ]
 
   deps = [
