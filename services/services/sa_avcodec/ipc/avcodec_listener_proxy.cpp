@@ -25,11 +25,11 @@ namespace Media {
 AVCodecListenerProxy::AVCodecListenerProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardAVCodecListener>(impl)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 AVCodecListenerProxy::~AVCodecListenerProxy()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 } // namespace Media
 } // namespace OHOS
