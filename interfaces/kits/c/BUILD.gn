@@ -55,10 +55,72 @@ config("av_codec_capi_config") {
   ]
 }
 
+ohos_shared_library("native_av_codec_core") {
+  install_enable = true
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+    blocklist = "../../../cfi_blocklist.txt"
+  }
+
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avformat.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avmemory.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
+  ]
+
+  configs = [ ":av_codec_capi_config" ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+  ]
+
+  external_deps = [
+    "graphic_standard:surface",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+  output_extension = "so"
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
+
+ohos_shared_library("native_av_codec_codec") {
+  install_enable = true
+
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+    blocklist = "../../../cfi_blocklist.txt"
+  }
+
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_avcodec.cpp",
+  ]
+
+  configs = [ ":av_codec_capi_config" ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+  output_extension = "so"
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
+
 ohos_shared_library("native_av_codec_avmuxer") {
   install_enable = true
   sources = [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avformat.cpp",
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avmuxer/native_avmuxer.cpp",
   ]
 
@@ -67,6 +129,7 @@ ohos_shared_library("native_av_codec_avmuxer") {
   deps = [
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
     "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
   ]
 
   external_deps = [

@@ -81,7 +81,7 @@ ohos_shared_library("av_codec_service") {
   ]
 
 
-  if (multimedia_player_framework_support_codec) {
+  if (multimedia_av_codec_support_codec) {
     sources += [
       "codec/ipc/codec_listener_proxy.cpp",
       "codec/ipc/codec_service_stub.cpp",
@@ -91,7 +91,7 @@ ohos_shared_library("av_codec_service") {
       "sa_media/ipc/avcodeclist_parcel.cpp",
     ]
   }
-  if (multimedia_player_framework_support_muxer) {
+  if (multimedia_av_codec_support_muxer) {
     sources += [
       "muxer/ipc/muxer_service_stub.cpp",
       "muxer/server/muxer_server.cpp",
