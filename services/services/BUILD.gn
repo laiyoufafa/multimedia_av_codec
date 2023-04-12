@@ -88,7 +88,7 @@ ohos_shared_library("av_codec_service") {
       "codec/server/codec_server.cpp",
       "avcodeclist/ipc/avcodeclist_service_stub.cpp",
       "avcodeclist/server/avcodeclist_server.cpp",
-      "sa_media/ipc/avcodeclist_parcel.cpp",
+      "sa_avcodec/ipc/avcodeclist_parcel.cpp",
     ]
   }
   if (multimedia_av_codec_support_muxer) {
