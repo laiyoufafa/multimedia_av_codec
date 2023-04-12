@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
+#include <mutex>
 #include "muxer_client.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MuxerClient"};
@@ -33,7 +34,7 @@ std::shared_ptr<MuxerClient> MuxerClient::Create(const sptr<IStandardMuxerServic
 MuxerClient::MuxerClient(const sptr<IStandardMuxerService> &ipcProxy)
     : muxerProxy_(ipcProxy)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 MuxerClient::~MuxerClient()
@@ -43,7 +44,7 @@ MuxerClient::~MuxerClient()
         (void)muxerProxy_->DestroyStub();
         muxerProxy_ = nullptr;
     }
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void MuxerClient::AVCodecServerDied()
@@ -55,57 +56,57 @@ void MuxerClient::AVCodecServerDied()
 int32_t MuxerClient::Init()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->Init();
 }
 
 int32_t MuxerClient::SetLocation(float latitude, float longitude)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->SetLocation(latitude, longitude);
 }
 
 int32_t MuxerClient::SetRotation(int32_t rotation)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->SetRotation(rotation);
 }
 
 int32_t MuxerClient::SetParameter(const Format &generalFormat)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
     return muxerProxy_->SetParameter(generalFormat);
 }
 
 int32_t MuxerClient::AddTrack(const Format &trackFormat)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->AddTrack(trackFormat);
 }
 
 int32_t MuxerClient::Start()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->Start();
 }
 
 int32_t MuxerClient::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, MSERR_INVALID_VAL, "sampleBuffer is nullptr");
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, AVCS_ERR_INVALID_VAL, "sampleBuffer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
 }
 
 int32_t MuxerClient::Stop()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, MSERR_NO_MEMORY, "Muxer Service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->Stop();
 }
 }  // namespace Media

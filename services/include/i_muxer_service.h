@@ -4,6 +4,9 @@
 #include <string>
 #include <memory>
 #include "avcodec_base.h"
+#include "format.h"
+#include "avcodec_common.h"
+
 namespace OHOS {
 namespace Media {
 class IMuxerService {
