@@ -13,9 +13,9 @@
  * limitations under the License.
  */
 
-#include "codec_client"
-#include "media_log.h"
-#include "media_errors.h"
+#include "codec_client.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecClient"};

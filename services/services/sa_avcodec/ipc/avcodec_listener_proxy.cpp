@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 #include "avcodec_listener_proxy.h"
-#include "av_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListenerProxy"};
