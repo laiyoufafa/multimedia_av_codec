@@ -30,24 +30,24 @@ sptr<DemuxerServiceStub> DemuxerServiceStub::Create()
     CHECK_AND_RETURN_RET_LOG(demuxerStub != nullptr, nullptr, "Failed to create demuxer service stub");
 
     int32_t ret = demuxerStub->InitStub();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init DemuxerServiceStub");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init DemuxerServiceStub");
     return demuxerStub;
 }
 
 DemuxerServiceStub::DemuxerServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 DemuxerServiceStub::~DemuxerServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t DemuxerServiceStub::InitStub()
 {
     demuxerServer_ = DemuxerServer::Create();
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "Failed to create muxer server");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
 
     demuxerFuncs_[INIT] = &DemuxerServiceStub::Init;
     demuxerFuncs_[ADD_SOURCE_TRACK_BY_ID] = &DemuxerServiceStub::AddSourceTrackByID;
@@ -57,17 +57,17 @@ int32_t DemuxerServiceStub::InitStub()
 
     demuxerFuncs_[DESTROY_STUB] = &DemuxerServiceStub::DestroyStub;
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int DemuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    MEDIA_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
+    AVCODEC_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
     if (DemuxerServiceStub::GetDescriptor() != remoteDescriptor) {
-        MEDIA_LOGE("Invalid descriptor");
-        return MSERR_INVALID_OPERATION;
+        AVCODEC_LOGE("Invalid descriptor");
+        return AVCS_ERR_INVALID_OPERATION;
     }
 
     auto itFunc = demuxerFuncs_.find(code);
@@ -75,47 +75,47 @@ int DemuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mess
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
             int32_t ret = (this->*memberFunc)(data, reply);
-            CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call memberFunc");
-            return MSERR_OK;
+            CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call memberFunc");
+            return AVCS_ERR_OK;
         }
     }
-    MEDIA_LOGW("Failed to find corresponding function");
+    AVCODEC_LOGW("Failed to find corresponding function");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
 int32_t DemuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
-    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::DestroyStub()
 {
     demuxerServer_ = nullptr;
     AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::DEMUXER, AsObject());
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     uint64_t attr = data.ReadUint64();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(attr)), MSERR_UNKNOWN);   
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(attr)), AVCS_ERR_UNKNOWN);   
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::AddSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(AddSourceTrackByID(index)), MSERR_UNKNOWN);   
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(AddSourceTrackByID(index)), AVCS_ERR_UNKNOWN);   
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::RemoveSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(RemoveSourceTrackByID(index)), MSERR_UNKNOWN);   
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(RemoveSourceTrackByID(index)), AVCS_ERR_UNKNOWN);   
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageParcel &reply)
@@ -130,8 +130,8 @@ int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageP
     buffer->buffer = ReadAVSharedMemoryFromParcel(parcel);
     buffer->metaData = ReadAVSharedMemoryFromParcel(parcel);
 
-    CHECK_AND_RETURN_RET(reply.WriteInt32(CopyCurrentSampleToBuf(&info, &buffer)), MSERR_UNKNOWN);   
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(CopyCurrentSampleToBuf(&info, &buffer)), AVCS_ERR_UNKNOWN);   
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &reply)
@@ -139,37 +139,37 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &
     int64_t mSeconds = data.ReadInt64();
     int32_t mode = data.ReadInt32();
     SeekMode seekMode = static_cast<SeekMode>(mode);
-    CHECK_AND_RETURN_RET(reply.WriteInt32(SeekToTimeStamp(mSeconds, seekMode)), MSERR_UNKNOWN);   
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(SeekToTimeStamp(mSeconds, seekMode)), AVCS_ERR_UNKNOWN);   
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::Init(uint64_t attr)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->Init(attr);
 }
 
 int32_t DemuxerServiceStub::AddSourceTrackByID(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->AddSourceTrackByID(index);
 }
 
 int32_t DemuxerServiceStub::RemoveSourceTrackByID(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->RemoveSourceTrackByID(index);
 }
 
 int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->CopyCurrentSampleToBuf(buffer, bufferInfo);
 }
 
 int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 {
-    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, MSERR_NO_MEMORY, "demuxer service is nullptr");
+    CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
 }
 }  // namespace Media

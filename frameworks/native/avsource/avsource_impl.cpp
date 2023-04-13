@@ -45,7 +45,7 @@ std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 int32_t AVSourceImpl::Init(const std::string &uri)
 {
     sourceService_ = AVCodecServiceFactory::GetInstance().CreateAVSourceService();
-    CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, MSERR_UNKNOWN, "failed to create avsource service");
+    CHECK_AND_RETURN_RET_LOG(sourceService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avsource service");
     return sourceService_->Init(uri);
 }
 

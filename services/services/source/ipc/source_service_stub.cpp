@@ -32,24 +32,24 @@ sptr<SourceServiceStub> SourceServiceStub::Create()
     CHECK_AND_RETURN_RET_LOG(sourceStub != nullptr, nullptr, "Failed to create source service stub");
 
     int32_t ret = sourceStub->InitStub();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init SourceServiceStub");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init SourceServiceStub");
     return sourceStub;
 }
 
 SourceServiceStub::SourceServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 SourceServiceStub::~SourceServiceStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t SourceServiceStub::InitStub()
 {
     sourceServer_ = SourceServer::Create();
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, MSERR_NO_MEMORY, "Failed to create muxer server");
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
 
     sourceFuncs_[INIT] = &SourceServiceStub::Init;
     sourceFuncs_[GET_TRACK_COUNT] = &SourceServiceStub::GetTrackCount;
@@ -58,17 +58,17 @@ int32_t SourceServiceStub::InitStub()
     sourceFuncs_[GET_TRACK_FORMAT] = &SourceServiceStub::GetTrackFormat;
     sourceFuncs_[GET_SOURCE_ATTR] = &SourceServiceStub::GetSourceAttr;
     sourceFuncs_[DESTROY_STUB] = &SourceServiceStub::DestroyStub;
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int SourceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
-    MEDIA_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
+    AVCODEC_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
     if (SourceServiceStub::GetDescriptor() != remoteDescriptor) {
-        MEDIA_LOGE("Invalid descriptor");
-        return MSERR_INVALID_OPERATION;
+        AVCODEC_LOGE("Invalid descriptor");
+        return AVCS_ERR_INVALID_OPERATION;
     }
 
     auto itFunc = sourceFuncs_.find(code);
@@ -76,11 +76,11 @@ int SourceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
             int32_t ret = (this->*memberFunc)(data, reply);
-            CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call memberFunc");
-            return MSERR_OK;
+            CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call memberFunc");
+            return AVCS_ERR_OK;
         }
     }
-    MEDIA_LOGW("Failed to find corresponding function");
+    AVCODEC_LOGW("Failed to find corresponding function");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
@@ -88,7 +88,7 @@ int32_t SourceServiceStub::DestroyStub()
 {
     sourceServer_ = nullptr;
     AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::MUXER, AsObject());
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::Init(const std::string &uri)
@@ -130,20 +130,20 @@ uint64_t SourceServiceStub::GetSourceAttr()
 int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     std::string uri = data.ReadString();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(uri)), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackCount(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackCount()), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::Destroy(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Destroy()), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
@@ -151,29 +151,29 @@ int32_t SourceServiceStub::SetParameter(MessageParcel &data, MessageParcel &repl
     Format param;
     (void)AVCodecParcel::Unmarshalling(data, param);
     uint32_t trackId = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(SetParameter(param, trackId)), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackFormat(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t trackId = data.ReadUint32();
     Format format;
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackFormat(format, trackId)), MSERR_UNKNOWN);
+    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN);
     AVCodecParcel::Marshalling(reply, format);
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetSourceAttr(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteUint64(GetSourceAttr()), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), MSERR_UNKNOWN);
-    return MSERR_OK;
+    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
 }
 }  // namespace Media
 }  // namespace OHOS
