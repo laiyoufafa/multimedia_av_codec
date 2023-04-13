@@ -49,6 +49,7 @@ public:
 
 private:
     std::shared_ptr<IAVCodecService> codecService_ = nullptr;
+    sptr<Surface> surface_;
 };
 } // namespace Media
 } // namespace OHOS

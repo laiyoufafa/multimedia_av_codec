@@ -82,7 +82,7 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
     }
     CHECK_AND_RETURN_RET_LOG(codec_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
 
-    std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(std::shared_from_this());
+    std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
     CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "failed to new CodecBaseCallback");
 
     int32_t ret; // TODO: undedine var ret

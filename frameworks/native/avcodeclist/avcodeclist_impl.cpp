@@ -36,7 +36,7 @@ std::shared_ptr<AVCodecList> AVCodecListFactory::CreateAVCodecList()
 
 int32_t AVCodecListImpl::Init()
 {
-    codecListService_ = MediaServiceFactory::GetInstance().CreateAVCodecListService();
+    codecListService_ = AVCodecServiceFactory::GetInstance().CreateAVCodecListService();
     CHECK_AND_RETURN_RET_LOG(codecListService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create AVCodecList service");
     return AVCS_ERR_OK;
 }
@@ -49,7 +49,7 @@ AVCodecListImpl::AVCodecListImpl()
 AVCodecListImpl::~AVCodecListImpl()
 {
     if (codecListService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVCodecListService(codecListService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyAVCodecListService(codecListService_);
         codecListService_ = nullptr;
     }
     AVCODEC_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));

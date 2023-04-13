@@ -207,6 +207,7 @@ int32_t MuxerServiceStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &
 
 int32_t MuxerServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
     // TODO: 补充LOG说明
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Stop()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;

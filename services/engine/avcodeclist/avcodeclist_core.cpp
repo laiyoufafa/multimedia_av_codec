@@ -88,7 +88,7 @@ bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const Capability
     }
 
     switch (format.GetValueType(std::string_view("frame_rate"))) {  // TODO : 为啥还有double类型的frameRate
-        case FORMAT_TYPE_INT32:
+        case FORMAT_TYPE_INT32: {
             int32_t targetFrameRateInt;
             (void)format.GetIntValue("frame_rate", targetFrameRateInt);
             if (data.frameRate.minVal > targetFrameRateInt ||
@@ -96,7 +96,8 @@ bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const Capability
                 return false;
             }
             break;
-        case FORMAT_TYPE_DOUBLE:
+        }
+        case FORMAT_TYPE_DOUBLE: {
             double targetFrameRateDouble;
             (void)format.GetDoubleValue("frame_rate", targetFrameRateDouble);
             double minValDouble{data.frameRate.minVal};
@@ -108,6 +109,7 @@ bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const Capability
                 return false;
             }
             break;
+        }
         default:
             break;
     }
@@ -160,6 +162,8 @@ bool AVCodecListCore::IsAudioCapSupport(const Format &format, const CapabilityDa
 // mime是必要参数
 std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &codecType)
 {
+    (void)codecType;
+
     std::lock_guard<std::mutex> lock(mutex_);
     if (!format.ContainKey("codec_mime")) {
         AVCODEC_LOGD("Get MimeType from format failed");
@@ -169,7 +173,7 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
     (void)format.GetStringValue("codec_mime", targetMimeType);
 
     std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
-    auto iter = capabilityDataArray.begin()
+    auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
         if ((*iter).codecType != codecType || (*iter).mimeType != targetMimeType) { // TODO: 是否新增isVendor判断
             continue;
@@ -221,7 +225,7 @@ CapabilityData AVCodecListCore::GetCapabilityData(std::string codecName)
     std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
-        if (codecName.equal((*iter).codecName)) {
+        if (codecName == ((*iter).codecName)) {
             capData = (*iter);
             break;
         }

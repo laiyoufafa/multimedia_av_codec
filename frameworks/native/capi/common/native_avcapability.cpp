@@ -14,14 +14,13 @@
  */
 
 #include "native_avcapability.h"
-
 #include "native_avmagic.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
-namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVCapability"};
-}
+// namespace {
+// constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVCapability"};
+// }
 
 using namespace OHOS::Media;
 
@@ -37,120 +36,120 @@ OH_AVCapability::~OH_AVCapability()
 
 bool OH_AVCapability_IsVendor(const struct OH_AVCapability *capability)
 {
-    return capability->capability_.isVendor;
+    return capability->capabilityData_.isVendor;
 }
 
 bool OH_AVCapability_IsResolutionSupport(const struct OH_AVCapability *capability, int32_t width, int32_t height)
 {
-    return width >= capability->capability_.width.minVal &&
-       width <= capability->capability_.width.maxVal &&
-       height >= capability->capability_.height.minVal &&
-       height <= capability->capability_.height.maxVal;
+    return width >= capability->capabilityData_.width.minVal &&
+       width <= capability->capabilityData_.width.maxVal &&
+       height >= capability->capabilityData_.height.minVal &&
+       height <= capability->capabilityData_.height.maxVal;
 }
 
 void OH_AVCapability_GetBitrateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.bitrate.minVal;
-    *maxVal = capability->capability_.bitrate.maxVal;
+    *minVal = capability->capabilityData_.bitrate.minVal;
+    *maxVal = capability->capabilityData_.bitrate.maxVal;
 }
 
 void OH_AVCapability_GetChannelsRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.channels.minVal;
-    *maxVal = capability->capability_.channels.maxVal;
+    *minVal = capability->capabilityData_.channels.minVal;
+    *maxVal = capability->capabilityData_.channels.maxVal;
 }
 
 void OH_AVCapability_GetComplexityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.complexity.minVal;
-    *maxVal = capability->capability_.complexity.maxVal;
+    *minVal = capability->capabilityData_.complexity.minVal;
+    *maxVal = capability->capabilityData_.complexity.maxVal;
 }
 
 void OH_AVCapability_GetAlignmentRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.alignment.minVal;
-    *maxVal = capability->capability_.alignment.maxVal;
+    *minVal = capability->capabilityData_.alignment.minVal;
+    *maxVal = capability->capabilityData_.alignment.maxVal;
 }
 
 void OH_AVCapability_GetWidthRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.width.minVal;
-    *maxVal = capability->capability_.width.maxVal;
+    *minVal = capability->capabilityData_.width.minVal;
+    *maxVal = capability->capabilityData_.width.maxVal;
 }
 
 void OH_AVCapability_GetHeightRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.width.minVal;
-    *maxVal = capability->capability_.width.maxVal;
+    *minVal = capability->capabilityData_.width.minVal;
+    *maxVal = capability->capabilityData_.width.maxVal;
 }
 
 void OH_AVCapability_GetFrameRateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.frameRate.minVal;
-    *maxVal = capability->capability_.frameRate.maxVal;
+    *minVal = capability->capabilityData_.frameRate.minVal;
+    *maxVal = capability->capabilityData_.frameRate.maxVal;
 }
 
 void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.encodeQuality.minVal;
-    *maxVal = capability->capability_.encodeQuality.maxVal;
+    *minVal = capability->capabilityData_.encodeQuality.minVal;
+    *maxVal = capability->capabilityData_.encodeQuality.maxVal;
 }
 
 void OH_AVCapability_GetQualityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.quality.minVal;
-    *maxVal = capability->capability_.quality.maxVal;
+    *minVal = capability->capabilityData_.quality.minVal;
+    *maxVal = capability->capabilityData_.quality.maxVal;
 }
 
 void OH_AVCapability_GetBlockPerFrameRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.blockPerFrame.minVal;
-    *maxVal = capability->capability_.blockPerFrame.maxVal;
+    *minVal = capability->capabilityData_.blockPerFrame.minVal;
+    *maxVal = capability->capabilityData_.blockPerFrame.maxVal;
 }
 
 void OH_AVCapability_GetBlockPerSecondRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal)
 {
-    *minVal = capability->capability_.blockPerSecond.minVal;
-    *maxVal = capability->capability_.blockPerSecond.maxVal;
+    *minVal = capability->capabilityData_.blockPerSecond.minVal;
+    *maxVal = capability->capabilityData_.blockPerSecond.maxVal;
 }
 
 void OH_AVCapability_GetBlockSize(const struct OH_AVCapability *capability, int32_t *blockWidth, int32_t *blockHeight)
 {
-    *blockWidth = capability->capability_.blockSize.width;
-    *blockHeight = capability->capability_.blockSize.height;
+    *blockWidth = capability->capabilityData_.blockSize.width;
+    *blockHeight = capability->capabilityData_.blockSize.height;
 }
 
 int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.sampleRate;
+    std::vector<int32_t> vec = capability->capabilityData_.sampleRate;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.format;
+    std::vector<int32_t> vec = capability->capabilityData_.format;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.profiles;
+    std::vector<int32_t> vec = capability->capabilityData_.profiles;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetBitrateModeArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.bitrateMode;
+    std::vector<int32_t> vec = capability->capabilityData_.bitrateMode;
     *arraySize = vec.size();
     return vec.data();
 }
 
 int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> vec = capability->capability_.levels;
+    std::vector<int32_t> vec = capability->capabilityData_.levels;
     *arraySize = vec.size();
     return vec.data();
 }
@@ -185,8 +184,8 @@ int32_t OH_AVCapability_GetMaxSupportedFrameRate(const struct OH_AVCapability *c
     int32_t targetBlockSum = (width + blockWidth - 1) / blockWidth * ((height + blockHeight - 1) / blockHeight);
     int32_t minDiff = INT32_MAX;
     Range fps;
-    auto iter = capability->capability_.measuredFrameRate.first();
-    while (iter != capability->capability_.measuredFrameRate.end()) {
+    auto iter = capability->capabilityData_.measuredFrameRate.begin();
+    while (iter != capability->capabilityData_.measuredFrameRate.end()) {
         int32_t curBlockNum = (iter->first.width + blockWidth - 1) / blockWidth *
             ((iter->first.height + blockHeight - 1) / blockHeight);
         if (curBlockNum >= targetBlockSum) {
@@ -201,5 +200,5 @@ int32_t OH_AVCapability_GetMaxSupportedFrameRate(const struct OH_AVCapability *c
 
 bool OH_AVCapability_GetSwapWidthHeightFlag(const struct OH_AVCapability *capability)
 {
-    return capability->capability_.supportSwapWidthHeight;
+    return capability->capabilityData_.supportSwapWidthHeight;
 }

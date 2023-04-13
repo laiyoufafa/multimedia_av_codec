@@ -20,6 +20,7 @@
 #include "codecbase.h"
 #include "i_codec_service.h"
 #include "nocopyable.h"
+#include "avcodec.h"
 
 namespace OHOS {
 namespace Media {

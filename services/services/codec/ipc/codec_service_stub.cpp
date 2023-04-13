@@ -416,7 +416,8 @@ int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &r
 
 int32_t CodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(inputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION);
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(inputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "");
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetInputBuffer(index);
