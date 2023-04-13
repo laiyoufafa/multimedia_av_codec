@@ -182,6 +182,8 @@ ohos_shared_library("av_codec_service") {
     "c_utils:utils",
     "ipc:ipc_single",
     "hiviewdfx_hilog_native:libhilog",
+    "safwk:system_ability_fwk",
+    "graphic_standard:surface",
   ]
 
   subsystem_name = "multimedia"

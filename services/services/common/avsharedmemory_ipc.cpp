@@ -17,8 +17,8 @@
 #include <unistd.h>
 #include "avsharedmemorybase.h"
 #include "avdatasrcmemory.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSharedMemoryIPC"};
@@ -30,7 +30,7 @@ int32_t WriteAVSharedMemoryToParcel(const std::shared_ptr<AVSharedMemory> &memor
 {
     std::shared_ptr<AVSharedMemoryBase> baseMem = std::static_pointer_cast<AVSharedMemoryBase>(memory);
     if (baseMem == nullptr)  {
-        MEDIA_LOGE("invalid pointer");
+        AVCODEC_LOGE("invalid pointer");
         return MSERR_INVALID_VAL;
     }
 
@@ -54,7 +54,7 @@ std::shared_ptr<AVSharedMemory> ReadAVSharedMemoryFromParcel(MessageParcel &parc
 
     std::shared_ptr<AVSharedMemory> memory = AVSharedMemoryBase::CreateFromRemote(fd, size, flags, name);
     if (memory == nullptr || memory->GetBase() == nullptr) {
-        MEDIA_LOGE("create remote AVSharedMemoryBase failed");
+        AVCODEC_LOGE("create remote AVSharedMemoryBase failed");
         memory = nullptr;
     }
 
@@ -71,7 +71,7 @@ std::shared_ptr<AVSharedMemory> ReadADataSrcMemoryFromParcel(MessageParcel &parc
 
     std::shared_ptr<AVSharedMemory> memory = AVDataSrcMemory::CreateFromRemote(fd, size, flags, name);
     if (memory == nullptr || memory->GetBase() == nullptr) {
-        MEDIA_LOGE("create remote AVSharedMemoryBase failed");
+        AVCODEC_LOGE("create remote AVSharedMemoryBase failed");
         memory = nullptr;
     }
 
