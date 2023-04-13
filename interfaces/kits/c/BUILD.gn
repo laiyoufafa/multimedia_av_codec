@@ -33,6 +33,7 @@ config("av_codec_capi_config") {
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common",
     "$AV_CODEC_ROOT_DIR/services/utils",
     "$AV_CODEC_ROOT_DIR/services/dfx/include",
+    "foundation/multimedia/av_codec/interfaces/kits/c",
   ]
 
   cflags = [
@@ -65,13 +66,13 @@ ohos_shared_library("native_av_codec_core") {
     blocklist = "../../../cfi_blocklist.txt"
   }
 
+  configs = [ ":av_codec_capi_config" ]
+  
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avformat.cpp",
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avmemory.cpp",
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
   ]
-
-  configs = [ ":av_codec_capi_config" ]
 
   deps = [
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
