@@ -242,22 +242,22 @@ int32_t CodecClient::SetInputSurface(sptr<PersistentSurface> surface)
     return codecProxy_->SetInputSurface(surface);
 }
 
-int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, MSERR_NO_MEMORY, "codec service does not exist.");
 
     MEDIA_LOGD("DequeueInputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timetUs);
+    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
 }
 
-int32_t CodecClient::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecClient::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, MSERR_NO_MEMORY, "codec service does not exist.");
     
     MEDIA_LOGD("DequeueOutputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timetUs);
+    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
 }
 
 } // namespace Media

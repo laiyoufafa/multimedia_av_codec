@@ -58,6 +58,8 @@ public:
 #ifdef SUPPORT_CODEC
     std::shared_ptr<ICodecService> CreateCodecService() override;
     int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
+    std::shared_ptr<ICodecService> CreateCodecListService() override;
+    int32_t DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -84,9 +86,10 @@ private:
 #endif
 #ifdef SUPPORT_CODEC
     std::list<std::shared_ptr<ICodecService>> codecClientList_;
+    std::list<std::shared_ptr<ICodecListService>> codecListClientList_;
 #endif
 #ifdef SUPPORT_SOURCE
-    std::list<std::shared_ptr<ICodecService>> sourceClientList_;
+    std::list<std::shared_ptr<ISourceService>> sourceClientList_;
 #endif
 
     std::mutex mutex_;

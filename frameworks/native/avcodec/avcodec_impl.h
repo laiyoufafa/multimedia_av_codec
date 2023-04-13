@@ -16,8 +16,9 @@
 #define AVCODEC_IMPL_H
 
 #include "avcodec.h"
-#include "nocopyable.h"
 #include "i_avcodec_service.h"
+#include "i_codec_service.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
@@ -42,13 +43,14 @@ public:
     int32_t ReleaseOutputBuffer(uint32_t index, bool render) override;
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
-    int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(size_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(size_t *index, int64_t timetUs) override;
+    // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeouttUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timeouttUs) override;
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name);
 
 private:
-    std::shared_ptr<IAVCodecService> codecService_ = nullptr;
+    std::shared_ptr<ICodecService> codecService_ = nullptr;
+    sptr<PersistentSurface> surface_;
 };
 } // namespace Media
 } // namespace OHOS
