@@ -233,14 +233,14 @@ int32_t CodecClient::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
     return AVCS_ERR_OK;
 }
 
-int32_t CodecClient::SetInputSurface(sptr<PersistentSurface> surface)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+// int32_t CodecClient::SetInputSurface(sptr<PersistentSurface> surface)
+// {
+//     std::lock_guard<std::mutex> lock(mutex_);
+//     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
 
-    AVCODEC_LOGD("SetInputSurface");
-    return codecProxy_->SetInputSurface(surface);
-}
+//     AVCODEC_LOGD("SetInputSurface");
+//     return codecProxy_->SetInputSurface(surface);
+// }
 
 int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
 {

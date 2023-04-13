@@ -102,7 +102,7 @@ void CodecListenerStub::OnInputBufferAvailable(uint32_t index)
 void CodecListenerStub::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
     if (callback_ != nullptr) {
-        callback_->OnOutputBufferAvailable(index, info, flag);
+        callback_->OnOutputBufferAvailable(index, info);
     }
 }
 
