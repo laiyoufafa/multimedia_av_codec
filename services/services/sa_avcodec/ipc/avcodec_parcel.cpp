@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_parcel.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecParcel"};
@@ -50,10 +50,10 @@ bool AVCodecParcel::Marshalling(MessageParcel &parcel, const Format &format)
                 (void)parcel.WriteBuffer(reinterpret_cast<const void *>(it->second.addr), it->second.size);
                 break;
             default:
-                MEDIA_LOGE("fail to Marshalling Key: %{public}s", it->first.c_str());
+                AVCODEC_LOGE("fail to Marshalling Key: %{public}s", it->first.c_str());
                 return false;
         }
-        MEDIA_LOGD("success to Marshalling Key: %{public}s", it->first.c_str());
+        AVCODEC_LOGD("success to Marshalling Key: %{public}s", it->first.c_str());
     }
     return true;
 }
@@ -84,17 +84,17 @@ bool AVCodecParcel::Unmarshalling(MessageParcel &parcel, Format &format)
                 auto addrSize = parcel.ReadInt32();
                 auto addr = parcel.ReadBuffer(static_cast<size_t>(addrSize));
                 if (addr == nullptr) {
-                    MEDIA_LOGE("fail to ReadBuffer Key: %{public}s", key.c_str());
+                    AVCODEC_LOGE("fail to ReadBuffer Key: %{public}s", key.c_str());
                     return false;
                 }
                 (void)format.PutBuffer(key, addr, static_cast<size_t>(addrSize));
                 break;
             }
             default:
-                MEDIA_LOGE("fail to Unmarshalling Key: %{public}s", key.c_str());
+                AVCODEC_LOGE("fail to Unmarshalling Key: %{public}s", key.c_str());
                 return false;
         }
-        MEDIA_LOGD("success to Unmarshalling Key: %{public}s", key.c_str());
+        AVCODEC_LOGD("success to Unmarshalling Key: %{public}s", key.c_str());
     }
 
     return true;

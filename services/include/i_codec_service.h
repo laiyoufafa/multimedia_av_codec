@@ -47,9 +47,9 @@ public:
     virtual int32_t SetParameter(const Format &format) = 0;
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
 
-    virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
-    virtual int32_t DequeueInputBuffer(uint32_t index, int64_t timetUs) = 0;
-    virtual int32_t DequeueOutputBuffer(uint32_t index, int64_t timetUs) = 0;
+    // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
+    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) = 0;
     // virtual int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) = 0;
 
 };

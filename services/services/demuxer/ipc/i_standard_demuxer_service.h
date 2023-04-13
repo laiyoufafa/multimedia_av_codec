@@ -31,7 +31,7 @@ public:
     virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
     virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
-    virtual int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) = 0;
+    virtual int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) = 0;
 
     virtual int32_t DestroyStub() = 0;
 

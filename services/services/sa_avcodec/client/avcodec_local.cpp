@@ -33,7 +33,7 @@ std::shared_ptr<IDemuxerService> AVCodecLocal::CreateDemuxerService()
 
 int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)
 {
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 } // namespace Media

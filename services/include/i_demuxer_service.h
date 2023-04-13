@@ -7,7 +7,6 @@
 // #include "avsharedmemory.h"
 // #include "avcontainer_common.h"
 // #include "media_description.h"
-// # include "native_avcodec_base.h"
 #include "avcodec_base.h"
 namespace OHOS {
 namespace Media {

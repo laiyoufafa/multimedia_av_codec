@@ -3,7 +3,9 @@
 
 #include <string>
 #include <memory>
-#include "av_base.h"
+#include "avcodec_base.h"
+#include "format.h"
+
 namespace OHOS {
 namespace Media {
 class ISourceService {

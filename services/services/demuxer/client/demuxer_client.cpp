@@ -17,7 +17,7 @@ std::shared_ptr<DemuxerClient> DemuxerClient::Create(const sptr<IStandardDemuxer
 DemuxerClient::DemuxerClient(const sptr<IStandardDemuxerService> &ipcProxy)
     : demuxerProxy_(ipcProxy)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 DemuxerClient::~DemuxerClient()
@@ -27,7 +27,7 @@ DemuxerClient::~DemuxerClient()
         (void)demuxerProxy_->DestroyStub();
         demuxerProxy_ = nullptr;
     }
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void DemuxerClient::DemuxerClient::AVCodecServerDied()
@@ -40,31 +40,31 @@ void DemuxerClient::DemuxerClient::AVCodecServerDied()
 int32_t DemuxerClient::AddSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, MSERR_NO_MEMORY, "demuxer service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service does not exist.");
 
-    MEDIA_LOGD("AddSourceTrackByID");
+    AVCODEC_LOGD("AddSourceTrackByID");
     return demuxerProxy_->AddSourceTrackByID(index);
 }
 int32_t DemuxerClient::RemoveSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, MSERR_NO_MEMORY, "demuxer service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service does not exist.");
     
-    MEDIA_LOGD("RemoveSourceTrackByID");
+    AVCODEC_LOGD("RemoveSourceTrackByID");
     return demuxerProxy_->RemoveSourceTrackByID(index);
 }
 int32_t DemuxerClient::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, MSERR_NO_MEMORY, "demuxer service does not exist.");
-    MEDIA_LOGD("CopyCurrentSampleToBuf");
+    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service does not exist.");
+    AVCODEC_LOGD("CopyCurrentSampleToBuf");
     return demuxerProxy_->CopyCurrentSampleToBuf(buffer, bufferInfo);
 }
 int32_t DemuxerClient::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, MSERR_NO_MEMORY, "demuxer service does not exist.");
-    MEDIA_LOGD("SeekToTimeStamp");
+    CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service does not exist.");
+    AVCODEC_LOGD("SeekToTimeStamp");
     return demuxerProxy_->SeekToTimeStamp(mSeconds, mode);
 }
 

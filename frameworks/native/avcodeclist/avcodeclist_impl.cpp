@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 
-#include "avcodec_list_impl.h"
+#include "avcodeclist_impl.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListImpl"};

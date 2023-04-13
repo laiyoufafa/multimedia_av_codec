@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 #include "avcodec_listener_stub.h"
-#include "av_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListenerStub"};
@@ -24,12 +24,12 @@ namespace OHOS {
 namespace Media {
 AVCodecListenerStub::AVCodecListenerStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecListenerStub::~AVCodecListenerStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 } // namespace Media
 } // namespace OHOS

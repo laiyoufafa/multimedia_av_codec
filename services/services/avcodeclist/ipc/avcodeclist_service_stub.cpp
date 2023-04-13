@@ -18,7 +18,7 @@
 #include "avsharedmemory_ipc.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-#include "media_server_manager.h"
+#include "avcodec_server_manager.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServiceStub"};
@@ -128,7 +128,7 @@ std::vector<CapabilityData> AVCodecListServiceStub::GetCapabilityData()
 int32_t AVCodecListServiceStub::FindVideoDecoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteString(FindVideoDecoder(format));
     return AVCS_ERR_OK;
 }
@@ -136,7 +136,7 @@ int32_t AVCodecListServiceStub::FindVideoDecoder(MessageParcel &data, MessagePar
 int32_t AVCodecListServiceStub::FindVideoEncoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteString(FindVideoEncoder(format));
     return AVCS_ERR_OK;
 }
@@ -144,7 +144,7 @@ int32_t AVCodecListServiceStub::FindVideoEncoder(MessageParcel &data, MessagePar
 int32_t AVCodecListServiceStub::FindAudioDecoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteString(FindAudioDecoder(format));
     return AVCS_ERR_OK;
 }
@@ -152,7 +152,7 @@ int32_t AVCodecListServiceStub::FindAudioDecoder(MessageParcel &data, MessagePar
 int32_t AVCodecListServiceStub::FindAudioEncoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
-    (void)MediaParcel::Unmarshalling(data, format);
+    (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteString(FindAudioEncoder(format));
     return AVCS_ERR_OK;
 }
@@ -161,6 +161,9 @@ int32_t AVCodecListServiceStub::GetCapabilityData(MessageParcel &data, MessagePa
 {
     std::string codecName = data.ReadString();
     CapabilityData capabilityData = GetCapabilityData(codecName);
+
+    
+    (void)reply; // TODO: unused-parameter
     // (void)AVCodecListParcel::Marshalling(reply, capabilityData); // vector<CapabilityData> to MessageParcel TODO
 
     return AVCS_ERR_OK;

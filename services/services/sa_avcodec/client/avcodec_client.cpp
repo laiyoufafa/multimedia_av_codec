@@ -88,7 +88,7 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
     return codecClient;
 }
 
-int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecClient)
+int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<IAVCodecService> codecClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, AVCS_ERR_NO_MEMORY, "codec client is nullptr.");

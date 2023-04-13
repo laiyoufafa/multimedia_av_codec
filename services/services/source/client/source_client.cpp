@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
+#include <mutex>
 #include "source_client.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceClient"};
@@ -33,7 +34,7 @@ std::shared_ptr<SourceClient> SourceClient::Create(const sptr<IStandardSourceSer
 SourceClient::SourceClient(const sptr<IStandardSourceService> &ipcProxy)
     : sourceProxy_(ipcProxy)
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 SourceClient::~SourceClient()
@@ -43,7 +44,7 @@ SourceClient::~SourceClient()
         (void)sourceProxy_->DestroyStub();
         sourceProxy_ = nullptr;
     }
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 void SourceClient::AVCodecServerDied()
@@ -57,7 +58,8 @@ int32_t SourceClient::Init(const std::string &uri)
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("Init");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("Init");
     return sourceProxy_->Init(uri);
 }
 
@@ -66,7 +68,8 @@ int32_t SourceClient::GetTrackCount()
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("GetTrackCount");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("GetTrackCount");
     return sourceProxy_->GetTrackCount();
 }
 
@@ -75,7 +78,8 @@ int32_t SourceClient::Destroy()
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("Destroy");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("Destroy");
     return sourceProxy_->Destroy();
 }
 
@@ -84,7 +88,8 @@ int32_t SourceClient::SetParameter(const Format &param, uint32_t trackId)
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("SetParameter");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("SetParameter");
     return sourceProxy_->SetParameter(param, trackId);
 }
 
@@ -93,7 +98,8 @@ int32_t SourceClient::GetTrackFormat(Format &format, uint32_t trackId)
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("GetTrackFormat");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("GetTrackFormat");
     return sourceProxy_->GetTrackFormat(format, trackId);
 }
 
@@ -102,7 +108,8 @@ uint64_t SourceClient::GetSourceAttr()
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceProxy_ != nullptr, nullptr, "source service does not exist.");
 
-    MEDIA_LOGD("GetSourceAttr");
+    // TODO: 添加LOG描述
+    AVCODEC_LOGD("GetSourceAttr");
     return sourceProxy_->GetSourceAttr();
 }
 }  // namespace Media

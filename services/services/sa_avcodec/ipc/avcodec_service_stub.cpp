@@ -109,15 +109,15 @@ void AVCodecServiceStub::ClientDied(pid_t pid)
 int32_t AVCodecServiceStub::SetDeathListener(const sptr<IRemoteObject> &object)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ER_NO_MEMORY, "set listener object is nullptr");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "set listener object is nullptr");
 
     sptr<IStandardAVCodecListener> avCodecListener = iface_cast<IStandardAVCodecListener>(object);
-    CHECK_AND_RETURN_RET_LOG(avCodecListener != nullptr, AVCS_ER_NO_MEMORY,
+    CHECK_AND_RETURN_RET_LOG(avCodecListener != nullptr, AVCS_ERR_NO_MEMORY,
         "failed to convert IStandardAVCodecListener");
 
     pid_t pid = IPCSkeleton::GetCallingPid();
     sptr<AVCodecDeathRecipient> deathRecipient = new(std::nothrow) AVCodecDeathRecipient(pid);
-    CHECK_AND_RETURN_RET_LOG(deathRecipient != nullptr, AVCS_ER_NO_MEMORY, "failed to new AVCodecDeathRecipient");
+    CHECK_AND_RETURN_RET_LOG(deathRecipient != nullptr, AVCS_ERR_NO_MEMORY, "failed to new AVCodecDeathRecipient");
 
     deathRecipient->SetNotifyCb(std::bind(&AVCodecServiceStub::ClientDied, this, std::placeholders::_1));
 

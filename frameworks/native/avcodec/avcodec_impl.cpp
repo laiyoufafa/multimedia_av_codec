@@ -17,6 +17,7 @@
 #include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
+#include "avcodec_info.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecImpl"};
@@ -29,7 +30,7 @@ std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, boo
     std::shared_ptr<AVCodecImpl> impl = std::make_shared<AVCodecImpl>();
     CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecImpl");
 
-    AVCodecType codeType = encoder ? AVCODEC_TYPE_ENCODER : AVCODEC_TYPE_DECODER;
+    AVCodecType codeType = encoder ? AVCodecType::AVCODEC_TYPE_ENCODER : AVCodecType::AVCODEC_TYPE_DECODER;
     int32_t ret = impl->Init(codeType, true, mime);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecImpl");
 
@@ -163,7 +164,7 @@ sptr<Surface> AVCodecImpl::CreateInputSurface()
 
 // int32_t AVCodecImpl::SetInputSurface(sptr<PersistentSurface> surface)
 // {
-//     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, MSERR_INVALID_OPERATION, "service died");
+//     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
 //     return codecService_->SetInputSurface(surface);
 // }
 

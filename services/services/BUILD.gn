@@ -42,15 +42,85 @@ config("av_codec_service_config") {
     "-Wunused-parameter",
   ]
 
+  # include_dirs = [
+  #   "avcodeclist/client",
+  #   "codec/server/include",
+  #   "source/server/include",
+  #   "$AV_CODEC_ROOT_DIR/services/include",
+  #   "$AV_CODEC_ROOT_DIR/services/services/codec",
+  #   "$AV_CODEC_ROOT_DIR/services/services/source",
+  #   "$AV_CODEC_ROOT_DIR/services/dfx/include",
+  #   "$AV_CODEC_ROOT_DIR/services/engine/avcodeclist",
+  #   "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+  #   "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
+  # ]
+
   include_dirs = [
-    "codec/server/include",
-    "source/server/include",
-    "$AV_CODEC_ROOT_DIR/services/include",
-    "$AV_CODEC_ROOT_DIR/services/services/codec",
-    "$AV_CODEC_ROOT_DIR/services/services/source",
-    "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
-    "$AV_CODEC_ROOT_DIR/services/dfx/include",
-    "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
+    "//foundation/multimedia/av_codec/",
+    "//foundation/multimedia/av_codec/frameworks/",
+    "//foundation/multimedia/av_codec/frameworks/native/",
+    "//foundation/multimedia/av_codec/frameworks/native/avcodec/",
+    "//foundation/multimedia/av_codec/frameworks/native/avcodeclist/",
+    "//foundation/multimedia/av_codec/frameworks/native/avdemuxer/",
+    "//foundation/multimedia/av_codec/frameworks/native/avmuxer/",
+    "//foundation/multimedia/av_codec/frameworks/native/avsource/",
+    "//foundation/multimedia/av_codec/frameworks/native/capi/",
+    "//foundation/multimedia/av_codec/frameworks/native/capi/avcodec",
+    "//foundation/multimedia/av_codec/frameworks/native/capi/avdemuxer",
+    "//foundation/multimedia/av_codec/frameworks/native/capi/avmuxer",
+    "//foundation/multimedia/av_codec/frameworks/native/capi/common",
+    "//foundation/multimedia/av_codec/frameworks/native/common",
+    "//foundation/multimedia/av_codec/interfaces/",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/interfaces/kits/",
+    "//foundation/multimedia/av_codec/interfaces/kits/c/",
+    "//foundation/multimedia/av_codec/interfaces/kits/c/avmuxer/",
+    "//foundation/multimedia/av_codec/services/",
+    "//foundation/multimedia/av_codec/services/dfx/",
+    "//foundation/multimedia/av_codec/services/dfx/include/",
+    "//foundation/multimedia/av_codec/services/engine/",
+    "//foundation/multimedia/av_codec/services/engine/avcodeclist",
+    "//foundation/multimedia/av_codec/services/engine/plugin/",
+    "//foundation/multimedia/av_codec/services/engine/plugin/plugins/",
+    "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/",
+    "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/ffmpeg_demuxer/",
+    "//foundation/multimedia/av_codec/services/include/",
+    "//foundation/multimedia/av_codec/services/services/",
+    "//foundation/multimedia/av_codec/services/services/avcodeclist/",
+    "//foundation/multimedia/av_codec/services/services/avcodeclist/client",
+    "//foundation/multimedia/av_codec/services/services/avcodeclist/ipc",
+    "//foundation/multimedia/av_codec/services/services/avcodeclist/server",
+    "//foundation/multimedia/av_codec/services/services/codec/",
+    "//foundation/multimedia/av_codec/services/services/codec/client",
+    "//foundation/multimedia/av_codec/services/services/codec/ipc",
+    "//foundation/multimedia/av_codec/services/services/codec/server",
+    "//foundation/multimedia/av_codec/services/services/codecbase/",
+    "//foundation/multimedia/av_codec/services/services/codecbase/server/",
+    "//foundation/multimedia/av_codec/services/services/codecbase/server/include/",
+    "//foundation/multimedia/av_codec/services/services/common/",
+    "//foundation/multimedia/av_codec/services/services/demuxer/",
+    "//foundation/multimedia/av_codec/services/services/demuxer/client/",
+    "//foundation/multimedia/av_codec/services/services/demuxer/ipc/",
+    "//foundation/multimedia/av_codec/services/services/demuxer/server/",
+    "//foundation/multimedia/av_codec/services/services/muxer/",
+    "//foundation/multimedia/av_codec/services/services/muxer/client/",
+    "//foundation/multimedia/av_codec/services/services/muxer/ipc/",
+    "//foundation/multimedia/av_codec/services/services/muxer/server/",
+    "//foundation/multimedia/av_codec/services/services/sa_avcodec/",
+    "//foundation/multimedia/av_codec/services/services/sa_avcodec/client/",
+    "//foundation/multimedia/av_codec/services/services/sa_avcodec/ipc/",
+    "//foundation/multimedia/av_codec/services/services/sa_avcodec/server/",
+    "//foundation/multimedia/av_codec/services/services/sa_avcodec/server/include/",
+    "//foundation/multimedia/av_codec/services/services/source/",
+    "//foundation/multimedia/av_codec/services/services/source/client/",
+    "//foundation/multimedia/av_codec/services/services/source/ipc/",
+    "//foundation/multimedia/av_codec/services/services/source/server/",
+    "//foundation/multimedia/av_codec/services/services/sourcebase/",
+    "//foundation/multimedia/av_codec/services/services/sourcebase/server/",
+    "//foundation/multimedia/av_codec/services/services/sourcebase/server/include/",
+    "//foundation/multimedia/av_codec/services/utils/",
+    "//foundation/multimedia/av_codec/services/utils/include/",
   ]
 
   defines = []
@@ -69,15 +139,39 @@ ohos_shared_library("av_codec_service") {
     cfi_cross_dso = true
     debug = false
   }
-
-  sources = [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
-  ]
-
+  
   configs = [
     ":av_codec_service_config",
     "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_log_dfx_public_config",
   ]
+
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
+    "common/avsharedmemory_ipc.cpp",
+    "sa_avcodec/ipc/avcodec_listener_proxy.cpp",
+    "sa_avcodec/ipc/avcodec_parcel.cpp",
+    "sa_avcodec/ipc/avcodec_service_stub.cpp",
+    "sa_avcodec/server/avcodec_server.cpp",
+    "sa_avcodec/server/avcodec_server_manager.cpp",
+  ]
+
+
+  if (multimedia_av_codec_support_codec) {
+    sources += [
+      "codec/ipc/codec_listener_proxy.cpp",
+      "codec/ipc/codec_service_stub.cpp",
+      "codec/server/codec_server.cpp",
+      "avcodeclist/ipc/avcodeclist_service_stub.cpp",
+      "avcodeclist/server/avcodeclist_server.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_muxer) {
+    sources += [
+      "muxer/ipc/muxer_service_stub.cpp",
+      "muxer/server/muxer_server.cpp",
+    ]
+  }
+
 
   deps = [
     "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_dfx",
@@ -88,6 +182,9 @@ ohos_shared_library("av_codec_service") {
   external_deps = [
     "c_utils:utils",
     "ipc:ipc_single",
+    "hiviewdfx_hilog_native:libhilog",
+    "safwk:system_ability_fwk",
+    "graphic_standard:surface",
   ]
 
   subsystem_name = "multimedia"

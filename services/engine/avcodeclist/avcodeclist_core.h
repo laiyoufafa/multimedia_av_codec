@@ -18,6 +18,8 @@
 
 #include <mutex>
 #include "nocopyable.h"
+#include "format.h"
+#include "avcodec_info.h"
 
 namespace OHOS {
 namespace Media {
