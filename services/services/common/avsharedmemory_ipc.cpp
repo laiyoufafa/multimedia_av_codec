@@ -31,7 +31,7 @@ int32_t WriteAVSharedMemoryToParcel(const std::shared_ptr<AVSharedMemory> &memor
     std::shared_ptr<AVSharedMemoryBase> baseMem = std::static_pointer_cast<AVSharedMemoryBase>(memory);
     if (baseMem == nullptr)  {
         AVCODEC_LOGE("invalid pointer");
-        return MSERR_INVALID_VAL;
+        return AVCS_ERR_INVALID_VAL;
     }
 
     int32_t fd = baseMem->GetFd();
@@ -42,7 +42,7 @@ int32_t WriteAVSharedMemoryToParcel(const std::shared_ptr<AVSharedMemory> &memor
     parcel.WriteUint32(baseMem->GetFlags());
     parcel.WriteString(baseMem->GetName());
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 std::shared_ptr<AVSharedMemory> ReadAVSharedMemoryFromParcel(MessageParcel &parcel)
