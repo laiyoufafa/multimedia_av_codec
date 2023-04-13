@@ -155,7 +155,7 @@ int32_t AVCodecImpl::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
     return codecService_->SetCallback(callback);
 }
 
-std::sptr<Surface> AVCodecImpl::CreateInputSurface()
+sptr<Surface> AVCodecImpl::CreateInputSurface()
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, nullptr, "service died");
     surface_ = codecService_->CreateInputSurface();
