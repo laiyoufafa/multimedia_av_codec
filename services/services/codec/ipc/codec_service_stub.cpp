@@ -37,7 +37,7 @@ public:
     {
         CacheFlag flag = CacheFlag::UPDATE_CACHE;
 
-        if (memory == nullptr || memory->buffer.GetBase() == nullptr || memory->metaData.GetBase() == nullptr) {
+        if (memory == nullptr || memory->buffer->GetBase() == nullptr || memory->metaData->GetBase() == nullptr) {
             AVCODEC_LOGE("invalid memory for index: %{public}u", index);
             flag = CacheFlag::INVALIDATE_CACHE;
             parcel.WriteUint8(flag);
@@ -438,7 +438,8 @@ int32_t CodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel &r
 
 int32_t CodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(outputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION);
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(outputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "");
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetOutputBuffer(index);
@@ -473,6 +474,9 @@ int32_t CodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply
 
 int32_t CodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
+    (void)reply;
+
     return AVCS_ERR_OK;
 }
 int32_t CodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)

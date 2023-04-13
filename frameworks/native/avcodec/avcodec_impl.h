@@ -51,7 +51,7 @@ public:
 private:
     std::shared_ptr<ICodecService> codecService_ = nullptr;
     sptr<PersistentSurface> surface_;
-}
+};
 } // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_IMPL_H

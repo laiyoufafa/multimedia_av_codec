@@ -49,6 +49,7 @@ bool OH_AVCapability_IsSizeSupported(const struct OH_AVCapability *capability, i
         return false;
     }
 
+    auto &blockSize = capability->capabilityData_.blockSize;
     auto &alignment = capability->capabilityData_.alignment;
     if (blockSize.width == 0 || blockSize.height == 0 ||
         alignment.width == 0 || alignment.height == 0 ||
@@ -63,7 +64,6 @@ bool OH_AVCapability_IsSizeSupported(const struct OH_AVCapability *capability, i
         return false;
     }
 
-    auto &blockSize = capability->capabilityData_.blockSize;
     if (blockSize.width == 0 || blockSize.height == 0) {
         return false;
     }
@@ -85,6 +85,7 @@ bool OH_AVCapability_AreSizeAndFrameRateSupported(const struct OH_AVCapability *
         return false;
     }
 
+    auto &blockSize = capability->capabilityData_.blockSize;
     auto &alignment = capability->capabilityData_.alignment;
     if (blockSize.width == 0 || blockSize.height == 0 ||
         alignment.width == 0 || alignment.height == 0 ||
@@ -101,7 +102,6 @@ bool OH_AVCapability_AreSizeAndFrameRateSupported(const struct OH_AVCapability *
         return false;
     }
 
-    auto &blockSize = capability->capabilityData_.blockSize;
     if (blockSize.width == 0 || blockSize.height == 0) {
         return false;
     }
@@ -122,7 +122,7 @@ bool OH_AVCapability_IsSampleRateSupported(const struct OH_AVCapability *capabil
     if (capability == nullptr) {
         return false;
     }
-    std::vector<int32_t> &sampleRateVec = capability->capabilityData_.sampleRate;
+    auto &sampleRateVec = capability->capabilityData_.sampleRate;
     return find(sampleRateVec.begin(), sampleRateVec.end(), sampleRate) != sampleRateVec.end();
 }
 
@@ -246,35 +246,35 @@ void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capabil
     *maxVal = capability->capabilityData_.encodeQuality.maxVal;
 }
 
-int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
+const int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
     if (capability == nullptr) {
         *arraySize = 0;
         return nullptr;
     }
-    std::vector<int32_t> &vec = capability->capabilityData_.sampleRate;
+    auto &vec = capability->capabilityData_.sampleRate;
     *arraySize = vec.size();
     return vec.data();
 }
 
-int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
+const int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
     if (capability == nullptr) {
         *arraySize = 0;
         return nullptr;
     }
-    std::vector<int32_t> &vec = capability->capabilityData_.format;
+    auto &vec = capability->capabilityData_.format;
     *arraySize = vec.size();
     return vec.data();
 }
 
-int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
+const int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
     if (capability == nullptr) {
         *arraySize = 0;
         return nullptr;
     }
-    std::vector<int32_t> &vec = capability->capabilityData_.profiles;
+    auto &vec = capability->capabilityData_.profiles;
     *arraySize = vec.size();
     return vec.data();
 }
@@ -284,13 +284,13 @@ bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capab
     if (capability == nullptr) {
         return false;
     }
-    std::vector<int32_t> &bitrateModeVec = capability->capabilityData_.bitrateMode;
+    auto &bitrateModeVec = capability->capabilityData_.bitrateMode;
     return find(bitrateModeVec.begin(), bitrateModeVec.end(), bitrateMode) != bitrateModeVec.end();
 }
 
-int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
+const int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize)
 {
-    std::vector<int32_t> &vec = capability->capabilityData_.levels;
+    auto &vec = capability->capabilityData_.levels;
     *arraySize = vec.size();
     return vec.data();
 }
@@ -322,7 +322,7 @@ void OH_AVCapability_GetPreferredFrameRateRangeForSize(const struct OH_AVCapabil
     float factor = 1.0f;
     float blockNumFloat{blockNum};
     auto &measureFps = capability->capabilityData_.measuredFrameRate;
-    auto iter = measureFps.first();
+    auto iter = measureFps.begin();
     while (iter != measureFps.end()) {
         int32_t curBlockNum = (iter->first.width + blockSize.width - 1) / blockSize.width *
             ((iter->first.height + blockSize.height - 1) / blockSize.height);

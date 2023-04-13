@@ -160,6 +160,11 @@ ohos_shared_library("av_codec_client") {
       ":av_codec_client_public_config",
       ":av_codec_packege_include",
   ]
+
+  configs = [
+    ":av_codec_packege_include",
+  ]
+
   sources = [
 #      "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
       "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",

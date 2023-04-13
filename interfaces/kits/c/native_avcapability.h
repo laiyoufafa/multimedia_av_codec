@@ -194,7 +194,7 @@ void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capabil
  * @since 10
  * @version 1.0
 */
-int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
+const int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
 
 /**
  * @brief Get format array
@@ -204,7 +204,7 @@ int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capabi
  * @since 10
  * @version 1.0
 */
-int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
+const int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
 
 /**
  * @brief Get profiles array
@@ -214,7 +214,7 @@ int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability
  * @since 10
  * @version 1.0
 */
-int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
+const int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
 
 /**
  * @brief Check whether is this bitrate mode supported.
@@ -234,7 +234,7 @@ bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capab
  * @since 10
  * @version 1.0
 */
-int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
+const int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
 
 /**
  * @brief Get preferred frameRate at set resolution, these framerates can be reach the performance.

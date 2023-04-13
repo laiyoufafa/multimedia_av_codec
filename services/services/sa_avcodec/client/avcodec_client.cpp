@@ -25,7 +25,7 @@
 #endif
 #ifdef SUPPORT_CODEC
 #include "i_standard_codec_service.h"
-#include "i_standard_codeclist_service.h"
+#include "i_standard_avcodeclist_service.h"
 #endif
 #ifdef SUPPORT_SOURCE
 #include "i_standard_source_service.h"
