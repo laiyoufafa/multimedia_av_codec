@@ -28,7 +28,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 bool AVCodecEvent::CreateMsg(const char *format, ...) 
 {
     va_list args;
@@ -139,5 +139,5 @@ AVCodecTrace::~AVCodecTrace()
     }
 }
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

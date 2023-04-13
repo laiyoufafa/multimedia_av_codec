@@ -27,7 +27,7 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVCodec"};
 }
 
-using namespace OHOS::Media;
+using namespace OHOS::MediaAVCodec;
 class NativeCodecCallback;
 
 struct CodecObject : public OH_AVCodec {

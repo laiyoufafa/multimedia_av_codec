@@ -36,7 +36,7 @@
 #endif
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class IAVCodecService {
 public:
     virtual ~IAVCodecService() = default;
@@ -145,6 +145,6 @@ private:
     AVCodecServiceFactory() = delete;
     ~AVCodecServiceFactory() = delete;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // I_AVCODEC_SERVICE_H

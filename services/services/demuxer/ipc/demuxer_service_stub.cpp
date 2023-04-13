@@ -184,5 +184,5 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode m
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
 }
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS  

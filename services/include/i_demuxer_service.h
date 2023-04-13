@@ -9,7 +9,7 @@
 // #include "media_description.h"
 #include "avcodec_base.h"
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 // using AVSeekMode = OH_AVSeekMode;
 typedef enum AVSeekMode {
     SEEK_MODE_NEXT_SYNC = 0,
@@ -29,6 +29,6 @@ public:
     virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
     virtual int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) = 0;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // I_DEMUXER_SERVICE_H

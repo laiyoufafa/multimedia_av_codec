@@ -21,7 +21,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class AVCodecListServer : public IAVCodecListService, public NoCopyable {
 public:
     static std::shared_ptr<IAVCodecListService> Create();
@@ -38,6 +38,6 @@ private:
     bool Init();
     std::shared_ptr<AVCodecListCore> codecListCore_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_SERVER_H

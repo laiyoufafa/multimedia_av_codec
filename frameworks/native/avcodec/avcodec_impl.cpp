@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 std::shared_ptr<AVCodec> CodecFactory::CreateByMime(const std::string &mime, bool encoder)
 {
     std::shared_ptr<AVCodecImpl> impl = std::make_shared<AVCodecImpl>();
@@ -64,7 +64,7 @@ AVCodecImpl::AVCodecImpl()
 AVCodecImpl::~AVCodecImpl()
 {
     if (codecService_ != nullptr) {
-        (void)AVCodecServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyCodecService(codecService_);
         codecService_ = nullptr;
     }
     AVCODEC_LOGD("AVCodecImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
@@ -168,18 +168,18 @@ sptr<Surface> AVCodecImpl::CreateInputSurface()
 //     return codecService_->SetInputSurface(surface);
 // }
 
-int32_t AVCodecImpl::DequeueInputBuffer(size_t *index, int64_t timetUs)
+int32_t AVCodecImpl::DequeueInputBuffer(size_t *index, int64_t timeoutUs)
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
-    return codecService_->DequeueInputBuffer(surface);
+    return codecService_->DequeueInputBuffer(index, timeoutUs);
 }
 
-int32_t AVCodecImpl::DequeueOutputBuffer(size_t *index, int64_t timetUs)
+int32_t AVCodecImpl::DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timeoutUs)
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
-    return codecService_->DequeueOutputBuffer(surface);
+    return codecService_->DequeueOutputBuffer(index, timeoutUs);
 }
 
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

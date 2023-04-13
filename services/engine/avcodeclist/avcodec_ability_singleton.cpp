@@ -21,7 +21,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 AVCodecAbilitySingleton& AVCodecAbilitySingleton::GetInstance()
 {
     static AVCodecAbilitySingleton instance;
@@ -51,5 +51,5 @@ std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilitys()
     std::lock_guard<std::mutex> lock(mutex_);
     return capabilityDataArray_;
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

@@ -20,7 +20,7 @@
 #define AVCODEC_LOG_H
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 
 #undef LOG_DOMAIN
 #define LOG_DOMAIN 0xD002BAC
@@ -73,6 +73,6 @@ namespace Media {
 #define POINTER_MASK 0x00FFFFFF
 #define FAKE_POINTER(addr) (POINTER_MASK & reinterpret_cast<uintptr_t>(addr))
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_LOG_H

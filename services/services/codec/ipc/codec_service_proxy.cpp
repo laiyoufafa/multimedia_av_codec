@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class CodecServiceProxy::CodecBufferCache : public NoCopyable {
 public:
     CodecBufferCache() = default;
@@ -476,7 +476,7 @@ int32_t CodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
 }
 */
 
-int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -484,7 +484,7 @@ int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
     bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    data.WriteInt64(timetUs);
+    data.WriteInt64(timeoutUs);
     int32_t ret = Remote()->SendRequest(RELEASE_OUTPUT_BUFFER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "DequeueInputBuffer failed, error: %{public}d", ret);
@@ -492,7 +492,7 @@ int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
     return reply.ReadInt32();
 }
 
-int32_t CodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -500,12 +500,12 @@ int32_t CodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
     bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    data.WriteInt64(timetUs);
+    data.WriteInt64(timeoutUs);
     int32_t ret = Remote()->SendRequest(RELEASE_OUTPUT_BUFFER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "DequeueOutputBuffer failed, error: %{public}d", ret);
     *index = reply.ReadUint32();
     return reply.ReadInt32();
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

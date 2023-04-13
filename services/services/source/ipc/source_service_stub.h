@@ -21,7 +21,7 @@
 #include "iremote_stub.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class SourceServiceStub : public IRemoteStub<IStandardSourceService>, public NoCopyable {
 public:
     static sptr<SourceServiceStub> Create();
@@ -54,6 +54,6 @@ private:
     std::shared_ptr<ISourceService> sourceServer_ = nullptr;
     std::map<uint32_t, SourceStubFunc> sourceFuncs_;
 };
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS
 #endif

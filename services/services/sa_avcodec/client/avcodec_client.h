@@ -39,7 +39,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class AVCodecClient : public IAVCodecService, public NoCopyable {
 public:
     AVCodecClient() noexcept;
@@ -84,13 +84,14 @@ private:
 #endif
 #ifdef SUPPORT_CODEC
     std::list<std::shared_ptr<ICodecService>> codecClientList_;
+    std::list<std::shared_ptr<ICodecListService>> codecListClientList_;
 #endif
 #ifdef SUPPORT_SOURCE
-    std::list<std::shared_ptr<ICodecService>> sourceClientList_;
+    std::list<std::shared_ptr<ISourceService>> sourceClientList_;
 #endif
 
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_CLIENT_H

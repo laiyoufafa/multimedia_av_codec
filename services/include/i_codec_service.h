@@ -24,7 +24,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class ICodecService {
 public:
     virtual ~ICodecService() = default;
@@ -48,11 +48,11 @@ public:
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
 
     // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
-    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) = 0;
-    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
+    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
     // virtual int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) = 0;
 
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // I_CODEC_SERVICE_H

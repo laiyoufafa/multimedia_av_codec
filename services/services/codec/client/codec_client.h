@@ -21,7 +21,7 @@
 #include "codec_listener_stub.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class CodecClient : public ICodecService {
 public:
     static std::shared_ptr<CodecClient> Create(const sptr<IStandardCodecService> &ipcProxy);
@@ -46,8 +46,8 @@ public:
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) override;
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) override;
     // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
     void AVCodecServerDied();
@@ -60,6 +60,6 @@ private:
     std::shared_ptr<AVCodecCallback> callback_ = nullptr;
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // CODEC_SERVICE_CLIENT_H

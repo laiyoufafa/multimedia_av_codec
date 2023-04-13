@@ -22,7 +22,7 @@
 #include "hisysevent.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 
 class __attribute__((visibility("default"))) AVCodecEvent : public NoCopyable {
 public:
@@ -54,6 +54,6 @@ private:
     bool isSync_ = false;
 };
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_DFX_H

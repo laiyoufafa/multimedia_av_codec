@@ -27,7 +27,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class CodecServiceStub::CodecBufferCache : public NoCopyable {
 public:
     CodecBufferCache() = default;
@@ -297,16 +297,16 @@ int32_t CodecServiceStub::SetInputSurface(sptr<PersistentSurface> surface)
     return codecServer_->SetInputSurface(surface);
 }
 
-int32_t CodecServiceStub::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceStub::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
-    return codecServer_->DequeueInputBuffer(index, timetUs);
+    return codecServer_->DequeueInputBuffer(index, timeoutUs);
 }
 
-int32_t CodecServiceStub::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServiceStub::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
-    return codecServer_->DequeueOutputBuffer(index, timetUs);
+    return codecServer_->DequeueOutputBuffer(index, timeoutUs);
 }
 
 
@@ -477,20 +477,20 @@ int32_t CodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &re
 }
 int32_t CodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    int64_t timetUs = data.ReadInt64();
+    int64_t timeoutUs = data.ReadInt64();
     uint32_t index;
-    reply.WriteInt32(DequeueInputBuffer(&index, timetUs));
+    reply.WriteInt32(DequeueInputBuffer(&index, timeoutUs));
     reply.WriteUint32(index);
     return AVCS_ERR_OK;
 }
 int32_t CodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
 
-    int64_t timetUs = data.ReadInt64();
+    int64_t timeoutUs = data.ReadInt64();
     uint32_t index;
-    reply.WriteInt32(DequeueOutputBuffer(&index, timetUs));
+    reply.WriteInt32(DequeueOutputBuffer(&index, timeoutUs));
     reply.WriteUint32(index);
     return AVCS_ERR_OK;
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecService> &ipcProxy)
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "ipcProxy is nullptr..");
@@ -242,23 +242,23 @@ int32_t CodecClient::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
 //     return codecProxy_->SetInputSurface(surface);
 // }
 
-int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
 
     AVCODEC_LOGD("DequeueInputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timetUs);
+    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
 }
 
-int32_t CodecClient::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecClient::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
     
     AVCODEC_LOGD("DequeueOutputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timetUs);
+    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
 }
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

@@ -21,7 +21,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 std::shared_ptr<AVCodecListClient> AVCodecListClient::Create(const sptr<IStandardAVCodecListService> &ipcProxy)
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "ipcProxy is nullptr..");
@@ -89,5 +89,5 @@ CapabilityData AVCodecListClient::GetCapabilityData(std::string codecName)
         "codeclist service does not exist.");
     return codecListProxy_->GetCapabilityData(codecName);
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

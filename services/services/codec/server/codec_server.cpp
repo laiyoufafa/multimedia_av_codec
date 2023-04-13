@@ -22,19 +22,19 @@
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecServer"};
-    const std::map<OHOS::Media::CodecServer::CodecStatus, std::string> CODEC_STATE_MAP = {
-        {OHOS::Media::CodecServer::UNINITIALIZED, "uninitialized"},
-        {OHOS::Media::CodecServer::INITIALIZED, "initialized"},
-        {OHOS::Media::CodecServer::CONFIGURED, "configured"},
-        {OHOS::Media::CodecServer::RUNNING, "running"},
-        {OHOS::Media::CodecServer::FLUSHED, "flushed"},
-        {OHOS::Media::CodecServer::END_OF_STREAM, "end of stream"},
-        {OHOS::Media::CodecServer::ERROR, "error"},
+    const std::map<OHOS::MediaAVCodec::CodecServer::CodecStatus, std::string> CODEC_STATE_MAP = {
+        {OHOS::MediaAVCodec::CodecServer::UNINITIALIZED, "uninitialized"},
+        {OHOS::MediaAVCodec::CodecServer::INITIALIZED, "initialized"},
+        {OHOS::MediaAVCodec::CodecServer::CONFIGURED, "configured"},
+        {OHOS::MediaAVCodec::CodecServer::RUNNING, "running"},
+        {OHOS::MediaAVCodec::CodecServer::FLUSHED, "flushed"},
+        {OHOS::MediaAVCodec::CodecServer::END_OF_STREAM, "end of stream"},
+        {OHOS::MediaAVCodec::CodecServer::ERROR, "error"},
     };
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
     std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
@@ -303,7 +303,7 @@ int32_t CodecServer::SetInputSurface(sptr<PersistentSurface> surface)
     return codec_->SetOutputSurface(surface);
 }
 
-int32_t CodecServer::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServer::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
 
     std::lock_guard<std::mutex> lock(mutex_);
@@ -316,7 +316,7 @@ int32_t CodecServer::DequeueInputBuffer(uint32_t *index, int64_t timetUs)
     return AVCS_ERR_OK;
 }
 
-int32_t CodecServer::DequeueOutputBuffer(uint32_t *index, int64_t timetUs)
+int32_t CodecServer::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == RUNNING, AVCS_ERR_INVALID_OPERATION, "invalid state");
@@ -342,11 +342,11 @@ int32_t CodecServer::DumpInfo(int32_t fd)
     return AVCS_ERR_OK;
 }
 
-const std::string &CodecServer::GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status)
+const std::string &CodecServer::GetStatusDescription(OHOS::MediaAVCodec::CodecServer::CodecStatus status)
 {
     static const std::string ILLEGAL_STATE = "PLAYER_STATUS_ILLEGAL";
-    if (status < OHOS::Media::CodecServer::UNINITIALIZED ||
-        status > OHOS::Media::CodecServer::ERROR) {
+    if (status < OHOS::MediaAVCodec::CodecServer::UNINITIALIZED ||
+        status > OHOS::MediaAVCodec::CodecServer::ERROR) {
         return ILLEGAL_STATE;
     }
 
@@ -455,5 +455,5 @@ void CodecBaseCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInf
     }
 }
 
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

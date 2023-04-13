@@ -25,6 +25,7 @@
 #endif
 #ifdef SUPPORT_CODEC
 #include "i_standard_codec_service.h"
+#include "i_standard_codeclist_service.h"
 #endif
 #ifdef SUPPORT_SOURCE
 #include "i_standard_source_service.h"
@@ -38,7 +39,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 
 static AVCodecClient avCodecClientInstance;
 IAVCodecService &AVCodecServiceFactory::GetInstance()
@@ -65,7 +66,7 @@ bool AVCodecClient::IsAlived()
     return avCodecProxy_ != nullptr;
 }
 #ifdef SUPPORT_CODEC
-std::shared_ptr<IAVCodecService> AVCodecClient::CreateCodecService()
+std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
@@ -77,7 +78,7 @@ std::shared_ptr<IAVCodecService> AVCodecClient::CreateCodecService()
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODEC, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "codec proxy object is nullptr.");
 
-    sptr<IStandardAVCodecService> codecProxy = iface_cast<IStandardAVCodecService>(object);
+    sptr<IStandardCodecService> codecProxy = iface_cast<IStandardCodecService>(object);
     CHECK_AND_RETURN_RET_LOG(codecProxy != nullptr, nullptr, "codec proxy is nullptr.");
 
     std::shared_ptr<CodecClient> codecClient = CodecClient::Create(codecProxy);
@@ -92,6 +93,36 @@ int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<IAVCodecService> code
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, AVCS_ERR_NO_MEMORY, "codec client is nullptr.");
     codecClientList_.remove(codecClient);
+    return AVCS_ERR_OK;
+}
+
+std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService()
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (!IsAlived()) {
+        AVCODEC_LOGE("av_codec service does not exist.");
+        return nullptr;
+    }
+
+    sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
+        IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODECList, listenerStub_->AsObject());
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "codeclist proxy object is nullptr.");
+
+    sptr<IStandardCodecListService> codecProxy = iface_cast<IStandardCodecListService>(object);
+    CHECK_AND_RETURN_RET_LOG(codecProxy != nullptr, nullptr, "codeclist proxy is nullptr.");
+
+    std::shared_ptr<CodecListClient> codecListClient = CodecListClient::Create(codecListProxy);
+    CHECK_AND_RETURN_RET_LOG(codecListClient != nullptr, nullptr, "failed to create codeclist client.");
+
+    codecListClientList_.push_back(codecListClient);
+    return codecListClient;
+}
+
+int32_t AVCodecClient::DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    CHECK_AND_RETURN_RET_LOG(codecListClient != nullptr, AVCS_ERR_NO_MEMORY, "codeclist client is nullptr.");
+    codecListClientList_.remove(codecListClient);
     return AVCS_ERR_OK;
 }
 #endif
@@ -271,5 +302,5 @@ void AVCodecClient::DoAVCodecServerDied()
 #endif
 
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
