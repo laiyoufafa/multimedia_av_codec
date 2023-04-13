@@ -38,7 +38,7 @@ std::shared_ptr<AVDemuxer> DemuxerFactory::CreateWithSource(Source *source)
 int32_t AVDemuxerImpl::Init(Source *source)
 {
     demuxerService_ = AVCodecServiceFactory::GetInstance().CreateAVDemuxerService();
-    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, MSERR_UNKNOWN, "failed to create avdemuxer service");
+    CHECK_AND_RETURN_RET_LOG(demuxerService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avdemuxer service");
     uint64_t sourceAttr = source->GetSourceAttr();
     return demuxerService_->Init(sourceAttr);
 }

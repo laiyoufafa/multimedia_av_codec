@@ -28,18 +28,18 @@ std::shared_ptr<ISourceService> SourceServer::Create()
     std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
     CHECK_AND_RETURN_RET_LOG(sourceServer != nullptr, nullptr, "Source Service does not exist");
     int32_t ret = sourceServer->InitServer();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init source server");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init source server");
     return sourceServer;
 }
 
 SourceServer::SourceServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 SourceServer::~SourceServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
     std::lock_guard<std::mutex> lock(mutex_);
 
     // sourceEngine_ = nullptr;
@@ -49,7 +49,7 @@ int32_t SourceServer::InitServer()
 {
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServer::Init(const std::string &uri)
@@ -57,7 +57,7 @@ int32_t SourceServer::Init(const std::string &uri)
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServer::GetTrackCount()
@@ -65,7 +65,7 @@ int32_t SourceServer::GetTrackCount()
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServer::Destroy()
@@ -73,7 +73,7 @@ int32_t SourceServer::Destroy()
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServer::SetParameter(const Format &param, uint32_t trackId)
@@ -81,7 +81,7 @@ int32_t SourceServer::SetParameter(const Format &param, uint32_t trackId)
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t SourceServer::GetTrackFormat(Format &format, uint32_t trackId)
@@ -89,7 +89,7 @@ int32_t SourceServer::GetTrackFormat(Format &format, uint32_t trackId)
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 uint64_t SourceServer::GetSourceAttr()
@@ -97,7 +97,7 @@ uint64_t SourceServer::GetSourceAttr()
     std::lock_guard<std::mutex> lock(mutex_);
 
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 }  // namespace Media
 }  // namespace OHOS

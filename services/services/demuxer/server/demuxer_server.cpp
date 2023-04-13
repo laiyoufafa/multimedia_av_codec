@@ -26,18 +26,18 @@ std::shared_ptr<IDemuxerService> DemuxerServer::Create()
     std::shared_ptr<DemuxerServer> demuxerServer = std::make_shared<DemuxerServer>();
     CHECK_AND_RETURN_RET_LOG(demuxerServer != nullptr, nullptr, "Demuxer Service does not exist");
     int32_t ret = demuxerServer->InitServer();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "Failed to init demuxer server");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init demuxer server");
     return demuxerServer;
 }
 
 DemuxerServer::DemuxerServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 DemuxerServer::~DemuxerServer()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
     std::lock_guard<std::mutex> lock(mutex_);
     // demuxerEngine_ = nullptr;
 }
@@ -46,60 +46,60 @@ int32_t DemuxerServer::InitServer()
 {
     // 引擎创建
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServer::Init(uint64_t attr)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServer::AddSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
-    // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
+    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     // return index; // only for test
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServer::RemoveSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
-    // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
+    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     // return index; // only for test
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
-    // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
-    return MSERR_OK;
+    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
+    return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, MSERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
 
     // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
-    // CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, ret, "Failed to call SetRotation");
+    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     printf("SeekToTimeStamp: %lld %d\n", mSeconds, int(mode)); // only for test
 
-    MEDIA_LOGI("SeekToTimeStamp: %{public}lld", mSeconds);
+    AVCODEC_LOGI("SeekToTimeStamp: %{public}lld", mSeconds);
     // return int(mode); // only for test
-    return MSERR_OK;
+    return AVCS_ERR_OK;
 }
 }  // namespace Media
 }  // namespace OHOS
