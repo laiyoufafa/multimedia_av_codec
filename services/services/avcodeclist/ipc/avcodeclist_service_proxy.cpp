@@ -45,7 +45,7 @@ std::string AVCodecListServiceProxy::FindVideoDecoder(const Format &format)
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_VIDEO_DECODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindVideoDecoder failed");
     return reply.ReadString();
@@ -60,7 +60,7 @@ std::string AVCodecListServiceProxy::FindVideoEncoder(const Format &format)
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_VIDEO_ENCODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindVideoEncoder failed");
     return reply.ReadString();
@@ -75,7 +75,7 @@ std::string AVCodecListServiceProxy::FindAudioDecoder(const Format &format)
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_AUDIO_DECODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindAudioDecoder failed");
 
@@ -91,14 +91,14 @@ std::string AVCodecListServiceProxy::FindAudioEncoder(const Format &format)
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
-    (void)MediaParcel::Marshalling(data, format);
+    (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(FIND_AUDIO_ENCODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindAudioEncoder failed");
 
     return reply.ReadString();
 }
 
-CapabilityData AVCodecListServiceProxy::GetCapabilityData()
+CapabilityData AVCodecListServiceProxy::GetCapabilityData(std::string codecName)
 {
     MessageParcel data;
     MessageParcel reply;

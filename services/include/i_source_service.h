@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include "avcodec_base.h"
+#include "format.h"
 
 namespace OHOS {
 namespace Media {

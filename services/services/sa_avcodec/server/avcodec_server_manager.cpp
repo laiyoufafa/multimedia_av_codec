@@ -23,7 +23,7 @@
 #include "source_service_stub.h"
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
-#include "codeclist_service_stub.h"
+#include "avcodeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
 #include "demuxer_service_stub.h"
@@ -64,7 +64,7 @@ int32_t WriteInfo(int32_t fd, std::string &dumpString, std::vector<Dumper> dumpe
             dumpString.clear();
         }
         i++;
-        if (needDetail && iter.entry_(fd) != MSERR_OK) {
+        if (needDetail && iter.entry_(fd) != AVCS_ERR_OK) {
             return OHOS::INVALID_OPERATION;
         }
     }

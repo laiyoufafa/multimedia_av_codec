@@ -18,7 +18,7 @@
 
 #include <map>
 #include "i_standard_avcodeclist_service.h"
-#include "media_death_recipient.h"
+#include "avcodec_death_recipient.h"
 #include "avcodeclist_server.h"
 #include "nocopyable.h"
 #include "avcodec_parcel.h"
