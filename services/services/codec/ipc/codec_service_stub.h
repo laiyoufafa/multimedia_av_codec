@@ -22,6 +22,7 @@
 #include "codec_server.h"
 #include "avcodec_death_recipient.h"
 #include "nocopyable.h"
+#include "avcodec.h"
 
 namespace OHOS {
 namespace MediaAVCodec {

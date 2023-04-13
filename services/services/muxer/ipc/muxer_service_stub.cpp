@@ -144,6 +144,7 @@ int32_t MuxerServiceStub::Stop()
 
 int32_t MuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
     // TODO: 补充LOG说明
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
@@ -190,6 +191,7 @@ int32_t MuxerServiceStub::AddTrack(MessageParcel &data, MessageParcel &reply)
 
 int32_t MuxerServiceStub::Start(MessageParcel &data, MessageParcel &reply)
 {
+    (void)data;
     // TODO: 补充LOG说明
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Start()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
@@ -197,7 +199,8 @@ int32_t MuxerServiceStub::Start(MessageParcel &data, MessageParcel &reply)
 
 int32_t MuxerServiceStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &reply)
 {
-
+    (void)data;
+    (void)reply;
 
     return AVCS_ERR_OK;
 }

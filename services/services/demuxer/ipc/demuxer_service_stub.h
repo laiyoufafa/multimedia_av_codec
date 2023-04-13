@@ -15,10 +15,13 @@
 #ifndef DEMUXER_SERVICE_STUB_H
 #define DEMUXER_SERVICE_STUB_H
 
+#include <map>
 #include "i_standard_demuxer_service.h"
 #include "demuxer_server.h"
 #include "iremote_stub.h"
-#include <map>
+#include "avcodec_common.h"
+#include "i_demuxer_service.h"
+
 namespace OHOS {
 namespace MediaAVCodec {
 class DemuxerServiceStub : public IRemoteStub<IStandardDemuxerService>, public NoCopyable {
@@ -33,7 +36,7 @@ public:
     int32_t AddSourceTrackByID(uint32_t index) override;
     int32_t RemoveSourceTrackByID(uint32_t index) override;
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
+    int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
 
     int32_t DestroyStub() override;
 private:

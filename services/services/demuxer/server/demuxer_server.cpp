@@ -88,7 +88,7 @@ int32_t DemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBu
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
+int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");

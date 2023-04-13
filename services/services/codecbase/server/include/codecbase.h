@@ -25,7 +25,7 @@ class CodecBase {
     virtual ~CodecBase() = default;
     static std::shared_ptr<CodecBase> Create(const std::string& name);
     static std::shared_ptr<CodecBase> Create(bool isEncoder,const std::string& mime);
-    virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallBack>& callback) = 0;
+    virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback>& callback) = 0;
     virtual int32_t Configure(const Format& format) = 0;
     virtual int32_t Start() = 0;
     virtual int32_t Pause() = 0;

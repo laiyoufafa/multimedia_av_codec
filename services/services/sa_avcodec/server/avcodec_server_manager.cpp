@@ -182,9 +182,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
             "Please release the applied resources.", codecListStubMap_.size());
         return nullptr;
     }
-    sptr<CodecListServiceStub> stub = codecListServiceStub::Create();
+    sptr<AVCodecListServiceStub> stub = AVCodecListServiceStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create CodecListServiceStub");
+        AVCODEC_LOGE("failed to create AVCodecListServiceStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();
@@ -196,7 +196,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
     return object;
 }
 
-sptr<IRemoteObject> MediaServerManager::CreateCodecStubObject()
+sptr<IRemoteObject> AVCodecServerManager::CreateCodecStubObject()
 {
     if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {
         AVCODEC_LOGE("The number of codec services(%{public}zu) has reached the upper limit."
@@ -341,7 +341,7 @@ void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> 
     pid_t pid = IPCSkeleton::GetCallingPid();
     DestroyDumper(type, object);
     
-    auto compare_func = [object](pair<sptr<IRemoteObject>, pid_t> object) -> bool { return object.first == object };
+    auto compare_func = [object](std::pair<sptr<IRemoteObject>, pid_t> objectPair) -> bool { return objectPair.first == object; };
     switch (type) {
         case CODEC: {
             auto it = find_if(codecStubMap_.begin(), codecStubMap_.end(), compare_func);

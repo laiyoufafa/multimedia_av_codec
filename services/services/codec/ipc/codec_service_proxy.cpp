@@ -143,7 +143,7 @@ int32_t CodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::st
     data.WriteInt32(static_cast<int32_t>(type));
     data.WriteBool(isMimeType);
     data.WriteString(name);
-    int32_t ret = Remote()->SendRequest(INIT_PARAMETER, data, reply, option);
+    int32_t ret = Remote()->SendRequest(INIT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "Init failed, error: %{public}d", ret);
 
@@ -444,6 +444,8 @@ int32_t CodecServiceProxy::SetParameter(const Format &format)
     return reply.ReadInt32();
 }
 
+// TODO: 重载虚函数的参数列表与基类不符
+/*
 int32_t CodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
 {
     MessageParcel data;
@@ -472,6 +474,8 @@ int32_t CodecServiceProxy::SetInputSurface(sptr<PersistentSurface> surface)
 
     return reply.ReadInt32();
 }
+*/
+
 int32_t CodecServiceProxy::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
 {
     MessageParcel data;

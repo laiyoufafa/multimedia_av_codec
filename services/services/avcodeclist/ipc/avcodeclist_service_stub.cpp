@@ -118,12 +118,15 @@ std::string AVCodecListServiceStub::FindAudioEncoder(const Format &format)
     return codecListServer_->FindAudioEncoder(format);
 }
 
+// TOOD: 参数列表和返回值与头文件定义不符
+/*
 std::vector<CapabilityData> AVCodecListServiceStub::GetCapabilityData()
 {
     CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, std::vector<CapabilityData>(),
         "avcodeclist server is nullptr");
     return codecListServer_->GetCapabilityData();
 }
+*/
 
 int32_t AVCodecListServiceStub::FindVideoDecoder(MessageParcel &data, MessageParcel &reply)
 {
