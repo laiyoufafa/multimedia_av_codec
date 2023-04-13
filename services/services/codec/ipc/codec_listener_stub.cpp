@@ -26,12 +26,12 @@ namespace OHOS {
 namespace Media {
 CodecListenerStub::CodecListenerStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 CodecListenerStub::~CodecListenerStub()
 {
-    MEDIA_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
@@ -39,8 +39,8 @@ int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
 {
     auto remoteDescriptor = data.ReadInterfaceToken();
     if (CodecListenerStub::GetDescriptor() != remoteDescriptor) {
-        MEDIA_LOGE("Invalid descriptor");
-        return MSERR_INVALID_OPERATION;
+        AVCODEC_LOGE("Invalid descriptor");
+        return AVCS_ERR_INVALID_OPERATION;
     }
 
     switch (code) {
@@ -48,18 +48,18 @@ int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
             int32_t errorType = data.ReadInt32();
             int32_t errorCode = data.ReadInt32();
             OnError(static_cast<AVCodecErrorType>(errorType), errorCode);
-            return MSERR_OK;
+            return AVCS_ERR_OK;
         }
         case CodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED: {
             Format format;
             (void)AVCodecParcel::Unmarshalling(data, format);
             OnOutputFormatChanged(format);
-            return MSERR_OK;
+            return AVCS_ERR_OK;
         }
         case CodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE: {
             uint32_t index = data.ReadUint32();
             OnInputBufferAvailable(index);
-            return MSERR_OK;
+            return AVCS_ERR_OK;
         }
         case CodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE: {
             uint32_t index = data.ReadUint32();
@@ -69,10 +69,10 @@ int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
             info.offset = data.ReadInt32();
             AVCodecBufferFlag flag = static_cast<AVCodecBufferFlag>(data.ReadInt32());
             OnOutputBufferAvailable(index, info, flag);
-            return MSERR_OK;
+            return AVCS_ERR_OK;
         }
         default: {
-            MEDIA_LOGE("default case, need check CodecListenerStub");
+            AVCODEC_LOGE("default case, need check CodecListenerStub");
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
     }
