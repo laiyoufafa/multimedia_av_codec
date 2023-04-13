@@ -22,7 +22,7 @@
 #include "format.h"
 
 namespace OHOS {
-namespace Media{
+namespace MediaAVCodec{
 
 class AVSource {
 public:
@@ -98,7 +98,7 @@ public:
 private:
     uint32_t trackId_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVSOURCE_H
 

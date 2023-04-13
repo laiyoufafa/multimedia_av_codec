@@ -20,7 +20,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class CodecServiceProxy : public IRemoteProxy<IStandardCodecService>, public NoCopyable {
 public:
     explicit CodecServiceProxy(const sptr<IRemoteObject> &impl);
@@ -46,8 +46,8 @@ public:
     int32_t SetParameter(const Format &format) override;
     // int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) override;
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) override;
     // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
     int32_t DestroyStub() override;
@@ -59,6 +59,6 @@ private:
     std::unique_ptr<CodecBufferCache> inputBufferCache_;
     std::unique_ptr<CodecBufferCache> outputBufferCache_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // CODEC_SERVICE_PROXY_H

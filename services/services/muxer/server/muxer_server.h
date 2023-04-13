@@ -21,7 +21,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class MuxerServer : public IMuxerService, public NoCopyable {
 public:
     static std::shared_ptr<IMuxerService> Create();
@@ -43,6 +43,6 @@ private:
     // std::shared_ptr<IAVMuxerEngine> avmuxerEngine_ = nullptr;
     // uint32_t trackNum_ = 0;
 };
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS
 #endif

@@ -22,9 +22,9 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVMemory"};
 }
 
-using namespace OHOS::Media;
+using namespace OHOS::MediaAVCodec;
 
-OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
+OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::MediaAVCodec::AVSharedMemory> &mem)
     : memory_(mem)
 {
 }
@@ -33,7 +33,7 @@ OH_AVMemory::~OH_AVMemory()
 {
 }
 
-bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
+bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::MediaAVCodec::AVSharedMemory> &mem)
 {
     return (mem == memory_) ? true : false;
 }
@@ -53,7 +53,7 @@ int32_t OH_AVMemory_GetSize(struct OH_AVMemory *mem)
 }
 
 
-OH_AVBufferElement::OH_AVBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement)
+OH_AVBufferElement::OH_AVBufferElement(const std::shared_ptr<OHOS::MediaAVCodec::AVBufferElement> &bufferElement)
     : bufferElement_(bufferElement)
 {
 }
@@ -62,7 +62,7 @@ OH_AVBufferElement::~OH_AVBufferElement()
 {
 }
 
-bool OH_AVBufferElement::IsEqualBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement)
+bool OH_AVBufferElement::IsEqualBufferElement(const std::shared_ptr<OHOS::MediaAVCodec::AVBufferElement> &bufferElement)
 {
     return (bufferElement == bufferElement_) ? true : false;
 }

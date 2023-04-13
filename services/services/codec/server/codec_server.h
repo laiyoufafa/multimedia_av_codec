@@ -22,7 +22,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 
 class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
 public:
@@ -72,8 +72,8 @@ public:
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) override;
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) override;
     // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
     int32_t DumpInfo(int32_t fd);
@@ -87,7 +87,7 @@ public:
 private:
     int32_t InitServer();
     void ExitProcessor();
-    const std::string &GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status);
+    const std::string &GetStatusDescription(OHOS::MediaAVCodec::CodecServer::CodecStatus status);
 
     CodecStatus status_ = UNINITIALIZED;
     
@@ -105,6 +105,6 @@ private:
     bool isFirstFrameIn_ = true;
     bool isFirstFrameOut_ = true;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // CODEC_SERVER_H

@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 MuxerServiceProxy::MuxerServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardMuxerService>(impl)
 {
@@ -177,5 +177,5 @@ int32_t MuxerServiceProxy::Stop()
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Stop, error: %{public}d", error);
     return reply.ReadInt32();
 }
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS

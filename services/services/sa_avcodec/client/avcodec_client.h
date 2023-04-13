@@ -39,7 +39,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class AVCodecClient : public IAVCodecService, public NoCopyable {
 public:
     AVCodecClient() noexcept;
@@ -92,6 +92,6 @@ private:
 
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_CLIENT_H

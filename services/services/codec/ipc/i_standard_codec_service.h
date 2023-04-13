@@ -26,7 +26,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class IStandardCodecService : public IRemoteBroker {
 public:
     virtual ~IStandardCodecService() = default;
@@ -52,8 +52,8 @@ public:
     // virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
 
     // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
-    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) = 0;
-    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
+    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
     // virtual int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) = 0;
 
     virtual int32_t DestroyStub() = 0;
@@ -88,6 +88,6 @@ public:
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardCodecService");
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // I_STANDARD_CODEC_SERVICE_H

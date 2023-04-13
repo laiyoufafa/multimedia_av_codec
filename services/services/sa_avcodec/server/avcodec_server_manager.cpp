@@ -41,7 +41,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 constexpr uint32_t SERVER_MAX_NUMBER = 16;
 AVCodecServerManager &AVCodecServerManager::GetInstance()
 {
@@ -514,5 +514,5 @@ void AVCodecServerManager::AsyncExecutor::HandleAsyncExecution()
     }
     tempList.clear();
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

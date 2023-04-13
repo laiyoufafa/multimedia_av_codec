@@ -16,7 +16,7 @@
 #include "media_errors.h"
 #include "av_log.h"
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServer"};
 }
@@ -101,5 +101,5 @@ int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
     // return int(mode); // only for test
     return AVCS_ERR_OK;
 }
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS

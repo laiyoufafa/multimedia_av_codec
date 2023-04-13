@@ -22,7 +22,7 @@
 #include "avcodec_info.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class __attribute__((visibility("default"))) AVCodecListCore : public NoCopyable {
 public:
     AVCodecListCore();
@@ -45,6 +45,6 @@ private:
     std::string FindCodec(const Format &format, const AVCodecType &codecType);
     std::mutex mutex_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODECLIST_CORE_H

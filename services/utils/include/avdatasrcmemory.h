@@ -21,7 +21,7 @@
 #include "avsharedmemorybase.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class __attribute__((visibility("default"))) AVDataSrcMemory
     : public AVSharedMemoryBase {
 public:
@@ -88,6 +88,6 @@ protected:
 private:
     uint32_t offset_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif

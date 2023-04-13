@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 sptr<MuxerServiceStub> MuxerServiceStub::Create()
 {
     sptr<MuxerServiceStub> muxerStub = new(std::nothrow) MuxerServiceStub();
@@ -208,5 +208,5 @@ int32_t MuxerServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Stop()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS

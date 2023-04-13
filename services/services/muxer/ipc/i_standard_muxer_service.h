@@ -20,7 +20,7 @@
 #include "iremote_proxy.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class IStandardMuxerService : public IRemoteBroker {
 public:
     virtual ~IStandardMuxerService() = default;
@@ -50,6 +50,6 @@ public:
 
     DECLARE_INTERFACE_DESCRIPTOR(u"IStandardMuxerService");
 };
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS
 #endif  // I_STANDARD_MUXER_SERVICE_H

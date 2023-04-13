@@ -23,7 +23,7 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 using PersistentSurface = Surface; // not achieve PersistentSurface, this code just for compile.
 class AVCodec {
 public:
@@ -167,7 +167,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timetUs) = 0;
+    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
 
     /**
      * @brief Get the index of the next ready Output buffer.
@@ -181,7 +181,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timetUs) = 0;
+    virtual int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timeoutUs) = 0;
 
     /**
      * @brief Returns a {@link AVBufferElement} object for a output buffer index that contains the data.
@@ -285,6 +285,6 @@ private:
     CodecFactory() = default;
     ~CodecFactory() = default;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_H

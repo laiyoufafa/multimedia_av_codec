@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 struct AVSharedMemoryBaseImpl : public AVDataSrcMemory {
 public:
     AVSharedMemoryBaseImpl(int32_t fd, int32_t size, uint32_t flags, const std::string &name)
@@ -76,5 +76,5 @@ AVDataSrcMemory::~AVDataSrcMemory()
     AVCODEC_LOGD("enter dtor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), GetName().c_str());
 }
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS

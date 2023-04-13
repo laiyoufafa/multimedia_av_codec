@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 SourceServiceProxy::SourceServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardSourceService>(impl)
 {
@@ -139,5 +139,5 @@ uint64_t SourceServiceProxy::GetSourceAttr()
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetSourceAttr, error: %{public}d", error);
     return reply.ReadUint64();
 }
-}  // namespace Media
+}  // namespace MediaAVCodec
 }  // namespace OHOS

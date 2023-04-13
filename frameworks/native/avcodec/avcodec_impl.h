@@ -21,7 +21,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
+namespace MediaAVCodec {
 class AVCodecImpl : public AVCodec, public NoCopyable {
 public:
     AVCodecImpl();
@@ -44,14 +44,14 @@ public:
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeouttUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timeouttUs) override;
+    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
+    int32_t DequeueOutputBuffer(uint32_t *index, AVCodecBufferInfo *attr, int64_t timeoutUs) override;
     int32_t Init(AVCodecType type, bool isMimeType, const std::string &name);
 
 private:
     std::shared_ptr<ICodecService> codecService_ = nullptr;
     sptr<PersistentSurface> surface_;
 };
-} // namespace Media
+} // namespace MediaAVCodec
 } // namespace OHOS
 #endif // AVCODEC_IMPL_H
