@@ -11,12 +11,13 @@
 namespace OHOS {
 namespace Media {
 // using AVSeekMode = OH_AVSeekMode;
-enum AVSeekMode {
+typedef enum AVSeekMode {
     SEEK_MODE_NEXT_SYNC = 0,
     SEEK_MODE_PREVIOUS_SYNC,
     SEEK_MODE_CLOSEST_SYNC,
     SEEK_MODE_CLOSEST
-};
+} AVSeekMode;
+
 class IDemuxerService {
 public:
     virtual ~IDemuxerService() = default;

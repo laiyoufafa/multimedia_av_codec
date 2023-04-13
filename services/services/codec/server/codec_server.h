@@ -24,20 +24,6 @@
 namespace OHOS {
 namespace Media {
 
-class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
-public:
-    explicit CodecBaseCallback(const sptr<CodecServer> &codec);
-    virtual ~CodecBaseCallback();
-
-    void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
-    void OnOutputFormatChanged(const Format &format) override;
-    void OnInputBufferAvailable(uint32_t index) override;
-    void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
-private:
-    sptr<CodecServer> codec_ = nullptr;
-};
-
-
 class CodecServer : public ICodecService, public NoCopyable {
 public:
     static std::shared_ptr<ICodecService> Create();
@@ -93,7 +79,7 @@ private:
     
     // std::unique_ptr<IAVCodecEngine> codecEngine_;
     std::unique_ptr<CodecBase> codec_;
-    std::shared_ptr<CodecCallback> codecCb_;
+    std::shared_ptr<AVCodecCallback> codecCb_;
     std::mutex mutex_;
     std::mutex cbMutex_;
     std::queue<uint32_t> inQueue_;
@@ -105,6 +91,20 @@ private:
     bool isFirstFrameIn_ = true;
     bool isFirstFrameOut_ = true;
 };
+
+class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
+public:
+    explicit CodecBaseCallback(const sptr<CodecServer> &codec);
+    virtual ~CodecBaseCallback();
+
+    void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
+    void OnOutputFormatChanged(const Format &format) override;
+    void OnInputBufferAvailable(uint32_t index) override;
+    void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
+private:
+    sptr<CodecServer> codec_ = nullptr;
+};
+
 } // namespace Media
 } // namespace OHOS
 #endif // CODEC_SERVER_H

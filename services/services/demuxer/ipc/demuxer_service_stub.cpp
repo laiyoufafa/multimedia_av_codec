@@ -14,16 +14,17 @@
  */
 #include "demuxer_service_stub.h"
 #include "avcodec_server_manager.h"
-#include "media_errors.h"
-#include "av_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 #include "avsharedmemory_ipc.h"
 // #include "avcodec_parcel.h"
-namespace OHOS {
-namespace Media {
+
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServiceStub"};
 }
 
+namespace OHOS {
+namespace Media {
 sptr<DemuxerServiceStub> DemuxerServiceStub::Create()
 {
     sptr<DemuxerServiceStub> demuxerStub = new(std::nothrow) DemuxerServiceStub();
@@ -86,7 +87,7 @@ int DemuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mess
 int32_t DemuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
-    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
@@ -100,21 +101,25 @@ int32_t DemuxerServiceStub::DestroyStub()
 int32_t DemuxerServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     uint64_t attr = data.ReadUint64();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(attr)), AVCS_ERR_UNKNOWN);   
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(attr)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::AddSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(AddSourceTrackByID(index)), AVCS_ERR_UNKNOWN);   
+
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(AddSourceTrackByID(index)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
 int32_t DemuxerServiceStub::RemoveSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(RemoveSourceTrackByID(index)), AVCS_ERR_UNKNOWN);   
+
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(RemoveSourceTrackByID(index)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
@@ -127,10 +132,15 @@ int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageP
     info.flag = data.ReadInt32();
 
     AVBufferElement buffer;
-    buffer->buffer = ReadAVSharedMemoryFromParcel(parcel);
-    buffer->metaData = ReadAVSharedMemoryFromParcel(parcel);
 
-    CHECK_AND_RETURN_RET(reply.WriteInt32(CopyCurrentSampleToBuf(&info, &buffer)), AVCS_ERR_UNKNOWN);   
+
+    MessageParcel parcel;   // TODO: 未定义的变量
+
+    buffer.buffer = ReadAVSharedMemoryFromParcel(parcel);
+    buffer.metaData = ReadAVSharedMemoryFromParcel(parcel);
+
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(CopyCurrentSampleToBuf(&buffer, &info)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
@@ -138,8 +148,10 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &
 {
     int64_t mSeconds = data.ReadInt64();
     int32_t mode = data.ReadInt32();
-    SeekMode seekMode = static_cast<SeekMode>(mode);
-    CHECK_AND_RETURN_RET(reply.WriteInt32(SeekToTimeStamp(mSeconds, seekMode)), AVCS_ERR_UNKNOWN);   
+    AVSeekMode seekMode = static_cast<AVSeekMode>(mode);
+
+    // TODO: 添加LOG描述
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SeekToTimeStamp(mSeconds, seekMode)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
@@ -167,7 +179,7 @@ int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCo
     return demuxerServer_->CopyCurrentSampleToBuf(buffer, bufferInfo);
 }
 
-int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
+int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
