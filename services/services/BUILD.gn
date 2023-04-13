@@ -139,6 +139,11 @@ ohos_shared_library("av_codec_service") {
     cfi_cross_dso = true
     debug = false
   }
+  
+  configs = [
+    ":av_codec_service_config",
+    "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_log_dfx_public_config",
+  ]
 
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
@@ -167,10 +172,6 @@ ohos_shared_library("av_codec_service") {
     ]
   }
 
-  configs = [
-    ":av_codec_service_config",
-    "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_log_dfx_public_config",
-  ]
 
   deps = [
     "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_dfx",

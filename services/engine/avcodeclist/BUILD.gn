@@ -44,17 +44,18 @@ config("av_codec_engine_avcodeclist_config") {
     "//drivers/peripheral/display/interfaces/include",
     "//foundation/multimedia/av_codec/interface/inner_api/native",
     "//foundation/multimedia/av_codec/services/dfx/include",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
   ]
 }
 
 ohos_static_library("av_codec_engine_avcodeclist") {
+  configs = [
+    ":av_codec_engine_avcodeclist_config",
+  ]
+
   sources = [
     "avcodec_ability_singleton.cpp",
     "avcodeclist_core.cpp",
-  ]
-
-  configs = [
-    ":av_codec_engine_avcodeclist_config",
   ]
 
   deps = [
