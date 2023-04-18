@@ -89,13 +89,13 @@ public:
     virtual int32_t DestroyCodecService(std::shared_ptr<IAVCodecService> codec) = 0;
 #endif
 #ifdef SUPPORT_DEMUXER
-    virtual std::shared_ptr<IDemuxerService> CreateDemuxerService() = 0;
-    virtual int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) = 0;
+    virtual std::shared_ptr<IAVDemuxer> CreateDemuxerService() = 0;
+    virtual int32_t DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxer) = 0;
 #endif
 
 #ifdef SUPPORT_MUXER
-    virtual std::shared_ptr<IMuxerService> CreateMuxerService() = 0;
-    virtual int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) = 0;
+    virtual std::shared_ptr<IAVMuxer> CreateMuxerService() = 0;
+    virtual int32_t DestroyMuxerService(std::shared_ptr<IAVMuxer> muxer) = 0;
 #endif
 
 #ifdef SUPPORT_SOURCE

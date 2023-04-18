@@ -26,8 +26,8 @@ public:
     AVCodecLocal() = default;
     ~AVCodecLocal() = default;
 
-    std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
-    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) override;
+    std::shared_ptr<IAVDemuxer> CreateDemuxerService() override;
+    int32_t DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxer) override;
 };
 } // namespace MediaAVCodec
 } // namespace OHOS

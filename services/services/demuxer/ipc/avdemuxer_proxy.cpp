@@ -19,29 +19,29 @@
 // #include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServiceProxy"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerProxy"};
 }
 
 namespace OHOS {
 namespace MediaAVCodec {
-DemuxerServiceProxy::DemuxerServiceProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardDemuxerService>(impl)
+AVDemuxerProxy::AVDemuxerProxy(const sptr<IRemoteObject> &impl)
+    : IRemoteProxy<IAVDemuxerService>(impl)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-DemuxerServiceProxy::~DemuxerServiceProxy()
+AVDemuxerProxy::~AVDemuxerProxy()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t DemuxerServiceProxy::DestroyStub()
+int32_t AVDemuxerProxy::DestroyStub()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
@@ -49,12 +49,12 @@ int32_t DemuxerServiceProxy::DestroyStub()
     return reply.ReadInt32();
 }
 
-int32_t DemuxerServiceProxy::Init(uint64_t attr)
+int32_t AVDemuxerProxy::Init(uint64_t attr)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteUint64(attr);
@@ -63,12 +63,12 @@ int32_t DemuxerServiceProxy::Init(uint64_t attr)
     return reply.ReadInt32();
 }
 
-int32_t DemuxerServiceProxy::AddSourceTrackByID(uint32_t index)
+int32_t AVDemuxerProxy::AddSourceTrackByID(uint32_t index)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(index);
@@ -76,12 +76,12 @@ int32_t DemuxerServiceProxy::AddSourceTrackByID(uint32_t index)
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call AddSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
 }
-int32_t DemuxerServiceProxy::RemoveSourceTrackByID(uint32_t index)
+int32_t AVDemuxerProxy::RemoveSourceTrackByID(uint32_t index)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(index);
@@ -89,12 +89,12 @@ int32_t DemuxerServiceProxy::RemoveSourceTrackByID(uint32_t index)
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call RemoveSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
 }
-int32_t DemuxerServiceProxy::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t AVDemuxerProxy::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt64(bufferInfo->presentationTimeUs);
@@ -109,12 +109,12 @@ int32_t DemuxerServiceProxy::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVC
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call CopyCurrentSampleToBuf, error: %{public}d", error);
     return reply.ReadInt32();
 }
-int32_t DemuxerServiceProxy::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
+int32_t AVDemuxerProxy::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt64(mSeconds);

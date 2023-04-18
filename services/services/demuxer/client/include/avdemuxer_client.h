@@ -12,31 +12,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef DEMUXER_SERVICE_PROXY_H
-#define DEMUXER_SERVICE_PROXY_H
+#ifndef DEMUXER_CLIENT_H
+#define DEMUXER_CLIENT_H
 
+#include "i_demuxer_service.h"
 #include "i_standard_demuxer_service.h"
 
 namespace OHOS {
 namespace MediaAVCodec {
-class DemuxerServiceProxy : public IRemoteProxy<IStandardDemuxerService>, public NoCopyable {
+class AVDemuxerClient : public IAVDemuxer, public NoCopyable {
 public:
-    explicit DemuxerServiceProxy(const sptr<IRemoteObject> &impl);
-    virtual ~DemuxerServiceProxy();
+    static std::shared_ptr<AVDemuxerClient> Create(const sptr<IAVDemuxerService> &ipcProxy);
+    explicit AVDemuxerClient(const sptr<IAVDemuxerService> &ipcProxy);
+    ~AVDemuxerClient();
 
     // 业务
     int32_t Init(uint64_t attr) override;
     int32_t AddSourceTrackByID(uint32_t index) override;
     int32_t RemoveSourceTrackByID(uint32_t index) override;
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
-
-    int32_t DestroyStub() override;
-
+    int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
+    
+    void AVCodecServerDied();
 private:
-    static inline BrokerDelegator<DemuxerServiceProxy> delegator_;
+    std::mutex mutex_;
+    sptr<IAVDemuxerService> demuxerProxy_ = nullptr;
 };
 
 }  // namespace MediaAVCodec
 }  // namespace OHOS
-#endif  // DEMUXER_SERVICE_PROXY_H
+#endif  // DEMUXER_CLIENT_H

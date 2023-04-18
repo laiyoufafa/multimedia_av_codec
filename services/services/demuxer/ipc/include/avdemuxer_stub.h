@@ -24,12 +24,12 @@
 
 namespace OHOS {
 namespace MediaAVCodec {
-class DemuxerServiceStub : public IRemoteStub<IStandardDemuxerService>, public NoCopyable {
+class AVDemuxerStub : public IRemoteStub<IAVDemuxerService>, public NoCopyable {
 public:
-    static sptr<DemuxerServiceStub> Create();
-    virtual ~DemuxerServiceStub();
+    static sptr<AVDemuxerStub> Create();
+    virtual ~AVDemuxerStub();
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    using DemuxerStubFunc = int32_t(DemuxerServiceStub::*)(MessageParcel &data, MessageParcel &reply);
+    using DemuxerStubFunc = int32_t(AVDemuxerStub::*)(MessageParcel &data, MessageParcel &reply);
 
     // 业务
     int32_t Init(uint64_t attr) override;
@@ -40,7 +40,7 @@ public:
 
     int32_t DestroyStub() override;
 private:
-    DemuxerServiceStub();
+    AVDemuxerStub();
     int32_t InitStub();
 
     // 业务
@@ -53,7 +53,7 @@ private:
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;
-    std::shared_ptr<IDemuxerService> demuxerServer_ = nullptr;
+    std::shared_ptr<IAVDemuxer> demuxerServer_ = nullptr;
     std::map<uint32_t, DemuxerStubFunc> demuxerFuncs_;
 };
 }  // namespace MediaAVCodec

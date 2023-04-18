@@ -22,9 +22,9 @@
 
 namespace OHOS {
 namespace MediaAVCodec {
-class IStandardDemuxerService : public IRemoteBroker {
+class IAVDemuxerService : public IRemoteBroker {
 public:
-    virtual ~IStandardDemuxerService() = default;
+    virtual ~IAVDemuxerService() = default;
 
     // 业务
     virtual int32_t Init(uint64_t attr) = 0;
@@ -45,7 +45,7 @@ public:
         DESTROY_STUB,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardDemuxerService");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IAVDemuxerService");
 };
 
 }  // namespace MediaAVCodec

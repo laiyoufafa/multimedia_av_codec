@@ -12,19 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef DEMUXER_CLIENT_H
-#define DEMUXER_CLIENT_H
+#ifndef DEMUXER_SERVER_H
+#define DEMUXER_SERVER_H
 
+#include <mutex>
 #include "i_demuxer_service.h"
-#include "i_standard_demuxer_service.h"
+// #include "i_demuxer_engine.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace MediaAVCodec {
-class DemuxerClient : public IDemuxerService, public NoCopyable {
+class AVDemuxerServer : public IAVDemuxer, public NoCopyable {
 public:
-    static std::shared_ptr<DemuxerClient> Create(const sptr<IStandardDemuxerService> &ipcProxy);
-    explicit DemuxerClient(const sptr<IStandardDemuxerService> &ipcProxy);
-    ~DemuxerClient();
+    static std::shared_ptr<IAVDemuxer> Create();
+    AVDemuxerServer();
+    ~AVDemuxerServer();
 
     // 业务
     int32_t Init(uint64_t attr) override;
@@ -32,13 +34,16 @@ public:
     int32_t RemoveSourceTrackByID(uint32_t index) override;
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
     int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
-    
-    void AVCodecServerDied();
+
 private:
+    int32_t InitServer();
     std::mutex mutex_;
-    sptr<IStandardDemuxerService> demuxerProxy_ = nullptr;
+    // std::shared_ptr<IDemuxerEngine> demuxerEngine_ = nullptr;
+    // IDemuxerEngine curState_ = DEMUXER_IDEL;
+    // uint32_t trackNum_ = 0;
+
 };
 
 }  // namespace MediaAVCodec
 }  // namespace OHOS
-#endif  // DEMUXER_CLIENT_H
+#endif  // DEMUXER_SERVER_H

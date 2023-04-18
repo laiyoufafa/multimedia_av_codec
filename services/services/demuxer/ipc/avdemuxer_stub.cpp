@@ -20,53 +20,53 @@
 // #include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServiceStub"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerStub"};
 }
 
 namespace OHOS {
 namespace Media {
-sptr<DemuxerServiceStub> DemuxerServiceStub::Create()
+sptr<AVDemuxerStub> AVDemuxerStub::Create()
 {
-    sptr<DemuxerServiceStub> demuxerStub = new(std::nothrow) DemuxerServiceStub();
+    sptr<AVDemuxerStub> demuxerStub = new(std::nothrow) AVDemuxerStub();
     CHECK_AND_RETURN_RET_LOG(demuxerStub != nullptr, nullptr, "Failed to create demuxer service stub");
 
     int32_t ret = demuxerStub->InitStub();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init DemuxerServiceStub");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init AVDemuxerStub");
     return demuxerStub;
 }
 
-DemuxerServiceStub::DemuxerServiceStub()
+AVDemuxerStub::AVDemuxerStub()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-DemuxerServiceStub::~DemuxerServiceStub()
+AVDemuxerStub::~AVDemuxerStub()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t DemuxerServiceStub::InitStub()
+int32_t AVDemuxerStub::InitStub()
 {
-    demuxerServer_ = DemuxerServer::Create();
+    demuxerServer_ = AVDemuxerServer::Create();
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
 
-    demuxerFuncs_[INIT] = &DemuxerServiceStub::Init;
-    demuxerFuncs_[ADD_SOURCE_TRACK_BY_ID] = &DemuxerServiceStub::AddSourceTrackByID;
-    demuxerFuncs_[REMOVE_SOURCE_TRACK_BY_ID] = &DemuxerServiceStub::RemoveSourceTrackByID;
-    demuxerFuncs_[COPY_CURRENT_SAMPLE_TO_BUF] = &DemuxerServiceStub::CopyCurrentSampleToBuf;
-    demuxerFuncs_[SEEK_TO_TIME_STAMP] = &DemuxerServiceStub::SeekToTimeStamp;
+    demuxerFuncs_[INIT] = &AVDemuxerStub::Init;
+    demuxerFuncs_[ADD_SOURCE_TRACK_BY_ID] = &AVDemuxerStub::AddSourceTrackByID;
+    demuxerFuncs_[REMOVE_SOURCE_TRACK_BY_ID] = &AVDemuxerStub::RemoveSourceTrackByID;
+    demuxerFuncs_[COPY_CURRENT_SAMPLE_TO_BUF] = &AVDemuxerStub::CopyCurrentSampleToBuf;
+    demuxerFuncs_[SEEK_TO_TIME_STAMP] = &AVDemuxerStub::SeekToTimeStamp;
 
-    demuxerFuncs_[DESTROY_STUB] = &DemuxerServiceStub::DestroyStub;
+    demuxerFuncs_[DESTROY_STUB] = &AVDemuxerStub::DestroyStub;
 
     return AVCS_ERR_OK;
 }
 
-int DemuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
+int AVDemuxerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     AVCODEC_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
-    if (DemuxerServiceStub::GetDescriptor() != remoteDescriptor) {
+    if (AVDemuxerStub::GetDescriptor() != remoteDescriptor) {
         AVCODEC_LOGE("Invalid descriptor");
         return AVCS_ERR_INVALID_OPERATION;
     }
@@ -84,28 +84,28 @@ int DemuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mess
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-int32_t DemuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::DestroyStub()
+int32_t AVDemuxerStub::DestroyStub()
 {
     demuxerServer_ = nullptr;
     AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::DEMUXER, AsObject());
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::Init(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     uint64_t attr = data.ReadUint64();
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(attr)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::AddSourceTrackByID(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::AddSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
 
@@ -114,7 +114,7 @@ int32_t DemuxerServiceStub::AddSourceTrackByID(MessageParcel &data, MessageParce
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::RemoveSourceTrackByID(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::RemoveSourceTrackByID(MessageParcel &data, MessageParcel &reply)
 {
     uint32_t index = data.ReadUint32();
 
@@ -123,7 +123,7 @@ int32_t DemuxerServiceStub::RemoveSourceTrackByID(MessageParcel &data, MessagePa
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageParcel &reply)
 {
     AVCodecBufferInfo info;
     info.presentationTimeUs = data.ReadInt64();
@@ -144,7 +144,7 @@ int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(MessageParcel &data, MessageP
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &reply)
+int32_t AVDemuxerStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &reply)
 {
     int64_t mSeconds = data.ReadInt64();
     int32_t mode = data.ReadInt32();
@@ -155,31 +155,31 @@ int32_t DemuxerServiceStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::Init(uint64_t attr)
+int32_t AVDemuxerStub::Init(uint64_t attr)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->Init(attr);
 }
 
-int32_t DemuxerServiceStub::AddSourceTrackByID(uint32_t index)
+int32_t AVDemuxerStub::AddSourceTrackByID(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->AddSourceTrackByID(index);
 }
 
-int32_t DemuxerServiceStub::RemoveSourceTrackByID(uint32_t index)
+int32_t AVDemuxerStub::RemoveSourceTrackByID(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->RemoveSourceTrackByID(index);
 }
 
-int32_t DemuxerServiceStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t AVDemuxerStub::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->CopyCurrentSampleToBuf(buffer, bufferInfo);
 }
 
-int32_t DemuxerServiceStub::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
+int32_t AVDemuxerStub::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);

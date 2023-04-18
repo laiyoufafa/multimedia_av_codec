@@ -20,29 +20,29 @@
 #include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MuxerServiceProxy"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVMuxerProxy"};
 }
 
 namespace OHOS {
 namespace MediaAVCodec {
-MuxerServiceProxy::MuxerServiceProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardMuxerService>(impl)
+AVMuxerProxy::AVMuxerProxy(const sptr<IRemoteObject> &impl)
+    : IRemoteProxy<IAVMuxerService>(impl)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MuxerServiceProxy::~MuxerServiceProxy()
+AVMuxerProxy::~AVMuxerProxy()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t MuxerServiceProxy::DestroyStub()
+int32_t AVMuxerProxy::DestroyStub()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
@@ -50,13 +50,13 @@ int32_t MuxerServiceProxy::DestroyStub()
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::Init()
+int32_t AVMuxerProxy::Init()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int error = Remote()->SendRequest(INIT, data, reply, option);
@@ -64,13 +64,13 @@ int32_t MuxerServiceProxy::Init()
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::SetLocation(float latitude, float longitude)
+int32_t AVMuxerProxy::SetLocation(float latitude, float longitude)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteFloat(latitude);
@@ -80,13 +80,13 @@ int32_t MuxerServiceProxy::SetLocation(float latitude, float longitude)
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::SetRotation(int32_t rotation)
+int32_t AVMuxerProxy::SetRotation(int32_t rotation)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(rotation);
@@ -96,13 +96,13 @@ int32_t MuxerServiceProxy::SetRotation(int32_t rotation)
 }
 
 
-int32_t MuxerServiceProxy::SetParameter(const Format &generalFormat)
+int32_t AVMuxerProxy::SetParameter(const Format &generalFormat)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     AVCodecParcel::Marshalling(data, generalFormat);
@@ -113,13 +113,13 @@ int32_t MuxerServiceProxy::SetParameter(const Format &generalFormat)
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::AddTrack(const Format &trackFormat)
+int32_t AVMuxerProxy::AddTrack(const Format &trackFormat)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     AVCodecParcel::Marshalling(data, trackFormat);
@@ -131,13 +131,13 @@ int32_t MuxerServiceProxy::AddTrack(const Format &trackFormat)
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::Start()
+int32_t AVMuxerProxy::Start()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t error = Remote()->SendRequest(START, data, reply, option);
@@ -148,13 +148,13 @@ int32_t MuxerServiceProxy::Start()
 
 
 
-int32_t MuxerServiceProxy::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
+int32_t AVMuxerProxy::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
     CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, AVCS_ERR_INVALID_VAL, "sampleBuffer is nullptr");
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
    
 
@@ -164,13 +164,13 @@ int32_t MuxerServiceProxy::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampl
     return reply.ReadInt32();
 }
 
-int32_t MuxerServiceProxy::Stop()
+int32_t AVMuxerProxy::Stop()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(MuxerServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int error = Remote()->SendRequest(STOP, data, reply, option);

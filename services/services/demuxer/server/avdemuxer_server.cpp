@@ -18,56 +18,45 @@
 namespace OHOS {
 namespace MediaAVCodec {
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerServer"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerServer"};
 }
 
-std::shared_ptr<IDemuxerService> DemuxerServer::Create()
+std::shared_ptr<IAVDemuxer> AVDemuxerServer::Create()
 {
-    std::shared_ptr<DemuxerServer> demuxerServer = std::make_shared<DemuxerServer>();
+    std::shared_ptr<AVDemuxerServer> demuxerServer = std::make_shared<AVDemuxerServer>();
     CHECK_AND_RETURN_RET_LOG(demuxerServer != nullptr, nullptr, "Demuxer Service does not exist");
     int32_t ret = demuxerServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init demuxer server");
     return demuxerServer;
 }
 
-DemuxerServer::DemuxerServer()
+AVDemuxerServer::AVDemuxerServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-DemuxerServer::~DemuxerServer()
+AVDemuxerServer::~AVDemuxerServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
     std::lock_guard<std::mutex> lock(mutex_);
     // demuxerEngine_ = nullptr;
 }
 
-int32_t DemuxerServer::InitServer()
+int32_t AVDemuxerServer::InitServer()
 {
     // 引擎创建
 
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServer::Init(uint64_t attr)
+int32_t AVDemuxerServer::Init(uint64_t attr)
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServer::AddSourceTrackByID(uint32_t index)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
-
-    // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
-    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
-    // return index; // only for test
-    return AVCS_ERR_OK;
-}
-
-int32_t DemuxerServer::RemoveSourceTrackByID(uint32_t index)
+int32_t AVDemuxerServer::AddSourceTrackByID(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
@@ -78,7 +67,18 @@ int32_t DemuxerServer::RemoveSourceTrackByID(uint32_t index)
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
+int32_t AVDemuxerServer::RemoveSourceTrackByID(uint32_t index)
+{
+    std::lock_guard<std::mutex> lock(mutex_);
+    // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+
+    // OH_AVErrCode ret = demuxerEngine_->AddSourceTrackByID(index);
+    // CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
+    // return index; // only for test
+    return AVCS_ERR_OK;
+}
+
+int32_t AVDemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
@@ -88,7 +88,7 @@ int32_t DemuxerServer::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBu
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServer::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
+int32_t AVDemuxerServer::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     // CHECK_AND_RETURN_RET_LOG(demuxerEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");

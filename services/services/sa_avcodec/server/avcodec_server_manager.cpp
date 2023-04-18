@@ -96,19 +96,19 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
 #endif
 
 #ifdef SUPPORT_MUXER
-    dumpString += "------------------MuxerServer------------------\n";
+    dumpString += "------------------AVMuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::MUXER],
         argSets.find(u"muxer") != argSets.end()) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write MuxerServer information");
+        AVCODEC_LOGW("Failed to write AVMuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
 #endif
 
 #ifdef SUPPORT_DEMUXER
-    dumpString += "------------------DemuxerServer------------------\n";
+    dumpString += "------------------AVDemuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::DEMUXER],
         argSets.find(u"demuxer") != argSets.end()) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write DemuxerServer information");
+        AVCODEC_LOGW("Failed to write AVDemuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
 #endif
@@ -238,9 +238,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
             "Please release the applied resources.", demuxerStubMap_.size());
         return nullptr;
     }
-    sptr<DemuxerServiceStub> stub = DemuxerServiceStub::Create();
+    sptr<AVDemuxerStub> stub = AVDemuxerStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create DemuxerServiceStub");
+        AVCODEC_LOGE("failed to create AVDemuxerStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();
@@ -273,9 +273,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
             "Please release the applied resources.", muxerStubMap_.size());
         return nullptr;
     }
-    sptr<MuxerServiceStub> stub = MuxerServiceStub::Create();
+    sptr<AVMuxerStub> stub = AVMuxerStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create MuxerServiceStub");
+        AVCODEC_LOGE("failed to create AVMuxerStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();

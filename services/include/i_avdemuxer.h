@@ -18,9 +18,9 @@ typedef enum AVSeekMode {
     SEEK_MODE_CLOSEST
 } AVSeekMode;
 
-class IDemuxerService {
+class IAVDemuxer {
 public:
-    virtual ~IDemuxerService() = default;
+    virtual ~IAVDemuxer() = default;
 
     // 业务
     virtual int32_t Init(uint64_t attr) = 0;

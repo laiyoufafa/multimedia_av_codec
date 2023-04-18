@@ -9,9 +9,9 @@
 
 namespace OHOS {
 namespace MediaAVCodec {
-class IMuxerService {
+class IAVMuxer {
 public:
-    virtual ~IMuxerService() = default;
+    virtual ~IAVMuxer() = default;
 
     // 业务
     virtual int32_t Init() = 0;

@@ -22,12 +22,12 @@
 
 namespace OHOS {
 namespace MediaAVCodec {
-class MuxerServiceStub : public IRemoteStub<IStandardMuxerService>, public NoCopyable {
+class AVMuxerStub : public IRemoteStub<IAVMuxerService>, public NoCopyable {
 public:
-    static sptr<MuxerServiceStub> Create();
-    virtual ~MuxerServiceStub();
+    static sptr<AVMuxerStub> Create();
+    virtual ~AVMuxerStub();
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    using MuxerStubFunc = int32_t(MuxerServiceStub::*)(MessageParcel &data, MessageParcel &reply);
+    using MuxerStubFunc = int32_t(AVMuxerStub::*)(MessageParcel &data, MessageParcel &reply);
 
     int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
@@ -40,7 +40,7 @@ public:
 
     int32_t DestroyStub() override;
 private:
-    MuxerServiceStub();
+    AVMuxerStub();
     int32_t InitStub();
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t SetLocation(MessageParcel &data, MessageParcel &reply);
@@ -54,7 +54,7 @@ private:
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;
-    std::shared_ptr<IMuxerService> muxerServer_ = nullptr;
+    std::shared_ptr<IAVMuxer> muxerServer_ = nullptr;
     std::map<uint32_t, MuxerStubFunc> muxerFuncs_;
 };
 }  // namespace MediaAVCodec

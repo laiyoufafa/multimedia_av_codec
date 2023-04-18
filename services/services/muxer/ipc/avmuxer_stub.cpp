@@ -21,61 +21,61 @@
 #include "avcodec_parcel.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "MuxerServiceStub"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVMuxerStub"};
 }
 
 namespace OHOS {
 namespace MediaAVCodec {
-sptr<MuxerServiceStub> MuxerServiceStub::Create()
+sptr<AVMuxerStub> AVMuxerStub::Create()
 {
-    sptr<MuxerServiceStub> muxerStub = new(std::nothrow) MuxerServiceStub();
+    sptr<AVMuxerStub> muxerStub = new(std::nothrow) AVMuxerStub();
     CHECK_AND_RETURN_RET_LOG(muxerStub != nullptr, nullptr, "Failed to create muxer service stub");
 
     int32_t ret = muxerStub->InitStub();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init MuxerServiceStub");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init AVMuxerStub");
     return muxerStub;
 }
 
-MuxerServiceStub::MuxerServiceStub()
+AVMuxerStub::AVMuxerStub()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-MuxerServiceStub::~MuxerServiceStub()
+AVMuxerStub::~AVMuxerStub()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t MuxerServiceStub::InitStub()
+int32_t AVMuxerStub::InitStub()
 {
-    muxerServer_ = MuxerServer::Create();
+    muxerServer_ = AVMuxerServer::Create();
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
 
-    muxerFuncs_[INIT] = &MuxerServiceStub::Init;
-    muxerFuncs_[SET_LOCATION] = &MuxerServiceStub::SetLocation;
-    muxerFuncs_[SET_ROTATION] = &MuxerServiceStub::SetRotation;
-    muxerFuncs_[SET_PARAMETER] = &MuxerServiceStub::SetParameter;
-    muxerFuncs_[ADD_TRACK] = &MuxerServiceStub::AddTrack;
-    muxerFuncs_[START] = &MuxerServiceStub::Start;
-    muxerFuncs_[WRITE_SAMPLE_BUFFER] = &MuxerServiceStub::WriteSampleBuffer;
-    muxerFuncs_[STOP] = &MuxerServiceStub::Stop;
-    muxerFuncs_[DESTROY_STUB] = &MuxerServiceStub::DestroyStub;
+    muxerFuncs_[INIT] = &AVMuxerStub::Init;
+    muxerFuncs_[SET_LOCATION] = &AVMuxerStub::SetLocation;
+    muxerFuncs_[SET_ROTATION] = &AVMuxerStub::SetRotation;
+    muxerFuncs_[SET_PARAMETER] = &AVMuxerStub::SetParameter;
+    muxerFuncs_[ADD_TRACK] = &AVMuxerStub::AddTrack;
+    muxerFuncs_[START] = &AVMuxerStub::Start;
+    muxerFuncs_[WRITE_SAMPLE_BUFFER] = &AVMuxerStub::WriteSampleBuffer;
+    muxerFuncs_[STOP] = &AVMuxerStub::Stop;
+    muxerFuncs_[DESTROY_STUB] = &AVMuxerStub::DestroyStub;
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::DestroyStub()
+int32_t AVMuxerStub::DestroyStub()
 {
     muxerServer_ = nullptr;
     AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::MUXER, AsObject());
     return AVCS_ERR_OK;
 }
 
-int MuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
+int AVMuxerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option)
 {
     AVCODEC_LOGI("Stub: OnRemoteRequest of code: %{public}u is received", code);
 
     auto remoteDescriptor = data.ReadInterfaceToken();
-    if (MuxerServiceStub::GetDescriptor() != remoteDescriptor) {
+    if (AVMuxerStub::GetDescriptor() != remoteDescriptor) {
         AVCODEC_LOGE("Invalid descriptor");
         return AVCS_ERR_INVALID_OPERATION;
     }
@@ -93,56 +93,56 @@ int MuxerServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-int32_t MuxerServiceStub::Init()
+int32_t AVMuxerStub::Init()
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Init();
 }
 
 
-int32_t MuxerServiceStub::SetLocation(float latitude, float longitude)
+int32_t AVMuxerStub::SetLocation(float latitude, float longitude)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetLocation(latitude, longitude);
 }
 
-int32_t MuxerServiceStub::SetRotation(int32_t rotation)
+int32_t AVMuxerStub::SetRotation(int32_t rotation)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetRotation(rotation);
 }
 
-int32_t MuxerServiceStub::SetParameter(const Format &generalFormat)
+int32_t AVMuxerStub::SetParameter(const Format &generalFormat)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->SetParameter(generalFormat);
 }
 
-int32_t MuxerServiceStub::AddTrack(const Format &trackFormat)
+int32_t AVMuxerStub::AddTrack(const Format &trackFormat)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->AddTrack(trackFormat);
 }
 
-int32_t MuxerServiceStub::Start()
+int32_t AVMuxerStub::Start()
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Start();
 }
 
-int32_t MuxerServiceStub::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
+int32_t AVMuxerStub::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
 }
 
-int32_t MuxerServiceStub::Stop()
+int32_t AVMuxerStub::Stop()
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Stop();
 }
 
-int32_t MuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     // TODO: 补充LOG说明
@@ -150,7 +150,7 @@ int32_t MuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::SetLocation(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::SetLocation(MessageParcel &data, MessageParcel &reply)
 {
     float latitude = data.ReadFloat();
     float longitude = data.ReadFloat();
@@ -160,7 +160,7 @@ int32_t MuxerServiceStub::SetLocation(MessageParcel &data, MessageParcel &reply)
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::SetRotation(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::SetRotation(MessageParcel &data, MessageParcel &reply)
 {
     int32_t rotation = data.ReadInt32();
 
@@ -169,7 +169,7 @@ int32_t MuxerServiceStub::SetRotation(MessageParcel &data, MessageParcel &reply)
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::SetParameter(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
     AVCodecParcel::Unmarshalling(data, format);
@@ -179,7 +179,7 @@ int32_t MuxerServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::AddTrack(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::AddTrack(MessageParcel &data, MessageParcel &reply)
 {
     Format generalFormat;
     (void)AVCodecParcel::Unmarshalling(data, generalFormat);
@@ -189,7 +189,7 @@ int32_t MuxerServiceStub::AddTrack(MessageParcel &data, MessageParcel &reply)
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::Start(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::Start(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     // TODO: 补充LOG说明
@@ -197,7 +197,7 @@ int32_t MuxerServiceStub::Start(MessageParcel &data, MessageParcel &reply)
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     (void)reply;
@@ -205,7 +205,7 @@ int32_t MuxerServiceStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &
     return AVCS_ERR_OK;
 }
 
-int32_t MuxerServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
+int32_t AVMuxerStub::Stop(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     // TODO: 补充LOG说明

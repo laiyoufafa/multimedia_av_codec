@@ -21,9 +21,9 @@
 
 namespace OHOS {
 namespace MediaAVCodec {
-class IStandardMuxerService : public IRemoteBroker {
+class IAVMuxerService : public IRemoteBroker {
 public:
-    virtual ~IStandardMuxerService() = default;
+    virtual ~IAVMuxerService() = default;
 
     virtual int32_t Init() = 0;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
@@ -48,7 +48,7 @@ public:
         DESTROY_STUB,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardMuxerService");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IAVMuxerService");
 };
 }  // namespace MediaAVCodec
 }  // namespace OHOS

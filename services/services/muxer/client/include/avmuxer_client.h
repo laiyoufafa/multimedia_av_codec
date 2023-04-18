@@ -13,17 +13,19 @@
  * limitations under the License.
  */
 
-#ifndef MUXER_SERVICE_PROXY_H
-#define MUXER_SERVICE_PROXY_H
+#ifndef MUXER_CLIENT_H
+#define MUXER_CLIENT_H
 
+#include "i_muxer_service.h"
 #include "i_standard_muxer_service.h"
 
 namespace OHOS {
 namespace MediaAVCodec {
-class MuxerServiceProxy : public IRemoteProxy<IStandardMuxerService>, public NoCopyable {
+class AVMuxerClient : public IAVMuxer, public NoCopyable {
 public:
-    explicit MuxerServiceProxy(const sptr<IRemoteObject> &impl);
-    virtual ~MuxerServiceProxy();
+    static std::shared_ptr<AVMuxerClient> Create(const sptr<IAVMuxerService> &ipcProxy);
+    explicit AVMuxerClient(const sptr<IAVMuxerService> &ipcProxy);
+    ~AVMuxerClient();
 
     int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
@@ -34,10 +36,11 @@ public:
     int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) override;
     int32_t Stop() override;
 
-    int32_t DestroyStub() override;
+    void AVCodecServerDied();
 private:
-    static inline BrokerDelegator<MuxerServiceProxy> delegator_;
+    std::mutex mutex_;
+    sptr<IAVMuxerService> muxerProxy_ = nullptr;
 };
 }  // namespace MediaAVCodec
 }  // namespace OHOS
-#endif  // MUXER_SERVICE_PROXY_H
+#endif  // MUXER_CLIENT_H
