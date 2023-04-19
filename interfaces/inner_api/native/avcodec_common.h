@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,16 +16,16 @@
 #define AVCODEC_COMMOM_H
 
 #include <string>
+#include "av_common.h"
 #include "format.h"
-#include "avsharedmemory.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 /**
  * @brief Error type of AVCodec
  *
- * @since 4.0
- * @version 4.0
+ * @since 3.1
+ * @version 3.1
  */
 enum AVCodecErrorType : int32_t {
     /* internal errors, error code passed by the errorCode, and definition see "MediaServiceErrCode" */
@@ -54,15 +54,6 @@ struct AVCodecBufferInfo {
     int32_t size = 0;
     /* The start-offset of the data in the buffer */
     int32_t offset = 0;
-    /* The flag of the available buffer. For details, see {@link AVCodecBufferFlag} */
-    uint32_t flags = 0;
-    /* The index of the track which this Buffer belongs. */
-    uint32_t trackId;
-};
-
-struct AVBufferElement {
-    std::shared_ptr<AVSharedMemory> buffer;
-    std::shared_ptr<AVSharedMemory> metaData;
 };
 
 class AVCodecCallback {
@@ -73,8 +64,8 @@ public:
      *
      * @param errorType Error type. For details, see {@link AVCodecErrorType}.
      * @param errorCode Error code.
-     * @since 4.0
-     * @version 4.0
+     * @since 3.1
+     * @version 3.1
      */
     virtual void OnError(AVCodecErrorType errorType, int32_t errorCode) = 0;
 
@@ -82,8 +73,8 @@ public:
      * Called when the output format has changed.
      *
      * @param format The new output format.
-     * @since 4.0
-     * @version 4.0
+     * @since 3.1
+     * @version 3.1
      */
     virtual void OnOutputFormatChanged(const Format &format) = 0;
 
@@ -91,8 +82,8 @@ public:
      * Called when an input buffer becomes available.
      *
      * @param index The index of the available input buffer.
-     * @since 4.0
-     * @version 4.0
+     * @since 3.1
+     * @version 3.1
      */
     virtual void OnInputBufferAvailable(uint32_t index) = 0;
 
@@ -101,10 +92,11 @@ public:
      *
      * @param index The index of the available output buffer.
      * @param info The info of the available output buffer. For details, see {@link AVCodecBufferInfo}
-     * @since 4.0
-     * @version 4.0
+     * @param flag The flag of the available output buffer. For details, see {@link AVCodecBufferFlag}
+     * @since 3.1
+     * @version 3.1
      */
-    virtual void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info) = 0;
+    virtual void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) = 0;
 };
 
 class SurfaceBufferExtratDataKey {
@@ -123,6 +115,6 @@ private:
     SurfaceBufferExtratDataKey() = delete;
     ~SurfaceBufferExtratDataKey() = delete;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_COMMOM_H

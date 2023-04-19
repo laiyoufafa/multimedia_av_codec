@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,55 +21,55 @@ extern "C" {
 
 /**
  * @brief AV error code
- * @syscap SystemCapability.Multimedia.AVCodec.Core
- * @since 10
- * @version 4.0
+ * @syscap SystemCapability.Multimedia.Media.Core
+ * @since 9
+ * @version 1.0
  */
-typedef enum OH_AVCodecErrCode {
+typedef enum OH_AVErrCode {
     /**
      * the operation completed successfully.
      */
-    AVCODEC_ERR_OK = 0,
+    AV_ERR_OK = 0,
     /**
      * no memory.
      */
-    AVCODEC_ERR_NO_MEMORY = 1,
+    AV_ERR_NO_MEMORY = 1,
     /**
      * opertation not be permitted.
      */
-    AVCODEC_ERR_OPERATE_NOT_PERMIT = 2,
+    AV_ERR_OPERATE_NOT_PERMIT = 2,
     /**
      * invalid argument.
      */
-    AVCODEC_ERR_INVALID_VAL = 3,
+    AV_ERR_INVALID_VAL = 3,
     /**
      * IO error.
      */
-    AVCODEC_ERR_IO = 4,
+    AV_ERR_IO = 4,
     /**
-     * avcodec service timeout.
+     * network timeout.
      */
-    AVCODEC_ERR_TIMEOUT = 5,
+    AV_ERR_TIMEOUT = 5,
     /**
      * unknown error.
      */
-    AVCODEC_ERR_UNKNOWN = 6,
+    AV_ERR_UNKNOWN = 6,
     /**
-     * avcodec service died.
+     * media service died.
      */
-    AVCODEC_ERR_SERVICE_DIED = 7,
+    AV_ERR_SERVICE_DIED = 7,
     /**
      * the state is not support this operation.
      */
-    AVCODEC_ERR_INVALID_STATE = 8,
+    AV_ERR_INVALID_STATE = 8,
     /**
      * unsupport interface.
      */
-    AVCODEC_ERR_UNSUPPORT = 9,
+    AV_ERR_UNSUPPORT = 9,
     /**
      * extend err start.
      */
-    AVCODEC_ERR_EXTEND_START = 100,
+    AV_ERR_EXTEND_START = 100,
 } OH_AVErrCode;
 
 #ifdef __cplusplus

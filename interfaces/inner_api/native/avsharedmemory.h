@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,7 +20,7 @@
 #include <string>
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 /**
  * @brief Provides a unified interface to implement convenient memory sharing
  * mechanism. For those platforms that do not support multi-process, it may
@@ -70,6 +70,6 @@ public:
      */
     virtual uint32_t GetFlags() const = 0;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVSHAREDMEMORY_H

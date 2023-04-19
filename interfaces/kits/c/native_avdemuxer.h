@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef NATIVE_AVCODEC_DEMUXER_H
-#define NATIVE_AVCODEC_DEMUXER_H
+#ifndef NATIVE_AVDEMUXER_H
+#define NATIVE_AVDEMUXER_H
 
 #include <stdint.h>
 #include "native_avcodec_base.h"
@@ -110,4 +110,4 @@ OH_AVErrCode OH_AVDemuxer_SeekToTimeStamp(OH_AVDemuxer *demuxer, int64_t mSecond
 }
 #endif
 
-#endif // NATIVE_AVCODEC_DEMUXER_H
+#endif // NATIVE_AVDEMUXER_H
