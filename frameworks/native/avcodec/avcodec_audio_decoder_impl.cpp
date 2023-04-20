@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_audio_decoder_impl.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
@@ -48,15 +48,15 @@ std::shared_ptr<AVCodecAudioDecoder> AudioDecoderFactory::CreateByName(const std
 
 int32_t AVCodecAudioDecoderImpl::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
-    codecService_ = MediaServiceFactory::GetInstance().CreateAVCodecService();
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avcodec service");
+    codecService_ = AVCodecServiceFactory::GetInstance().CreateCodecService();
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create codec service");
 
-    return codecService_->InitParameter(type, isMimeType, name);
+    return codecService_->Init(type, isMimeType, name);
 }
 
 AVCodecAudioDecoderImpl::AVCodecAudioDecoderImpl()
 {
-    MEDIA_LOGD("AVCodecAudioDecoderImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecAudioDecoderImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecAudioDecoderImpl::~AVCodecAudioDecoderImpl()
@@ -65,7 +65,7 @@ AVCodecAudioDecoderImpl::~AVCodecAudioDecoderImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
         codecService_ = nullptr;
     }
-    MEDIA_LOGD("AVCodecAudioDecoderImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecAudioDecoderImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t AVCodecAudioDecoderImpl::Configure(const Format &format)

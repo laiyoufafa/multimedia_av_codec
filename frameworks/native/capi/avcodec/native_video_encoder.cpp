@@ -79,7 +79,7 @@ public:
             CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "context videoDecoder is nullptr!");
 
             if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load() || videoEncObj->isEOS_.load()) {
-                MEDIA_LOGD("At flush, eos or stop, no buffer available");
+                AVCODEC_LOGD("At flush, eos or stop, no buffer available");
                 return;
             }
             callback_.onNeedInputData(codec_, index, nullptr, userData_);
@@ -94,7 +94,7 @@ public:
             CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "context videoDecoder is nullptr!");
 
             if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load()) {
-                MEDIA_LOGD("At flush or stop, ignore");
+                AVCODEC_LOGD("At flush or stop, ignore");
                 return;
             }
             struct OH_AVCodecBufferAttr bufferAttr;
@@ -184,12 +184,12 @@ OH_AVErrCode OH_VideoEncoder_Destroy(struct OH_AVCodec *codec)
         videoEncObj->isStop_.store(true);
         int32_t ret = videoEncObj->videoEncoder_->Release();
         if (ret != AVCS_ERR_OK) {
-            MEDIA_LOGE("videoEncoder Release failed!");
+            AVCODEC_LOGE("videoEncoder Release failed!");
             delete codec;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGD("videoEncoder_ is nullptr!");
+        AVCODEC_LOGD("videoEncoder_ is nullptr!");
     }
 
     delete codec;
@@ -240,12 +240,12 @@ OH_AVErrCode OH_VideoEncoder_Stop(struct OH_AVCodec *codec)
     struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, AV_ERR_INVALID_VAL, "videoEncoder_ is nullptr!");
     videoEncObj->isStop_.store(true);
-    MEDIA_LOGD("set stop status to true");
+    AVCODEC_LOGD("set stop status to true");
 
     int32_t ret = videoEncObj->videoEncoder_->Stop();
     if (ret != AVCS_ERR_OK) {
         videoEncObj->isStop_.store(false);
-        MEDIA_LOGE("videoEncoder Stop failed! Set stop status to false");
+        AVCODEC_LOGE("videoEncoder Stop failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
     videoEncObj->memoryObjList_.clear();
@@ -262,16 +262,16 @@ OH_AVErrCode OH_VideoEncoder_Flush(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, AV_ERR_INVALID_VAL, "videoEncoder_ is nullptr!");
 
     videoEncObj->isFlushing_.store(true);
-    MEDIA_LOGD("Set flush status to true");
+    AVCODEC_LOGD("Set flush status to true");
     int32_t ret = videoEncObj->videoEncoder_->Flush();
     if (ret != AVCS_ERR_OK) {
         videoEncObj->isFlushing_.store(false);
-        MEDIA_LOGD("videoEncoder Flush failed! Set flush status to false");
+        AVCODEC_LOGD("videoEncoder Flush failed! Set flush status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
     videoEncObj->memoryObjList_.clear();
     videoEncObj->isFlushing_.store(false);
-    MEDIA_LOGD("set flush status to false");
+    AVCODEC_LOGD("set flush status to false");
     return AV_ERR_OK;
 }
 
@@ -283,12 +283,12 @@ OH_AVErrCode OH_VideoEncoder_Reset(struct OH_AVCodec *codec)
     struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, AV_ERR_INVALID_VAL, "videoEncoder_ is nullptr!");
     videoEncObj->isStop_.store(true);
-    MEDIA_LOGD("Set stop status to true");
+    AVCODEC_LOGD("Set stop status to true");
 
     int32_t ret = videoEncObj->videoEncoder_->Reset();
     if (ret != AVCS_ERR_OK) {
         videoEncObj->isStop_.store(false);
-        MEDIA_LOGE("videoEncoder Reset failed! Set stop status to false");
+        AVCODEC_LOGE("videoEncoder Reset failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
 
@@ -412,7 +412,7 @@ OH_AVErrCode OH_VideoEncoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoEncoder QueueInputBuffer failed!");
     if (bufferFlag == AVCODEC_BUFFER_FLAG_EOS) {
         videoEncObj->isEOS_.store(true);
-        MEDIA_LOGD("Set eos status to true");
+        AVCODEC_LOGD("Set eos status to true");
     }
 
     return AV_ERR_OK;

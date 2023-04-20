@@ -48,15 +48,15 @@ std::shared_ptr<AVCodecVideoDecoder> VideoDecoderFactory::CreateByName(const std
 
 int32_t AVCodecVideoDecoderImpl::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
-    codecService_ = MediaServiceFactory::GetInstance().CreateAVCodecService();
-    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create avcodec service");
+    codecService_ = AVCodecServiceFactory::GetInstance().CreateCodecService();
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create codec service");
 
-    return codecService_->InitParameter(type, isMimeType, name);
+    return codecService_->Init(type, isMimeType, name);
 }
 
 AVCodecVideoDecoderImpl::AVCodecVideoDecoderImpl()
 {
-    MEDIA_LOGD("AVCodecVideoDecoderImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecVideoDecoderImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVCodecVideoDecoderImpl::~AVCodecVideoDecoderImpl()
@@ -65,7 +65,7 @@ AVCodecVideoDecoderImpl::~AVCodecVideoDecoderImpl()
         (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
         codecService_ = nullptr;
     }
-    MEDIA_LOGD("AVCodecVideoDecoderImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
+    AVCODEC_LOGD("AVCodecVideoDecoderImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
 int32_t AVCodecVideoDecoderImpl::Configure(const Format &format)

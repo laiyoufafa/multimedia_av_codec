@@ -76,7 +76,7 @@ public:
             struct AudioDecoderObject *audioDecObj = reinterpret_cast<AudioDecoderObject *>(codec_);
             CHECK_AND_RETURN_LOG(audioDecObj->audioDecoder_ != nullptr, "audioDecoder_ is nullptr!");
             if (audioDecObj->isFlushing_.load() || audioDecObj->isStop_.load() || audioDecObj->isEOS_.load()) {
-                MEDIA_LOGD("At flush, eos or stop, no buffer available");
+                AVCODEC_LOGD("At flush, eos or stop, no buffer available");
                 return;
             }
 
@@ -94,7 +94,7 @@ public:
             struct AudioDecoderObject *audioDecObj = reinterpret_cast<AudioDecoderObject *>(codec_);
             CHECK_AND_RETURN_LOG(audioDecObj->audioDecoder_ != nullptr, "audioDecoder_ is nullptr!");
             if (audioDecObj->isFlushing_.load() || audioDecObj->isStop_.load()) {
-                MEDIA_LOGD("At flush or stop, ignore");
+                AVCODEC_LOGD("At flush or stop, ignore");
                 return;
             }
 
@@ -209,12 +209,12 @@ OH_AVErrCode OH_AudioDecoder_Destroy(struct OH_AVCodec *codec)
         audioDecObj->isStop_.store(true);
         int32_t ret = audioDecObj->audioDecoder_->Release();
         if (ret != AVCS_ERR_OK) {
-            MEDIA_LOGE("audioDecoder Release failed!");
+            AVCODEC_LOGE("audioDecoder Release failed!");
             delete codec;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGD("audioDecoder_ is nullptr!");
+        AVCODEC_LOGD("audioDecoder_ is nullptr!");
     }
 
     delete codec;
@@ -266,12 +266,12 @@ OH_AVErrCode OH_AudioDecoder_Stop(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     audioDecObj->isStop_.store(true);
-    MEDIA_LOGD("set stop status to true");
+    AVCODEC_LOGD("set stop status to true");
 
     int32_t ret = audioDecObj->audioDecoder_->Stop();
     if (ret != AVCS_ERR_OK) {
         audioDecObj->isStop_.store(false);
-        MEDIA_LOGE("audioDecoder Stop failed!, set stop status to false");
+        AVCODEC_LOGE("audioDecoder Stop failed!, set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
     audioDecObj->memoryObjList_.clear();
@@ -287,17 +287,17 @@ OH_AVErrCode OH_AudioDecoder_Flush(struct OH_AVCodec *codec)
     struct AudioDecoderObject *audioDecObj = reinterpret_cast<AudioDecoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
     audioDecObj->isFlushing_.store(true);
-    MEDIA_LOGD("Set flush status to true");
+    AVCODEC_LOGD("Set flush status to true");
     int32_t ret = audioDecObj->audioDecoder_->Flush();
     if (ret != AVCS_ERR_OK) {
         audioDecObj->isFlushing_.store(false);
-        MEDIA_LOGE("audioDecoder Flush failed! Set flush status to false");
+        AVCODEC_LOGE("audioDecoder Flush failed! Set flush status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
 
     audioDecObj->memoryObjList_.clear();
     audioDecObj->isFlushing_.store(false);
-    MEDIA_LOGD("set flush status to false");
+    AVCODEC_LOGD("set flush status to false");
     return AV_ERR_OK;
 }
 
@@ -309,12 +309,12 @@ OH_AVErrCode OH_AudioDecoder_Reset(struct OH_AVCodec *codec)
     struct AudioDecoderObject *audioDecObj = reinterpret_cast<AudioDecoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
     audioDecObj->isStop_.store(true);
-    MEDIA_LOGD("Set stop status to true");
+    AVCODEC_LOGD("Set stop status to true");
 
     int32_t ret = audioDecObj->audioDecoder_->Reset();
     if (ret != AVCS_ERR_OK) {
         audioDecObj->isStop_.store(false);
-        MEDIA_LOGE("audioDecoder Reset failed! Set stop status to false");
+        AVCODEC_LOGE("audioDecoder Reset failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
 
@@ -340,7 +340,7 @@ OH_AVErrCode OH_AudioDecoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder QueueInputBuffer failed!");
     if (bufferFlag == AVCODEC_BUFFER_FLAG_EOS) {
         audioDecObj->isEOS_.store(true);
-        MEDIA_LOGD("Set eos status to true");
+        AVCODEC_LOGD("Set eos status to true");
     }
 
     return AV_ERR_OK;
