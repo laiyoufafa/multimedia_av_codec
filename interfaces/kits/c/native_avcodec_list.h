@@ -33,7 +33,7 @@ extern "C" {
  * @since 10
  * @version 1.0
  */
-char *OH_AVCodec_FindEncoder(const OH_AVFormat *format);
+const char *OH_AVCodec_FindEncoder(const OH_AVFormat *format);
 
 /**
  * @brief Find the supported decoder name by format(must contains video or audio MIME).
@@ -42,7 +42,7 @@ char *OH_AVCodec_FindEncoder(const OH_AVFormat *format);
  * @since 10
  * @version 1.0
  */
-char *OH_AVCodec_FindDecoder(const OH_AVFormat *format);
+const char *OH_AVCodec_FindDecoder(const OH_AVFormat *format);
 
 /**
  * @brief Create a capability by codec name
