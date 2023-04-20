@@ -40,9 +40,9 @@ class CodecBase {
     virtual sptr<Surface> CreateInputSurface() = 0;
     virtual int32_t SetInputSurface(sptr<Surface> surface) = 0;
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
     virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
     virtual int32_t RenderOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
     virtual int32_t SignalRequestIDRFrame() = 0;
