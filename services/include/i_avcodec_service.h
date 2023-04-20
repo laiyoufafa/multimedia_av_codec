@@ -74,7 +74,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<IAVCodecService> CreateCodecService() = 0;
+    virtual std::shared_ptr<ICodecService> CreateCodecService() = 0;
 
     /**
      * @brief Destroy a avcodec service.
@@ -86,7 +86,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DestroyCodecService(std::shared_ptr<IAVCodecService> codec) = 0;
+    virtual int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) = 0;
 #endif
 #ifdef SUPPORT_DEMUXER
     virtual std::shared_ptr<IAVDemuxer> CreateDemuxerService() = 0;
@@ -101,31 +101,6 @@ public:
 #ifdef SUPPORT_SOURCE
     virtual std::shared_ptr<ISourceService> CreateSourceService() = 0;
     virtual int32_t DestroySourceService(std::shared_ptr<ISourceService> source) = 0;
-#endif
-
-#ifdef SUPPORT_METADATA
-    /**
-     * @brief Create an avmetadatahelper service.
-     *
-     * All player functions must be created and obtained first.
-     *
-     * @return Returns a valid pointer if the setting is successful;
-     * @since 4.0
-     * @version 4.0
-     */
-    virtual std::shared_ptr<IAVMetadataHelperService> CreateAVMetadataHelperService() = 0;
-
-    /**
-     * @brief Destroy a avmetadatahelper service.
-     *
-     * call the API to destroy the avmetadatahelper service.
-     *
-     * @param pointer to the avmetadatahelper service.
-     * @return Returns a valid pointer if the setting is successful;
-     * @since 4.0
-     * @version 4.0
-     */
-    virtual int32_t DestroyAVMetadataHelperService(std::shared_ptr<IAVMetadataHelperService> avMetadataHelper) = 0;
 #endif
 };
 

@@ -209,7 +209,7 @@ int32_t CodecServer::SetOutputSurface(sptr<Surface> surface)
     return codec_->SetOutputSurface(surface);
 }
 
-std::shared_ptr<AVBufferElement> CodecServer::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecServer::GetInputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == RUNNING, nullptr, "invalid state");
@@ -236,13 +236,10 @@ int32_t CodecServer::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
             AVCODEC_LOGI("EOS state");
         }
     }
-    if (inQueue_.size() && ret == AVCS_ERR_OK) {
-        inQueue_.pop();
-    }
     return ret;
 }
 
-std::shared_ptr<AVBufferElement> CodecServer::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecServer::GetOutputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == RUNNING || status_ == END_OF_STREAM,
@@ -267,9 +264,6 @@ int32_t CodecServer::ReleaseOutputBuffer(uint32_t index, bool render)
         AVCS_ERR_INVALID_OPERATION, "invalid state");
     CHECK_AND_RETURN_RET_LOG(codec_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
     int32_t ret = codec_->ReleaseOutputBuffer(index, render);
-    if (ret == AVCS_ERR_OK && outQueue_.size()) {
-        outQueue_.pop();
-    }
     return ret;
 }
 
@@ -290,43 +284,11 @@ int32_t CodecServer::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
         std::lock_guard<std::mutex> cbLock(cbMutex_);
         codecCb_ = callback;
     }
-    // CHECK_AND_RETURN_RET_LOG(codec_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
-    // (void)codec_->SetCallback(callback);
+
     return AVCS_ERR_OK;
 }
 
-int32_t CodecServer::SetInputSurface(sptr<PersistentSurface> surface)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(status_ == CONFIGURED, AVCS_ERR_INVALID_OPERATION, "invalid state");
-    CHECK_AND_RETURN_RET_LOG(codec_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
-    return codec_->SetOutputSurface(surface);
-}
 
-int32_t CodecServer::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(status_ == RUNNING, AVCS_ERR_INVALID_OPERATION, "invalid state");
-
-    if (inQueue_.size() <= 0) {
-        return AVCS_ERR_INVALID_OPERATION;
-    }
-    *index = inQueue_.front();
-    return AVCS_ERR_OK;
-}
-
-int32_t CodecServer::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(status_ == RUNNING, AVCS_ERR_INVALID_OPERATION, "invalid state");
-
-    if (outQueue_.size() <= 0) {
-        return AVCS_ERR_INVALID_OPERATION;
-    }
-    *index = outQueue_.front();
-    return AVCS_ERR_OK;
-}
 
 int32_t CodecServer::DumpInfo(int32_t fd)
 {
@@ -379,7 +341,6 @@ void CodecServer::OnInputBufferAvailable(uint32_t index)
     if (codecCb_ == nullptr) {
         return;
     }
-    inQueue_.push(index);
     codecCb_->OnInputBufferAvailable(index);
 }
 
@@ -402,7 +363,6 @@ void CodecServer::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info
     if (codecCb_ == nullptr) {
         return;
     }
-    outQueue_.push(index);
     codecCb_->OnOutputBufferAvailable(index, info, flag);
 }
 

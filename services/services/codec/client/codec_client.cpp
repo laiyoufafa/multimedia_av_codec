@@ -168,7 +168,7 @@ int32_t CodecClient::SetOutputSurface(sptr<Surface> surface)
     return codecProxy_->SetOutputSurface(surface);
 }
 
-std::shared_ptr<AVBufferElement> CodecClient::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecClient::GetInputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "codec service does not exist.");
@@ -186,7 +186,7 @@ int32_t CodecClient::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
     return codecProxy_->QueueInputBuffer(index, info, flag);
 }
 
-std::shared_ptr<AVBufferElement> CodecClient::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecClient::GetOutputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "codec service does not exist.");
@@ -231,33 +231,6 @@ int32_t CodecClient::SetCallback(const std::shared_ptr<AVCodecCallback> &callbac
     AVCODEC_LOGD("SetCallback");
     listenerStub_->SetCallback(callback);
     return AVCS_ERR_OK;
-}
-
-// int32_t CodecClient::SetInputSurface(sptr<PersistentSurface> surface)
-// {
-//     std::lock_guard<std::mutex> lock(mutex_);
-//     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
-
-//     AVCODEC_LOGD("SetInputSurface");
-//     return codecProxy_->SetInputSurface(surface);
-// }
-
-int32_t CodecClient::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
-
-    AVCODEC_LOGD("DequeueInputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
-}
-
-int32_t CodecClient::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
-    
-    AVCODEC_LOGD("DequeueOutputBuffer");
-    return codecProxy_->DequeueInputBuffer(index, timeoutUs);
 }
 
 } // namespace Media
