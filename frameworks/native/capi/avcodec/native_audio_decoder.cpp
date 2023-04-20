@@ -20,8 +20,8 @@
 #include "native_avmagic.h"
 #include "avcodec_audio_decoder.h"
 #include "avsharedmemory.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAudioDecoder"};
@@ -208,7 +208,7 @@ OH_AVErrCode OH_AudioDecoder_Destroy(struct OH_AVCodec *codec)
         audioDecObj->memoryObjList_.clear();
         audioDecObj->isStop_.store(true);
         int32_t ret = audioDecObj->audioDecoder_->Release();
-        if (ret != MSERR_OK) {
+        if (ret != AVCS_ERR_OK) {
             MEDIA_LOGE("audioDecoder Release failed!");
             delete codec;
             return AV_ERR_OPERATE_NOT_PERMIT;
@@ -232,7 +232,7 @@ OH_AVErrCode OH_AudioDecoder_Configure(struct OH_AVCodec *codec, struct OH_AVFor
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder is nullptr!");
 
     int32_t ret = audioDecObj->audioDecoder_->Configure(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder Configure failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder Configure failed!");
 
     return AV_ERR_OK;
 }
@@ -252,7 +252,7 @@ OH_AVErrCode OH_AudioDecoder_Start(struct OH_AVCodec *codec)
     audioDecObj->isStop_.store(false);
     audioDecObj->isEOS_.store(false);
     int32_t ret = audioDecObj->audioDecoder_->Start();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder Start failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder Start failed!");
 
     return AV_ERR_OK;
 }
@@ -269,7 +269,7 @@ OH_AVErrCode OH_AudioDecoder_Stop(struct OH_AVCodec *codec)
     MEDIA_LOGD("set stop status to true");
 
     int32_t ret = audioDecObj->audioDecoder_->Stop();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         audioDecObj->isStop_.store(false);
         MEDIA_LOGE("audioDecoder Stop failed!, set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
@@ -289,7 +289,7 @@ OH_AVErrCode OH_AudioDecoder_Flush(struct OH_AVCodec *codec)
     audioDecObj->isFlushing_.store(true);
     MEDIA_LOGD("Set flush status to true");
     int32_t ret = audioDecObj->audioDecoder_->Flush();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         audioDecObj->isFlushing_.store(false);
         MEDIA_LOGE("audioDecoder Flush failed! Set flush status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
@@ -312,7 +312,7 @@ OH_AVErrCode OH_AudioDecoder_Reset(struct OH_AVCodec *codec)
     MEDIA_LOGD("Set stop status to true");
 
     int32_t ret = audioDecObj->audioDecoder_->Reset();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         audioDecObj->isStop_.store(false);
         MEDIA_LOGE("audioDecoder Reset failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
@@ -337,7 +337,7 @@ OH_AVErrCode OH_AudioDecoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
     enum AVCodecBufferFlag bufferFlag = static_cast<enum AVCodecBufferFlag>(attr.flags);
 
     int32_t ret = audioDecObj->audioDecoder_->QueueInputBuffer(index, bufferInfo, bufferFlag);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder QueueInputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder QueueInputBuffer failed!");
     if (bufferFlag == AVCODEC_BUFFER_FLAG_EOS) {
         audioDecObj->isEOS_.store(true);
         MEDIA_LOGD("Set eos status to true");
@@ -356,7 +356,7 @@ OH_AVFormat *OH_AudioDecoder_GetOutputDescription(struct OH_AVCodec *codec)
 
     Format format;
     int32_t ret = audioDecObj->audioDecoder_->GetOutputFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "audioDecoder GetOutputFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "audioDecoder GetOutputFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;
@@ -373,7 +373,7 @@ OH_AVErrCode OH_AudioDecoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t i
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     int32_t ret = audioDecObj->audioDecoder_->ReleaseOutputBuffer(index);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder ReleaseOutputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder ReleaseOutputBuffer failed!");
 
     return AV_ERR_OK;
 }
@@ -389,7 +389,7 @@ OH_AVErrCode OH_AudioDecoder_SetParameter(struct OH_AVCodec *codec, struct OH_AV
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     int32_t ret = audioDecObj->audioDecoder_->SetParameter(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder SetParameter failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder SetParameter failed!");
 
     return AV_ERR_OK;
 }
@@ -407,7 +407,7 @@ OH_AVErrCode OH_AudioDecoder_SetCallback(
     CHECK_AND_RETURN_RET_LOG(audioDecObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     int32_t ret = audioDecObj->audioDecoder_->SetCallback(audioDecObj->callback_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder SetCallback failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder SetCallback failed!");
 
     return AV_ERR_OK;
 }

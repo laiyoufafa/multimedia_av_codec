@@ -14,15 +14,9 @@
  */
 
 #include "avsource_impl.h"
-<<<<<<< HEAD
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-=======
-#include "i_avcodec_service.h"
-#include "media_errors.h"
-#include "media_log.h"
->>>>>>> develop_test
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSourceImpl"}

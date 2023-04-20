@@ -14,8 +14,8 @@
  */
 
 #include "source_service_proxy.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
 
