@@ -114,6 +114,7 @@ struct CapabilityData {
     int32_t codecType = AVCODEC_TYPE_NONE;
     std::string mimeType = "";
     bool isVendor = false;
+    int32_t maxInstance = 0;
     Range bitrate;
     Range channels;
     Range complexity;
@@ -126,10 +127,9 @@ struct CapabilityData {
     Range blockPerSecond;
     ImgSize blockSize;
     std::vector<int32_t> sampleRate;
-    std::vector<int32_t> format;
+    std::vector<int32_t> pixFormat;
     std::vector<int32_t> profiles;
     std::vector<int32_t> bitrateMode;
-    std::vector<int32_t> levels;
     std::map<int32_t, std::vector<int32_t>> profileLevelsMap;
     std::map<ImgSize, Range> measuredFrameRate;
     bool supportSwapWidthHeight = false;
