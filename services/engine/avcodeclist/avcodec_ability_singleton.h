@@ -19,7 +19,7 @@
 #include <mutex>
 #include "avcodec_info.h"
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class __attribute__((visibility("default"))) AVCodecAbilitySingleton : public NoCopyable {
 public:
     ~AVCodecAbilitySingleton();
@@ -32,6 +32,6 @@ private:
     std::vector<CapabilityData> capabilityDataArray_;
     std::mutex mutex_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEABILITY_SINGLETON_H

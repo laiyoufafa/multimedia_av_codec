@@ -25,7 +25,7 @@
 // #include "avcodeclist_parcel.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVCodecListServiceStub : public IRemoteStub<IStandardAVCodecListService>, public NoCopyable {
 public:
     static sptr<AVCodecListServiceStub> Create();
@@ -53,6 +53,6 @@ private:
     std::map<uint32_t, AVCodecListStubFunc> codecListFuncs_;
     std::mutex mutex_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODECLIST_SERVICE_STUB_H

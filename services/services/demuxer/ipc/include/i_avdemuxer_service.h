@@ -21,7 +21,7 @@
 #include "i_demuxer_service.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class IAVDemuxerService : public IRemoteBroker {
 public:
     virtual ~IAVDemuxerService() = default;
@@ -48,6 +48,6 @@ public:
     DECLARE_INTERFACE_DESCRIPTOR(u"IAVDemuxerService");
 };
 
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif  // I_STANDARD_DEMUXER_SERVICE_H

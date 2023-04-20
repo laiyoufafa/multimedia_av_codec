@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class CodecServiceProxy::CodecBufferCache : public NoCopyable {
 public:
     CodecBufferCache() = default;
@@ -507,5 +507,5 @@ int32_t CodecServiceProxy::DequeueOutputBuffer(uint32_t *index, int64_t timeoutU
     *index = reply.ReadUint32();
     return reply.ReadInt32();
 }
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

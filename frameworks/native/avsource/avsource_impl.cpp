@@ -29,7 +29,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 {
     std::shared_ptr<AVSourceImpl> sourceImpl = std::make_shared<AVSourceImpl>();
@@ -125,5 +125,5 @@ std::shared_ptr<Format> GetTrackFormat()
     return sourceImpl_->GetTrackFormat(format, trackId_)
 }
 
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

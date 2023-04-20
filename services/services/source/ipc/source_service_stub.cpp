@@ -25,7 +25,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 sptr<SourceServiceStub> SourceServiceStub::Create()
 {
     sptr<SourceServiceStub> sourceStub = new(std::nothrow) SourceServiceStub();
@@ -175,5 +175,5 @@ int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply
     CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
     return AVCS_ERR_OK;
 }
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

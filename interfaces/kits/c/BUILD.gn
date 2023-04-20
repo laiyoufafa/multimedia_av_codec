@@ -20,6 +20,8 @@ group("capi_packages") {
   deps = []
   if (multimedia_av_codec_support_capi) {
     deps += [
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
   }

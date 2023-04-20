@@ -23,7 +23,7 @@
 // constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVCapability"};
 // }
 
-using namespace OHOS::MediaAVCodec;
+using namespace OHOS::Media;
 
 OH_AVCapability::OH_AVCapability(const CapabilityData &capabilityData)
     : capabilityData_(capabilityData)

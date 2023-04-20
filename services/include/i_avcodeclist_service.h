@@ -19,7 +19,7 @@
 #include "avcodec_info.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class IAVCodecListService {
 public:
     // AVCodecList
@@ -30,6 +30,6 @@ public:
     virtual std::string FindAudioEncoder(const Format &format) = 0;
     virtual CapabilityData GetCapabilityData(std::string codecName) = 0;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif

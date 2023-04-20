@@ -25,7 +25,7 @@
 #include "libavformat/avformat.h"
 
 namespace OH{
-namespace MediaAVCodec{
+namespace Media{
 namespace Plugin{
 namespace FFmpeg{
 class FFmpegDemuxerPlugin : public DemuxerPlugin{
@@ -44,6 +44,6 @@ private:
 };
 } // namespace FFmpeg
 } // namespace Plugin
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OH
 #endif // FFMPEG_DEMUXER_PLUGIN_H

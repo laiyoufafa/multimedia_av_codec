@@ -22,7 +22,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 namespace Plugin {
 namespace Ffmpeg {
 FFmpegDemuxerPlugin::FFmpegDemuxerPlugin(size_t sourceAttr)
@@ -62,5 +62,5 @@ Status FFmpegDemuxerPlugin::RemoveSourceTrackByID(uint32_t trackId)
 
 } // namespace Ffmpeg
 } // namespace Plugin
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

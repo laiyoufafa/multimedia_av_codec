@@ -6,7 +6,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<AVDemuxerClient> AVDemuxerClient::Create(const sptr<IAVDemuxerService> &ipcProxy)
 {
     std::shared_ptr<AVDemuxerClient> demuxerClient = std::make_shared<AVDemuxerClient>(ipcProxy);
@@ -68,5 +68,5 @@ int32_t AVDemuxerClient::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
     return demuxerProxy_->SeekToTimeStamp(mSeconds, mode);
 }
 
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

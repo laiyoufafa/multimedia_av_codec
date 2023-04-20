@@ -21,7 +21,7 @@
 #include "i_avcodeclist_service.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVCodecListImpl : public AVCodecList, public NoCopyable {
 public:
     AVCodecListImpl();
@@ -37,7 +37,7 @@ public:
 private:
     std::shared_ptr<IAVCodecListService> codecListService_ = nullptr;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_LIST_IMPL_H
 

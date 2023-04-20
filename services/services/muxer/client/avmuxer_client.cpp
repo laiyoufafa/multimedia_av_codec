@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<AVMuxerClient> AVMuxerClient::Create(const sptr<IAVMuxerService> &ipcProxy)
 {
     std::shared_ptr<AVMuxerClient> muxerClient = std::make_shared<AVMuxerClient>(ipcProxy);
@@ -109,5 +109,5 @@ int32_t AVMuxerClient::Stop()
     CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
     return muxerProxy_->Stop();
 }
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

@@ -21,7 +21,7 @@
 #include "i_avsource_service.h"
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 class AVSourceImpl : public AVSource, public NoCopyable {
 public:
     AVSourceImpl();
@@ -50,7 +50,7 @@ private:
     uint32_t trackId_;
     std::shared_ptr<AVSourceImpl> sourceImpl_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVSOURCE_IMPL_H
 

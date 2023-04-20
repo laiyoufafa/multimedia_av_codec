@@ -22,7 +22,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 class AVDemuxerImpl : public AVDemuxer, public NoCopyable {
 public:
     AVDemuxerImpl();
@@ -37,6 +37,6 @@ public:
 private:
     std::shared_ptr<IAVDemuxerService> demuxerService_ = nullptr;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVDEMUXER_IMPL_H

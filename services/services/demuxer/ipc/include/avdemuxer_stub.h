@@ -23,7 +23,7 @@
 #include "i_demuxer_service.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVDemuxerStub : public IRemoteStub<IAVDemuxerService>, public NoCopyable {
 public:
     static sptr<AVDemuxerStub> Create();
@@ -56,6 +56,6 @@ private:
     std::shared_ptr<IAVDemuxer> demuxerServer_ = nullptr;
     std::map<uint32_t, DemuxerStubFunc> demuxerFuncs_;
 };
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS
 #endif

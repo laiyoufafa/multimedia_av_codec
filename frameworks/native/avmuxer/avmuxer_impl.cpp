@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat format)
 {
     std::shared_ptr<AVMuxerImpl> muxerImpl = std::make_shared<AVMuxerImpl>(fd, format);
@@ -96,5 +96,5 @@ int32_t AVMuxerImpl::Stop()
     CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
     return muxerClient_->Stop();
 }
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

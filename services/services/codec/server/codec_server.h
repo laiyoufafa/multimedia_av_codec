@@ -23,7 +23,7 @@
 #include "avcodec.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 
 class CodecServer : public ICodecService, public NoCopyable {
 public:
@@ -74,7 +74,7 @@ public:
 private:
     int32_t InitServer();
     void ExitProcessor();
-    const std::string &GetStatusDescription(OHOS::MediaAVCodec::CodecServer::CodecStatus status);
+    const std::string &GetStatusDescription(OHOS::Media::CodecServer::CodecStatus status);
 
     CodecStatus status_ = UNINITIALIZED;
     
@@ -106,6 +106,6 @@ private:
     sptr<CodecServer> codec_ = nullptr;
 };
 
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // CODEC_SERVER_H
