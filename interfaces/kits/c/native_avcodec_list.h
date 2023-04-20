@@ -27,49 +27,41 @@ extern "C" {
 #endif
 
 /**
- * @brief Find the supported video encoder name by format(must contains video MIME).
- * @param format Indicates a media description which contains required video encoder capability.
- * @return  Returns video encoder name, if not find, return null.
+ * @brief Find the supported encoder name by format(must contains video or audio MIME).
+ * @param format Indicates a media description which contains required encoder capability.
+ * @return  Returns encoder name, if not find, return null.
  * @since 10
  * @version 1.0
  */
-char *OH_AVCodec_FindVideoEncoder(const OH_AVFormat *format);
+const char *OH_AVCodec_FindEncoder(const OH_AVFormat *format);
 
 /**
- * @brief Find the supported video decoder name by format(must contains video MIME).
- * @param format Indicates a media description which contains required video decoder capability.
- * @return  Returns video decoder name, if not find, return null.
+ * @brief Find the supported decoder name by format(must contains video or audio MIME).
+ * @param format Indicates a media description which contains required decoder capability.
+ * @return  Returns decoder name, if not find, return null.
  * @since 10
  * @version 1.0
  */
-char *OH_AVCodec_FindVideoDecoder(const OH_AVFormat *format);
+const char *OH_AVCodec_FindDecoder(const OH_AVFormat *format);
 
 /**
- * @brief Find the supported audio encoder name by format(must contains audio MIME).
- * @param format Indicates a media description which contains required audio encoder capability.
- * @return  Returns audio encoder name, if not find, return null.
- * @since 10
- * @version 1.0
- */
-char *OH_AVCodec_FindAudioEncoder(const OH_AVFormat *format);
-
-/**
- * @brief Find the supported audio decoder name by format(must contains audio MIME).
- * @param format Indicates a media description which contains required audio decoder capability.
- * @return  Returns audio decoder name, if not find, return empty string.
- * @since 10
- * @version 1.0
- */
-char *OH_AVCodec_FindAudioDecoder(const OH_AVFormat *format);
-
-/**
- * @brief Get the capabilities by codec name
+ * @brief Create a capability by codec name
  * @param codeName Codec name
- * @return Returns an array of supported video decoder capability, if not find, return null.
+ * @return A OH_AVCapability instance
  * @since 10
  * @version 1.0
  */
-OH_AVCapability *OH_AVCodec_GetCapability(const char *name);
+OH_AVCapability *OH_AVCodec_CreateCapability(const char *name);
+
+/**
+ * @brief Destroy the capability
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+ */
+OH_AVErrCode OH_AVCodec_DestroyCapability(OH_AVCapability *capability);
 
 #ifdef __cplusplus
 }
