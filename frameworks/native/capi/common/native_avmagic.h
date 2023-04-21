@@ -33,6 +33,7 @@ enum AVMagic {
     AVCODEC_MAGIC_AUDIO_ENCODER = AV_MAGIC('A', 'E', 'N', 'C'),
     AVCODEC_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
     AVCODEC_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
+    AVCODEC_MAGIC_SHARED_MEMORY = AV_MAGIC('S', 'M', 'E', 'M'),
 };
 
 struct AVObjectMagic : public OHOS::RefBase {

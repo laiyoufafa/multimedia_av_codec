@@ -25,7 +25,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVMemor
 using namespace OHOS::Media;
 
 OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
-    : memory_(mem)
+    : AVObjectMagic(AVMagic::AVCODEC_MAGIC_SHARED_MEMORY), memory_(mem)
 {
 }
 
@@ -41,6 +41,7 @@ bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemor
 uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem)
 {
     CHECK_AND_RETURN_RET_LOG(mem != nullptr, nullptr, "input mem is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(mem->magic_ == AVMagic::AVCODEC_MAGIC_SHARED_MEMORY, nullptr, "magic error!");
     CHECK_AND_RETURN_RET_LOG(mem->memory_ != nullptr, nullptr, "memory is nullptr!");
     return mem->memory_->GetBase();
 }
@@ -48,6 +49,7 @@ uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem)
 int32_t OH_AVMemory_GetSize(struct OH_AVMemory *mem)
 {
     CHECK_AND_RETURN_RET_LOG(mem != nullptr, -1, "input mem is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(mem->magic_ == AVMagic::AVCODEC_MAGIC_SHARED_MEMORY, -1, "magic error!");
     CHECK_AND_RETURN_RET_LOG(mem->memory_ != nullptr, -1, "memory is nullptr!");
     return mem->memory_->GetSize();
 }

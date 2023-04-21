@@ -81,13 +81,12 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
         codecBase_ = CodecBase::Create(name);
     }
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
-
+    
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
     CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "failed to new CodecBaseCallback");
 
-    int32_t ret; // TODO: undedine var ret
-    CHECK_AND_RETURN_RET_LOG(codecBase_->SetCallback(callback), AVCS_ERR_INVALID_OPERATION,
-        "CodecBase SetCallback failed, error: %{public}d", ret);
+    int32_t ret = codecBase_->SetCallback(callback);
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
 
     status_ = INITIALIZED;
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
@@ -383,7 +382,7 @@ void CodecServer::ResetTrace()
 
 
 
-CodecBaseCallback::CodecBaseCallback(const sptr<CodecServer> &codec)
+CodecBaseCallback::CodecBaseCallback(const std::shared_ptr<CodecServer> &codec)
     : codec_(codec)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));

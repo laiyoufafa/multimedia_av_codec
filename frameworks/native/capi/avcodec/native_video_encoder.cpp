@@ -56,7 +56,7 @@ public:
         std::unique_lock<std::mutex> lock(mutex_);
         (void)errorType;
         if (codec_ != nullptr && callback_.onError != nullptr) {
-            int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<MediaServiceErrCode>(errorCode));
+            int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
             callback_.onError(codec_, extErr, userData_);
         }
     }

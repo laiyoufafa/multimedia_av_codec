@@ -74,6 +74,12 @@ int32_t AVCodecAudioEncoderImpl::Configure(const Format &format)
     return codecService_->Configure(format);
 }
 
+int32_t AVCodecAudioEncoderImpl::Prepare()
+{
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
+    return AVCS_ERR_OK;
+}
+
 int32_t AVCodecAudioEncoderImpl::Start()
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
