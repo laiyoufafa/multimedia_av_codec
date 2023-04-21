@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef CODEC_SERVICE_CLIENT_H
-#define CODEC_SERVICE_CLIENT_H
+#ifndef CODEC_CLIENT_H
+#define CODEC_CLIENT_H
 
 #include "i_codec_service.h"
 #include "i_standard_codec_service.h"
@@ -38,17 +38,13 @@ public:
     int32_t NotifyEos() override;
     sptr<Surface> CreateInputSurface() override;
     int32_t SetOutputSurface(sptr<Surface> surface) override;
-    std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) override;
+    std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) override;
     int32_t QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
-    std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) override;
+    std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) override;
     int32_t GetOutputFormat(Format &format) override;
     int32_t ReleaseOutputBuffer(uint32_t index, bool render) override;
     int32_t SetParameter(const Format &format) override;
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
-    // int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) override;
-    // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
     void AVCodecServerDied();
 
@@ -62,4 +58,4 @@ private:
 };
 } // namespace Media
 } // namespace OHOS
-#endif // CODEC_SERVICE_CLIENT_H
+#endif // CODEC_CLIENT_H

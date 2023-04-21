@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 #include "demuxer_server.h"
-#include "media_errors.h"
+#include "avcodec_errors.h"
 #include "av_log.h"
 namespace OHOS {
 namespace Media {

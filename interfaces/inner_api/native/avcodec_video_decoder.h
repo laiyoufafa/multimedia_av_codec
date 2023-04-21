@@ -32,7 +32,7 @@ public:
      * @brief Configure the decoder.
      *
      * @param format The format of the input data and the desired format of the output data.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -43,7 +43,7 @@ public:
      *
      * This function must be called after {@link Configure} and before {@link Start}
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -52,7 +52,7 @@ public:
     /**
      * @brief Start decoding.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -63,7 +63,7 @@ public:
      *
      * This function must be called during running
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -72,7 +72,7 @@ public:
     /**
      * @brief Flush both input and output buffers of the decoder.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -81,7 +81,7 @@ public:
     /**
      * @brief Restores the decoder to the initial state.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -90,7 +90,7 @@ public:
     /**
      * @brief Releases decoder resources. All methods are unavailable after calling this.
      *
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -102,7 +102,7 @@ public:
      * This function must be called before {@link Prepare}
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -128,7 +128,7 @@ public:
      * @param index The index of the input buffer.
      * @param info The info of the input buffer. For details, see {@link AVCodecBufferInfo}
      * @param flag The flag of the input buffer. For details, see {@link AVCodecBufferFlag}
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -152,7 +152,7 @@ public:
      * This function must be called after {@link Configure}
      *
      * @param format
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -164,7 +164,7 @@ public:
      * This function must be called during running
      *
      * @param index The index of the output buffer.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -176,7 +176,7 @@ public:
      * This function must be called after {@link Configure}
      *
      * @param format The parameters.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */
@@ -188,7 +188,7 @@ public:
      * This function must be called before {@link Configure}
      *
      * @param callback Indicates the decoder listener to register. For details, see {@link AVCodecCallback}.
-     * @return Returns {@link MSERR_OK} if success; returns an error code otherwise.
+     * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
      */

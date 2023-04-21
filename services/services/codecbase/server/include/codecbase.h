@@ -24,7 +24,7 @@ namespace Media {
 class CodecBase {
     virtual ~CodecBase() = default;
     static std::shared_ptr<CodecBase> Create(const std::string& name);
-    static std::shared_ptr<CodecBase> Create(bool isEncoder,const std::string& mime);
+    static std::shared_ptr<CodecBase> Create(bool isEncoder, const std::string& mime);
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback>& callback) = 0;
     virtual int32_t Configure(const Format& format) = 0;
     virtual int32_t Start() = 0;
@@ -40,9 +40,9 @@ class CodecBase {
     virtual sptr<Surface> CreateInputSurface() = 0;
     virtual int32_t SetInputSurface(sptr<Surface> surface) = 0;
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
     virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
     virtual int32_t RenderOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
     virtual int32_t SignalRequestIDRFrame() = 0;

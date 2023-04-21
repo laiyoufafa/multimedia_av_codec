@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_local.h"
-#include "media_errors.h"
+#include "avcodec_errors.h"
 #include "av_log.h"
 #include "demuxer_server.h"
 

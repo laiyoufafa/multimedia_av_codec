@@ -21,8 +21,8 @@
 #include "native_window.h"
 #include "avcodec_video_decoder.h"
 #include "avsharedmemory.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeVideoDecoder"};
@@ -78,7 +78,7 @@ public:
             CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "videoDecoder_ is nullptr!");
 
             if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load() || videoDecObj->isEOS_.load()) {
-                MEDIA_LOGD("At flush, eos or stop, no buffer available");
+                AVCODEC_LOGD("At flush, eos or stop, no buffer available");
                 return;
             }
             OH_AVMemory *data = GetInputData(codec_, index);
@@ -96,7 +96,7 @@ public:
             CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "videoDecoder_ is nullptr!");
 
             if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load()) {
-                MEDIA_LOGD("At flush or stop, ignore");
+                AVCODEC_LOGD("At flush or stop, ignore");
                 return;
             }
             struct OH_AVCodecBufferAttr bufferAttr;
@@ -208,13 +208,13 @@ OH_AVErrCode OH_VideoDecoder_Destroy(struct OH_AVCodec *codec)
         videoDecObj->memoryObjList_.clear();
         videoDecObj->isStop_.store(false);
         int32_t ret = videoDecObj->videoDecoder_->Release();
-        if (ret != MSERR_OK) {
-            MEDIA_LOGE("videoDecoder Release failed!");
+        if (ret != AVCS_ERR_OK) {
+            AVCODEC_LOGE("videoDecoder Release failed!");
             delete codec;
             return AV_ERR_OPERATE_NOT_PERMIT;
         }
     } else {
-        MEDIA_LOGD("videoDecoder_ is nullptr!");
+        AVCODEC_LOGD("videoDecoder_ is nullptr!");
     }
 
     delete codec;
@@ -232,7 +232,7 @@ OH_AVErrCode OH_VideoDecoder_Configure(struct OH_AVCodec *codec, struct OH_AVFor
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->Configure(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder Configure failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder Configure failed!");
 
     return AV_ERR_OK;
 }
@@ -252,7 +252,7 @@ OH_AVErrCode OH_VideoDecoder_Start(struct OH_AVCodec *codec)
     videoDecObj->isStop_.store(false);
     videoDecObj->isEOS_.store(false);
     int32_t ret = videoDecObj->videoDecoder_->Start();
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder Start failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder Start failed!");
 
     return AV_ERR_OK;
 }
@@ -266,12 +266,12 @@ OH_AVErrCode OH_VideoDecoder_Stop(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     videoDecObj->isStop_.store(true);
-    MEDIA_LOGD("Set stop status to true");
+    AVCODEC_LOGD("Set stop status to true");
 
     int32_t ret = videoDecObj->videoDecoder_->Stop();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         videoDecObj->isStop_.store(false);
-        MEDIA_LOGE("videoDecoder Stop failed! Set stop status to false");
+        AVCODEC_LOGE("videoDecoder Stop failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
     videoDecObj->memoryObjList_.clear();
@@ -288,18 +288,18 @@ OH_AVErrCode OH_VideoDecoder_Flush(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     videoDecObj->isFlushing_.store(true);
-    MEDIA_LOGD("Set flush status to true");
+    AVCODEC_LOGD("Set flush status to true");
 
     int32_t ret = videoDecObj->videoDecoder_->Flush();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         videoDecObj->isFlushing_.store(false);
-        MEDIA_LOGD("videoDecoder Flush failed! Set flush status to false");
+        AVCODEC_LOGD("videoDecoder Flush failed! Set flush status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
 
     videoDecObj->memoryObjList_.clear();
     videoDecObj->isFlushing_.store(false);
-    MEDIA_LOGD("Set flush status to false");
+    AVCODEC_LOGD("Set flush status to false");
     return AV_ERR_OK;
 }
 
@@ -311,11 +311,11 @@ OH_AVErrCode OH_VideoDecoder_Reset(struct OH_AVCodec *codec)
     struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
     videoDecObj->isStop_.store(false);
-    MEDIA_LOGD("Set stop status to true");
+    AVCODEC_LOGD("Set stop status to true");
     int32_t ret = videoDecObj->videoDecoder_->Reset();
-    if (ret != MSERR_OK) {
+    if (ret != AVCS_ERR_OK) {
         videoDecObj->isStop_.store(false);
-        MEDIA_LOGE("videoDecoder Reset failed! Set stop status to false");
+        AVCODEC_LOGE("videoDecoder Reset failed! Set stop status to false");
         return AV_ERR_OPERATE_NOT_PERMIT;
     }
 
@@ -334,14 +334,14 @@ OH_AVErrCode OH_VideoDecoder_SetSurface(OH_AVCodec *codec, OHNativeWindow *windo
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->SetOutputSurface(window->surface);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetOutputSurface failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetOutputSurface failed!");
 
     return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_VideoDecoder_PushInputData(struct OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr)
 {
-    MEDIA_LOGD("In OH_VideoDecoder_PushInputData");
+    AVCODEC_LOGD("In OH_VideoDecoder_PushInputData");
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
     CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_VIDEO_DECODER, AV_ERR_INVALID_VAL, "magic error!");
 
@@ -355,7 +355,7 @@ OH_AVErrCode OH_VideoDecoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
     enum AVCodecBufferFlag bufferFlag = static_cast<enum AVCodecBufferFlag>(attr.flags);
 
     int32_t ret = videoDecObj->videoDecoder_->QueueInputBuffer(index, bufferInfo, bufferFlag);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder QueueInputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder QueueInputBuffer failed!");
     if (bufferFlag == AVCODEC_BUFFER_FLAG_EOS) {
         videoDecObj->isEOS_.store(true);
     }
@@ -373,7 +373,7 @@ OH_AVFormat *OH_VideoDecoder_GetOutputDescription(struct OH_AVCodec *codec)
 
     Format format;
     int32_t ret = videoDecObj->videoDecoder_->GetOutputFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, nullptr, "videoDecoder GetOutputFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "videoDecoder GetOutputFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;
@@ -383,7 +383,7 @@ OH_AVFormat *OH_VideoDecoder_GetOutputDescription(struct OH_AVCodec *codec)
 
 OH_AVErrCode OH_VideoDecoder_RenderOutputData(struct OH_AVCodec *codec, uint32_t index)
 {
-    MEDIA_LOGD("In OH_VideoDecoder_RenderOutputData");
+    AVCODEC_LOGD("In OH_VideoDecoder_RenderOutputData");
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
     CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_VIDEO_DECODER, AV_ERR_INVALID_VAL, "magic error!");
 
@@ -391,14 +391,14 @@ OH_AVErrCode OH_VideoDecoder_RenderOutputData(struct OH_AVCodec *codec, uint32_t
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->ReleaseOutputBuffer(index, true);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder ReleaseOutputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder ReleaseOutputBuffer failed!");
 
     return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_VideoDecoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t index)
 {
-    MEDIA_LOGD("In OH_VideoDecoder_FreeOutputData");
+    AVCODEC_LOGD("In OH_VideoDecoder_FreeOutputData");
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
     CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_VIDEO_DECODER, AV_ERR_INVALID_VAL, "magic error!");
 
@@ -406,7 +406,7 @@ OH_AVErrCode OH_VideoDecoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t i
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->ReleaseOutputBuffer(index, false);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder ReleaseOutputBuffer failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder ReleaseOutputBuffer failed!");
 
     return AV_ERR_OK;
 }
@@ -422,7 +422,7 @@ OH_AVErrCode OH_VideoDecoder_SetParameter(struct OH_AVCodec *codec, struct OH_AV
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->SetParameter(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetParameter failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetParameter failed!");
 
     return AV_ERR_OK;
 }
@@ -440,7 +440,7 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
     CHECK_AND_RETURN_RET_LOG(videoDecObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "videoDecoder_ is nullptr!");
 
     int32_t ret = videoDecObj->videoDecoder_->SetCallback(videoDecObj->callback_);
-    CHECK_AND_RETURN_RET_LOG(ret == MSERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetCallback failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "videoDecoder SetCallback failed!");
 
     return AV_ERR_OK;
 }
