@@ -25,8 +25,11 @@
 #endif
 #ifdef SUPPORT_CODEC
 #include "i_standard_codec_service.h"
+#endif
+#ifdef SUPPORT_CODECLIST
 #include "i_standard_avcodeclist_service.h"
 #endif
+
 #ifdef SUPPORT_SOURCE
 #include "i_standard_source_service.h"
 #endif
@@ -88,14 +91,15 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
     return codecClient;
 }
 
-int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<IAVCodecService> codecClient)
+int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecClient)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, AVCS_ERR_NO_MEMORY, "codec client is nullptr.");
     codecClientList_.remove(codecClient);
     return AVCS_ERR_OK;
 }
-
+#endif
+#ifdef SUPPORT_CODECLIST
 std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService()
 {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -276,7 +280,7 @@ void AVCodecClient::DoAVCodecServerDied()
         }
     }
 #endif
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
     for (auto &it : codecClientList_) {
         auto codecClient = std::static_pointer_cast<CodecClient>(it);
         if (codecClient != nullptr) {

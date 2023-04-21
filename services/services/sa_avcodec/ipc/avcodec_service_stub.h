@@ -36,7 +36,7 @@ protected:
 
 private:
     void InitStub();
-    int32_t GetSubSystemAbility(MessageParcel &data, MessageParcel &reply);
+    int32_t GetSystemAbility(MessageParcel &data, MessageParcel &reply);
     void ClientDied(pid_t pid);
     int32_t DestroyStubForPid(pid_t pid);
 

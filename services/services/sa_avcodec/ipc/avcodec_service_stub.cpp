@@ -38,17 +38,19 @@ AVCodecServiceStub::~AVCodecServiceStub()
 
 void AVCodecServiceStub::InitStub()
 {
-    avCodecFuncs_[GET_SUBSYSTEM] = &AVCodecServiceStub::GetSubSystemAbility;
+    avCodecFuncs_[GET_SUBSYSTEM] = &AVCodecServiceStub::GetSystemAbility;
 }
 
 int32_t AVCodecServiceStub::DestroyStubForPid(pid_t pid)
 {
     {
         std::lock_guard<std::mutex> lock(mutex_);
+        sptr<AVCodecDeathRecipient> deathRecipient = nullptr;
+        sptr<IStandardAVCodecListener> avCodecListener = nullptr;
 
         auto itDeath = deathRecipientMap_.find(pid);
         if (itDeath != deathRecipientMap_.end()) {
-            auto deathRecipient = itDeath->second;
+            deathRecipient = itDeath->second;
 
             if (deathRecipient != nullptr) {
                 deathRecipient->SetNotifyCb(nullptr);
@@ -59,7 +61,7 @@ int32_t AVCodecServiceStub::DestroyStubForPid(pid_t pid)
 
         auto itListener = avCodecListenerMap_.find(pid);
         if (itListener != avCodecListenerMap_.end()) {
-            auto avCodecListener = itListener->second;
+            avCodecListener = itListener->second;
 
             if (avCodecListener != nullptr && avCodecListener->AsObject() != nullptr && deathRecipient != nullptr) {
                 (void)avCodecListener->AsObject()->RemoveDeathRecipient(deathRecipient);
@@ -131,7 +133,7 @@ int32_t AVCodecServiceStub::SetDeathListener(const sptr<IRemoteObject> &object)
     return AVCS_ERR_OK;
 }
 
-int32_t AVCodecServiceStub::GetSubSystemAbility(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel &reply)
 {
     AVCodecSystemAbility id = static_cast<AVCodecSystemAbility>(data.ReadInt32());
     sptr<IRemoteObject> listenerObj = data.ReadRemoteObject();
@@ -140,5 +142,6 @@ int32_t AVCodecServiceStub::GetSubSystemAbility(MessageParcel &data, MessageParc
     // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
     return AVCS_ERR_OK;
 }
+
 } // namespace Media
 } // namespace OHOS

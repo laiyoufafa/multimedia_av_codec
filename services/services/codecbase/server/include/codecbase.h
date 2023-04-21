@@ -17,11 +17,13 @@
 
 #include <string>
 #include "avcodec_common.h"
+#include "avsharedmemory.h"
 #include "surface.h"
 
 namespace OHOS {
 namespace Media {
 class CodecBase {
+public:
     virtual ~CodecBase() = default;
     static std::shared_ptr<CodecBase> Create(const std::string& name);
     static std::shared_ptr<CodecBase> Create(bool isEncoder, const std::string& mime);
@@ -38,10 +40,9 @@ class CodecBase {
     virtual int32_t SetParameter(const Format& format) = 0;
     virtual int32_t GetOutputFormat(Format& format) = 0;
     virtual sptr<Surface> CreateInputSurface() = 0;
-    virtual int32_t SetInputSurface(sptr<Surface> surface) = 0;
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
-    virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info) = 0;
+    virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info, AVCodecBufferFlag& flag) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
     virtual int32_t RenderOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;

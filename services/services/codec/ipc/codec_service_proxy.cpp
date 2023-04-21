@@ -47,7 +47,7 @@ public:
         if (flag == CacheFlag::UPDATE_CACHE) {
             memory = ReadAVSharedMemoryFromParcel(parcel);
 
-            CHECK_AND_RETURN_RET(memory != nullptr, AVCS_ERR_INVALID_VAL);
+            CHECK_AND_RETURN_RET_LOG(memory != nullptr, AVCS_ERR_INVALID_VAL, "failed to read memory from parcel");
 
             if (iter == caches_.end()) {
                 AVCODEC_LOGI("add cache, index: %{public}u", index);

@@ -56,8 +56,8 @@ public:
 #endif
 
 #ifdef SUPPORT_CODEC
-    std::shared_ptr<IAVCodecService> CreateCodecService() override;
-    int32_t DestroyCodecService(std::shared_ptr<IAVCodecService> codecClient) override;
+    std::shared_ptr<ICodecService> CreateCodecService() override;
+    int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -84,6 +84,8 @@ private:
 #endif
 #ifdef SUPPORT_CODEC
     std::list<std::shared_ptr<ICodecService>> codecClientList_;
+#endif
+#ifdef SUPPORT_CODECLIST
     std::list<std::shared_ptr<ICodecListService>> codecListClientList_;
 #endif
 #ifdef SUPPORT_SOURCE

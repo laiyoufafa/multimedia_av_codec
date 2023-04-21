@@ -22,7 +22,7 @@
 #include "codec_server.h"
 #include "avcodec_death_recipient.h"
 #include "nocopyable.h"
-#include "avcodec.h"
+
 
 namespace OHOS {
 namespace Media {
@@ -59,7 +59,7 @@ public:
 private:
     CodecServiceStub();
     int32_t InitStub();
-
+    int32_t SetListenerObject(MessageParcel &data, MessageParcel &reply);
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t Configure(MessageParcel &data, MessageParcel &reply);
     int32_t Start(MessageParcel &data, MessageParcel &reply);
@@ -76,7 +76,6 @@ private:
     int32_t GetOutputFormat(MessageParcel &data, MessageParcel &reply);
     int32_t ReleaseOutputBuffer(MessageParcel &data, MessageParcel &reply);
     int32_t SetParameter(MessageParcel &data, MessageParcel &reply);
-    int32_t SetInputSurface(MessageParcel &data, MessageParcel &reply);
 
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 

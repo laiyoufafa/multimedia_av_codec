@@ -23,6 +23,8 @@
 #include "source_service_stub.h"
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
+#endif
+#ifdef SUPPORT_CODECLIST
 #include "avcodeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
@@ -121,11 +123,11 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
         return OHOS::INVALID_OPERATION;
     }
 #endif
-
-    if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write dfx dump information");
-        return OHOS::INVALID_OPERATION;
-    }
+    // DUMP实现后打开
+    // if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
+    //     AVCODEC_LOGW("Failed to write dfx dump information");
+    //     return OHOS::INVALID_OPERATION;
+    // }
 
     return OHOS::NO_ERROR;
 }
@@ -144,10 +146,12 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     switch (type) {
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
         case CODECLIST: {
             return CreateCodecListStubObject();
         }
+#endif
+#ifdef SUPPORT_CODEC
         case CODEC: {
             return CreateCodecStubObject();
         }
@@ -174,7 +178,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
     }
 }
 
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
 {
     if (codecListStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -195,7 +199,8 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
     }
     return object;
 }
-
+#endif
+#ifdef SUPPORT_CODEC
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecStubObject()
 {
     if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {
