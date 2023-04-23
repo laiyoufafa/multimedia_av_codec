@@ -122,10 +122,11 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
     }
 #endif
 
-    if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write dfx dump information");
-        return OHOS::INVALID_OPERATION;
-    }
+    // TODO: 评估是否需要实现 ServiceDumpManager
+    // if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
+    //     AVCODEC_LOGW("Failed to write dfx dump information");
+    //     return OHOS::INVALID_OPERATION;
+    // }
 
     return OHOS::NO_ERROR;
 }
