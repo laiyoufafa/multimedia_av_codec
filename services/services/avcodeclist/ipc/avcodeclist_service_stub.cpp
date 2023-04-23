@@ -50,20 +50,17 @@ int32_t AVCodecListServiceStub::Init()
 {
     codecListServer_ = AVCodecListServer::Create();
     CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, AVCS_ERR_NO_MEMORY, "failed to create AVCodecListServer");
-    codecListFuncs_[FIND_VIDEO_DECODER] = &AVCodecListServiceStub::FindVideoDecoder;
-    codecListFuncs_[FIND_VIDEO_ENCODER] = &AVCodecListServiceStub::FindVideoEncoder;
-    codecListFuncs_[FIND_AUDIO_DECODER] = &AVCodecListServiceStub::FindAudioDecoder;
-    codecListFuncs_[FIND_AUDIO_ENCODER] = &AVCodecListServiceStub::FindAudioEncoder;
-    codecListFuncs_[GET_CAPABILITYDATA] = &AVCodecListServiceStub::GetCapabilityData;
-    codecListFuncs_[DESTROY] = &AVCodecListServiceStub::DestroyStub;
+    codecListFuncs_[FIND_DECODER] = &AVCodecListServiceStub::DoFindDecoder;
+    codecListFuncs_[FIND_ENCODER] = &AVCodecListServiceStub::DoFindEncoder;
+    codecListFuncs_[CREATE_CAPABILITY] = &AVCodecListServiceStub::DoCreateCapability;
+    codecListFuncs_[DESTROY] = &AVCodecListServiceStub::DoDestroyStub;
     return AVCS_ERR_OK;
 }
 
 int32_t AVCodecListServiceStub::DestroyStub()
 {
     codecListServer_ = nullptr;
-    // TODO AVCodecList
-    // MediaServerManager::GetInstance().DestroyStubObject(MediaServerManager::AVCODECLIST, AsObject());
+    AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::CODECLIST, AsObject());
     return AVCS_ERR_OK;
 }
 
@@ -94,85 +91,53 @@ int AVCodecListServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, 
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
-std::string AVCodecListServiceStub::FindVideoDecoder(const Format &format)
+std::string AVCodecListServiceStub::FindDecoder(const Format &format)
 {
     CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, "", "avcodeclist server is nullptr");
-    return codecListServer_->FindVideoDecoder(format);
+    return codecListServer_->FindDecoder(format);
 }
 
-std::string AVCodecListServiceStub::FindVideoEncoder(const Format &format)
+std::string AVCodecListServiceStub::FindEncoder(const Format &format)
 {
     CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, "", "avcodeclist server is nullptr");
-    return codecListServer_->FindVideoEncoder(format);
+    return codecListServer_->FindEncoder(format);
 }
 
-std::string AVCodecListServiceStub::FindAudioDecoder(const Format &format)
+CapabilityData AVCodecListServiceStub::CreateCapability(const std::string codecName)
 {
-    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, "", "avcodeclist server is nullptr");
-    return codecListServer_->FindAudioDecoder(format);
-}
-
-std::string AVCodecListServiceStub::FindAudioEncoder(const Format &format)
-{
-    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, "", "avcodeclist server is nullptr");
-    return codecListServer_->FindAudioEncoder(format);
-}
-
-// TOOD: 参数列表和返回值与头文件定义不符
-/*
-std::vector<CapabilityData> AVCodecListServiceStub::GetCapabilityData()
-{
-    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, std::vector<CapabilityData>(),
+    CapabilityData capabilityData;
+    CHECK_AND_RETURN_RET_LOG(codecListServer_ != nullptr, capabilityData,
         "avcodeclist server is nullptr");
-    return codecListServer_->GetCapabilityData();
+    return codecListServer_->GetCapabilityData(codecName);
 }
-*/
 
-int32_t AVCodecListServiceStub::FindVideoDecoder(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecListServiceStub::DoFindDecoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
     (void)AVCodecParcel::Unmarshalling(data, format);
-    reply.WriteString(FindVideoDecoder(format));
+    reply.WriteString(FindDecoder(format));
     return AVCS_ERR_OK;
 }
 
-int32_t AVCodecListServiceStub::FindVideoEncoder(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecListServiceStub::DoFindEncoder(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
     (void)AVCodecParcel::Unmarshalling(data, format);
-    reply.WriteString(FindVideoEncoder(format));
+    reply.WriteString(FindEncoder(format));
     return AVCS_ERR_OK;
 }
 
-int32_t AVCodecListServiceStub::FindAudioDecoder(MessageParcel &data, MessageParcel &reply)
-{
-    Format format;
-    (void)AVCodecParcel::Unmarshalling(data, format);
-    reply.WriteString(FindAudioDecoder(format));
-    return AVCS_ERR_OK;
-}
-
-int32_t AVCodecListServiceStub::FindAudioEncoder(MessageParcel &data, MessageParcel &reply)
-{
-    Format format;
-    (void)AVCodecParcel::Unmarshalling(data, format);
-    reply.WriteString(FindAudioEncoder(format));
-    return AVCS_ERR_OK;
-}
-
-int32_t AVCodecListServiceStub::GetCapabilityData(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecListServiceStub::DoCreateCapability(MessageParcel &data, MessageParcel &reply)
 {
     std::string codecName = data.ReadString();
-    CapabilityData capabilityData = GetCapabilityData(codecName);
+    CapabilityData capabilityData = CreateCapability(codecName);
 
-    
-    (void)reply; // TODO: unused-parameter
-    // (void)AVCodecListParcel::Marshalling(reply, capabilityData); // vector<CapabilityData> to MessageParcel TODO
+    (void)AVCodecListParcel::Marshalling(reply, capabilityData);
 
     return AVCS_ERR_OK;
 }
 
-int32_t AVCodecListServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+int32_t AVCodecListServiceStub::DoDestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
     reply.WriteInt32(DestroyStub());

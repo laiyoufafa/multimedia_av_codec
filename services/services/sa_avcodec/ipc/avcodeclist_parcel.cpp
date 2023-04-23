@@ -1,0 +1,182 @@
+/*
+ * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "avcodeclist_parcel.h"
+#include "media_log.h"
+
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListParcel"};
+}
+
+struct CapabilityData {
+    std::string codecName = "";
+    int32_t codecType = AVCODEC_TYPE_NONE;
+    std::string mimeType = "";
+    bool isVendor = false;
+    int32_t maxInstance = 0;
+    Range bitrate;
+    Range channels;
+    Range complexity;
+    ImgSize alignment;
+    Range width;
+    Range height;
+    Range frameRate;
+    Range encodeQuality;
+    Range blockPerFrame;
+    Range blockPerSecond;
+    ImgSize blockSize;
+    std::vector<int32_t> sampleRate;
+    std::vector<int32_t> pixFormat;
+    std::vector<int32_t> profiles;
+    std::vector<int32_t> bitrateMode;
+    std::map<int32_t, std::vector<int32_t>> profileLevelsMap;
+    std::map<ImgSize, Range> measuredFrameRate;
+    bool supportSwapWidthHeight = false;
+};
+
+
+namespace OHOS {
+namespace Media {
+bool AVCodecListParcel::Marshalling(MessageParcel &parcel, CapabilityData &capabilityData)
+{
+    (void)parcel.WriteString(it->codecName);
+    (void)parcel.WriteString(it->mimeType);
+    (void)parcel.WriteBool(it->isVendor);
+    (void)parcel.WriteInt32(it->codecType);
+    (void)parcel.WriteInt32(it->maxInstance);
+    (void)parcel.WriteInt32(it->bitrate.minVal);
+    (void)parcel.WriteInt32(it->bitrate.maxVal);
+    (void)parcel.WriteInt32(it->channels.minVal);
+    (void)parcel.WriteInt32(it->channels.maxVal);
+    (void)parcel.WriteInt32(it->complexity.minVal);
+    (void)parcel.WriteInt32(it->complexity.maxVal);
+    (void)parcel.WriteInt32(it->alignment.width);
+    (void)parcel.WriteInt32(it->alignment.height);
+    (void)parcel.WriteInt32(it->width.minVal);
+    (void)parcel.WriteInt32(it->width.maxVal);
+    (void)parcel.WriteInt32(it->height.minVal);
+    (void)parcel.WriteInt32(it->height.maxVal);
+    (void)parcel.WriteInt32(it->frameRate.minVal);
+    (void)parcel.WriteInt32(it->frameRate.maxVal);
+    (void)parcel.WriteInt32(it->encodeQuality.minVal);
+    (void)parcel.WriteInt32(it->encodeQuality.maxVal);
+    (void)parcel.WriteInt32(it->blockPerFrame.minVal);
+    (void)parcel.WriteInt32(it->blockPerFrame.maxVal);
+    (void)parcel.WriteInt32(it->blockPerSecond.minVal);
+    (void)parcel.WriteInt32(it->blockPerSecond.maxVal);
+    (void)parcel.WriteInt32(it->blockSize.width);
+    (void)parcel.WriteInt32(it->blockSize.height);
+    (void)parcel.WriteInt32Vector(it->sampleRate);
+    (void)parcel.WriteInt32Vector(it->pixFormat);
+    (void)parcel.WriteInt32Vector(it->profiles);
+    (void)parcel.WriteInt32Vector(it->bitrateMode);
+    (void)Marshalling(parcel, it->measuredFrameRate);
+    (void)Marshalling(parcel, it->profileLevelsMap);
+    AVCODEC_LOGD("success to Marshalling capabilityDataArray");
+
+    return true;
+}
+
+bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<ImgSize, Range> &mapSizeToRange)
+{
+    parcel.WriteUint32(mapSizeToRange.size());
+    for (auto it = mapSizeToRange.begin(); it != mapSizeToRange.end(); it++) {
+        (void)parcel.WriteInt32(it->first.width);
+        (void)parcel.WriteInt32(it->first.height);
+        (void)parcel.WriteInt32(it->second.minVal);
+        (void)parcel.WriteInt32(it->second.maxVal);
+    }
+    return true;
+}
+
+bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
+{
+    parcel.WriteUint32(mapIntToVec.size());
+    for (auto it = mapIntToVec.begin(); it != mapIntToVec.end(); it++) {
+        (void)parcel.WriteInt32(it->first);
+        (void)parcel.WriteInt32Vector(it->second);
+    }
+    return true;
+}
+
+bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &capabilityData)
+{
+    capabilityData.codecName = parcel.ReadString();
+    capabilityData.mimeType = parcel.ReadString();
+    capabilityData.isVendor = parcel.ReadBool();
+    capabilityData.codecType = parcel.ReadInt32();
+    capabilityData.maxInstance = parcel.ReadInt32();
+    capabilityData.bitrate.minVal = parcel.ReadInt32();
+    capabilityData.bitrate.maxVal = parcel.ReadInt32();
+    capabilityData.channels.minVal = parcel.ReadInt32();
+    capabilityData.channels.maxVal = parcel.ReadInt32();
+    capabilityData.complexity.minVal = parcel.ReadInt32();
+    capabilityData.complexity.maxVal = parcel.ReadInt32();
+    capabilityData.alignment.width = parcel.ReadInt32();
+    capabilityData.alignment.height = parcel.ReadInt32();
+    capabilityData.width.minVal = parcel.ReadInt32();
+    capabilityData.width.maxVal = parcel.ReadInt32();
+    capabilityData.height.minVal = parcel.ReadInt32();
+    capabilityData.height.maxVal = parcel.ReadInt32();
+    capabilityData.frameRate.minVal = parcel.ReadInt32();
+    capabilityData.frameRate.maxVal = parcel.ReadInt32();
+    capabilityData.encodeQuality.minVal = parcel.ReadInt32();
+    capabilityData.encodeQuality.maxVal = parcel.ReadInt32();
+    capabilityData.blockPerFrame.minVal = parcel.ReadInt32();
+    capabilityData.blockPerFrame.maxVal = parcel.ReadInt32();
+    capabilityData.blockPerSecond.minVal = parcel.ReadInt32();
+    capabilityData.blockPerSecond.maxVal = parcel.ReadInt32();
+    capabilityData.blockSize.width = parcel.ReadInt32();
+    capabilityData.blockSize.height = parcel.ReadInt32();
+    parcel.ReadInt32Vector(&capabilityData.sampleRate);
+    parcel.ReadInt32Vector(&capabilityData.format);
+    parcel.ReadInt32Vector(&capabilityData.profiles);
+    parcel.ReadInt32Vector(&capabilityData.bitrateMode);
+    Unmarshalling(parcel, capabilityData.measuredFrameRate);
+    Unmarshalling(parcel, capabilityData.profileLevelsMap);
+    AVCODEC_LOGD("success to Unmarshalling capabilityDataArray");
+
+    return true;
+}
+
+bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<ImgSize, Range> &mapSizeToRange)
+{
+    uint32_t size = parcel.ReadUint32();
+    for (uint32_t index = 0; index < size; index++) {
+        ImgSize key;
+        Range values;
+        key.width = parcel.ReadInt32();
+        key.height = parcel.ReadInt32();
+        values.minVal = parcel.ReadInt32();
+        values.maxVal = parcel.ReadInt32();
+        mapSizeToRange.insert(std::make_pair(key, values));
+    }
+    return true;
+}
+
+bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
+{
+    uint32_t size = parcel.ReadUint32();
+    for (uint32_t index = 0; index < size; index++) {
+        int32_t key;
+        std::vector<int32_t> values;
+        key = parcel.ReadInt32();
+        parcel.ReadInt32Vector(&values);
+        mapIntToVec.insert(std::make_pair(key, values));
+    }
+    return true;
+}
+} // namespace Media
+} // namespace OHOS

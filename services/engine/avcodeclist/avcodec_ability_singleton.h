@@ -24,8 +24,8 @@ class __attribute__((visibility("default"))) AVCodecAbilitySingleton : public No
 public:
     ~AVCodecAbilitySingleton();
     static AVCodecAbilitySingleton& GetInstance();
-    void RegisterCapabilitys(const std::vector<CapabilityData> &capaArray);
-    std::vector<CapabilityData> GetCapabilitys();
+    void RegisterCapabilityArray(const std::vector<CapabilityData> &capaArray);
+    std::vector<CapabilityData> GetCapabilityArray();
 
 private:
     AVCodecAbilitySingleton();

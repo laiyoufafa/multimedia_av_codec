@@ -22,7 +22,7 @@
 #include "avcodeclist_server.h"
 #include "nocopyable.h"
 #include "avcodec_parcel.h"
-// #include "avcodeclist_parcel.h"
+#include "avcodeclist_parcel.h"
 
 namespace OHOS {
 namespace Media {
@@ -32,22 +32,18 @@ public:
     virtual ~AVCodecListServiceStub();
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    std::string FindVideoDecoder(const Format &format) override;
-    std::string FindVideoEncoder(const Format &format) override;
-    std::string FindAudioDecoder(const Format &format) override;
-    std::string FindAudioEncoder(const Format &format) override;
-    CapabilityData GetCapabilityData(std::string codecName) override;
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(std::string codecName) override;
     int32_t DestroyStub() override;
 
 private:
     AVCodecListServiceStub();
     int32_t Init();
-    int32_t FindVideoDecoder(MessageParcel &data, MessageParcel &reply);
-    int32_t FindVideoEncoder(MessageParcel &data, MessageParcel &reply);
-    int32_t FindAudioDecoder(MessageParcel &data, MessageParcel &reply);
-    int32_t FindAudioEncoder(MessageParcel &data, MessageParcel &reply);
-    int32_t GetCapabilityData(MessageParcel &data, MessageParcel &reply);
-    int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
+    int32_t DoFindDecoder(MessageParcel &data, MessageParcel &reply);
+    int32_t DoFindEncoder(MessageParcel &data, MessageParcel &reply);
+    int32_t DoCreateCapability(MessageParcel &data, MessageParcel &reply);
+    int32_t DoDestroyStub(MessageParcel &data, MessageParcel &reply);
     std::shared_ptr<IAVCodecListService> codecListServer_ = nullptr;
     using AVCodecListStubFunc = int32_t(AVCodecListServiceStub::*)(MessageParcel &data, MessageParcel &reply);
     std::map<uint32_t, AVCodecListStubFunc> codecListFuncs_;

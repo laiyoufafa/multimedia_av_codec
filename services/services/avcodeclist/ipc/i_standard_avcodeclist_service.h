@@ -27,22 +27,18 @@ namespace Media {
 class IStandardAVCodecListService : public IRemoteBroker {
 public:
     virtual ~IStandardAVCodecListService() = default;
-    virtual std::string FindVideoDecoder(const Format &format) = 0;
-    virtual std::string FindVideoEncoder(const Format &format) = 0;
-    virtual std::string FindAudioDecoder(const Format &format) = 0;
-    virtual std::string FindAudioEncoder(const Format &format) = 0;
-    virtual CapabilityData GetCapabilityData(std::string codecName) = 0;
+    virtual std::string FindDecoder(const Format &format) = 0;
+    virtual std::string FindEncoder(const Format &format) = 0;
+    virtual CapabilityData CreateCapability(std::string codecName) = 0;
     virtual int32_t DestroyStub() = 0;
 
     /**
      * IPC code ID
      */
     enum AVCodecListServiceMsg : int32_t {
-        FIND_VIDEO_DECODER,
-        FIND_VIDEO_ENCODER,
-        FIND_AUDIO_DECODER,
-        FIND_AUDIO_ENCODER,
-        GET_CAPABILITYDATA,
+        FIND_DECODER,
+        FIND_ENCODER,
+        CREATE_CAPABILITY,
         DESTROY
     };
 

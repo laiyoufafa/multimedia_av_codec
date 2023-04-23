@@ -31,9 +31,7 @@ public:
     // IAVCodecListService override
     std::string FindVideoDecoder(const Format &format) override;
     std::string FindVideoEncoder(const Format &format) override;
-    std::string FindAudioDecoder(const Format &format) override;
-    std::string FindAudioEncoder(const Format &format) override;
-    CapabilityData GetCapabilityData(std::string codecName) override;
+    CapabilityData CreateCapability(std::string codecName) override;
 
 private:
     sptr<IStandardAVCodecListService> codecListProxy_ = nullptr;
