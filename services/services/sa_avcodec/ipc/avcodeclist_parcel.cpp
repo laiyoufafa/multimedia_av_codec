@@ -14,38 +14,11 @@
  */
 
 #include "avcodeclist_parcel.h"
-#include "media_log.h"
+#include "avcodec_log.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListParcel"};
 }
-
-struct CapabilityData {
-    std::string codecName = "";
-    int32_t codecType = AVCODEC_TYPE_NONE;
-    std::string mimeType = "";
-    bool isVendor = false;
-    int32_t maxInstance = 0;
-    Range bitrate;
-    Range channels;
-    Range complexity;
-    ImgSize alignment;
-    Range width;
-    Range height;
-    Range frameRate;
-    Range encodeQuality;
-    Range blockPerFrame;
-    Range blockPerSecond;
-    ImgSize blockSize;
-    std::vector<int32_t> sampleRate;
-    std::vector<int32_t> pixFormat;
-    std::vector<int32_t> profiles;
-    std::vector<int32_t> bitrateMode;
-    std::map<int32_t, std::vector<int32_t>> profileLevelsMap;
-    std::map<ImgSize, Range> measuredFrameRate;
-    bool supportSwapWidthHeight = false;
-};
-
 
 namespace OHOS {
 namespace Media {
