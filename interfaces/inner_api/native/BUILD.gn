@@ -204,12 +204,17 @@ ohos_shared_library("av_codec_client") {
       "$AV_CODEC_ROOT_DIR/services/services/muxer/ipc/muxer_service_proxy.cpp",
     ]
   }
-
+  
   deps = [
-      # "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
       "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
       "//third_party/bounds_checking_function:libsec_static",
   ]
+
+  if (multimedia_av_codec_support_codeclist) {
+      deps += [
+      "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
+      ]
+  }
 
   external_deps = [
       "c_utils:utils",
