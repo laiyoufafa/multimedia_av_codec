@@ -78,7 +78,7 @@ static void AddNewLog(std::string &logStr)
     logStr += " ";
 }
 
-void AVCodecLogDump::SaveLog(AVCodecLogDumpType dumpType, const char *fmt, ...)
+void AVCodecLogDump::SaveLog(const char *fmt, ...)
 {
     std::unique_lock<std::mutex> lock(mutex_);
     if (!isEnable_) {

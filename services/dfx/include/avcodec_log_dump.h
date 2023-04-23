@@ -22,15 +22,10 @@
 
 namespace OHOS {
 namespace Media {
-enum AVCodecLogDumpType {
-    AVCODEC_LOG_DUMP_TYPE_LOG,
-    AVCODEC_LOG_DUMP_TYPE_BITSTREAM
-};
-
 class __attribute__((visibility("default"))) AVCodecLogDump {
 public:
     static AVCodecLogDump &GetInstance();
-    void SaveLog(AVCodecLogDumpType dumpType, const char *fmt, ...);
+    void SaveLog(const char *fmt, ...);
 
 private:
     AVCodecLogDump();
@@ -54,19 +49,10 @@ private:
 #define AVCODEC_DUMP_LOG(fmt, args...)                                            \
     do {                                                                            \
         (void)OHOS::Media::AVCodecLogDump::GetInstance().SaveLog(                   \
-            AVCODEC_LOG_DUMP_TYPE_LOG, "{%s():%d} " fmt,                            \
-            __FUNCTION__, __LINE__, ##args);                                        \
-    } while 
-
-#define AVCODEC_DUMP_BITSTREAM(fmt, args...)                                      \
-    do {                                                                            \
-        (void)OHOS::Media::AVCodecLogDump::GetInstance().SaveLog(                   \
-            AVCODEC_LOG_DUMP_TYPE_BITSTREAM, "{%s():%d} " fmt,                      \
-            __FUNCTION__, __LINE__, ##args);                                        \
+            "{%s():%d} " fmt, __FUNCTION__, __LINE__, ##args);                      \
     } while (0);
 #else
 #define AVCODEC_DUMP_LOG(fmt, args...) ;
-#define AVCODEC_DUMP_BITSTREAM(fmt, args...) ;
 #endif
 } // namespace Media
 } // namespace OHOS
