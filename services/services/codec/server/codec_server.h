@@ -24,7 +24,7 @@
 namespace OHOS {
 namespace Media {
 
-class CodecServer : public ICodecService, public NoCopyable {
+class CodecServer : public std::enable_shared_from_this<CodecServer>, public ICodecService, public NoCopyable {
 public:
     static std::shared_ptr<ICodecService> Create();
     CodecServer();
