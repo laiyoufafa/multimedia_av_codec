@@ -56,7 +56,7 @@ public:
 
 class __attribute__((visibility("default"))) AVCodecListFactory {
 public:
-#ifdef UNSUPPORT_CODEC
+#ifdef UNSUPPORT_CODECLIST
     static std::shared_ptr<AVCodecList> CreateAVCodecList()
     {
         return nullptr;
