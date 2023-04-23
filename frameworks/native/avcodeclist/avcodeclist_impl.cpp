@@ -55,29 +55,20 @@ AVCodecListImpl::~AVCodecListImpl()
     AVCODEC_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-std::string AVCodecListImpl::FindVideoDecoder(const Format &format)
+std::string AVCodecListImpl::FindDecoder(const Format &format)
 {
-    return codecListService_->FindVideoDecoder(format);
+    return codecListService_->FindDecoder(format);
 }
 
-std::string AVCodecListImpl::FindVideoEncoder(const Format &format)
+std::string AVCodecListImpl::FindEncoder(const Format &format)
 {
-    return codecListService_->FindVideoEncoder(format);
+    return codecListService_->FindEncoder(format);
 }
 
-std::string AVCodecListImpl::FindAudioDecoder(const Format &format)
-{
-    return codecListService_->FindAudioDecoder(format);
-}
 
-std::string AVCodecListImpl::FindAudioEncoder(const Format &format)
+CapabilityData AVCodecListImpl::CreateCapability(std::string codecName)
 {
-    return codecListService_->FindAudioEncoder(format);
-}
-
-CapabilityData AVCodecListImpl::GetCapabilityData(std::string codecName)
-{
-    return codecListService_->GetCapabilityData(codecName);
+    return codecListService_->CreateCapability(codecName);
 }
 
 } // namespace Media

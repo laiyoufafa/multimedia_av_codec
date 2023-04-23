@@ -27,12 +27,10 @@ public:
     AVCodecListImpl();
     ~AVCodecListImpl();
     int32_t Init();
-
-    std::string FindVideoDecoder(const Format &format) override;
-    std::string FindVideoEncoder(const Format &format) override;
-    std::string FindAudioDecoder(const Format &format) override;
-    std::string FindAudioEncoder(const Format &format) override;
-    CapabilityData GetCapabilityData(std::string codecName) override;
+    // AVCodecList
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(const std::string codecName) override;
     
 private:
     std::shared_ptr<IAVCodecListService> codecListService_ = nullptr;
