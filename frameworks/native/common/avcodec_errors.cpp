@@ -66,62 +66,62 @@ const std::map<AVCodecServiceErrCode, std::string> AVCS_ERRCODE_INFOS = {
 };
 
 const std::map<AVCodecServiceErrCode, OH_AVErrCode> AVCSERRCODE_TO_OHAVCODECERRCODE = {
-    {AVCS_ERR_OK,                                  AVCODEC_ERR_OK},
-    {AVCS_ERR_NO_MEMORY,                           AVCODEC_ERR_NO_MEMORY},
-    {AVCS_ERR_INVALID_OPERATION,                   AVCODEC_ERR_OPERATE_NOT_PERMIT},
-    {AVCS_ERR_INVALID_VAL,                         AVCODEC_ERR_INVALID_VAL},
-    {AVCS_ERR_UNKNOWN,                             AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_SERVICE_DIED,                        AVCODEC_ERR_SERVICE_DIED},
-    {AVCS_ERR_CREATE_AVCODEC_SUB_SERVICE_FAILED,   AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_CREATE_MUXER_SUB_SERVICE_FAILED,     AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_CREATE_DEMUXER_SUB_SERVICE_FAILED,   AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_INVALID_STATE,                       AVCODEC_ERR_INVALID_STATE},
-    {AVCS_ERR_UNSUPPORT,                           AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_SRC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_SAMPLE_RATE,           AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_CHANNEL_NUM,           AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_ENC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_PARAMS,                AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_VID_SRC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_VID_ENC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_VID_PARAMS,                AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_CONTAINER_TYPE,            AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_PROTOCOL_TYPE,             AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_VID_DEC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_AUD_DEC_TYPE,              AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_STREAM,                    AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_FILE,                      AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_UNSUPPORT_SOURCE,                    AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_AUD_RENDER_FAILED,                   AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_AUD_ENC_FAILED,                      AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_VID_ENC_FAILED,                      AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_AUD_DEC_FAILED,                      AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_VID_DEC_FAILED,                      AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_MUXER_FAILED,                        AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_DEMUXER_FAILED,                      AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_OPEN_FILE_FAILED,                    AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_FILE_ACCESS_FAILED,                  AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_START_FAILED,                        AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_PAUSE_FAILED,                        AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_STOP_FAILED,                         AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_SEEK_FAILED,                         AVCODEC_ERR_UNKNOWN},
-    {AVCS_ERR_NETWORK_TIMEOUT,                     AVCODEC_ERR_TIMEOUT},
-    {AVCS_ERR_NOT_FIND_CONTAINER,                  AVCODEC_ERR_UNSUPPORT},
-    {AVCS_ERR_EXTEND_START,                        AVCODEC_ERR_EXTEND_START},
+    {AVCS_ERR_OK,                                  AV_ERR_OK},
+    {AVCS_ERR_NO_MEMORY,                           AV_ERR_NO_MEMORY},
+    {AVCS_ERR_INVALID_OPERATION,                   AV_ERR_OPERATE_NOT_PERMIT},
+    {AVCS_ERR_INVALID_VAL,                         AV_ERR_INVALID_VAL},
+    {AVCS_ERR_UNKNOWN,                             AV_ERR_UNKNOWN},
+    {AVCS_ERR_SERVICE_DIED,                        AV_ERR_SERVICE_DIED},
+    {AVCS_ERR_CREATE_AVCODEC_SUB_SERVICE_FAILED,   AV_ERR_UNKNOWN},
+    {AVCS_ERR_CREATE_MUXER_SUB_SERVICE_FAILED,     AV_ERR_UNKNOWN},
+    {AVCS_ERR_CREATE_DEMUXER_SUB_SERVICE_FAILED,   AV_ERR_UNKNOWN},
+    {AVCS_ERR_INVALID_STATE,                       AV_ERR_INVALID_STATE},
+    {AVCS_ERR_UNSUPPORT,                           AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_SRC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_SAMPLE_RATE,           AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_CHANNEL_NUM,           AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_ENC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_PARAMS,                AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_VID_SRC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_VID_ENC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_VID_PARAMS,                AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_CONTAINER_TYPE,            AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_PROTOCOL_TYPE,             AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_VID_DEC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_AUD_DEC_TYPE,              AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_STREAM,                    AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_FILE,                      AV_ERR_UNSUPPORT},
+    {AVCS_ERR_UNSUPPORT_SOURCE,                    AV_ERR_UNSUPPORT},
+    {AVCS_ERR_AUD_RENDER_FAILED,                   AV_ERR_UNSUPPORT},
+    {AVCS_ERR_AUD_ENC_FAILED,                      AV_ERR_UNKNOWN},
+    {AVCS_ERR_VID_ENC_FAILED,                      AV_ERR_UNKNOWN},
+    {AVCS_ERR_AUD_DEC_FAILED,                      AV_ERR_UNKNOWN},
+    {AVCS_ERR_VID_DEC_FAILED,                      AV_ERR_UNKNOWN},
+    {AVCS_ERR_MUXER_FAILED,                        AV_ERR_UNKNOWN},
+    {AVCS_ERR_DEMUXER_FAILED,                      AV_ERR_UNKNOWN},
+    {AVCS_ERR_OPEN_FILE_FAILED,                    AV_ERR_UNKNOWN},
+    {AVCS_ERR_FILE_ACCESS_FAILED,                  AV_ERR_UNKNOWN},
+    {AVCS_ERR_START_FAILED,                        AV_ERR_UNKNOWN},
+    {AVCS_ERR_PAUSE_FAILED,                        AV_ERR_UNKNOWN},
+    {AVCS_ERR_STOP_FAILED,                         AV_ERR_UNKNOWN},
+    {AVCS_ERR_SEEK_FAILED,                         AV_ERR_UNKNOWN},
+    {AVCS_ERR_NETWORK_TIMEOUT,                     AV_ERR_TIMEOUT},
+    {AVCS_ERR_NOT_FIND_CONTAINER,                  AV_ERR_UNSUPPORT},
+    {AVCS_ERR_EXTEND_START,                        AV_ERR_EXTEND_START},
 };
 
 const std::map<OH_AVErrCode, std::string> OHAVCODECERRCODE_INFOS = {
-    {AVCODEC_ERR_OK,                    "success"},
-    {AVCODEC_ERR_NO_MEMORY,             "no memory"},
-    {AVCODEC_ERR_OPERATE_NOT_PERMIT,    "operation not be permitted"},
-    {AVCODEC_ERR_INVALID_VAL,           "invalid argument"},
-    {AVCODEC_ERR_IO,                    "IO error"},
-    {AVCODEC_ERR_TIMEOUT,               "network timeout"},
-    {AVCODEC_ERR_UNKNOWN,               "unkown error"},
-    {AVCODEC_ERR_SERVICE_DIED,          "avcodec service died"},
-    {AVCODEC_ERR_INVALID_STATE,         "the state is not support this operation"},
-    {AVCODEC_ERR_UNSUPPORT,             "unsupport interface"},
-    {AVCODEC_ERR_EXTEND_START,          "extend err start"},
+    {AV_ERR_OK,                    "success"},
+    {AV_ERR_NO_MEMORY,             "no memory"},
+    {AV_ERR_OPERATE_NOT_PERMIT,    "operation not be permitted"},
+    {AV_ERR_INVALID_VAL,           "invalid argument"},
+    {AV_ERR_IO,                    "IO error"},
+    {AV_ERR_TIMEOUT,               "network timeout"},
+    {AV_ERR_UNKNOWN,               "unkown error"},
+    {AV_ERR_SERVICE_DIED,          "avcodec service died"},
+    {AV_ERR_INVALID_STATE,         "the state is not support this operation"},
+    {AV_ERR_UNSUPPORT,             "unsupport interface"},
+    {AV_ERR_EXTEND_START,          "extend err start"},
 };
 
 std::string ErrorMessageOk(const std::string& param1, const std::string& param2)
@@ -199,8 +199,8 @@ std::string AVCSErrorToString(AVCodecServiceErrCode code)
         return AVCS_ERRCODE_INFOS.at(code);
     }
 
-    if (code > static_cast<int32_t>(AVCODEC_ERR_EXTEND_START)) {
-        return "extend error:" + std::to_string(code - static_cast<int32_t>(AVCODEC_ERR_EXTEND_START));
+    if (code > static_cast<int32_t>(AV_ERR_EXTEND_START)) {
+        return "extend error:" + std::to_string(code - static_cast<int32_t>(AV_ERR_EXTEND_START));
     }
 
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
@@ -212,8 +212,8 @@ std::string OHAVErrCodeToString(OH_AVErrCode code)
         return OHAVCODECERRCODE_INFOS.at(code);
     }
 
-    if (code > static_cast<int32_t>(AVCODEC_ERR_EXTEND_START)) {
-        return "extend error:" + std::to_string(code - static_cast<int32_t>(AVCODEC_ERR_EXTEND_START));
+    if (code > static_cast<int32_t>(AV_ERR_EXTEND_START)) {
+        return "extend error:" + std::to_string(code - static_cast<int32_t>(AV_ERR_EXTEND_START));
     }
 
     return "invalid error code:" + std::to_string(static_cast<int32_t>(code));
@@ -237,7 +237,7 @@ OH_AVErrCode AVCSErrorToOHAVErrCode(AVCodecServiceErrCode code)
         return AVCSERRCODE_TO_OHAVCODECERRCODE.at(code);
     }
 
-    return AVCODEC_ERR_UNKNOWN;
+    return AV_ERR_UNKNOWN;
 }
 
 } // namespace Media

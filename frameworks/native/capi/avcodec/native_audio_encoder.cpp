@@ -32,7 +32,7 @@ class NativeAudioEncoderCallback;
 
 struct AudioEncoderObject : public OH_AVCodec {
     explicit AudioEncoderObject(const std::shared_ptr<AVCodecAudioEncoder> &encoder)
-        : OH_AVCodec(AVMagic::MEDIA_MAGIC_AUDIO_ENCODER), audioEncoder_(encoder) {}
+        : OH_AVCodec(AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER), audioEncoder_(encoder) {}
     ~AudioEncoderObject() = default;
 
     const std::shared_ptr<AVCodecAudioEncoder> audioEncoder_;
@@ -54,7 +54,7 @@ public:
         std::unique_lock<std::mutex> lock(mutex_);
         (void)errorType;
         if (codec_ != nullptr && callback_.onError != nullptr) {
-            int32_t extErr = MSErrorToExtError(static_cast<MediaServiceErrCode>(errorCode));
+            int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
             callback_.onError(codec_, extErr, userData_);
         }
     }
@@ -118,7 +118,7 @@ private:
     OH_AVMemory *GetInputData(struct OH_AVCodec *codec, uint32_t index)
     {
         CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
-        CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
+        CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
 
         struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
         CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, nullptr, "audioEncoder_ is nullptr!");
@@ -142,7 +142,7 @@ private:
     OH_AVMemory *GetOutputData(struct OH_AVCodec *codec, uint32_t index)
     {
         CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
-        CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
+        CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
 
         struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
         CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, nullptr, "audioEncoder_ is nullptr!");
@@ -198,7 +198,7 @@ struct OH_AVCodec *OH_AudioEncoder_CreateByName(const char *name)
 OH_AVErrCode OH_AudioEncoder_Destroy(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
 
@@ -222,9 +222,9 @@ OH_AVErrCode OH_AudioEncoder_Destroy(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_Configure(struct OH_AVCodec *codec, struct OH_AVFormat *format)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
     CHECK_AND_RETURN_RET_LOG(format != nullptr, AV_ERR_INVALID_VAL, "input format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(format->magic_ == AVMagic::MEDIA_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(format->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder is nullptr!");
@@ -237,13 +237,22 @@ OH_AVErrCode OH_AudioEncoder_Configure(struct OH_AVCodec *codec, struct OH_AVFor
 
 OH_AVErrCode OH_AudioEncoder_Prepare(struct OH_AVCodec *codec)
 {
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+
+    struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
+    CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
+
+    int32_t ret = audioEncObj->audioEncoder_->Prepare();
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioEncoder Prepare failed!");
+
     return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_AudioEncoder_Start(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -259,7 +268,7 @@ OH_AVErrCode OH_AudioEncoder_Start(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_Stop(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -280,7 +289,7 @@ OH_AVErrCode OH_AudioEncoder_Stop(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_Flush(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -303,7 +312,7 @@ OH_AVErrCode OH_AudioEncoder_Flush(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_Reset(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -321,7 +330,7 @@ OH_AVErrCode OH_AudioEncoder_Reset(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_PushInputData(struct OH_AVCodec *codec, uint32_t index, OH_AVCodecBufferAttr attr)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -345,7 +354,7 @@ OH_AVErrCode OH_AudioEncoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
 OH_AVFormat *OH_AudioEncoder_GetOutputDescription(struct OH_AVCodec *codec)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, nullptr, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, nullptr, "audioEncoder_ is nullptr!");
@@ -363,7 +372,7 @@ OH_AVFormat *OH_AudioEncoder_GetOutputDescription(struct OH_AVCodec *codec)
 OH_AVErrCode OH_AudioEncoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -377,9 +386,9 @@ OH_AVErrCode OH_AudioEncoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t i
 OH_AVErrCode OH_AudioEncoder_SetParameter(struct OH_AVCodec *codec, struct OH_AVFormat *format)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
     CHECK_AND_RETURN_RET_LOG(format != nullptr, AV_ERR_INVALID_VAL, "input format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(format->magic_ == AVMagic::MEDIA_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(format->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
@@ -394,7 +403,7 @@ OH_AVErrCode OH_AudioEncoder_SetCallback(
     struct OH_AVCodec *codec, struct OH_AVCodecAsyncCallback callback, void *userData)
 {
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, AV_ERR_INVALID_VAL, "input codec is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::MEDIA_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_AUDIO_ENCODER, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AudioEncoderObject *audioEncObj = reinterpret_cast<AudioEncoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");

@@ -122,9 +122,6 @@ int32_t CodecServiceStub::InitStub()
     recFuncs_[RELEASE_OUTPUT_BUFFER] = &CodecServiceStub::ReleaseOutputBuffer;
     recFuncs_[GET_OUTPUT_FORMAT] = &CodecServiceStub::GetOutputFormat;
     recFuncs_[SET_PARAMETER] = &CodecServiceStub::SetParameter;
-    recFuncs_[SET_INPUT_SURFACE] = &CodecServiceStub::SetInputSurface;
-    recFuncs_[DEQUEUE_INPUT_BUFFER] = &CodecServiceStub::DequeueInputBuffer;
-    recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &CodecServiceStub::DequeueOutputBuffer;
 
     recFuncs_[DESTROY_STUB] = &CodecServiceStub::DestroyStub;
     return AVCS_ERR_OK;
@@ -447,30 +444,5 @@ int32_t CodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply
     return AVCS_ERR_OK;
 }
 
-
-int32_t CodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &reply)
-{
-    (void)data;
-    (void)reply;
-
-    return AVCS_ERR_OK;
-}
-int32_t CodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)
-{
-    int64_t timeoutUs = data.ReadInt64();
-    uint32_t index;
-    reply.WriteInt32(DequeueInputBuffer(&index, timeoutUs));
-    reply.WriteUint32(index);
-    return AVCS_ERR_OK;
-}
-int32_t CodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply)
-{
-
-    int64_t timeoutUs = data.ReadInt64();
-    uint32_t index;
-    reply.WriteInt32(DequeueOutputBuffer(&index, timeoutUs));
-    reply.WriteUint32(index);
-    return AVCS_ERR_OK;
-}
 } // namespace Media
 } // namespace OHOS

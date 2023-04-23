@@ -14,7 +14,7 @@
  */
 
 #include "avcodec_audio_encoder_impl.h"
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
@@ -62,7 +62,7 @@ AVCodecAudioEncoderImpl::AVCodecAudioEncoderImpl()
 AVCodecAudioEncoderImpl::~AVCodecAudioEncoderImpl()
 {
     if (codecService_ != nullptr) {
-        (void)MediaServiceFactory::GetInstance().DestroyAVCodecService(codecService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyCodecService(codecService_);
         codecService_ = nullptr;
     }
     AVCODEC_LOGD("AVCodecAudioEncoderImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
@@ -72,6 +72,12 @@ int32_t AVCodecAudioEncoderImpl::Configure(const Format &format)
 {
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
     return codecService_->Configure(format);
+}
+
+int32_t AVCodecAudioEncoderImpl::Prepare()
+{
+    CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "service died");
+    return AVCS_ERR_OK;
 }
 
 int32_t AVCodecAudioEncoderImpl::Start()

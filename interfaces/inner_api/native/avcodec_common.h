@@ -18,6 +18,7 @@
 #include <string>
 #include "av_common.h"
 #include "format.h"
+#include "avsharedmemory.h"
 
 namespace OHOS {
 namespace Media {
@@ -28,7 +29,7 @@ namespace Media {
  * @version 3.1
  */
 enum AVCodecErrorType : int32_t {
-    /* internal errors, error code passed by the errorCode, and definition see "MediaServiceErrCode" */
+    /* internal errors, error code passed by the errorCode, and definition see "AVCodecServiceErrCode" */
     AVCODEC_ERROR_INTERNAL,
     /* extend error start. The extension error code agreed upon by the plug-in and
        the application will be transparently transmitted by the service. */
@@ -56,6 +57,10 @@ struct AVCodecBufferInfo {
     int32_t offset = 0;
 };
 
+struct AVBufferElement {
+    std::shared_ptr<AVSharedMemory> buffer;
+    std::shared_ptr<AVSharedMemory> metaData;
+};
 class AVCodecCallback {
 public:
     virtual ~AVCodecCallback() = default;

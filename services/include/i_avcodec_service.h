@@ -19,7 +19,10 @@
 #include <memory>
 
 #ifdef SUPPORT_CODEC
-#include "i_avcodec_service.h"
+#include "i_codec_service.h"
+#endif
+
+#ifdef SUPPORT_CODECLIST
 #include "i_avcodeclist_service.h"
 #endif
 
@@ -41,7 +44,7 @@ class IAVCodecService {
 public:
     virtual ~IAVCodecService() = default;
 
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
     /**
      * @brief Create a codeclist service.
      *
@@ -64,7 +67,9 @@ public:
      * @version 4.0
      */
     virtual int32_t DestroyAVCodecListService(std::shared_ptr<IAVCodecListService> avCodecList) = 0;
+#endif
 
+#ifdef SUPPORT_CODEC
     /**
      * @brief Create an avcodec service.
      *

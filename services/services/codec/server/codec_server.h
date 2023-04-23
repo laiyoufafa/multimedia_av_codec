@@ -19,7 +19,7 @@
 #include "codecbase.h"
 #include "i_codec_service.h"
 #include "nocopyable.h"
-#include "avcodec.h"
+
 
 namespace OHOS {
 namespace Media {
@@ -59,10 +59,10 @@ public:
     int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
     int32_t DumpInfo(int32_t fd);
 
-    void OnError(int32_t errorType, int32_t errorCode) override;
-    void OnOutputFormatChanged(const Format &format) override;
-    void OnInputBufferAvailable(uint32_t index) override;
-    void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
+    void OnError(int32_t errorType, int32_t errorCode);
+    void OnOutputFormatChanged(const Format &format);
+    void OnInputBufferAvailable(uint32_t index);
+    void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag);
     void ResetTrace();
 
 private:
@@ -73,7 +73,7 @@ private:
     CodecStatus status_ = UNINITIALIZED;
     
     // std::unique_ptr<IAVCodecEngine> codecEngine_;
-    std::unique_ptr<CodecBase> codec_;
+    std::shared_ptr<CodecBase> codecBase_;
     std::shared_ptr<AVCodecCallback> codecCb_;
     std::mutex mutex_;
     std::mutex cbMutex_;
@@ -86,7 +86,7 @@ private:
 
 class CodecBaseCallback : public AVCodecCallback, public NoCopyable {
 public:
-    explicit CodecBaseCallback(const sptr<CodecServer> &codec);
+    explicit CodecBaseCallback(const std::shared_ptr<CodecServer> &codec);
     virtual ~CodecBaseCallback();
 
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
@@ -94,7 +94,7 @@ public:
     void OnInputBufferAvailable(uint32_t index) override;
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
 private:
-    sptr<CodecServer> codec_ = nullptr;
+    std::shared_ptr<CodecServer> codec_ = nullptr;
 };
 
 } // namespace Media

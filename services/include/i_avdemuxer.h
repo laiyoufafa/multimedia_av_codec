@@ -4,10 +4,11 @@
 #include <string>
 // #include <vector>
 #include <memory>
+#include "avcodec_common.h"
 // #include "avsharedmemory.h"
 // #include "avcontainer_common.h"
 // #include "media_description.h"
-#include "avcodec_base.h"
+
 namespace OHOS {
 namespace Media {
 // using AVSeekMode = OH_AVSeekMode;
