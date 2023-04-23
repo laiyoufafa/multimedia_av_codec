@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat format)
 {
     std::shared_ptr<AVMuxerImpl> muxerImpl = std::make_shared<AVMuxerImpl>(fd, format);
@@ -48,53 +48,53 @@ AVMuxerImpl::~AVMuxerImpl()
 
 int32_t AVMuxerImpl::Init()
 {
-    muxerService_ = AVCodecServiceFactory::GetInstance().CreateMuxerService();
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create muxer service");
-    return muxerService_->Init();
+    muxerClient_ = AVCodecServiceFactory::GetInstance().CreateMuxerService();
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create muxer client");
+    return muxerClient_->Init();
 }
 
 int32_t AVMuxerImpl::SetLocation(float latitude, float longitude)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->SetLocation(latitude, longitude);
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->SetLocation(latitude, longitude);
 }
 
 int32_t AVMuxerImpl::SetRotation(int32_t rotation)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->SetRotation(rotation);
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->SetRotation(rotation);
 }
 
 int32_t AVMuxerImpl::SetParameter(const Format &generalFormat)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->SetParameter(generalFormat);
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->SetParameter(generalFormat);
 }
 
 int32_t AVMuxerImpl::AddTrack(const Format &trackFormat)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->AddTrack(trackFormat);
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->AddTrack(trackFormat);
 }
 
 int32_t AVMuxerImpl::Start()
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->Start();
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->Start();
 }
 
 int32_t AVMuxerImpl::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
     CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr && info.size >= 0 && info.presentationTimeUs >= 0, 
                             AVCS_ERR_NO_MEMORY, "Invalid memory");
-    return muxerService_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
+    return muxerClient_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
 }
 
 int32_t AVMuxerImpl::Stop()
 {
-    CHECK_AND_RETURN_RET_LOG(muxerService_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer service does not exist");
-    return muxerService_->Stop();
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "AVMuxer client does not exist");
+    return muxerClient_->Stop();
 }
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

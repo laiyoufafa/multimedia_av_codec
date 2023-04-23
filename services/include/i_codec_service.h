@@ -24,8 +24,8 @@
 #include "surface.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
-class ICodecService {
+namespace Media {
+class ICodecService : public std::enable_shared_from_this<ICodecService>  {
 public:
     virtual ~ICodecService() = default;
 
@@ -39,20 +39,14 @@ public:
     virtual int32_t NotifyEos() = 0;
     virtual sptr<Surface> CreateInputSurface() = 0;
     virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) = 0;
     virtual int32_t QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) = 0;
-    virtual std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) = 0;
     virtual int32_t GetOutputFormat(Format &format) = 0;
-    virtual int32_t ReleaseOutputBuffer(uint32_t index, bool render) = 0;
+    virtual int32_t ReleaseOutputBuffer(uint32_t index, bool render = false) = 0;
     virtual int32_t SetParameter(const Format &format) = 0;
     virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
-
-    // virtual int32_t SetInputSurface(sptr<PersistentSurface> surface) = 0;
-    virtual int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
-    virtual int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) = 0;
-    // virtual int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) = 0;
-
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_CODEC_SERVICE_H

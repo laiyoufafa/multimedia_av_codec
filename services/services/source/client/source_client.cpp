@@ -23,7 +23,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<SourceClient> SourceClient::Create(const sptr<IStandardSourceService> &ipcProxy)
 {
     std::shared_ptr<SourceClient> avSourceClient = std::make_shared<SourceClient>(ipcProxy);
@@ -112,5 +112,5 @@ uint64_t SourceClient::GetSourceAttr()
     AVCODEC_LOGD("GetSourceAttr");
     return sourceProxy_->GetSourceAttr();
 }
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

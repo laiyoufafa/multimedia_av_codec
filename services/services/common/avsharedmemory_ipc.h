@@ -20,11 +20,11 @@
 #include "avsharedmemory.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 [[maybe_unused]] int32_t WriteAVSharedMemoryToParcel(const std::shared_ptr<AVSharedMemory> &memory,
     MessageParcel &parcel);
 [[maybe_unused]] std::shared_ptr<AVSharedMemory> ReadAVSharedMemoryFromParcel(MessageParcel &parcel);
 [[maybe_unused]] std::shared_ptr<AVSharedMemory> ReadADataSrcMemoryFromParcel(MessageParcel &parcel);
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif

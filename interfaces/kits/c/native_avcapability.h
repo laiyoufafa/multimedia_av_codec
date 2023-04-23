@@ -17,6 +17,7 @@
 #define NATIVE_AVCAPABILITY_H
 
 #include <stdint.h>
+#include "native_averrors.h"
 
 #ifdef __cplusplus
 extern "C"{
@@ -43,220 +44,315 @@ typedef enum OH_BitrateMode {
 } OH_BitrateMode;
 
 /**
- * @brief Check whether is vendor codec.
+ * @brief Range contain min and max value
+ * @since 10
+ * @version 1.0
+ */
+typedef struct OH_AVRange {
+    int32_t minVal;
+    int32_t maxVal;
+} OH_AVRange;
+
+/**
+ * @brief Check whether the codec is accelerated by hardware.
  * @param capability codec capability get from OH_AVCodec_GetCapability
  * @return true indicate vendor codec, false indicate software codec
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_IsVendor(const struct OH_AVCapability *capability);
+bool OH_AVCapability_IsHardwareAccelerated(OH_AVCapability *capability);
 
 /**
- * @brief Check whether is this video size supported.
+ * @brief Get mime type
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param width codec width
- * @param height codec height
+ * @return mime type string
+ * @since 10
+ * @version 1.0
+*/
+const char *OH_AVCapability_GetMimeType(OH_AVCapability *capability);
+
+/**
+ * @brief Get Supported max instance
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @return instance count
+ * @since 10
+ * @version 1.0
+*/
+int32_t OH_AVCapability_GetMaxSupportedInstances(OH_AVCapability *capability);
+
+/**
+ * @brief Get Supported profiles of this codec
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param profiles profiles array pointer
+ * @param profileNum profiles num
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetSupportedProfiles(OH_AVCapability *capability,
+    const int32_t **profiles, uint32_t *profileNum);
+
+/**
+ * @brief Get levels array for a specified profile.
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param profile codec profiles
+ * @param levels levels array pointer
+ * @param levelNum levels num
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetSupportedLevelsForProfile(OH_AVCapability *capability,
+    int32_t profile, const int32_t **levels, uint32_t *levelNum);
+
+/**
+ * @brief Check whether the profile and level is supported.
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param profile AVCProfile if codec is h264, HEVCProfile array if codec is h265
+ * @param level level id
  * @return true indicate supported, false indicate not supported
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_IsSizeSupported(const struct OH_AVCapability *capability, int32_t width, int32_t height);
+bool OH_AVCapability_ValidateProfileAndLevel(OH_AVCapability *capability,
+    int32_t profile, int32_t level);
 
 /**
- * @brief Check whether is this video size and fps supported.
+ * @brief Get encoder bitrate range
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param width codec width
- * @param height codec height
- * @param fps codec fps
- * @return true indicate supported, false indicate not supported
+ * @param bitrateRange encoder bitrate range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_AreSizeAndFrameRateSupported(const struct OH_AVCapability *capability,
-    int32_t width, int32_t height, int32_t fps);
+OH_AVErrCode OH_AVCapability_GetEncoderBitrateRange(OH_AVCapability *capability,
+    OH_AVRange *bitrateRange);
 
 /**
- * @brief Check whether is this audio sampleRate supported.
+ * @brief Get encoder quality range
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param sampleRate sample rate
- * @return true indicate supported, false indicate not supported
+ * @param bitrateRange encoder quality range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_IsSampleRateSupported(const struct OH_AVCapability *capability, int32_t sampleRate);
+OH_AVErrCode OH_AVCapability_GetEncoderQualityRange(OH_AVCapability *capability,
+    OH_AVRange *qualityRange);
 
 /**
- * @brief Get bitrate range
+ * @brief Get encoder complexity range
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return bitrate low limit
- * @param maxVal return bitrate high limit
+ * @param complexityRange encoder complexity range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
 */
-void OH_AVCapability_GetBitrateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
+OH_AVErrCode OH_AVCapability_GetEncoderComplexityRange(OH_AVCapability *capability,
+    OH_AVRange *complexityRange);
 
 /**
- * @brief Get channels range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return channels low limit
- * @param maxVal return channels high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetChannelsRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get channels range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return channels low limit
- * @param maxVal return channels high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetComplexityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get width alignment
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @return width alignment
- * @since 10
- * @version 1.0
-*/
-int32_t OH_AVCapability_GetWidthAlignment(const struct OH_AVCapability *capability);
-
-/**
- * @brief Get height alignment
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @return height alignment
- * @since 10
- * @version 1.0
-*/
-int32_t OH_AVCapability_GetHeightAlignment(const struct OH_AVCapability *capability);
-
-/**
- * @brief Get width range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return width low limit
- * @param maxVal return width high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetWidthRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get height range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return height low limit
- * @param maxVal return height high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetHeightRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get frame rate range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return frame rate low limit
- * @param maxVal return frame rate high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetFrameRateRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get frame rate range when knew video size
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param width video width
- * @param height video height
- * @param minVal return frame rate low limit
- * @param maxVal return frame rate high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetSupportedFrameRateRangeForSize(const struct OH_AVCapability *capability, 
-    int32_t width, int32_t height, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get encode quality range
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param minVal return encode quality low limit
- * @param maxVal return encode quality high limit
- * @since 10
- * @version 1.0
-*/
-void OH_AVCapability_GetEncodeQualityRange(const struct OH_AVCapability *capability, int32_t *minVal, int32_t *maxVal);
-
-/**
- * @brief Get sampleRate array
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param arraySize sampleRate array size
- * @return sampleRate array pointer
- * @since 10
- * @version 1.0
-*/
-const int32_t *OH_AVCapability_GetSampleRateArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
-
-/**
- * @brief Get format array
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param arraySize format array size
- * @return format array pointer
- * @since 10
- * @version 1.0
-*/
-const int32_t *OH_AVCapability_GetFormatArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
-
-/**
- * @brief Get profiles array
- * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param arraySize profiles array size
- * @return profiles array pointer
- * @since 10
- * @version 1.0
-*/
-const int32_t *OH_AVCapability_GetProfilesArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
-
-/**
- * @brief Check whether is this bitrate mode supported.
+ * @brief Check whether is this bitrate mode supported, only used for video encoder codecs.
  * @param capability codec capability get from OH_AVCodec_GetCapability
  * @param mode bitrateMode
  * @return true indicate supported, false indicate not supported
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_isBitratesModeSupported(const struct OH_AVCapability *capability, OH_BitrateMode mode);
+bool OH_AVCapability_ValidateVideoEncoderBitrateMode(OH_AVCapability *capability,
+    OH_BitrateMode bitrateMode);
 
 /**
- * @brief Get levels array
+ * @brief Get sampleRate array, only used for audio codecs
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @param arraySize levels array size
- * @return levels array pointer
+ * @param sampleRates sampleRates array pointer
+ * @param sampleRateNum sampleRate num
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
 */
-const int32_t *OH_AVCapability_GetLevelsArray(const struct OH_AVCapability *capability, uint32_t *arraySize);
+OH_AVErrCode OH_AVCapability_GetAudioSupportedSampleRates(OH_AVCapability *capability,
+    const int32_t **sampleRates, uint32_t *sampleRateNum);
 
 /**
- * @brief Get preferred frameRate at set resolution, these framerates can be reach the performance.
+ * @brief Check whether is this sampleRate supported, only used for audio codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param sampleRate sample rate
+ * @return true indicate supported, false indicate not supported
+ * @since 10
+ * @version 1.0
+*/
+bool OH_AVCapability_ValidateAudioSampleRate(OH_AVCapability *capability,
+    int32_t sampleRate);
+
+/**
+ * @brief Get channels range, only used for audio codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param channelsRange channels range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetAudioChannelsRange(OH_AVCapability *capability,
+    OH_AVRange *channelsRange);
+
+
+/**
+ * @brief Get supported pixFormat array, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param pixFormats pixFormats array pointer
+ * @param pixFormatNum pixFormat num
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoSupportedPixFormats(OH_AVCapability *capability,
+    const int32_t **pixFormats, uint32_t *pixFormatNum);
+
+/**
+ * @brief Get width alignment, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param widthAlignment width alignment
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoWidthAlignment(OH_AVCapability *capability,
+    int32_t *widthAlignment);
+
+/**
+ * @brief Get height alignment, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param heightAlignment height alignment
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoHeightAlignment(OH_AVCapability *capability,
+    int32_t *heightAlignment);
+
+/**
+ * @brief Get width range for a specified height, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param widthRange width range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoWidthRangeForHeight(OH_AVCapability *capability,
+    int32_t height, OH_AVRange *widthRange);
+
+/**
+ * @brief Get height range for a specified width, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param widthRange height range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoHeightRangeForWidth(OH_AVCapability *capability,
+    int32_t width, OH_AVRange *heightRange);
+
+/**
+ * @brief Get width range, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param widthRange width range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoWidthRange(OH_AVCapability *capability,
+    OH_AVRange *widthRange);
+
+/**
+ * @brief Get height range, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param heightRange height range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoHeightRange(OH_AVCapability *capability,
+    OH_AVRange *heightRange);
+
+/**
+ * @brief Check whether is this video size supported, only used for video codecs
  * @param capability codec capability get from OH_AVCodec_GetCapability
  * @param width video width
  * @param height video height
- * @param minVal return frame rate low limit
- * @param maxVal return frame rate high limit
+ * @return true indicate supported, false indicate not supported
  * @since 10
  * @version 1.0
 */
-void OH_AVCapability_GetPreferredFrameRateRangeForSize(const struct OH_AVCapability *capability,
-    int32_t width, int32_t height, int32_t *minVal, int32_t *maxVal);
+bool OH_AVCapability_ValidateVideoSize(OH_AVCapability *capability,
+    int32_t width, int32_t height);
 
 /**
- * @brief Get swapWidthHeightFlag
+ * @brief Get frame rate range, only used for video codecs
  * @param capability codec capability get from OH_AVCodec_GetCapability
- * @return swapWidthHeightFlag
+ * @param frameRateRange frame rate range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
 */
-bool OH_AVCapability_GetSwapWidthHeightFlag(const struct OH_AVCapability *capability);
+OH_AVErrCode OH_AVCapability_GetVideoFrameRateRange(OH_AVCapability *capability,
+    OH_AVRange *frameRateRange);
+
+/**
+ * @brief Get frame rate range for a specified video size, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param width video width
+ * @param height video height
+ * @param frameRateRange frame rate range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoFrameRateRangeForSize(OH_AVCapability *capability, 
+    int32_t width, int32_t height, OH_AVRange *frameRateRange);
+
+/**
+ * @brief Get measured frame rate range for a specified video size, 
+ * these frame rates is reachable, only used for video codecs
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param width video width
+ * @param height video height
+ * @param frameRateRange frame rate range
+ * @return Returns AV_ERR_OK if the execution is successful,
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * @since 10
+ * @version 1.0
+*/
+OH_AVErrCode OH_AVCapability_GetVideoMeasuredFrameRateRangeForSize(OH_AVCapability *capability,
+    int32_t width, int32_t height, OH_AVRange *frameRateRange);
+
+/**
+ * @brief Check whether are this video size and fps supported.
+ * @param capability codec capability get from OH_AVCodec_GetCapability
+ * @param width video width
+ * @param height vidoe height
+ * @param frameRate frames every second
+ * @return true indicate supported, false indicate not supported
+ * @since 10
+ * @version 1.0
+*/
+bool OH_AVCapability_ValidateVideoSizeAndFrameRate(OH_AVCapability *capability,
+    int32_t width, int32_t height, int32_t frameRate);
 
 #ifdef __cplusplus
 }

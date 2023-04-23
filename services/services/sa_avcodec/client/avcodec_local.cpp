@@ -14,27 +14,27 @@
  */
 
 #include "avcodec_local.h"
-#include "media_errors.h"
+#include "avcodec_errors.h"
 #include "av_log.h"
 #include "demuxer_server.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 IAVCodecService &AVCodecServiceFactory::GetInstance()
 {
     static AVCodecLocal instance;
     return instance;
 }
 
-std::shared_ptr<IDemuxerService> AVCodecLocal::CreateDemuxerService()
+std::shared_ptr<IAVDemuxer> AVCodecLocal::CreateDemuxerService()
 {
-    return DemuxerServer::Create();
+    return AVDemuxerServer::Create();
 }
 
-int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer)
+int32_t AVCodecLocal::DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxer)
 {
     return AVCS_ERR_OK;
 }
 
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

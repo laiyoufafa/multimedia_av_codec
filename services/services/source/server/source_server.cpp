@@ -14,15 +14,15 @@
  */
 
 #include "source_server.h"
-#include "media_errors.h"
-#include "media_log.h"
+#include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServer"};
 }
 
 namespace OHOSmuxerServer {
-namespace MediaAVCodec {
+namespace Media {
 std::shared_ptr<ISourceService> SourceServer::Create()
 {
     std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
@@ -99,5 +99,5 @@ uint64_t SourceServer::GetSourceAttr()
 
     return AVCS_ERR_OK;
 }
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

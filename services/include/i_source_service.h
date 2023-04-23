@@ -3,11 +3,10 @@
 
 #include <string>
 #include <memory>
-#include "avcodec_base.h"
 #include "format.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class ISourceService {
 public:
     virtual ~ISourceService() = default;
@@ -20,6 +19,6 @@ public:
     virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
     virtual uint64_t GetSourceAttr() = 0;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // I_SOURCE_SERVICE_H

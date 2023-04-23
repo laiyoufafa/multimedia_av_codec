@@ -176,13 +176,20 @@ ohos_shared_library("av_codec_client") {
   ]
   if (multimedia_av_codec_support_codec) {
     sources += [
-      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_impl.cpp",
-      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodeclist/avcodeclist_impl.cpp",
-      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/client/avcodeclist_client.cpp",
-      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/ipc/avcodeclist_service_proxy.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_audio_decoder_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_audio_encoder_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_video_decoder_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec/avcodec_video_encoder_impl.cpp",
       "$AV_CODEC_ROOT_DIR/services/services/codec/client/codec_client.cpp",
       "$AV_CODEC_ROOT_DIR/services/services/codec/ipc/codec_listener_stub.cpp",
       "$AV_CODEC_ROOT_DIR/services/services/codec/ipc/codec_service_proxy.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_codeclist) {
+    sources += [
+      "$AV_CODEC_ROOT_DIR/frameworks/native/avcodeclist/avcodeclist_impl.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/client/avcodeclist_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/avcodeclist/ipc/avcodeclist_service_proxy.cpp",
     ]
   }
   if (multimedia_av_codec_support_demuxer) {

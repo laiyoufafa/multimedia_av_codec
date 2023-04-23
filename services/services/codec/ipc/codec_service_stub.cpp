@@ -27,17 +27,17 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class CodecServiceStub::CodecBufferCache : public NoCopyable {
 public:
     CodecBufferCache() = default;
     ~CodecBufferCache() = default;
 
-    int32_t WriteToParcel(uint32_t index, const std::shared_ptr<AVBufferElement> &memory, MessageParcel &parcel)
+    int32_t WriteToParcel(uint32_t index, const std::shared_ptr<AVSharedMemory> &memory, MessageParcel &parcel)
     {
         CacheFlag flag = CacheFlag::UPDATE_CACHE;
 
-        if (memory == nullptr || memory->buffer->GetBase() == nullptr || memory->metaData->GetBase() == nullptr) {
+        if (memory == nullptr || memory->GetBase() == nullptr) {
             AVCODEC_LOGE("invalid memory for index: %{public}u", index);
             flag = CacheFlag::INVALIDATE_CACHE;
             parcel.WriteUint8(flag);
@@ -50,7 +50,7 @@ public:
         }
 
         auto iter = caches_.find(index);
-        if (iter != caches_.end() && iter->second == memory->get()) {
+        if (iter != caches_.end() && iter->second == memory.get()) {
             flag = CacheFlag::HIT_CACHE;
             parcel.WriteUint8(flag);
             return AVCS_ERR_OK;
@@ -58,20 +58,15 @@ public:
 
         if (iter == caches_.end()) {
             AVCODEC_LOGI("add cached codec buffer, index: %{public}u", index);
-            caches_.emplace(index, memory->get());
-        } else { // index存在缓存，但memory不同
+            caches_.emplace(index, memory.get());
+        } else { 
             AVCODEC_LOGI("update cached codec buffer, index: %{public}u", index);
-            iter->second = memory->get();
+            iter->second = memory.get();
         }
 
         parcel.WriteUint8(flag);
         
-        int32_t ret;
-        ret = WriteAVSharedMemoryToParcel(memory->buffer, parcel);
-        if (ret != AVCS_ERR_OK) {
-            retrun ret;
-        }
-        return WriteAVSharedMemoryToParcel(memory->metaData, parcel);
+        return WriteAVSharedMemoryToParcel(memory, parcel);
     }
 
 private:
@@ -81,7 +76,7 @@ private:
         INVALIDATE_CACHE,
     };
 
-    std::unordered_map<uint32_t, AVBufferElement *> caches_;
+    std::unordered_map<uint32_t, AVSharedMemory *> caches_;
 };
 
 sptr<CodecServiceStub> CodecServiceStub::Create()
@@ -127,9 +122,6 @@ int32_t CodecServiceStub::InitStub()
     recFuncs_[RELEASE_OUTPUT_BUFFER] = &CodecServiceStub::ReleaseOutputBuffer;
     recFuncs_[GET_OUTPUT_FORMAT] = &CodecServiceStub::GetOutputFormat;
     recFuncs_[SET_PARAMETER] = &CodecServiceStub::SetParameter;
-    recFuncs_[SET_INPUT_SURFACE] = &CodecServiceStub::SetInputSurface;
-    recFuncs_[DEQUEUE_INPUT_BUFFER] = &CodecServiceStub::DequeueInputBuffer;
-    recFuncs_[DEQUEUE_OUTPUT_BUFFER] = &CodecServiceStub::DequeueOutputBuffer;
 
     recFuncs_[DESTROY_STUB] = &CodecServiceStub::DestroyStub;
     return AVCS_ERR_OK;
@@ -255,7 +247,7 @@ int32_t CodecServiceStub::SetOutputSurface(sptr<OHOS::Surface> surface)
     return codecServer_->SetOutputSurface(surface);
 }
 
-std::shared_ptr<AVBufferElement> CodecServiceStub::GetInputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecServiceStub::GetInputBuffer(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
     return codecServer_->GetInputBuffer(index);
@@ -267,7 +259,7 @@ int32_t CodecServiceStub::QueueInputBuffer(uint32_t index, AVCodecBufferInfo inf
     return codecServer_->QueueInputBuffer(index, info, flag);
 }
 
-std::shared_ptr<AVBufferElement> CodecServiceStub::GetOutputBuffer(uint32_t index)
+std::shared_ptr<AVSharedMemory> CodecServiceStub::GetOutputBuffer(uint32_t index)
 {
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
     return codecServer_->GetOutputBuffer(index);
@@ -290,25 +282,6 @@ int32_t CodecServiceStub::SetParameter(const Format &format)
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
     return codecServer_->SetParameter(format);
 }
-
-int32_t CodecServiceStub::SetInputSurface(sptr<PersistentSurface> surface)
-{
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
-    return codecServer_->SetInputSurface(surface);
-}
-
-int32_t CodecServiceStub::DequeueInputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
-    return codecServer_->DequeueInputBuffer(index, timeoutUs);
-}
-
-int32_t CodecServiceStub::DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs)
-{
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
-    return codecServer_->DequeueOutputBuffer(index, timeoutUs);
-}
-
 
 int32_t CodecServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
@@ -471,30 +444,5 @@ int32_t CodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply
     return AVCS_ERR_OK;
 }
 
-
-int32_t CodecServiceStub::SetInputSurface(MessageParcel &data, MessageParcel &reply)
-{
-    (void)data;
-    (void)reply;
-
-    return AVCS_ERR_OK;
-}
-int32_t CodecServiceStub::DequeueInputBuffer(MessageParcel &data, MessageParcel &reply)
-{
-    int64_t timeoutUs = data.ReadInt64();
-    uint32_t index;
-    reply.WriteInt32(DequeueInputBuffer(&index, timeoutUs));
-    reply.WriteUint32(index);
-    return AVCS_ERR_OK;
-}
-int32_t CodecServiceStub::DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply)
-{
-
-    int64_t timeoutUs = data.ReadInt64();
-    uint32_t index;
-    reply.WriteInt32(DequeueOutputBuffer(&index, timeoutUs));
-    reply.WriteUint32(index);
-    return AVCS_ERR_OK;
-}
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

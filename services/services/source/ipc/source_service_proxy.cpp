@@ -14,8 +14,8 @@
  */
 
 #include "source_service_proxy.h"
-#include "media_log.h"
-#include "media_errors.h"
+#include "avcodec_log.h"
+#include "avcodec_errors.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
 
@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 SourceServiceProxy::SourceServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardSourceService>(impl)
 {
@@ -139,5 +139,5 @@ uint64_t SourceServiceProxy::GetSourceAttr()
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetSourceAttr, error: %{public}d", error);
     return reply.ReadUint64();
 }
-}  // namespace MediaAVCodec
+}  // namespace Media
 }  // namespace OHOS

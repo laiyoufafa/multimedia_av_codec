@@ -22,10 +22,10 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "OH_AVMemory"};
 }
 
-using namespace OHOS::MediaAVCodec;
+using namespace OHOS::Media;
 
-OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::MediaAVCodec::AVSharedMemory> &mem)
-    : memory_(mem)
+OH_AVMemory::OH_AVMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
+    : AVObjectMagic(AVMagic::AVCODEC_MAGIC_SHARED_MEMORY), memory_(mem)
 {
 }
 
@@ -33,7 +33,7 @@ OH_AVMemory::~OH_AVMemory()
 {
 }
 
-bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::MediaAVCodec::AVSharedMemory> &mem)
+bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem)
 {
     return (mem == memory_) ? true : false;
 }
@@ -41,6 +41,7 @@ bool OH_AVMemory::IsEqualMemory(const std::shared_ptr<OHOS::MediaAVCodec::AVShar
 uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem)
 {
     CHECK_AND_RETURN_RET_LOG(mem != nullptr, nullptr, "input mem is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(mem->magic_ == AVMagic::AVCODEC_MAGIC_SHARED_MEMORY, nullptr, "magic error!");
     CHECK_AND_RETURN_RET_LOG(mem->memory_ != nullptr, nullptr, "memory is nullptr!");
     return mem->memory_->GetBase();
 }
@@ -48,12 +49,13 @@ uint8_t *OH_AVMemory_GetAddr(struct OH_AVMemory *mem)
 int32_t OH_AVMemory_GetSize(struct OH_AVMemory *mem)
 {
     CHECK_AND_RETURN_RET_LOG(mem != nullptr, -1, "input mem is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(mem->magic_ == AVMagic::AVCODEC_MAGIC_SHARED_MEMORY, -1, "magic error!");
     CHECK_AND_RETURN_RET_LOG(mem->memory_ != nullptr, -1, "memory is nullptr!");
     return mem->memory_->GetSize();
 }
 
 
-OH_AVBufferElement::OH_AVBufferElement(const std::shared_ptr<OHOS::MediaAVCodec::AVBufferElement> &bufferElement)
+OH_AVBufferElement::OH_AVBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement)
     : bufferElement_(bufferElement)
 {
 }
@@ -62,7 +64,7 @@ OH_AVBufferElement::~OH_AVBufferElement()
 {
 }
 
-bool OH_AVBufferElement::IsEqualBufferElement(const std::shared_ptr<OHOS::MediaAVCodec::AVBufferElement> &bufferElement)
+bool OH_AVBufferElement::IsEqualBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement)
 {
     return (bufferElement == bufferElement_) ? true : false;
 }

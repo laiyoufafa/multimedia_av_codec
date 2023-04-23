@@ -23,6 +23,8 @@
 #include "source_service_stub.h"
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
+#endif
+#ifdef SUPPORT_CODECLIST
 #include "avcodeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
@@ -41,7 +43,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 constexpr uint32_t SERVER_MAX_NUMBER = 16;
 AVCodecServerManager &AVCodecServerManager::GetInstance()
 {
@@ -96,19 +98,19 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
 #endif
 
 #ifdef SUPPORT_MUXER
-    dumpString += "------------------MuxerServer------------------\n";
+    dumpString += "------------------AVMuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::MUXER],
         argSets.find(u"muxer") != argSets.end()) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write MuxerServer information");
+        AVCODEC_LOGW("Failed to write AVMuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
 #endif
 
 #ifdef SUPPORT_DEMUXER
-    dumpString += "------------------DemuxerServer------------------\n";
+    dumpString += "------------------AVDemuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::DEMUXER],
         argSets.find(u"demuxer") != argSets.end()) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write DemuxerServer information");
+        AVCODEC_LOGW("Failed to write AVDemuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
 #endif
@@ -121,8 +123,7 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
         return OHOS::INVALID_OPERATION;
     }
 #endif
-
-    // TODO: 评估是否需要实现 ServiceDumpManager
+    // DUMP实现后打开
     // if (ServiceDumpManager::GetInstance().Dump(fd, argSets) != OHOS::NO_ERROR) {
     //     AVCODEC_LOGW("Failed to write dfx dump information");
     //     return OHOS::INVALID_OPERATION;
@@ -145,10 +146,12 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     switch (type) {
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
         case CODECLIST: {
             return CreateCodecListStubObject();
         }
+#endif
+#ifdef SUPPORT_CODEC
         case CODEC: {
             return CreateCodecStubObject();
         }
@@ -175,7 +178,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateStubObject(StubType type)
     }
 }
 
-#ifdef SUPPORT_CODEC
+#ifdef SUPPORT_CODECLIST
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
 {
     if (codecListStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -196,7 +199,8 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
     }
     return object;
 }
-
+#endif
+#ifdef SUPPORT_CODEC
 sptr<IRemoteObject> AVCodecServerManager::CreateCodecStubObject()
 {
     if (codecStubMap_.size() >= SERVER_MAX_NUMBER) {
@@ -239,9 +243,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
             "Please release the applied resources.", demuxerStubMap_.size());
         return nullptr;
     }
-    sptr<DemuxerServiceStub> stub = DemuxerServiceStub::Create();
+    sptr<AVDemuxerStub> stub = AVDemuxerStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create DemuxerServiceStub");
+        AVCODEC_LOGE("failed to create AVDemuxerStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();
@@ -274,9 +278,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
             "Please release the applied resources.", muxerStubMap_.size());
         return nullptr;
     }
-    sptr<MuxerServiceStub> stub = MuxerServiceStub::Create();
+    sptr<AVMuxerStub> stub = AVMuxerStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create MuxerServiceStub");
+        AVCODEC_LOGE("failed to create AVMuxerStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();
@@ -515,5 +519,5 @@ void AVCodecServerManager::AsyncExecutor::HandleAsyncExecution()
     }
     tempList.clear();
 }
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

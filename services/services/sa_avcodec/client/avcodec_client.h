@@ -39,25 +39,25 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVCodecClient : public IAVCodecService, public NoCopyable {
 public:
     AVCodecClient() noexcept;
     ~AVCodecClient();
 
 #ifdef SUPPORT_DEMUXER
-    std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
-    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxerClient) override;
+    std::shared_ptr<IAVDemuxer> CreateDemuxerService() override;
+    int32_t DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxerClient) override;
 #endif
 
 #ifdef SUPPORT_MUXER
-    std::shared_ptr<IMuxerService> CreateMuxerService() override;
-    int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxerClient) override;
+    std::shared_ptr<IAVMuxer> CreateMuxerService() override;
+    int32_t DestroyMuxerService(std::shared_ptr<IAVMuxer> muxerClient) override;
 #endif
 
 #ifdef SUPPORT_CODEC
-    std::shared_ptr<IAVCodecService> CreateCodecService() override;
-    int32_t DestroyCodecService(std::shared_ptr<IAVCodecService> codecClient) override;
+    std::shared_ptr<ICodecService> CreateCodecService() override;
+    int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -77,13 +77,15 @@ private:
     sptr<AVCodecDeathRecipient> deathRecipient_ = nullptr;
 
 #ifdef SUPPORT_DEMUXER
-    std::list<std::shared_ptr<IDemuxerService>> demuxerClientList_;
+    std::list<std::shared_ptr<IAVDemuxer>> demuxerClientList_;
 #endif
 #ifdef SUPPORT_MUXER
-    std::list<std::shared_ptr<IMuxerService>> muxerClientList_;
+    std::list<std::shared_ptr<IAVMuxer>> muxerClientList_;
 #endif
 #ifdef SUPPORT_CODEC
     std::list<std::shared_ptr<ICodecService>> codecClientList_;
+#endif
+#ifdef SUPPORT_CODECLIST
     std::list<std::shared_ptr<ICodecListService>> codecListClientList_;
 #endif
 #ifdef SUPPORT_SOURCE
@@ -92,6 +94,6 @@ private:
 
     std::mutex mutex_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_CLIENT_H

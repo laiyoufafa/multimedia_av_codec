@@ -21,7 +21,7 @@
 #include "i_standard_avcodeclist_service.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVCodecListClient : public IAVCodecListService {
 public:
     static std::shared_ptr<AVCodecListClient> Create(const sptr<IStandardAVCodecListService> &ipcProxy);
@@ -39,6 +39,6 @@ private:
     sptr<IStandardAVCodecListService> codecListProxy_ = nullptr;
     std::mutex mutex_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODECLIST_SERVICE_CLIENT_H

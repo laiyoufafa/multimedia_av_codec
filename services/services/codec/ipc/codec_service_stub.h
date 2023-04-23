@@ -22,10 +22,10 @@
 #include "codec_server.h"
 #include "avcodec_death_recipient.h"
 #include "nocopyable.h"
-#include "avcodec.h"
+
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class CodecServiceStub : public IRemoteStub<IStandardCodecService>, public NoCopyable {
 public:
     static sptr<CodecServiceStub> Create();
@@ -45,17 +45,12 @@ public:
     int32_t NotifyEos() override;
     sptr<Surface> CreateInputSurface() override;
     int32_t SetOutputSurface(sptr<Surface> surface) override;
-    std::shared_ptr<AVBufferElement> GetInputBuffer(uint32_t index) override;
+    std::shared_ptr<AVSharedMemory> GetInputBuffer(uint32_t index) override;
     int32_t QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
-    std::shared_ptr<AVBufferElement> GetOutputBuffer(uint32_t index) override;
+    std::shared_ptr<AVSharedMemory> GetOutputBuffer(uint32_t index) override;
     int32_t GetOutputFormat(Format &format) override;
     int32_t ReleaseOutputBuffer(uint32_t index, bool render) override;
     int32_t SetParameter(const Format &format) override;
-    int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) override;
-    int32_t SetInputSurface(sptr<PersistentSurface> surface) override;
-    int32_t DequeueInputBuffer(uint32_t *index, int64_t timeoutUs) override;
-    int32_t DequeueOutputBuffer(uint32_t *index, int64_t timeoutUs) override;
-    // int32_t SetRenderedListener(const std::shared_ptr<AVCodecFrameRenderedListener> &listener) override;
 
     int32_t DestroyStub() override;
 
@@ -64,7 +59,7 @@ public:
 private:
     CodecServiceStub();
     int32_t InitStub();
-
+    int32_t SetListenerObject(MessageParcel &data, MessageParcel &reply);
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t Configure(MessageParcel &data, MessageParcel &reply);
     int32_t Start(MessageParcel &data, MessageParcel &reply);
@@ -81,11 +76,6 @@ private:
     int32_t GetOutputFormat(MessageParcel &data, MessageParcel &reply);
     int32_t ReleaseOutputBuffer(MessageParcel &data, MessageParcel &reply);
     int32_t SetParameter(MessageParcel &data, MessageParcel &reply);
-    int32_t SetCallback(MessageParcel &data, MessageParcel &reply);
-    int32_t SetInputSurface(MessageParcel &data, MessageParcel &reply);
-    int32_t DequeueInputBuffer(MessageParcel &data, MessageParcel &reply);
-    int32_t DequeueOutputBuffer(MessageParcel &data, MessageParcel &reply);
-    // int32_t SetRenderedListener(MessageParcel &data, MessageParcel &reply);
 
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
@@ -97,6 +87,6 @@ private:
     std::unique_ptr<CodecBufferCache> inputBufferCache_;
     std::unique_ptr<CodecBufferCache> outputBufferCache_;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // CODEC_SERVICE_STUB_H

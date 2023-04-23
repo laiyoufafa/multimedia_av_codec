@@ -20,6 +20,8 @@ group("capi_packages") {
   deps = []
   if (multimedia_av_codec_support_capi) {
     deps += [
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
   }
@@ -167,7 +169,11 @@ ohos_shared_library("native_av_codec_codec") {
   }
 
   sources = [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_avcodec.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_avcodec_base.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_audio_decoder.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_audio_encoder.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_video_decoder.cpp",
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avcodec/native_video_encoder.cpp",
   ]
 
   configs = [ ":av_codec_capi_config" ]

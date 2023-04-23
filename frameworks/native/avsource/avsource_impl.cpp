@@ -14,22 +14,16 @@
  */
 
 #include "avsource_impl.h"
-<<<<<<< HEAD
-#include "i_media_service.h"
+#include "i_avcodec_service.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-=======
-#include "i_avcodec_service.h"
-#include "media_errors.h"
-#include "media_log.h"
->>>>>>> develop_test
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSourceImpl"}
 }
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 {
     std::shared_ptr<AVSourceImpl> sourceImpl = std::make_shared<AVSourceImpl>();
@@ -125,5 +119,5 @@ std::shared_ptr<Format> GetTrackFormat()
     return sourceImpl_->GetTrackFormat(format, trackId_)
 }
 
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 AVCodecListCore::AVCodecListCore()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
@@ -242,5 +242,5 @@ CapabilityData AVCodecListCore::GetCapabilityData(std::string codecName)
     return capData;
 }
 
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS

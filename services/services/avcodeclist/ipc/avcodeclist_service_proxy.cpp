@@ -24,7 +24,7 @@ namespace {
 }
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 AVCodecListServiceProxy::AVCodecListServiceProxy(const sptr<IRemoteObject> &impl)
     : IRemoteProxy<IStandardAVCodecListService>(impl)
 {
@@ -131,5 +131,5 @@ int32_t AVCodecListServiceProxy::DestroyStub()
         "DestroyStub failed, error: %{public}d", ret);
     return reply.ReadInt32();
 }
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
