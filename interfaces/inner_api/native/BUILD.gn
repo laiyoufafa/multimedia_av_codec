@@ -206,7 +206,7 @@ ohos_shared_library("av_codec_client") {
   }
 
   deps = [
-      "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
+      # "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
       "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
       "//third_party/bounds_checking_function:libsec_static",
   ]
