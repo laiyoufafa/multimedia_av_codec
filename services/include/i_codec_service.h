@@ -25,7 +25,7 @@
 
 namespace OHOS {
 namespace Media {
-class ICodecService : public std::enable_shared_from_this<ICodecService>  {
+class ICodecService {
 public:
     virtual ~ICodecService() = default;
 

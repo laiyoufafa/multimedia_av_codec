@@ -27,11 +27,9 @@ class __attribute__((visibility("default"))) AVCodecListCore : public NoCopyable
 public:
     AVCodecListCore();
     ~AVCodecListCore();
-    std::string FindVideoEncoder(const Format &format);
-    std::string FindVideoDecoder(const Format &format);
-    std::string FindAudioEncoder(const Format &format);
-    std::string FindAudioDecoder(const Format &format);
-    CapabilityData GetCapabilityData(std::string codecName);
+    std::string FindEncoder(const Format &format);
+    std::string FindDecoder(const Format &format);
+    CapabilityData CreateCapability(std::string codecName);
 
 private:
     bool CheckBitrate(const Format &format, const CapabilityData &data);
@@ -42,7 +40,7 @@ private:
     bool CheckAudioSampleRate(const Format &format, const CapabilityData &data);
     bool IsVideoCapSupport(const Format &format, const CapabilityData &data);
     bool IsAudioCapSupport(const Format &format, const CapabilityData &data);
-    std::string FindCodec(const Format &format, const AVCodecType &codecType);
+    std::string FindCodec(const Format &format, bool isEncoder);
     std::mutex mutex_;
 };
 } // namespace Media

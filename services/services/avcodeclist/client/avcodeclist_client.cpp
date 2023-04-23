@@ -53,41 +53,27 @@ void AVCodecListClient::MediaServerDied()
     codecListProxy_ = nullptr;
 }
 
-std::string AVCodecListClient::FindVideoDecoder(const Format &format)
+std::string AVCodecListClient::FindDecoder(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
-    return codecListProxy_->FindVideoDecoder(format);
+    return codecListProxy_->FindDecoder(format);
 }
 
-std::string AVCodecListClient::FindVideoEncoder(const Format &format)
+std::string AVCodecListClient::FindEncoder(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
-    return codecListProxy_->FindVideoEncoder(format);
+    return codecListProxy_->FindEncoder(format);
 }
 
-std::string AVCodecListClient::FindAudioDecoder(const Format &format)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
-    return codecListProxy_->FindAudioDecoder(format);
-}
-
-std::string AVCodecListClient::FindAudioEncoder(const Format &format)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
-    return codecListProxy_->FindAudioEncoder(format);
-}
-
-CapabilityData AVCodecListClient::GetCapabilityData(std::string codecName)
+CapabilityData AVCodecListClient::CreateCapability(std::string codecName)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;
     CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, capData,
         "codeclist service does not exist.");
-    return codecListProxy_->GetCapabilityData(codecName);
+    return codecListProxy_->CreateCapability(codecName);
 }
 } // namespace Media
 } // namespace OHOS

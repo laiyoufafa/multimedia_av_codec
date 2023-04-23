@@ -38,7 +38,7 @@ AVCodecAbilitySingleton::~AVCodecAbilitySingleton()
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AVCodecAbilitySingleton::RegisterCapabilitys(const std::vector<CapabilityData> &capaArray)
+void AVCodecAbilitySingleton::RegisterCapabilityArray(const std::vector<CapabilityData> &capaArray)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     capabilityDataArray_.insert(capabilityDataArray_.end(), capaArray.begin(),
@@ -46,7 +46,7 @@ void AVCodecAbilitySingleton::RegisterCapabilitys(const std::vector<CapabilityDa
     AVCODEC_LOGD("RegisterCapability success");
 }
 
-std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilitys()
+std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilityArray()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     return capabilityDataArray_;

@@ -50,29 +50,19 @@ bool AVCodecListServer::Init()
     return true;
 }
 
-std::string AVCodecListServer::FindVideoDecoder(const Format &format)
+std::string AVCodecListServer::FindDecoder(const Format &format)
 {
-    return codecListCore_->FindVideoDecoder(format);
+    return codecListCore_->FindDecoder(format);
 }
 
-std::string AVCodecListServer::FindVideoEncoder(const Format &format)
+std::string AVCodecListServer::FindEncoder(const Format &format)
 {
-    return codecListCore_->FindVideoEncoder(format);
+    return codecListCore_->FindEncoder(format);
 }
 
-std::string AVCodecListServer::FindAudioDecoder(const Format &format)
+CapabilityData AVCodecListServer::CreateCapability(const std::string codecName)
 {
-    return codecListCore_->FindAudioDecoder(format);
-}
-
-std::string AVCodecListServer::FindAudioEncoder(const Format &format)
-{
-    return codecListCore_->FindAudioEncoder(format);
-}
-
-CapabilityData AVCodecListServer::GetCapabilityData(std::string codecName)
-{
-    return codecListCore_->GetCapabilityData(codecName);
+    return codecListCore_->CreateCapability(codecName);
 }
 } // namespace Media
 } // namespace OHOS

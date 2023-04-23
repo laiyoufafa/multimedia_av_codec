@@ -28,11 +28,9 @@ public:
     AVCodecListServer();
     virtual ~AVCodecListServer();
 
-    std::string FindVideoDecoder(const Format &format) override;
-    std::string FindVideoEncoder(const Format &format) override;
-    std::string FindAudioDecoder(const Format &format) override;
-    std::string FindAudioEncoder(const Format &format) override;
-    CapabilityData GetCapabilityData(std::string codecName) override;
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(const std::string codecName) override;
 
 private:
     bool Init();

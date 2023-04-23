@@ -160,9 +160,9 @@ bool AVCodecListCore::IsAudioCapSupport(const Format &format, const CapabilityDa
 }
 
 // mime是必要参数
-std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &codecType)
+std::string AVCodecListCore::FindCodec(const Format &format, bool isEncoder)
 {
-    (void)codecType;
+    (void)isEncoder;
 
     std::lock_guard<std::mutex> lock(mutex_);
     if (!format.ContainKey("codec_mime")) {
@@ -172,12 +172,20 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
     std::string targetMimeType;
     (void)format.GetStringValue("codec_mime", targetMimeType);
 
+    AVCodecType codecType = AVCODEC_TYPE_NONE;
+    bool isVideo = targetMimeType.find("video") != std::string::npos;
+    if (isVideo) {
+        codecType = isEncoder ? AVCODEC_TYPE_VIDEO_ENCODER : AVCODEC_TYPE_VIDEO_DECODER;
+    } else {
+        codecType = isEncoder ? AVCODEC_TYPE_AUDIO_ENCODER : AVCODEC_TYPE_AUDIO_DECODER; 
+    }
+    
     int isVendor = -1;
     bool isVendorKey = format.ContainKey("codec_vendor_flag");
     if (isVendorKey) {
         (void)format.GetIntValue("codec_vendor_flag", isVendor);
     }
-    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
+    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilityArray();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
         if ((*iter).codecType != codecType ||
@@ -187,13 +195,11 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
             continue;
         }
 
-        if (codecType == AVCODEC_TYPE_VIDEO_ENCODER ||
-            codecType == AVCODEC_TYPE_VIDEO_DECODER) {
+        if (isVideo) {
             if (IsVideoCapSupport(format, *iter)) {
                 return (*iter).codecName;
             }
-        } else if (codecType == AVCODEC_TYPE_AUDIO_ENCODER ||
-                   codecType == AVCODEC_TYPE_AUDIO_DECODER) {
+        } else  {
             if (IsAudioCapSupport(format, *iter)) {
                 return (*iter).codecName;
             }
@@ -203,34 +209,24 @@ std::string AVCodecListCore::FindCodec(const Format &format, const AVCodecType &
     return "";
 }
 
-std::string AVCodecListCore::FindVideoEncoder(const Format &format)
+std::string AVCodecListCore::FindEncoder(const Format &format)
 {
-    return FindCodec(format, AVCODEC_TYPE_VIDEO_ENCODER);
+    return FindCodec(format, true);
 }
 
-std::string AVCodecListCore::FindVideoDecoder(const Format &format)
+std::string AVCodecListCore::FindDecoder(const Format &format)
 {
-    return FindCodec(format, AVCODEC_TYPE_VIDEO_DECODER);
+    return FindCodec(format, false);
 }
 
-std::string AVCodecListCore::FindAudioEncoder(const Format &format)
-{
-    return FindCodec(format, AVCODEC_TYPE_AUDIO_ENCODER);
-}
-
-std::string AVCodecListCore::FindAudioDecoder(const Format &format)
-{
-    return FindCodec(format, AVCODEC_TYPE_AUDIO_DECODER);
-}
-
-CapabilityData AVCodecListCore::GetCapabilityData(std::string codecName)
+CapabilityData AVCodecListCore::CreateCapability(std::string codecName)
 {              
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;
     if (codecName.empty()) {
         return capData;
     }
-    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilitys();
+    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilityArray();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
         if (codecName == ((*iter).codecName)) {

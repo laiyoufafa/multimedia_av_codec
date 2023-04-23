@@ -18,7 +18,7 @@
 
 #include "i_standard_avcodeclist_service.h"
 #include "nocopyable.h"
-// #include "avcodeclist_parcel.h"
+#include "avcodeclist_parcel.h"
 
 namespace OHOS {
 namespace Media {
@@ -27,11 +27,9 @@ public:
     explicit AVCodecListServiceProxy(const sptr<IRemoteObject> &impl);
     virtual ~AVCodecListServiceProxy();
 
-    std::string FindVideoDecoder(const Format &format) override;
-    std::string FindVideoEncoder(const Format &format) override;
-    std::string FindAudioDecoder(const Format &format) override;
-    std::string FindAudioEncoder(const Format &format) override;
-    CapabilityData GetCapabilityData(std::string codecName) override;
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(std::string codecName) override;
     int32_t DestroyStub() override;
 
 private:
