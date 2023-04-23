@@ -25,7 +25,7 @@ group("capi_packages") {
       # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
   }
-  if (multimedia_av_codec_support_codeclist) {
+  if (multimedia_av_codec_support_muxer) {
     dep += [
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
