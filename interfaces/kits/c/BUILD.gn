@@ -22,6 +22,11 @@ group("capi_packages") {
     deps += [
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
+      # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
+    ]
+  }
+  if (multimedia_av_codec_support_muxer) {
+    dep += [
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
   }
@@ -104,6 +109,7 @@ config("av_codec_capi_config") {
     "//foundation/multimedia/av_codec/services/services/sourcebase/server/include/",
     "//foundation/multimedia/av_codec/services/utils/",
     "//foundation/multimedia/av_codec/services/utils/include/",
+    "//foundation/graphic/graphic_2d/frameworks/surface/include",
   ]
 
   cflags = [
@@ -141,8 +147,13 @@ ohos_shared_library("native_av_codec_core") {
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avformat.cpp",
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avmemory.cpp",
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
   ]
+
+  if (multimedia_av_codec_support_codeclist) {
+    sources += [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
+    ]
+  }
 
   deps = [
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
@@ -186,6 +197,7 @@ ohos_shared_library("native_av_codec_codec") {
 
   external_deps = [
     "c_utils:utils",
+    "graphic_standard:surface",
     "hiviewdfx_hilog_native:libhilog",
   ]
   output_extension = "so"
@@ -209,6 +221,7 @@ ohos_shared_library("native_av_codec_avmuxer") {
 
   external_deps = [
     "c_utils:utils",
+    "graphic_standard:surface",
     "hiviewdfx_hilog_native:libhilog",
   ]
   output_extension = "so"

@@ -161,6 +161,10 @@ ohos_shared_library("av_codec_service") {
       "codec/ipc/codec_listener_proxy.cpp",
       "codec/ipc/codec_service_stub.cpp",
       "codec/server/codec_server.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_codeclist) {
+    sources += [
       "avcodeclist/ipc/avcodeclist_service_stub.cpp",
       "avcodeclist/server/avcodeclist_server.cpp",
     ]

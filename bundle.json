@@ -65,7 +65,10 @@
             "name": "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
             "header": {
               "header_files": [
-                "avcodec.h",
+                "avcodec_audio_decoder.h",
+                "avcodec_audio_encoder.h",
+                "avcodec_video_decoder.h",
+                "avcodec_video_encoder.h",
                 "avdemuxer.h",
                 "avmuxer.h"
               ],

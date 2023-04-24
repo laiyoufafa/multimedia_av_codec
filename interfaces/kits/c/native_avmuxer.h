@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "native_avbase.h"
+#include "native_avcodec_base.h"
 #include "native_averrors.h"
 #include "native_avformat.h"
 
