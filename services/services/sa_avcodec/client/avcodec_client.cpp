@@ -16,6 +16,7 @@
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
 #include "ipc_skeleton.h"
+#include "avcodec_xcollie.h"
 
 #ifdef SUPPORT_DEMUXER
 #include "i_standard_demuxer_service.h"
@@ -233,7 +234,9 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
     auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     CHECK_AND_RETURN_RET_LOG(samgr != nullptr, nullptr, "system ability manager is nullptr.");
 
-    sptr<IRemoteObject> object = samgr->GetSystemAbility(OHOS::AVCODEC_SERVICE_ID);
+    sptr<IRemoteObject> object = nullptr;
+    COLLIE_LISTEN(object = samgr->GetSystemAbility(OHOS::AVCODEC_SERVICE_ID),
+        "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "avcodec object is nullptr.");
 
     avCodecProxy_ = iface_cast<IStandardAVCodecService>(object);
