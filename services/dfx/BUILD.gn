@@ -28,7 +28,11 @@ ohos_shared_library("av_codec_service_dfx") {
     debug = false
   }
 
-  sources = [ "avcodec_dfx.cpp" ]
+  sources = [ 
+    "avcodec_dfx.cpp",
+    "avcodec_log_dump.cpp",
+    "avcodec_xcollie.cpp",
+  ]
 
   include_dirs = [
     "include",
@@ -65,7 +69,7 @@ ohos_shared_library("av_codec_service_dfx") {
 
   external_deps = [
     "c_utils:utils",
-    "hicollie_native:libhicollie",
+    "hiviewdfx:libxcollie",
     "hisysevent_native:libhisysevent",
     "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
