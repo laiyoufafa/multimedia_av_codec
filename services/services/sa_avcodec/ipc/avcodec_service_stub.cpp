@@ -16,7 +16,6 @@
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avcodec_server_manager.h"
-#include "avcodec_xcollie.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceStub"};
@@ -138,9 +137,9 @@ int32_t AVCodecServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel 
 {
     AVCodecSystemAbility id = static_cast<AVCodecSystemAbility>(data.ReadInt32());
     sptr<IRemoteObject> listenerObj = data.ReadRemoteObject();
-    
-    COLLIE_LISTEN((void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj)),
-        "AVCodecServiceStub::GetSystemAbility");
+    // int32_t xcollieId = PlayerXCollie::GetInstance().SetTimer("AVCodecServiceStub::GetSystemAbility", true);
+    (void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj));
+    // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
     return AVCS_ERR_OK;
 }
 

@@ -18,7 +18,6 @@
 #include "avcodec_errors.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
-#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServiceProxy"};
@@ -46,9 +45,7 @@ int32_t SourceServiceProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(DESTROY_STUB, data, reply, option),
-        "SourceServiceProxy::DestroyStub");
+    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call DestroyStub, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -63,9 +60,7 @@ int32_t SourceServiceProxy::Init(const std::string &uri)
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteString(uri);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(INIT, data, reply, option),
-        "SourceServiceProxy::Init");
+    int error = Remote()->SendRequest(INIT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Init, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -79,9 +74,7 @@ int32_t SourceServiceProxy::GetTrackCount()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(GET_TRACK_COUNT, data, reply, option),
-        "SourceServiceProxy::GetTrackCount");
+    int error = Remote()->SendRequest(GET_TRACK_COUNT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetTrackCount, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -95,9 +88,7 @@ int32_t SourceServiceProxy::Destroy()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(DESTROY, data, reply, option),
-        "SourceServiceProxy::Destroy");
+    int error = Remote()->SendRequest(DESTROY, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Destroy, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -113,9 +104,7 @@ int32_t SourceServiceProxy::SetParameter(const Format &param, uint32_t trackId)
 
     AVCodecParcel::Marshalling(data, param);
     data.WriteUint32(trackId);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(SET_PARAMETER, data, reply, option),
-        "SourceServiceProxy::SetParameter");
+    int error = Remote()->SendRequest(SET_PARAMETER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SetParameter, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -130,9 +119,7 @@ int32_t SourceServiceProxy::GetTrackFormat(Format &format, uint32_t trackId)
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteUint32(trackId);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(GET_SOURCE_ATTR, data, reply, option),
-        "SourceServiceProxy::GetTrackFormat");
+    int error = Remote()->SendRequest(GET_SOURCE_ATTR, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetTrackFormat, error: %{public}d", error);
 
     AVCodecParcel::Unmarshalling(reply, format);
@@ -148,9 +135,7 @@ uint64_t SourceServiceProxy::GetSourceAttr()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(DESTROY_STUB, data, reply, option),
-        "SourceServiceProxy::GetSourceAttr");
+    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetSourceAttr, error: %{public}d", error);
     return reply.ReadUint64();
 }

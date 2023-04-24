@@ -15,7 +15,6 @@
 #include "avcodec_service_proxy.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
-#include "avcodec_xcollie.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceProxy"};
@@ -52,10 +51,7 @@ sptr<IRemoteObject> AVCodecServiceProxy::GetSubSystemAbility(IStandardAVCodecSer
 
     (void)data.WriteInt32(static_cast<int32_t>(subSystemId));
     (void)data.WriteRemoteObject(listener);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(AVCodecServiceMsg::GET_SUBSYSTEM, data, reply, option),
-        "AVCodecServiceProxy::GetSubSystemAbility");
-    
+    int error = Remote()->SendRequest(AVCodecServiceMsg::GET_SUBSYSTEM, data, reply, option);
     if (error != AVCS_ERR_OK) {
         AVCODEC_LOGE("Create av_codec proxy failed, error: %{public}d", error);
         return nullptr;

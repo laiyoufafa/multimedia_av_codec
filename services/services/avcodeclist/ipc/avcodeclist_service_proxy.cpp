@@ -18,7 +18,6 @@
 // #include "avsharedmemory_ipc.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
-#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServiceProxy"};
@@ -47,9 +46,7 @@ std::string AVCodecListServiceProxy::FindDecoder(const Format &format)
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
     (void)AVCodecParcel::Marshalling(data, format);
-    int32_t ret = -1;
-    COLLIE_LISTEN(ret = Remote()->SendRequest(FIND_DECODER, data, reply, option),
-        "AVCodecListServiceProxy::FindDecoder");
+    int32_t ret = Remote()->SendRequest(FIND_DECODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindDecoder failed");
 
     return reply.ReadString();
@@ -65,9 +62,7 @@ std::string AVCodecListServiceProxy::FindEncoder(const Format &format)
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
     (void)AVCodecParcel::Marshalling(data, format);
-    int32_t ret = -1;
-    COLLIE_LISTEN(ret = Remote()->SendRequest(FIND_ENCODER, data, reply, option),
-        "AVCodecListServiceProxy::FindEncoder");
+    int32_t ret = Remote()->SendRequest(FIND_ENCODER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, "", "FindEncoder failed");
 
     return reply.ReadString();
@@ -85,9 +80,7 @@ CapabilityData AVCodecListServiceProxy::CreateCapability(std::string codecName)
     CHECK_AND_RETURN_RET_LOG(token, capabilityData, "Failed to write descriptor!");
 
     (void)data.WriteString(codecName);
-    int32_t ret = -1;
-    COLLIE_LISTEN(ret = Remote()->SendRequest(CREATE_CAPABILITY, data, reply, option),
-        "AVCodecListServiceProxy::CreateCapability");
+    int32_t ret = Remote()->SendRequest(CREATE_CAPABILITY, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, capabilityData,
         "GetCodecCapabilityInfos failed, error: %{public}d", ret);
     (void)AVCodecListParcel::Unmarshalling(reply, capabilityData);
@@ -104,9 +97,7 @@ int32_t AVCodecListServiceProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int32_t ret = -1;
-    COLLIE_LISTEN(ret = Remote()->SendRequest(DESTROY, data, reply, option),
-        "AVCodecListServiceProxy::DestroyStub");
+    int32_t ret = Remote()->SendRequest(DESTROY, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "DestroyStub failed, error: %{public}d", ret);
     return reply.ReadInt32();

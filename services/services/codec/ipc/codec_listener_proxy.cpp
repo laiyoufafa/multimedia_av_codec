@@ -17,7 +17,6 @@
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "avcodec_parcel.h"
-#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListenerProxy"};
@@ -46,9 +45,7 @@ void CodecListenerProxy::OnError(AVCodecErrorType errorType, int32_t errorCode)
 
     data.WriteInt32(static_cast<int32_t>(errorType));
     data.WriteInt32(errorCode);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(CodecListenerMsg::ON_ERROR, data, reply, option),
-        "CodecListenerProxy::OnError");
+    int error = Remote()->SendRequest(CodecListenerMsg::ON_ERROR, data, reply, option);
     CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "OnError failed, error: %{public}d", error);
 }
 
@@ -61,9 +58,7 @@ void CodecListenerProxy::OnOutputFormatChanged(const Format &format)
     CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
 
     (void)AVCodecParcel::Marshalling(data, format);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED, data, reply, option),
-        "CodecListenerProxy::OnOutputFormatChanged");
+    int error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED, data, reply, option);
     CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "OnOutputFormatChanged failed, error: %{public}d", error);
 }
 
@@ -76,9 +71,7 @@ void CodecListenerProxy::OnInputBufferAvailable(uint32_t index)
     CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
 
     data.WriteUint32(index);
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(CodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE, data, reply, option),
-        "CodecListenerProxy::OnInputBufferAvailable");
+    int error = Remote()->SendRequest(CodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE, data, reply, option);
     CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "OnInputBufferAvailable failed, error: %{public}d", error);
 }
 
@@ -95,9 +88,7 @@ void CodecListenerProxy::OnOutputBufferAvailable(uint32_t index, AVCodecBufferIn
     data.WriteInt32(info.size);
     data.WriteInt32(info.offset);
     data.WriteInt32(static_cast<int32_t>(flag));
-    int error = -1;
-    COLLIE_LISTEN(error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE, data, reply, option),
-        "CodecListenerProxy::OnOutputBufferAvailable");
+    int error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE, data, reply, option);
     CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "OnOutputBufferAvailable failed, error: %{public}d", error);
 }
 
