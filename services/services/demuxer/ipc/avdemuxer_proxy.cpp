@@ -13,10 +13,11 @@
  * limitations under the License.
  */
 #include "demuxer_service_proxy.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avsharedmemory_ipc.h"
 // #include "avcodec_parcel.h"
+#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVDemuxerProxy"};
@@ -44,7 +45,9 @@ int32_t AVDemuxerProxy::DestroyStub()
     bool token = data.WriteInterfaceToken(AVDemuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
+    int error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(DESTROY_STUB, data, reply, option),
+        "AVDemuxerProxy::DestroyStub");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call DestroyStub, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -58,7 +61,9 @@ int32_t AVDemuxerProxy::Init(uint64_t attr)
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteUint64(attr);
-    int32_t error = Remote()->SendRequest(INIT, data, reply, option);
+    int32_t error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(INIT, data, reply, option),
+        "AVDemuxerProxy::Init");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Init, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -72,7 +77,9 @@ int32_t AVDemuxerProxy::AddSourceTrackByID(uint32_t index)
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(index);
-    int32_t error = Remote()->SendRequest(ADD_SOURCE_TRACK_BY_ID, data, reply, option);
+    int32_t error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(ADD_SOURCE_TRACK_BY_ID, data, reply, option),
+        "AVDemuxerProxy::AddSourceTrackByID");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call AddSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -85,7 +92,9 @@ int32_t AVDemuxerProxy::RemoveSourceTrackByID(uint32_t index)
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     data.WriteInt32(index);
-    int32_t error = Remote()->SendRequest(REMOVE_SOURCE_TRACK_BY_ID, data, reply, option);
+    int32_t error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(REMOVE_SOURCE_TRACK_BY_ID, data, reply, option),
+        "AVDemuxerProxy::RemoveSourceTrackByID");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call RemoveSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -105,7 +114,9 @@ int32_t AVDemuxerProxy::CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecB
     WriteAVSharedMemoryToParcel(buffer->buffer, parcel);
     WriteAVSharedMemoryToParcel(buffer->metaData, parcel);
 
-    int32_t error = Remote()->SendRequest(COPY_CURRENT_SAMPLE_TO_BUF, data, reply, option);
+    int32_t error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(COPY_CURRENT_SAMPLE_TO_BUF, data, reply, option),
+        "AVDemuxerProxy::CopyCurrentSampleToBuf");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call CopyCurrentSampleToBuf, error: %{public}d", error);
     return reply.ReadInt32();
 }
@@ -119,7 +130,9 @@ int32_t AVDemuxerProxy::SeekToTimeStamp(int64_t mSeconds, const SeekMode mode)
 
     data.WriteInt64(mSeconds);
     data.WriteInt32(static_cast<int32_t>(mode));
-    int32_t error = Remote()->SendRequest(SEEK_TO_TIME_STAMP, data, reply, option);
+    int32_t error = -1;
+    COLLIE_LISTEN(error = Remote()->SendRequest(SEEK_TO_TIME_STAMP, data, reply, option),
+        "AVDemuxerProxy::SeekToTimeStamp");
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SeekToTimeStamp, error: %{public}d", error);
     return reply.ReadInt32();
 }
