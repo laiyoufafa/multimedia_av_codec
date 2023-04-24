@@ -12,7 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "demuxer_service_stub.h"
+#include "avdemuxer_stub.h"
+#include <unistd.h>
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
@@ -158,6 +159,18 @@ int32_t AVDemuxerStub::SeekToTimeStamp(MessageParcel &data, MessageParcel &reply
     return AVCS_ERR_OK;
 }
 
+int32_t AVDemuxerStub::DumpInfo(int32_t fd)
+{
+    std::string dumpInfo;
+    dumpInfo += "# AVDemuxerStub \n";
+    GetDumpInfo(dumpInfo);
+
+    CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
+    write(fd, dumpInfo.c_str(), dumpInfo.size());
+
+    return AVCS_ERR_OK;
+}
+
 int32_t AVDemuxerStub::Init(uint64_t attr)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
@@ -186,6 +199,13 @@ int32_t AVDemuxerStub::SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
     return demuxerServer_->SeekToTimeStamp(mSeconds, mode);
+}
+
+int32_t AVDemuxerStub::GetDumpInfo(std::string& dumpInfo)
+{
+    dumpInfo += "## pid: " + std::to_string(getpid());
+    dumpInfo += "## uid: " + std::to_string(getuid());
+    return AVCS_ERR_OK;
 }
 }  // namespace Media
 }  // namespace OHOS  

@@ -16,6 +16,7 @@
 #ifndef MUXER_SERVICE_STUB_H
 #define MUXER_SERVICE_STUB_H
 
+#include <string>
 #include "i_standard_muxer_service.h"
 #include "muxer_server.h"
 #include "iremote_stub.h"
@@ -38,6 +39,7 @@ public:
     int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) override;
     int32_t Stop() override;
 
+    int32_t DumpInfo(int32_t fd);
     int32_t DestroyStub() override;
 private:
     AVMuxerStub();
@@ -51,6 +53,7 @@ private:
     int32_t WriteSampleBuffer(MessageParcel &data, MessageParcel &reply);
     int32_t Stop(MessageParcel &data, MessageParcel &reply);
 
+    int32_t GetDumpInfo(std::string& dumpInfo);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;

@@ -16,6 +16,7 @@
 #ifndef SOURCE_SERVICE_STUB_H
 #define SOURCE_SERVICE_STUB_H
 
+#include <string>
 #include "i_standard_source_service.h"
 #include "source_server.h"
 #include "iremote_stub.h"
@@ -36,6 +37,7 @@ public:
     int32_t GetTrackFormat(Format &format, uint32_t trackId) override;
     uint64_t GetSourceAttr() override;
 
+    int32_t DumpInfo(int32_t fd);
     int32_t DestroyStub() override;
 private:
     SourceServiceStub();
@@ -48,6 +50,7 @@ private:
     int32_t GetTrackFormat(MessageParcel &data, MessageParcel &reply);
     int32_t GetSourceAttr(MessageParcel &data, MessageParcel &reply);
 
+    int32_t GetDumpInfo(std::string& dumpInfo);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;

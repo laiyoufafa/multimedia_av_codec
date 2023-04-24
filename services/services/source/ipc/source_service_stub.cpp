@@ -14,6 +14,7 @@
  */
 
 #include "source_service_stub.h"
+#include "unistd.h"
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
@@ -130,6 +131,18 @@ uint64_t SourceServiceStub::GetSourceAttr()
     return sourceServer_->GetSourceAttr();
 }
 
+int32_t SourceServiceStub::DumpInfo(int32_t fd)
+{
+    std::string dumpInfo;
+    dumpInfo += "# SourceServiceStub";
+    GetDumpInfo(dumpInfo);
+
+    CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
+    write(fd, dumpInfo.c_str(), dumpInfo.size());
+
+    return AVCS_ERR_OK;
+}
+
 int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     std::string uri = data.ReadString();
@@ -176,6 +189,13 @@ int32_t SourceServiceStub::GetSourceAttr(MessageParcel &data, MessageParcel &rep
 int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    return AVCS_ERR_OK;
+}
+
+int32_t SourceServiceStub::GetDumpInfo(std::string& dumpInfo)
+{
+    dumpInfo += "## pid: " + std::to_string(getpid());
+    dumpInfo += "## uid: " + std::to_string(getuid());
     return AVCS_ERR_OK;
 }
 }  // namespace Media

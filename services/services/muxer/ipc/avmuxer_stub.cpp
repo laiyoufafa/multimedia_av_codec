@@ -13,7 +13,8 @@
  * limitations under the License.
  */
 
-#include "muxer_service_stub.h"
+#include "avmuxer_stub.h"
+#include "unistd.h"
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
@@ -145,6 +146,18 @@ int32_t AVMuxerStub::Stop()
     return muxerServer_->Stop();
 }
 
+int32_t AVMuxerStub::DumpInfo(int32_t fd)
+{
+    std::string dumpInfo;
+    dumpInfo += "# AVMuxerStub";
+    GetDumpInfo(dumpInfo);
+
+    CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
+    write(fd, dumpInfo.c_str(), dumpInfo.size());
+
+    return AVCS_ERR_OK;
+}
+
 int32_t AVMuxerStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
@@ -213,6 +226,13 @@ int32_t AVMuxerStub::Stop(MessageParcel &data, MessageParcel &reply)
     (void)data;
     // TODO: 补充LOG说明
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Stop()), AVCS_ERR_UNKNOWN, "");
+    return AVCS_ERR_OK;
+}
+
+int32_t AVMuxerStub::GetDumpInfo(std::string& dumpInfo)
+{
+    dumpInfo += "## pid: " + std::to_string(getpid());
+    dumpInfo += "## uid: " + std::to_string(getuid());
     return AVCS_ERR_OK;
 }
 }  // namespace Media
