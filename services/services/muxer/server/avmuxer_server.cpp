@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "muxer_server.h"
+#include "avmuxer_server.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 
@@ -89,9 +89,10 @@ int32_t AVMuxerServer::SetParameter(const Format &generalFormat)
     return AVCS_ERR_OK;
 }
 
-int32_t AVMuxerServer::AddTrack(const Format &trackFormat)
+int32_t AVMuxerServer::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
 {
     // TODO:achieve it
+    (void)trackIndex;
     (void)trackFormat;
     std::lock_guard<std::mutex> lock(mutex_);
 

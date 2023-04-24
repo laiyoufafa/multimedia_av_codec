@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "muxer_service_stub.h"
+#include "avmuxer_stub.h"
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
@@ -118,10 +118,10 @@ int32_t AVMuxerStub::SetParameter(const Format &generalFormat)
     return muxerServer_->SetParameter(generalFormat);
 }
 
-int32_t AVMuxerStub::AddTrack(const Format &trackFormat)
+int32_t AVMuxerStub::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
-    return muxerServer_->AddTrack(trackFormat);
+    return muxerServer_->AddTrack(trackIndex, trackFormat);
 }
 
 int32_t AVMuxerStub::Start()
@@ -183,9 +183,11 @@ int32_t AVMuxerStub::AddTrack(MessageParcel &data, MessageParcel &reply)
 {
     Format generalFormat;
     (void)AVCodecParcel::Unmarshalling(data, generalFormat);
+    // TODO:
+    uint32_t trackIndex = 0;
 
     // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(AddTrack(generalFormat)), AVCS_ERR_UNKNOWN, "");
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(AddTrack(trackIndex, generalFormat)), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 

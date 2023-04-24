@@ -13,7 +13,8 @@
  * limitations under the License.
  */
 
-#include "muxer_service_proxy.h"
+
+#include "avmuxer_proxy.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avsharedmemory_ipc.h"
@@ -113,7 +114,7 @@ int32_t AVMuxerProxy::SetParameter(const Format &generalFormat)
     return reply.ReadInt32();
 }
 
-int32_t AVMuxerProxy::AddTrack(const Format &trackFormat)
+int32_t AVMuxerProxy::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
 {
     MessageParcel data;
     MessageParcel reply;
