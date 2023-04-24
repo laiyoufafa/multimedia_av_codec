@@ -27,11 +27,11 @@
 #endif
 
 #ifdef SUPPORT_DEMUXER
-#include "i_demuxer_service.h"
+#include "i_avdemuxer.h"
 #endif
 
 #ifdef SUPPORT_MUXER
-#include "i_muxer_service.h"
+#include "i_avmuxer.h"
 #endif
 
 #ifdef SUPPORT_SOURCE

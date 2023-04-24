@@ -104,9 +104,9 @@ config("av_codec_service_config") {
     "//foundation/multimedia/av_codec/services/services/demuxer/ipc/",
     "//foundation/multimedia/av_codec/services/services/demuxer/server/",
     "//foundation/multimedia/av_codec/services/services/muxer/",
-    "//foundation/multimedia/av_codec/services/services/muxer/client/",
-    "//foundation/multimedia/av_codec/services/services/muxer/ipc/",
-    "//foundation/multimedia/av_codec/services/services/muxer/server/",
+    "//foundation/multimedia/av_codec/services/services/muxer/client/include",
+    "//foundation/multimedia/av_codec/services/services/muxer/ipc/include",
+    "//foundation/multimedia/av_codec/services/services/muxer/server/include",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/client/",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/ipc/",
@@ -171,8 +171,8 @@ ohos_shared_library("av_codec_service") {
   }
   if (multimedia_av_codec_support_muxer) {
     sources += [
-      "muxer/ipc/muxer_service_stub.cpp",
-      "muxer/server/muxer_server.cpp",
+      "muxer/ipc/avmuxer_stub.cpp",
+      "muxer/server/avmuxer_server.cpp",
     ]
   }
 

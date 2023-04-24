@@ -19,10 +19,10 @@
 #include "avcodec_xcollie.h"
 
 #ifdef SUPPORT_DEMUXER
-#include "i_standard_demuxer_service.h"
+#include "i_avdemuxer_service.h"
 #endif
 #ifdef SUPPORT_MUXER
-#include "i_standard_muxer_service.h"
+#include "i_avmuxer_service.h"
 #endif
 #ifdef SUPPORT_CODEC
 #include "i_standard_codec_service.h"

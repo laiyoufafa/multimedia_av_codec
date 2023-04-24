@@ -29,10 +29,10 @@
 #include "avcodeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
-#include "demuxer_service_stub.h"
+#include "avdemuxer_stub.h"
 #endif
 #ifdef SUPPORT_MUXER
-#include "muxer_service_stub.h"
+#include "avmuxer_stub.h"
 #endif
 #ifdef SUPPORT_SOURCE
 #include "source_service_stub.h"
@@ -277,7 +277,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
 #endif
 
 #ifdef SUPPORT_MUXER
-sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
+sptr<IRemoteObject> AVCodecServerManager::CreateMuxerStubObject()
 {
     if (muxerStubMap_.size() >= SERVER_MAX_NUMBER) {
         AVCODEC_LOGE("The number of muxer services(%{public}zu) has reached the upper limit."

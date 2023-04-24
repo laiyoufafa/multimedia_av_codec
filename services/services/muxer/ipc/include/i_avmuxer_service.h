@@ -16,7 +16,8 @@
 #ifndef I_STANDARD_MUXER_SERVICE_H
 #define I_STANDARD_MUXER_SERVICE_H
 
-#include "i_muxer_service.h"
+#include "avcodec_info.h"
+#include "avcodec_common.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {
@@ -29,7 +30,7 @@ public:
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
     virtual int32_t SetParameter(const Format &generalFormat) = 0;
-    virtual int32_t AddTrack(const Format &trackFormat) = 0;
+    virtual int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) = 0;
     virtual int32_t Start() = 0;
     virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
     virtual int32_t Stop() = 0;

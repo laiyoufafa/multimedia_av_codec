@@ -65,6 +65,18 @@ typedef struct OH_AVCodecBufferAttr {
 } OH_AVCodecBufferAttr;
 
 /**
+ * @brief Enumerates the muxer ouputfile format
+ * 
+ * @since 10
+ * @version 1.0
+ */
+typedef enum OH_AVOutputFormat {
+    AV_OUTPUT_FORMAT_UNKNOWN = 0,
+    AV_OUTPUT_FORMAT_MPEG_4 = 1,
+    AV_OUTPUT_FORMAT_M4A = 2,
+} OH_AVOutputFormat;
+
+/**
  * @brief When an error occurs in the running of the OH_AVCodec instance, the function pointer will be called
  * to report specific error information.
  * @syscap SystemCapability.Multimedia.Media.CodecBase

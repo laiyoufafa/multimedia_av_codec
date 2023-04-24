@@ -14,7 +14,7 @@
  */
 
 #include <mutex>
-#include "muxer_client.h"
+#include "avmuxer_client.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 
@@ -81,11 +81,11 @@ int32_t AVMuxerClient::SetParameter(const Format &generalFormat)
     return muxerProxy_->SetParameter(generalFormat);
 }
 
-int32_t AVMuxerClient::AddTrack(const Format &trackFormat)
+int32_t AVMuxerClient::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(muxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Muxer Service does not exist");
-    return muxerProxy_->AddTrack(trackFormat);
+    return muxerProxy_->AddTrack(trackIndex, trackFormat);
 }
 
 int32_t AVMuxerClient::Start()

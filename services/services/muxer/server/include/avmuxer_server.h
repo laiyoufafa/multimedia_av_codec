@@ -17,7 +17,7 @@
 #define MUXER_SERVER_H
 
 #include <mutex>
-#include "i_muxer_service.h"
+#include "i_avmuxer.h"
 #include "nocopyable.h"
 
 namespace OHOS {
@@ -32,7 +32,7 @@ public:
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
     int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(const Format &trackFormat) override;
+    int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) override;
     int32_t Start() override;
     int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) override;
     int32_t Stop() override;

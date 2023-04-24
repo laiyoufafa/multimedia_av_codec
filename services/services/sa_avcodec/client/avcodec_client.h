@@ -21,11 +21,11 @@
 #include "avcodec_listener_stub.h"
 
 #ifdef SUPPORT_DEMUXER
-#include "demuxer_client.h"
+#include "avdemuxer_client.h"
 #endif
 
 #ifdef SUPPORT_MUXER
-#include "muxer_client.h"
+#include "avmuxer_client.h"
 #endif
 
 #ifdef SUPPORT_CODEC

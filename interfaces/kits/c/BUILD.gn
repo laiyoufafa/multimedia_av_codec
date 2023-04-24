@@ -22,11 +22,6 @@ group("capi_packages") {
     deps += [
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
-      # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
-    ]
-  }
-  if (multimedia_av_codec_support_muxer) {
-    dep += [
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     ]
   }
@@ -151,7 +146,7 @@ ohos_shared_library("native_av_codec_core") {
 
   if (multimedia_av_codec_support_codeclist) {
     sources += [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
+#    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/common/native_avcapability.cpp",
     ]
   }
 
@@ -199,6 +194,7 @@ ohos_shared_library("native_av_codec_codec") {
     "c_utils:utils",
     "graphic_standard:surface",
     "hiviewdfx_hilog_native:libhilog",
+    "graphic_standard:surface",
   ]
   output_extension = "so"
   subsystem_name = "multimedia"
@@ -223,6 +219,7 @@ ohos_shared_library("native_av_codec_avmuxer") {
     "c_utils:utils",
     "graphic_standard:surface",
     "hiviewdfx_hilog_native:libhilog",
+    "graphic_standard:surface",
   ]
   output_extension = "so"
   subsystem_name = "multimedia"

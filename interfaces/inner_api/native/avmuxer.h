@@ -18,18 +18,17 @@
 
 #include "format.h"
 #include "avcodec_errors.h"
-#include "avcodec_base.h"
 #include "avcodec_common.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVMuxer {
 public:
     virtual ~AVMuxer() = default;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
     virtual int32_t SetParameter(const Format &generalFormat) = 0;
-    virtual int32_t AddTrack(const Format &trackFormat) = 0;
+    virtual int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) = 0;
     virtual int32_t Start() = 0;
     virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
     virtual int32_t Stop() = 0;
@@ -37,7 +36,7 @@ public:
 
 class __attribute__((visibility("default"))) AVMuxerFactory {
 public:
-    static std::shared_ptr<AVMuxer> CreateAVMuxer(int32_t fd, OutputFormat format);
+    static std::shared_ptr<AVMuxer> CreateAVMuxer(int32_t fd, AVOutputFormat format);
 private:
     AVMuxerFactory() = default;
     ~AVMuxerFactory() = default;
