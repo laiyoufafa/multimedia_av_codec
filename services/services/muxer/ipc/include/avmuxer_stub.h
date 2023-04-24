@@ -29,7 +29,7 @@ public:
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
     using MuxerStubFunc = int32_t(AVMuxerStub::*)(MessageParcel &data, MessageParcel &reply);
 
-    int32_t Init(int32_t fd, OutputFormat format) override;
+    int32_t Init() override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
     int32_t SetParameter(const Format &generalFormat) override;
