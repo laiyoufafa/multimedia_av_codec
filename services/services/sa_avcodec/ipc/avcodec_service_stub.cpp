@@ -140,9 +140,9 @@ int32_t AVCodecServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel 
 {
     AVCodecSystemAbility id = static_cast<AVCodecSystemAbility>(data.ReadInt32());
     sptr<IRemoteObject> listenerObj = data.ReadRemoteObject();
-    // int32_t xcollieId = PlayerXCollie::GetInstance().SetTimer("AVCodecServiceStub::GetSystemAbility", true);
-    (void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj));
-    // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
+    
+    COLLIE_LISTEN((void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj)),
+        "AVCodecServiceStub::GetSystemAbility");
     return AVCS_ERR_OK;
 }
 
