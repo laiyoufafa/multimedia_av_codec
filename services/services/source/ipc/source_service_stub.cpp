@@ -19,6 +19,7 @@
 #include "avcodec_log.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
+#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServiceStub"};
@@ -75,7 +76,9 @@ int SourceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
     if (itFunc != sourceFuncs_.end()) {
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
-            int32_t ret = (this->*memberFunc)(data, reply);
+            int32_t ret = -1;
+            COLLIE_LISTEN(ret = (this->*memberFunc)(data, reply),
+                "SourceServiceStub::OnRemoteRequest");
             CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call memberFunc");
             return AVCS_ERR_OK;
         }

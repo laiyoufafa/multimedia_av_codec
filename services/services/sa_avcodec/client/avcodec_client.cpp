@@ -231,7 +231,9 @@ int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sour
 sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
 {
     AVCODEC_LOGD("enter");
-    auto samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    sptr<ISystemAbilityManager> samgr = nullptr;
+    COLLIE_LISTEN(samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager(),
+        "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(samgr != nullptr, nullptr, "system ability manager is nullptr.");
 
     sptr<IRemoteObject> object = nullptr;
