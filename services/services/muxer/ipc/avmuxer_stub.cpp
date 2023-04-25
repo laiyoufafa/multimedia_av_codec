@@ -142,6 +142,14 @@ int32_t AVMuxerStub::Stop()
     return muxerServer_->Stop();
 }
 
+int32_t AVMuxerStub::Init(MessageParcel &data, MessageParcel &reply)
+{
+    // TODO: 补充LOG说明
+    (void)data;
+    (void)reply;
+    return AVCS_ERR_OK;
+}
+
 int32_t AVMuxerStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
