@@ -16,6 +16,7 @@
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "avcodec_server_manager.h"
+#include "avcodec_xcollie.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecServiceStub"};
@@ -90,7 +91,9 @@ int AVCodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Mess
     if (itFunc != avCodecFuncs_.end()) {
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
-            int32_t ret = (this->*memberFunc)(data, reply);
+            int32_t ret = -1;
+            COLLIE_LISTEN(ret = (this->*memberFunc)(data, reply),
+                "AVCodecServiceStub::OnRemoteRequest");
             if (ret != AVCS_ERR_OK) {
                 AVCODEC_LOGE("Calling memberFunc is failed.");
             }
@@ -137,9 +140,9 @@ int32_t AVCodecServiceStub::GetSystemAbility(MessageParcel &data, MessageParcel 
 {
     AVCodecSystemAbility id = static_cast<AVCodecSystemAbility>(data.ReadInt32());
     sptr<IRemoteObject> listenerObj = data.ReadRemoteObject();
-    // int32_t xcollieId = PlayerXCollie::GetInstance().SetTimer("AVCodecServiceStub::GetSystemAbility", true);
-    (void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj));
-    // PlayerXCollie::GetInstance().CancelTimer(xcollieId);
+    
+    COLLIE_LISTEN((void)reply.WriteRemoteObject(GetSubSystemAbility(id, listenerObj)),
+        "AVCodecServiceStub::GetSystemAbility");
     return AVCS_ERR_OK;
 }
 

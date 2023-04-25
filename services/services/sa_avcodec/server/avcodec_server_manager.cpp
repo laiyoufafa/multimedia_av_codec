@@ -21,6 +21,8 @@
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "source_service_stub.h"
+#include "avcodec_log_dump.h"
+#include "avcodec_xcollie.h"
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
 #endif
@@ -128,6 +130,11 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
     //     AVCODEC_LOGW("Failed to write dfx dump information");
     //     return OHOS::INVALID_OPERATION;
     // }
+
+    if (AVCodecXCollie::GetInstance().Dump(fd) != OHOS::NO_ERROR) {
+        AVCODEC_LOGW("Failed to write xcollie dump information");
+        return OHOS::INVALID_OPERATION;
+    }
 
     return OHOS::NO_ERROR;
 }

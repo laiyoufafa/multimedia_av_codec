@@ -14,11 +14,13 @@
  */
 
 #include "avmuxer_stub.h"
+#include "unistd.h"
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
+#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVMuxerStub"};
@@ -84,7 +86,9 @@ int AVMuxerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParc
     if (itFunc != muxerFuncs_.end()) {
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
-            int32_t ret = (this->*memberFunc)(data, reply);
+            int32_t ret = -1;
+            COLLIE_LISTEN(ret = (this->*memberFunc)(data, reply),
+                "AVMuxerStub::OnRemoteRequest");
             CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call memberFunc");
             return AVCS_ERR_OK;
         }
@@ -140,6 +144,17 @@ int32_t AVMuxerStub::Stop()
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->Stop();
+}
+
+int32_t AVMuxerStub::DumpInfo(int32_t fd)
+{
+    std::string dumpInfo;
+    dumpInfo += "# AVMuxerStub";
+    GetDumpInfo(dumpInfo);
+
+    CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
+    write(fd, dumpInfo.c_str(), dumpInfo.size());
+    return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::Init(MessageParcel &data, MessageParcel &reply)
@@ -220,6 +235,13 @@ int32_t AVMuxerStub::Stop(MessageParcel &data, MessageParcel &reply)
     (void)data;
     // TODO: 补充LOG说明
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Stop()), AVCS_ERR_UNKNOWN, "");
+    return AVCS_ERR_OK;
+}
+
+int32_t AVMuxerStub::GetDumpInfo(std::string& dumpInfo)
+{
+    dumpInfo += "## pid: " + std::to_string(getpid());
+    dumpInfo += "## uid: " + std::to_string(getuid());
     return AVCS_ERR_OK;
 }
 }  // namespace Media
