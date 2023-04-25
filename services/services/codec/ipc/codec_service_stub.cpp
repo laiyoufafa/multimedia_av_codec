@@ -102,6 +102,8 @@ CodecServiceStub::~CodecServiceStub()
 
 int32_t CodecServiceStub::InitStub()
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+
     codecServer_ = CodecServer::Create();
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create codec server");
 
@@ -295,6 +297,7 @@ int32_t CodecServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::SetListenerObject(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     sptr<IRemoteObject> object = data.ReadRemoteObject();
     reply.WriteInt32(SetListenerObject(object));
     return AVCS_ERR_OK;
@@ -302,6 +305,7 @@ int32_t CodecServiceStub::SetListenerObject(MessageParcel &data, MessageParcel &
 
 int32_t CodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     AVCodecType type = static_cast<AVCodecType>(data.ReadInt32());
     bool isMimeType = data.ReadBool();
     std::string name = data.ReadString();
@@ -311,6 +315,7 @@ int32_t CodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Configure(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     Format format;
     (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteInt32(Configure(format));
@@ -320,6 +325,7 @@ int32_t CodecServiceStub::Configure(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Start(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(Start());
     return AVCS_ERR_OK;
@@ -327,6 +333,7 @@ int32_t CodecServiceStub::Start(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(Stop());
     return AVCS_ERR_OK;
@@ -334,6 +341,7 @@ int32_t CodecServiceStub::Stop(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Flush(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(Flush());
     return AVCS_ERR_OK;
@@ -341,6 +349,7 @@ int32_t CodecServiceStub::Flush(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Reset(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(Reset());
     return AVCS_ERR_OK;
@@ -348,6 +357,7 @@ int32_t CodecServiceStub::Reset(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::Release(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(Release());
     return AVCS_ERR_OK;
@@ -355,6 +365,7 @@ int32_t CodecServiceStub::Release(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::NotifyEos(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(NotifyEos());
     return AVCS_ERR_OK;
@@ -362,6 +373,7 @@ int32_t CodecServiceStub::NotifyEos(MessageParcel &data, MessageParcel &reply)
 
 int32_t CodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     sptr<OHOS::Surface> surface = CreateInputSurface();
     if (surface != nullptr && surface->GetProducer() != nullptr) {
@@ -373,6 +385,8 @@ int32_t CodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParcel 
 
 int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+
     sptr<IRemoteObject> object = data.ReadRemoteObject();
     CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Object is nullptr");
 
@@ -392,8 +406,8 @@ int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &r
 
 int32_t CodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    // TODO: 添加LOG描述
-    CHECK_AND_RETURN_RET_LOG(inputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "");
+    CHECK_AND_RETURN_RET_LOG(inputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Input buffer cache is nullptr");
+    AVCodecTrace trace(std::string(__FUNCTION__));
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetInputBuffer(index);
@@ -402,6 +416,8 @@ int32_t CodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &rep
 
 int32_t CodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+
     uint32_t index = data.ReadUint32();
     AVCodecBufferInfo info;
     info.presentationTimeUs = data.ReadInt64();
@@ -414,8 +430,8 @@ int32_t CodecServiceStub::QueueInputBuffer(MessageParcel &data, MessageParcel &r
 
 int32_t CodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    // TODO: 添加LOG描述
-    CHECK_AND_RETURN_RET_LOG(outputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "");
+    CHECK_AND_RETURN_RET_LOG(outputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Output buffer cache is nullptr");
+    AVCodecTrace trace(std::string(__FUNCTION__));
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetOutputBuffer(index);
@@ -424,6 +440,8 @@ int32_t CodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &re
 
 int32_t CodecServiceStub::GetOutputFormat(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+
     (void)data;
     Format format;
     (void)GetOutputFormat(format);
@@ -433,6 +451,8 @@ int32_t CodecServiceStub::GetOutputFormat(MessageParcel &data, MessageParcel &re
 
 int32_t CodecServiceStub::ReleaseOutputBuffer(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+
     uint32_t index = data.ReadUint32();
     bool render = data.ReadBool();
     reply.WriteInt32(ReleaseOutputBuffer(index, render));
@@ -441,6 +461,8 @@ int32_t CodecServiceStub::ReleaseOutputBuffer(MessageParcel &data, MessageParcel
 
 int32_t CodecServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
+    
     Format format;
     (void)AVCodecParcel::Unmarshalling(data, format);
     reply.WriteInt32(SetParameter(format));
