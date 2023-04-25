@@ -155,7 +155,7 @@ void AVCodecLogDump::TaskProcessor()
 
         std::string file = "/data/media/avcodec/log/";
         file += std::to_string(getpid());
-        file += "_hilog_media.log";
+        file += "dump_log_avcodec.log";
         file += std::to_string(fileCount_);
         std::ofstream ofStream;
         if (isNewFile_) {
