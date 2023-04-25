@@ -37,7 +37,7 @@ public:
         CacheFlag flag = static_cast<CacheFlag>(parcel.ReadUint8());
         if (flag == CacheFlag::HIT_CACHE) {
             if (iter == caches_.end()) {
-                AVCODEC_LOGE("mark hit cache, but can find the index's cache, index: %{public}u", index);
+                AVCODEC_LOGE("Mark hit cache, but can find the index's cache, index: %{public}u", index);
                 return AVCS_ERR_INVALID_VAL;
             }
             memory = iter->second;
@@ -47,14 +47,14 @@ public:
         if (flag == CacheFlag::UPDATE_CACHE) {
             memory = ReadAVSharedMemoryFromParcel(parcel);
 
-            CHECK_AND_RETURN_RET_LOG(memory != nullptr, AVCS_ERR_INVALID_VAL, "failed to read memory from parcel");
+            CHECK_AND_RETURN_RET_LOG(memory != nullptr, AVCS_ERR_INVALID_VAL, "Failed to read memory from parcel");
 
             if (iter == caches_.end()) {
-                AVCODEC_LOGI("add cache, index: %{public}u", index);
+                AVCODEC_LOGI("Add cache, index: %{public}u", index);
                 caches_.emplace(index, memory);
             } else {
                 iter->second = memory;
-                AVCODEC_LOGI("update cache, index: %{public}u", index);
+                AVCODEC_LOGI("Update cache, index: %{public}u", index);
             }
             return AVCS_ERR_OK;
         }
@@ -65,7 +65,7 @@ public:
             caches_.erase(iter);
         }
         memory = nullptr;
-        AVCODEC_LOGE("invalidate cache for index: %{public}u, flag: %{public}hhu", index, flag);
+        AVCODEC_LOGE("Invalidate cache for index: %{public}u, flag: %{public}hhu", index, flag);
         return AVCS_ERR_INVALID_VAL;
     }
 
@@ -102,7 +102,7 @@ int32_t CodecServiceProxy::SetListenerObject(const sptr<IRemoteObject> &object)
     (void)data.WriteRemoteObject(object);
     int32_t ret = Remote()->SendRequest(SET_LISTENER_OBJ, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "SetListenerObject failed, error: %{public}d", ret);
+        "Set listener object failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -206,7 +206,7 @@ int32_t CodecServiceProxy::NotifyEos()
 
     int32_t ret = Remote()->SendRequest(NOTIFY_EOS, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "NotifyEos failed, error: %{public}d", ret);
+        "Notify eos failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -260,13 +260,13 @@ sptr<OHOS::Surface> CodecServiceProxy::CreateInputSurface()
 
     int32_t ret = Remote()->SendRequest(CREATE_INPUT_SURFACE, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr,
-        "CreateInputSurface failed, error: %{public}d", ret);
+        "Create input surface failed, error: %{public}d", ret);
 
     sptr<IRemoteObject> object = reply.ReadRemoteObject();
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "failed to read surface object");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to read surface object");
 
     sptr<IBufferProducer> producer = iface_cast<IBufferProducer>(object);
-    CHECK_AND_RETURN_RET_LOG(producer != nullptr, nullptr, "failed to convert object to producer");
+    CHECK_AND_RETURN_RET_LOG(producer != nullptr, nullptr, "Failed to convert object to producer");
 
     return OHOS::Surface::CreateSurfaceAsProducer(producer);
 }
@@ -277,16 +277,16 @@ int32_t CodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
     MessageParcel reply;
     MessageOption option;
 
-    CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCS_ERR_NO_MEMORY, "surface is nullptr");
+    CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCS_ERR_NO_MEMORY, "Surface is nullptr");
     sptr<IBufferProducer> producer = surface->GetProducer();
-    CHECK_AND_RETURN_RET_LOG(producer != nullptr, AVCS_ERR_NO_MEMORY, "producer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(producer != nullptr, AVCS_ERR_NO_MEMORY, "Producer is nullptr");
 
     sptr<IRemoteObject> object = producer->AsObject();
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "object is nullptr");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Object is nullptr");
 
     const std::string surfaceFormat = "SURFACE_FORMAT";
     std::string format = surface->GetUserData(surfaceFormat);
-    AVCODEC_LOGI("surfaceFormat is %{public}s!", format.c_str());
+    AVCODEC_LOGI("Surface format is %{public}s!", format.c_str());
 
     bool token = data.WriteInterfaceToken(CodecServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
@@ -295,7 +295,7 @@ int32_t CodecServiceProxy::SetOutputSurface(sptr<OHOS::Surface> surface)
     data.WriteString(format);
     int32_t ret = Remote()->SendRequest(SET_OUTPUT_SURFACE, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "SetOutputSurface failed, error: %{public}d", ret);
+        "Set output surface failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -321,7 +321,7 @@ std::shared_ptr<AVSharedMemory> CodecServiceProxy::GetInputBuffer(uint32_t index
         // TODO: 添加LOG描述
         CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "");
     }
-    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Failed to GetInputBuffer");
+    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Failed to get input buffer");
     return memory;
 }
 
@@ -341,7 +341,7 @@ int32_t CodecServiceProxy::QueueInputBuffer(uint32_t index, AVCodecBufferInfo in
     data.WriteInt32(static_cast<int32_t>(flag));
     int32_t ret = Remote()->SendRequest(QUEUE_INPUT_BUFFER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "QueueInputBuffer failed, error: %{public}d", ret);
+        "Queue input buffer failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -358,7 +358,7 @@ std::shared_ptr<AVSharedMemory> CodecServiceProxy::GetOutputBuffer(uint32_t inde
     data.WriteUint32(index);
     int32_t ret = Remote()->SendRequest(GET_OUTPUT_BUFFER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr,
-        "GetOutputBuffer failed, error: %{public}d", ret);
+        "Get output buffer failed, error: %{public}d", ret);
 
     std::shared_ptr<AVSharedMemory> memory = nullptr;
     if (outputBufferCache_ != nullptr) {
@@ -367,7 +367,7 @@ std::shared_ptr<AVSharedMemory> CodecServiceProxy::GetOutputBuffer(uint32_t inde
         // TODO: 添加LOG描述
         CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "");
     }
-    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Failed to GetOutputBuffer");
+    CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Failed to get output buffer");
     return memory;
 }
 
@@ -382,7 +382,7 @@ int32_t CodecServiceProxy::GetOutputFormat(Format &format)
 
     int32_t ret = Remote()->SendRequest(GET_OUTPUT_FORMAT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "GetOutputFormat failed, error: %{public}d", ret);
+        "Get output format failed, error: %{public}d", ret);
 
     (void)AVCodecParcel::Unmarshalling(reply, format);
     return AVCS_ERR_OK;
@@ -401,7 +401,7 @@ int32_t CodecServiceProxy::ReleaseOutputBuffer(uint32_t index, bool render)
     data.WriteBool(render);
     int32_t ret = Remote()->SendRequest(RELEASE_OUTPUT_BUFFER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "ReleaseOutputBuffer failed, error: %{public}d", ret);
+        "Release output buffer failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -418,7 +418,7 @@ int32_t CodecServiceProxy::SetParameter(const Format &format)
     (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(SET_PARAMETER, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "SetParameter failed, error: %{public}d", ret);
+        "Set parameter failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }
@@ -438,7 +438,7 @@ int32_t CodecServiceProxy::DestroyStub()
 
     int32_t ret = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "DestroyStub failed, error: %{public}d", ret);
+        "Destroy stub failed, error: %{public}d", ret);
 
     return reply.ReadInt32();
 }

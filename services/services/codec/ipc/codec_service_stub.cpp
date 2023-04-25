@@ -39,7 +39,7 @@ public:
         CacheFlag flag = CacheFlag::UPDATE_CACHE;
 
         if (memory == nullptr || memory->GetBase() == nullptr) {
-            AVCODEC_LOGE("invalid memory for index: %{public}u", index);
+            AVCODEC_LOGE("Invalid memory for index: %{public}u", index);
             flag = CacheFlag::INVALIDATE_CACHE;
             parcel.WriteUint8(flag);
             auto iter = caches_.find(index);
@@ -58,10 +58,10 @@ public:
         }
 
         if (iter == caches_.end()) {
-            AVCODEC_LOGI("add cached codec buffer, index: %{public}u", index);
+            AVCODEC_LOGI("Add cached codec buffer, index: %{public}u", index);
             caches_.emplace(index, memory.get());
         } else { 
-            AVCODEC_LOGI("update cached codec buffer, index: %{public}u", index);
+            AVCODEC_LOGI("Update cached codec buffer, index: %{public}u", index);
             iter->second = memory.get();
         }
 
@@ -83,10 +83,10 @@ private:
 sptr<CodecServiceStub> CodecServiceStub::Create()
 {
     sptr<CodecServiceStub> codecStub = new(std::nothrow) CodecServiceStub();
-    CHECK_AND_RETURN_RET_LOG(codecStub != nullptr, nullptr, "failed to new CodecServiceStub");
+    CHECK_AND_RETURN_RET_LOG(codecStub != nullptr, nullptr, "Failed to create codec service stub");
 
     int32_t ret = codecStub->InitStub();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to codec stub init");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to codec stub init");
     return codecStub;
 }
 
@@ -103,7 +103,7 @@ CodecServiceStub::~CodecServiceStub()
 int32_t CodecServiceStub::InitStub()
 {
     codecServer_ = CodecServer::Create();
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "failed to create CodecServer");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create codec server");
 
     recFuncs_[SET_LISTENER_OBJ] = &CodecServiceStub::SetListenerObject;
 
@@ -140,7 +140,7 @@ int32_t CodecServiceStub::DestroyStub()
 
 int32_t CodecServiceStub::DumpInfo(int32_t fd)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return std::static_pointer_cast<CodecServer>(codecServer_)->DumpInfo(fd);
 }
 
@@ -161,64 +161,64 @@ int CodecServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messag
             COLLIE_LISTEN(ret = (this->*memberFunc)(data, reply),
                 "CodecServiceStub::OnRemoteRequest");
             if (ret != AVCS_ERR_OK) {
-                AVCODEC_LOGE("calling memberFunc is failed.");
+                AVCODEC_LOGE("Calling member func failed.");
             }
             return AVCS_ERR_OK;
         }
     }
-    AVCODEC_LOGW("CodecServiceStub: no member func supporting, applying default process");
 
+    AVCODEC_LOGW("No member func supporting, applying default process");
     return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
 }
 
 int32_t CodecServiceStub::SetListenerObject(const sptr<IRemoteObject> &object)
 {
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "set listener object is nullptr");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Object is nullptr");
 
     sptr<IStandardCodecListener> listener = iface_cast<IStandardCodecListener>(object);
-    CHECK_AND_RETURN_RET_LOG(listener != nullptr, AVCS_ERR_NO_MEMORY, "failed to convert IStandardCodecListener");
+    CHECK_AND_RETURN_RET_LOG(listener != nullptr, AVCS_ERR_NO_MEMORY, "Listener is nullptr, failed to convert Istandard codec listener");
 
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecListenerCallback>(listener);
-    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "failed to new CodecListenerCallback");
+    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Callback is nullptr, failed to new codec listener callback");
 
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     (void)codecServer_->SetCallback(callback);
     return AVCS_ERR_OK;
 }
 
 int32_t CodecServiceStub::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Init(type, isMimeType, name);
 }
 
 int32_t CodecServiceStub::Configure(const Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Configure(format);
 }
 
 int32_t CodecServiceStub::Start()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Start();
 }
 
 int32_t CodecServiceStub::Stop()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Stop();
 }
 
 int32_t CodecServiceStub::Flush()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Flush();
 }
 
 int32_t CodecServiceStub::Reset()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
     return codecServer_->Reset();
@@ -226,7 +226,7 @@ int32_t CodecServiceStub::Reset()
 
 int32_t CodecServiceStub::Release()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     inputBufferCache_ = nullptr;
     outputBufferCache_ = nullptr;
     return codecServer_->Release();
@@ -234,55 +234,55 @@ int32_t CodecServiceStub::Release()
 
 int32_t CodecServiceStub::NotifyEos()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->NotifyEos();
 }
 
 sptr<OHOS::Surface> CodecServiceStub::CreateInputSurface()
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "Codec server is nullptr");
     return codecServer_->CreateInputSurface();
 }
 
 int32_t CodecServiceStub::SetOutputSurface(sptr<OHOS::Surface> surface)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->SetOutputSurface(surface);
 }
 
 std::shared_ptr<AVSharedMemory> CodecServiceStub::GetInputBuffer(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "Codec server is nullptr");
     return codecServer_->GetInputBuffer(index);
 }
 
 int32_t CodecServiceStub::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->QueueInputBuffer(index, info, flag);
 }
 
 std::shared_ptr<AVSharedMemory> CodecServiceStub::GetOutputBuffer(uint32_t index)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, nullptr, "Codec server is nullptr");
     return codecServer_->GetOutputBuffer(index);
 }
 
 int32_t CodecServiceStub::GetOutputFormat(Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->GetOutputFormat(format);
 }
 
 int32_t CodecServiceStub::ReleaseOutputBuffer(uint32_t index, bool render)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->ReleaseOutputBuffer(index, render);
 }
 
 int32_t CodecServiceStub::SetParameter(const Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "codec server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->SetParameter(format);
 }
 
@@ -374,16 +374,16 @@ int32_t CodecServiceStub::CreateInputSurface(MessageParcel &data, MessageParcel 
 int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &reply)
 {
     sptr<IRemoteObject> object = data.ReadRemoteObject();
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "object is nullptr");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Object is nullptr");
 
     sptr<IBufferProducer> producer = iface_cast<IBufferProducer>(object);
-    CHECK_AND_RETURN_RET_LOG(producer != nullptr, AVCS_ERR_NO_MEMORY, "failed to convert object to producer");
+    CHECK_AND_RETURN_RET_LOG(producer != nullptr, AVCS_ERR_NO_MEMORY, "Failed to convert object to producer");
 
     sptr<OHOS::Surface> surface = OHOS::Surface::CreateSurfaceAsProducer(producer);
-    CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCS_ERR_NO_MEMORY, "failed to create surface");
+    CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create surface");
 
     std::string format = data.ReadString();
-    AVCODEC_LOGI("surfaceFormat is %{public}s!", format.c_str());
+    AVCODEC_LOGI("Surface format is %{public}s!", format.c_str());
     const std::string surfaceFormat = "SURFACE_FORMAT";
     (void)surface->SetUserData(surfaceFormat, format);
     reply.WriteInt32(SetOutputSurface(surface));
