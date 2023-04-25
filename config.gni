@@ -18,6 +18,7 @@ declare_args() {
   multimedia_av_codec_support_demuxer = false
   multimedia_av_codec_support_muxer = true
   multimedia_av_codec_support_ffmpeg_demuxer = false
+  multimedia_av_codec_support_test = false
 }
 
 av_codec_defines = []
