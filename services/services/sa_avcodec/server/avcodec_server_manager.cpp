@@ -22,6 +22,7 @@
 #include "avcodec_log.h"
 #include "source_service_stub.h"
 #include "avcodec_log_dump.h"
+#include "avcodec_xcollie.h"
 #ifdef SUPPORT_CODEC
 #include "codec_service_stub.h"
 #endif
