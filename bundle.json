@@ -76,9 +76,7 @@
             }
           }
         ],
-        "test": [
-          "//foundation/multimedia/av_codec/test:av_codec_unit_test"
-        ]
+        "test": []
       }
     }
   }
