@@ -208,6 +208,7 @@ ohos_shared_library("av_codec_client") {
   deps = [
       "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
       "//third_party/bounds_checking_function:libsec_static",
+      "$AV_CODEC_ROOT_DIR/services/dfx:av_codec_service_dfx",
   ]
 
   if (multimedia_av_codec_support_codeclist) {
