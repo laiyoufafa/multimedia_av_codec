@@ -154,7 +154,14 @@ int32_t AVMuxerStub::DumpInfo(int32_t fd)
 
     CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
     write(fd, dumpInfo.c_str(), dumpInfo.size());
+    return AVCS_ERR_OK;
+}
 
+int32_t AVMuxerStub::Init(MessageParcel &data, MessageParcel &reply)
+{
+    // TODO: 补充LOG说明
+    (void)data;
+    (void)reply;
     return AVCS_ERR_OK;
 }
 

@@ -23,6 +23,7 @@
 |   |    |---sa_avcodec           # avcodec主进程C/S框架
 |   |    |---common               # 服务公用资源
 |   |---engine                    # 引擎实现
+|   |   |---include               # base头文件
 |   |   |---common           	  # 引擎公用资源
 |   |   |---factory               # 引擎工厂实现
 |   |   |---codeclist             # 编解码能力查询引擎
