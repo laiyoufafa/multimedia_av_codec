@@ -35,14 +35,21 @@ constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
 } // namespace
 
 static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData) {
+    (void)codec;
+    (void)errorCode;
+    (void)userData;
     cout << "Error received, errorCode:" << errorCode << endl;
 }
 
 static void OnOutputFormatChanged(OH_AVCodec *codec, OH_AVFormat *format, void *userData) {
+    (void)codec;
+    (void)format;
+    (void)userData;
     cout << "OnOutputFormatChanged received" << endl;
 }
 
 static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, void *userData) {
+    (void)codec;    
     ADecSignal *signal_ = static_cast<ADecSignal *>(userData);
     cout << "OnInputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->inMutex_);
@@ -53,6 +60,7 @@ static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemor
 
 static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, OH_AVCodecBufferAttr *attr,
                              void *userData) {
+    (void)codec;
     ADecSignal *signal_ = static_cast<ADecSignal *>(userData);
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->outMutex_);

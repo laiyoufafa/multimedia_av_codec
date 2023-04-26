@@ -15,15 +15,87 @@
 
 #include <climits>
 #include <iostream>
+#include <thread>
+#include <vector>
+#include "avmuxer_demo.h"
+#include "avmuxer_ffmpeg_demo.h"
+#include "avmuxer_engine_demo.h"
 #include "avcodec_audio_encoder_inner_demo.h"
 #include "avcodec_audio_decoder_demo.h"
 #include "avcodec_audio_encoder_demo.h"
 
 using namespace OHOS;
 using namespace OHOS::Media;
+using namespace OHOS::Media::Plugin;
 using namespace OHOS::Media::AudioDemo;
 using namespace OHOS::Media::InnerAudioDemo;
 using namespace std;
+
+constexpr int RUN_TIME = 600;
+
+extern "C" {
+    extern int NativeSelectMode();
+    extern int RunNativeMuxer(const char *out);
+}
+
+static int RunLoopNativeMuxer(string out)
+{
+    time_t startTime = time(NULL);
+    time_t curTime = time(NULL);
+    while (difftime(curTime, startTime) < RUN_TIME) {
+        RunNativeMuxer(out.c_str());
+        time(&curTime);
+    }
+    return 0;
+}
+
+static int RunAVMuxer()
+{
+    auto avmuxer = std::make_unique<AVMuxerDemo>();
+    if (avmuxer == nullptr) {
+        cout << "avmuxer is null" << endl;
+        return 0;
+    }
+    avmuxer->RunCase();
+    cout << "demo avmuxer end" << endl;
+    return 0;
+}
+
+static int RunAVMuxerWithMultithread()
+{
+    auto avmuxer = std::make_unique<AVMuxerDemo>();
+    if (avmuxer == nullptr) {
+        cout << "avmuxer is null" << endl;
+        return 0;
+    }
+    avmuxer->RunMultiThreadCase();
+    cout << "demo multi thread avmuxer end" << endl;
+    return 0;
+}
+
+static int RunFfmpegMuxer()
+{
+    std::unique_ptr<AVMuxerDemoBase> ffmpegMuxer = std::make_unique<AVMuxerFFmpegDemo>();
+    if (ffmpegMuxer == nullptr) {
+        cout << "ffmpegMuxer is null" << endl;
+        return 0;
+    }
+    ffmpegMuxer->RunCase();
+    cout << "demo ffmpegMuxer end" << endl;
+    return 0;
+}
+
+static int RunEngineMuxer()
+{
+    std::unique_ptr<AVMuxerDemoBase> muxer = std::make_unique<AVMuxerEngineDemo>();
+    if (muxer == nullptr) {
+        cout << "AVMuxerEngineDemo is null" << endl;
+        return 0;
+    }
+    muxer->RunCase();
+    cout << "demo engine demo end" << endl;
+    return 0;
+}
 
 static int RunAudioDecoder()
 {
@@ -85,6 +157,13 @@ int main(int argc, char *argv[])
     cout << "1:Audio Encoder" << endl;
     cout << "2:Audio Inner Decoder" << endl;
     cout << "3:Audio Inner Encoder" << endl;
+    cout << "4:native_muxer" << endl;
+    cout << "5:native_muxer loop" << endl;
+    cout << "6:native_muxer multithread" << endl;
+    cout << "7:inner_muxer" << endl;
+    cout << "8:inner_muxer with multithread write" << endl;
+    cout << "9:ffmpeg_muxer" << endl;
+    cout << "10:engine_muxer" << endl;
 
     string mode;
     (void)getline(cin, mode);
@@ -96,7 +175,32 @@ int main(int argc, char *argv[])
         (void)RunAudioInnerDecoder();
     } else if (mode == "3") {
         (void)RunAudioInnerEncoder();
-    } else {
+    } else if (mode == "4") {
+        NativeSelectMode();
+        RunNativeMuxer("native_mux");
+    } else if (mode == "5") {
+        NativeSelectMode();
+        RunLoopNativeMuxer("loop_native_mux");
+    } else if (mode == "6") {
+        NativeSelectMode();
+        vector<thread> vecThread;
+        for (int i = 0; i < 10; ++i) {
+            string out = to_string(i + 1);
+            out += "_native_mux";
+            vecThread.push_back(thread(RunLoopNativeMuxer, out));
+        }
+        for (int i = 0; i < 10; ++i) {
+            vecThread[i].join();
+        }
+    } else if (mode == "7") {
+        RunAVMuxer();
+    } else if (mode == "8") {
+        RunAVMuxerWithMultithread();
+    } else if (mode == "9") {
+        RunFfmpegMuxer();
+    } else if (mode == "10") {
+        RunEngineMuxer();
+    }  else {
         cout << "no that selection" << endl;
     }
     return 0;

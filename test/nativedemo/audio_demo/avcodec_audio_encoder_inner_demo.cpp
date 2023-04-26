@@ -226,6 +226,7 @@ void ADecDemoCallback::OnError(AVCodecErrorType errorType, int32_t errorCode)
 
 void ADecDemoCallback::OnOutputFormatChanged(const Format &format)
 {
+    (void)format;
     cout << "OnOutputFormatChanged received" << endl;
 }
 
@@ -239,6 +240,8 @@ void ADecDemoCallback::OnInputBufferAvailable(uint32_t index)
 
 void ADecDemoCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
+    (void)info;
+    (void)flag;
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
