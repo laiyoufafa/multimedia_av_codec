@@ -163,7 +163,7 @@ ohos_shared_library("native_av_codec_core") {
   ]
   output_extension = "so"
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }
 
 ohos_shared_library("native_av_codec_codec") {
@@ -200,7 +200,7 @@ ohos_shared_library("native_av_codec_codec") {
   ]
   output_extension = "so"
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }
 
 ohos_shared_library("native_av_codec_avmuxer") {
@@ -225,5 +225,5 @@ ohos_shared_library("native_av_codec_avmuxer") {
   ]
   output_extension = "so"
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }

@@ -15,79 +15,61 @@
 
 #include <climits>
 #include <iostream>
-#include <thread>
-#include <vector>
-#include "avmuxer_demo.h"
-#include "avmuxer_ffmpeg_demo.h"
-#include "avmuxer_engine_demo.h"
+#include "avcodec_audio_encoder_inner_demo.h"
+#include "avcodec_audio_decoder_demo.h"
+#include "avcodec_audio_encoder_demo.h"
 
+using namespace OHOS;
 using namespace OHOS::Media;
-using namespace OHOS::Media::Plugin;
+using namespace OHOS::Media::AudioDemo;
+using namespace OHOS::Media::InnerAudioDemo;
 using namespace std;
 
-constexpr int RUN_TIME = 600;
-
-extern "C" {
-    extern int NativeSelectMode();
-    extern int RunNativeMuxer(const char *out);
-}
-
-static int RunLoopNativeMuxer(string out)
+static int RunAudioDecoder()
 {
-    time_t startTime = time(NULL);
-    time_t curTime = time(NULL);
-    while (difftime(curTime, startTime) < RUN_TIME) {
-        RunNativeMuxer(out.c_str());
-        time(&curTime);
+    auto audioEnc = std::make_unique<ADecDemo>();
+    if (audioEnc == nullptr) {
+        cout << "audio decoder is null" << endl;
+        return 0;
     }
+    audioEnc->RunCase();
+    cout << "demo audio decoder end" << endl;
     return 0;
 }
 
-static int RunAVMuxer()
+static int RunAudioEncoder()
 {
-    auto avmuxer = std::make_unique<AVMuxerDemo>();
-    if (avmuxer == nullptr) {
-        cout << "avmuxer is null" << endl;
+    auto audioEnc = std::make_unique<AEncDemo>();
+    if (audioEnc == nullptr) {
+        cout << "audio encoder is null" << endl;
         return 0;
     }
-    avmuxer->RunCase();
-    cout << "demo avmuxer end" << endl;
+    audioEnc->RunCase();
+    cout << "demo audio encoder end" << endl;
     return 0;
 }
 
-static int RunAVMuxerWithMultithread()
+static int RunAudioInnerDecoder()
 {
-    auto avmuxer = std::make_unique<AVMuxerDemo>();
-    if (avmuxer == nullptr) {
-        cout << "avmuxer is null" << endl;
+    auto audioEnc = std::make_unique<ADecInnerDemo>();
+    if (audioEnc == nullptr) {
+        cout << "audio decoder is null" << endl;
         return 0;
     }
-    avmuxer->RunMultiThreadCase();
-    cout << "demo multi thread avmuxer end" << endl;
+    audioEnc->RunCase();
+    cout << "demo audio decoder end" << endl;
     return 0;
 }
 
-static int RunFfmpegMuxer()
+static int RunAudioInnerEncoder()
 {
-    std::unique_ptr<AVMuxerDemoBase> ffmpegMuxer = std::make_unique<AVMuxerFFmpegDemo>();
-    if (ffmpegMuxer == nullptr) {
-        cout << "ffmpegMuxer is null" << endl;
+    auto audioEnc = std::make_unique<ADecInnerDemo>();
+    if (audioEnc == nullptr) {
+        cout << "audio encoder is null" << endl;
         return 0;
     }
-    ffmpegMuxer->RunCase();
-    cout << "demo ffmpegMuxer end" << endl;
-    return 0;
-}
-
-static int RunEngineMuxer()
-{
-    std::unique_ptr<AVMuxerDemoBase> muxer = std::make_unique<AVMuxerEngineDemo>();
-    if (muxer == nullptr) {
-        cout << "AVMuxerEngineDemo is null" << endl;
-        return 0;
-    }
-    muxer->RunCase();
-    cout << "demo engine demo end" << endl;
+    audioEnc->RunCase();
+    cout << "demo audio encoder end" << endl;
     return 0;
 }
 
@@ -98,43 +80,23 @@ int main(int argc, char *argv[])
     if (argc >= minRequiredArgCount && argv[1] != nullptr) {
         path = argv[1];
     }
-    cout << "Please select muxer number(default native muxer): " << endl;
-    cout << "0:native_muxer" << endl;
-    cout << "1:native_muxer loop" << endl;
-    cout << "2:native_muxer multithread" << endl;
-    cout << "3:inner_muxer" << endl;
-    cout << "4:inner_muxer with multithread write" << endl;
-    cout << "5:ffmpeg_muxer" << endl;
-    cout << "6:engine_muxer" << endl;
+    cout << "Please select a demo scenario number(default Audio Decoder): " << endl;
+    cout << "0:Audio Decoder" << endl;
+    cout << "1:Audio Encoder" << endl;
+    cout << "2:Audio Inner Decoder" << endl;
+    cout << "3:Audio Inner Encoder" << endl;
 
     string mode;
     (void)getline(cin, mode);
     if (mode == "" || mode == "0") {
-        NativeSelectMode();
-        RunNativeMuxer("native_mux");
+        (void)RunAudioDecoder();
     } else if (mode == "1") {
-        NativeSelectMode();
-        RunLoopNativeMuxer("loop_native_mux");
+        (void)RunAudioEncoder();
     } else if (mode == "2") {
-        NativeSelectMode();
-        vector<thread> vecThread;
-        for (int i = 0; i < 10; ++i) {
-            string out = to_string(i + 1);
-            out += "_native_mux";
-            vecThread.push_back(thread(RunLoopNativeMuxer, out));
-        }
-        for (int i = 0; i < 10; ++i) {
-            vecThread[i].join();
-        }
+        (void)RunAudioInnerDecoder();
     } else if (mode == "3") {
-        RunAVMuxer();
-    } else if (mode == "4") {
-        RunAVMuxerWithMultithread();
-    } else if (mode == "5") {
-        RunFfmpegMuxer();
-    } else if (mode == "6") {
-        RunEngineMuxer();
-    }  else {
+        (void)RunAudioInnerEncoder();
+    } else {
         cout << "no that selection" << endl;
     }
     return 0;

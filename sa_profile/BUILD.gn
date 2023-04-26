@@ -13,8 +13,7 @@
 
 import("//build/ohos/sa_profile/sa_profile.gni")
 
-ohos_sa_profile("av_codec_service_sa_profile") {
+ohos_sa_profile("av_codec_service_profile") {
   sources = [ "3011.xml" ]
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }
-
