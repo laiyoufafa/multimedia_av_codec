@@ -15,8 +15,7 @@ import("//build/ohos.gni")
 
 group("av_codec_services_package") {
   deps = [
-    "engine:av_codec_engine_package",
+    "etc:av_codec_service.cfg",
     "services:av_codec_service",
   ]
 }
-

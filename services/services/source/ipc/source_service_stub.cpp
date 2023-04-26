@@ -14,11 +14,13 @@
  */
 
 #include "source_service_stub.h"
+#include "unistd.h"
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
+#include "avcodec_xcollie.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServiceStub"};
@@ -75,7 +77,9 @@ int SourceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
     if (itFunc != sourceFuncs_.end()) {
         auto memberFunc = itFunc->second;
         if (memberFunc != nullptr) {
-            int32_t ret = (this->*memberFunc)(data, reply);
+            int32_t ret = -1;
+            COLLIE_LISTEN(ret = (this->*memberFunc)(data, reply),
+                "SourceServiceStub::OnRemoteRequest");
             CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call memberFunc");
             return AVCS_ERR_OK;
         }
@@ -127,22 +131,34 @@ uint64_t SourceServiceStub::GetSourceAttr()
     return sourceServer_->GetSourceAttr();
 }
 
+int32_t SourceServiceStub::DumpInfo(int32_t fd)
+{
+    std::string dumpInfo;
+    dumpInfo += "# SourceServiceStub";
+    GetDumpInfo(dumpInfo);
+
+    CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
+    write(fd, dumpInfo.c_str(), dumpInfo.size());
+
+    return AVCS_ERR_OK;
+}
+
 int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     std::string uri = data.ReadString();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackCount(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::Destroy(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
@@ -151,7 +167,7 @@ int32_t SourceServiceStub::SetParameter(MessageParcel &data, MessageParcel &repl
     Format param;
     (void)AVCodecParcel::Unmarshalling(data, param);
     uint32_t trackId = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
@@ -159,20 +175,27 @@ int32_t SourceServiceStub::GetTrackFormat(MessageParcel &data, MessageParcel &re
 {
     uint32_t trackId = data.ReadUint32();
     Format format;
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     AVCodecParcel::Marshalling(reply, format);
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetSourceAttr(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN, "WriteUint64 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    return AVCS_ERR_OK;
+}
+
+int32_t SourceServiceStub::GetDumpInfo(std::string& dumpInfo)
+{
+    dumpInfo += "## pid: " + std::to_string(getpid());
+    dumpInfo += "## uid: " + std::to_string(getuid());
     return AVCS_ERR_OK;
 }
 }  // namespace Media

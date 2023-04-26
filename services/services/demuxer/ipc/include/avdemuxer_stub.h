@@ -16,6 +16,7 @@
 #define DEMUXER_SERVICE_STUB_H
 
 #include <map>
+#include <string>
 #include "i_standard_demuxer_service.h"
 #include "demuxer_server.h"
 #include "iremote_stub.h"
@@ -38,6 +39,7 @@ public:
     int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
     int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
 
+    int32_t DumpInfo(int32_t fd);
     int32_t DestroyStub() override;
 private:
     AVDemuxerStub();
@@ -50,6 +52,7 @@ private:
     int32_t CopyCurrentSampleToBuf(MessageParcel &data, MessageParcel &reply);
     int32_t SeekToTimeStamp(MessageParcel &data, MessageParcel &reply);
 
+    int32_t GetDumpInfo(std::string& dumpInfo);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;

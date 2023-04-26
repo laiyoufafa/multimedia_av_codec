@@ -18,7 +18,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "native_avbase.h"
+#include "native_avcodec_base.h"
 #include "native_averrors.h"
 #include "native_avformat.h"
 
@@ -32,7 +32,9 @@ typedef struct OH_AVMuxer OH_AVMuxer;
 /**
  * @brief Create an OH_AVMuxer instance by output file handler and format.
  * @syscap SystemCapability.Multimedia.Media.AVMuxer
- * @return Returns a pointer to an OH_AVMuxer instance
+ * @param fd Must be opened with read and write permission. Caller is responsible for closing fd.
+ * @param format The output format is {@link OH_AVOutputFormat} .
+ * @return Returns a pointer to an OH_AVMuxer instance, needs to be freed by OH_AVMuxer_Destroy.
  * @since 10
  * @version 1.0
  */
@@ -45,8 +47,8 @@ OH_AVMuxer *OH_AVMuxer_Create(int32_t fd, OH_AVOutputFormat format);
  * AV_OUTPUT_FORMAT_MPEG_4, and is ignored for other output formats. 
  * @syscap SystemCapability.Multimedia.Media.AVMuxer
  * @param muxer Pointer to an OH_AVMuxer instance.
- * @param latitude must be in the range [-90, 90].
- * @param longitude must be in the range [-180, 180].
+ * @param latitude Must be in the range [-90, 90].
+ * @param longitude Must be in the range [-180, 180].
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
@@ -68,30 +70,20 @@ OH_AVErrCode OH_AVMuxer_SetLocation(OH_AVMuxer *muxer, float latitude, float lon
 OH_AVErrCode OH_AVMuxer_SetRotation(OH_AVMuxer *muxer, int32_t rotation);
 
 /**
- * @brief Set parameters to the muxer. 
+ * @brief Add track format to the muxer. 
  * Note: This interface can only be called before OH_AVMuxer_Start.
  * @syscap SystemCapability.Multimedia.Media.AVMuxer
  * @param muxer Pointer to an OH_AVMuxer instance
- * @param generalFormat OH_AVFormat handle pointer contain metadata
+ * @param trackIndex The int32_t handle pointer used to get the track index for this newly added track,
+ * and it should be used in the OH_AVMuxer_WriteSampleBuffer. The track index is greater than or equal to 0,
+ * others is error index.
+ * @param trackFormat OH_AVFormat handle pointer contain track format
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
  */
-OH_AVErrCode OH_AVMuxer_SetParameter(OH_AVMuxer *muxer, OH_AVFormat *generalFormat);
-
-/**
- * @brief Add track format to the muxer. 
- * Note: This interface can only be called before OH_AVMuxer_Start.
- * @syscap SystemCapability.Multimedia.Media.AVMuxer
- * @param muxer Pointer to an OH_AVMuxer instance
- * @param trackFormat OH_AVFormat handle pointer contain track format
- * @return The track index for this newly added track, and it should be used in the OH_AVMuxer_WriteSampleBuffer.
- * The track index is greater than or equal to 0, otherwise returns a specific error code, refer to {@link OH_AVErrCode}.
- * @since 10
- * @version 1.0
- */
-int32_t OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, OH_AVFormat *trackFormat);
+OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, int32_t *trackIndex, OH_AVFormat *trackFormat);
 
 /**
  * @brief Start the muxer. 
@@ -110,22 +102,17 @@ OH_AVErrCode OH_AVMuxer_Start(OH_AVMuxer *muxer);
  * Note: This interface can only be called after OH_AVMuxer_Start and before OH_AVMuxer_Stop. The application needs to 
  * make sure that the samples are written to the right tacks. Also, it needs to make sure the samples for each track are 
  * written in chronological order. 
- * For MPEG4 mime type format, the duration of the last sample in a track can be set by passing an additional empty buffer 
- * (info.size = 0) with flags (info.flags = AVCODEC_BUFFER_FLAGS_EOS) {@link OH_AVCodecBufferInfo and OH_AVCodecBufferFlags}
- * and a suitable presentation timestamp set in info parameter as the last sample of that track. This last sample's presentation 
- * timestamp shall be a sum of the presentation timestamp and the duration preferred for the original last sample. If no explicit
- * AVCODEC_BUFFER_FLAGS_EOS sample was passed, then the duration of the last sample would be the same as that of the sample before that.
  * @syscap SystemCapability.Multimedia.Media.AVMuxer
  * @param muxer Pointer to an OH_AVMuxer instance
  * @param trackIndex The track index for this sample
  * @param sampleBuffer The encoded sample buffer
- * @param info The buffer information related to this sample {@link OH_AVCodecBufferInfo}
+ * @param info The buffer information related to this sample {@link OH_AVCodecBufferAttr}
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
  */
-OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex, uint8_t *sampleBuffer, OH_AVCodecBufferInfo info);
+OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex, uint8_t *sampleBuffer, OH_AVCodecBufferAttr info);
 
 /**
  * @brief Stop the muxer. 

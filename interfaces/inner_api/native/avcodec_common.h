@@ -61,6 +61,7 @@ struct AVBufferElement {
     std::shared_ptr<AVSharedMemory> buffer;
     std::shared_ptr<AVSharedMemory> metaData;
 };
+
 class AVCodecCallback {
 public:
     virtual ~AVCodecCallback() = default;

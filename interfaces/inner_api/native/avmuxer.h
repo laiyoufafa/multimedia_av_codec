@@ -16,22 +16,19 @@
 #ifndef AVMUXER_H
 #define AVMUXER_H
 
-#include "format.h"
-#include "avcodec_errors.h"
-#include "avcodec_base.h"
-#include "avcodec_common.h"
+#include "media_description.h"
+#include "av_common.h"
 
 namespace OHOS {
-namespace MediaAVCodec {
+namespace Media {
 class AVMuxer {
 public:
     virtual ~AVMuxer() = default;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
-    virtual int32_t SetParameter(const Format &generalFormat) = 0;
-    virtual int32_t AddTrack(const Format &trackFormat) = 0;
+    virtual int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) = 0;
     virtual int32_t Start() = 0;
-    virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
+    virtual int32_t WriteSampleBuffer(uint8_t *sampleBuffer, const TrackSampleInfo &info) = 0;
     virtual int32_t Stop() = 0;
 };
 
@@ -42,7 +39,7 @@ private:
     AVMuxerFactory() = default;
     ~AVMuxerFactory() = default;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 
 #endif // AVMUXER_H

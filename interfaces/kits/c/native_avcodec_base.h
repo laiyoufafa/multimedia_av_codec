@@ -48,6 +48,18 @@ typedef enum OH_AVCodecBufferFlags {
 } OH_AVCodecBufferFlags;
 
 /**
+ * @brief Enumerates the muxer ouputfile format
+ * 
+ * @since 10
+ * @version 1.0
+ */
+typedef enum OH_AVOutputFormat {
+    AV_OUTPUT_FORMAT_UNKNOWN = 0,
+    AV_OUTPUT_FORMAT_MPEG_4 = 1,
+    AV_OUTPUT_FORMAT_M4A = 2,
+} OH_AVOutputFormat;
+
+/**
  * @brief Define the Buffer description information of OH_AVCodec
  * @syscap SystemCapability.Multimedia.Media.CodecBase
  * @since 9
@@ -145,7 +157,12 @@ typedef struct OH_AVCodecAsyncCallback {
  * @version 1.0
  */
 extern const char *OH_AVCODEC_MIMETYPE_VIDEO_AVC;
+extern const char *OH_AVCODEC_MIMETYPE_VIDEO_MPEG4;
 extern const char *OH_AVCODEC_MIMETYPE_AUDIO_AAC;
+extern const char *OH_AVCODEC_MIMETYPE_AUDIO_MPEG;
+extern const char *OH_AVCODEC_MIMETYPE_IMAGE_JPG;
+extern const char *OH_AVCODEC_MIMETYPE_IMAGE_PNG;
+extern const char *OH_AVCODEC_MIMETYPE_IMAGE_BMP;
 
 /**
  * @brief The extra data's key of surface Buffer
@@ -196,6 +213,8 @@ extern const char *OH_MD_KEY_AUD_SAMPLE_RATE;
 extern const char *OH_MD_KEY_I_FRAME_INTERVAL;
 /* Key of the surface rotation angle. value type is int32_t: should be {0, 90, 180, 270}, default is 0. */
 extern const char *OH_MD_KEY_ROTATION;
+/* Key of the codec specific data. value type is uint8_t*. */
+extern const char *OH_MD_KEY_CODEC_CONFIG;
 
 /**
  * @brief Media type.

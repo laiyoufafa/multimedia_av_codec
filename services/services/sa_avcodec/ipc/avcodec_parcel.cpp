@@ -47,7 +47,7 @@ bool AVCodecParcel::Marshalling(MessageParcel &parcel, const Format &format)
                 break;
             case FORMAT_TYPE_ADDR:
                 (void)parcel.WriteInt32(static_cast<int32_t>(it->second.size));
-                (void)parcel.WriteBuffer(reinterpret_cast<const void *>(it->second.addr), it->second.size);
+                (void)parcel.WriteUnpadBuffer(reinterpret_cast<const void *>(it->second.addr), it->second.size);
                 break;
             default:
                 AVCODEC_LOGE("fail to Marshalling Key: %{public}s", it->first.c_str());
@@ -55,6 +55,7 @@ bool AVCodecParcel::Marshalling(MessageParcel &parcel, const Format &format)
         }
         AVCODEC_LOGD("success to Marshalling Key: %{public}s", it->first.c_str());
     }
+
     return true;
 }
 
@@ -82,7 +83,7 @@ bool AVCodecParcel::Unmarshalling(MessageParcel &parcel, Format &format)
                 break;
             case FORMAT_TYPE_ADDR: {
                 auto addrSize = parcel.ReadInt32();
-                auto addr = parcel.ReadBuffer(static_cast<size_t>(addrSize));
+                auto addr = parcel.ReadUnpadBuffer(static_cast<size_t>(addrSize));
                 if (addr == nullptr) {
                     AVCODEC_LOGE("fail to ReadBuffer Key: %{public}s", key.c_str());
                     return false;
