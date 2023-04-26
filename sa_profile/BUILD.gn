@@ -11,14 +11,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
+import("//build/ohos/sa_profile/sa_profile.gni")
 
-group("av_codec_services_package") {
-  deps = [
-    "etc:av_codec_service.cfg",
-    "engine:av_codec_engine_package",
-    "services:av_codec_service",
-    "utils:av_codec_service_utils"
-  ]
+ohos_sa_profile("av_codec_service_profile") {
+  sources = [ "3011.xml" ]
+  part_name = "av_codec"
 }
-

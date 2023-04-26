@@ -14,41 +14,22 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-config("av_codec_service_log_dfx_public_config") {
-  cflags = [ "-DOHOS_AV_CODEC_LOG_DFX" ]
-  include_dirs = [ "//foundation/multimedia/av_codec/services/dfx/include" ]
-}
-
-ohos_shared_library("av_codec_service_dfx") {
-  install_enable = true
-
-  sanitize = {
-    cfi = true
-    cfi_cross_dso = true
-    debug = false
-  }
-
-  sources = [ 
-    "avcodec_dfx.cpp",
-    "avcodec_log_dump.cpp",
-    "avcodec_xcollie.cpp",
-  ]
-
+ohos_executable("av_codec_demo") {
   include_dirs = [
-    "include",
-    "//commonlibrary/c_utils/base/include",
+    "./av_codec_audio",
+    "./audio_demo",
+    "./include",
     "//foundation/multimedia/av_codec/interfaces/inner_api/native",
     "//foundation/multimedia/av_codec/interfaces/kits/c",
+    "//foundation/multimedia/av_codec/services/utils/include",
+    "//foundation/multimedia/av_codec/services/dfx/include",
   ]
 
-  defines = []
-  defines += av_codec_defines
-
   cflags = [
+    "-Wall",
     "-std=c++17",
     "-fno-rtti",
     "-fno-exceptions",
-    "-Wall",
     "-fno-common",
     "-fstack-protector-strong",
     "-Wshadow",
@@ -58,24 +39,34 @@ ohos_shared_library("av_codec_service_dfx") {
     "-D_FORTIFY_SOURCE=2",
     "-fvisibility=hidden",
     "-Wformat=2",
-    "-Wfloat-equal",
     "-Wdate-time",
     "-Werror",
     "-Wextra",
     "-Wimplicit-fallthrough",
     "-Wsign-compare",
     "-Wunused-parameter",
+    "-Wno-deprecated-declarations",
+  ]
+
+  sources = [
+    "./av_codec_demo.cpp",
+    "./audio_demo/avcodec_audio_encoder_inner_demo.cpp",
+    "./audio_demo/avcodec_audio_decoder_demo.cpp",
+    "./audio_demo/avcodec_audio_encoder_demo.cpp"
+  ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:capi_packages"
   ]
 
   external_deps = [
     "c_utils:utils",
-    "hicollie_native:libhicollie",
-    "hisysevent_native:libhisysevent",
-    "hitrace_native:hitrace_meter",
     "hiviewdfx_hilog_native:libhilog",
-    "init:libbegetutil",
+    "ipc:ipc_core",
   ]
+  install_enable = false
 
-  subsystem_name = "multimedia"
   part_name = "av_codec"
+  subsystem_name = "multimedia"
 }

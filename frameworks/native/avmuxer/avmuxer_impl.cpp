@@ -33,14 +33,14 @@ namespace Media {
 std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, AVOutputFormat format)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
-    CHECK_AND_RETURN_RET_LOG((fcntl(fd, F_GETFL, 0) & O_RDWR) == O_RDWR, nullptr, "no permission to read and write fd");
-    CHECK_AND_RETURN_RET_LOG(lseek(fd, 0, SEEK_CUR) != -1, nullptr, "the fd is not seekable");
+    CHECK_AND_RETURN_RET_LOG((fcntl(fd, F_GETFL, 0) & O_RDWR) == O_RDWR, nullptr, "No permission to read and write fd");
+    CHECK_AND_RETURN_RET_LOG(lseek(fd, 0, SEEK_CUR) != -1, nullptr, "The fd is not seekable");
 
     std::shared_ptr<AVMuxerImpl> impl = std::make_shared<AVMuxerImpl>(fd, format);
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "create avmuxer implementation failed");
+    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "Create avmuxer implementation failed");
 
     int32_t ret = impl->Init();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "init avmuxer implementation failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Init avmuxer implementation failed");
     return impl;
 }
 
@@ -64,7 +64,7 @@ int32_t AVMuxerImpl::Init()
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
     muxerClient_ = AVCodecServiceFactory::GetInstance().CreateMuxerService();
-    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "create avmuxer engine failed");
+    CHECK_AND_RETURN_RET_LOG(muxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Create avmuxer engine failed");
     return AVCS_ERR_OK;
 }
 
@@ -110,14 +110,13 @@ int32_t AVMuxerImpl::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffe
     CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr && info.offset >= 0 && info.size >= 0,
         AVCS_ERR_INVALID_VAL, "Invalid memory");
 
-    std::shared_ptr<AVSharedMemoryBase> sharedSampleBuffer =
-        std::make_shared<AVSharedMemoryBase>(info.size, AVSharedMemory::FLAGS_READ_ONLY, "sampleBuffer");
-    int32_t ret = sharedSampleBuffer->Init();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_NO_MEMORY, "create AVSharedMemoryBase failed");
+    std::shared_ptr<AVSharedMemory> sharedSampleBuffer = 
+        AVSharedMemoryBase::CreateFromLocal(info.size, AVSharedMemory::FLAGS_READ_ONLY, "SampleBuffer");
+    CHECK_AND_RETURN_RET_LOG(sharedSampleBuffer == nullptr, AVCS_ERR_NO_MEMORY, "Create AVSharedMemoryBase failed");
     errno_t rc = memcpy_s(sharedSampleBuffer->GetBase(), sharedSampleBuffer->GetSize(), sampleBuffer + info.offset, info.size);
     CHECK_AND_RETURN_RET_LOG(rc == EOK, AVCS_ERR_UNKNOWN, "memcpy_s failed");
 
-    return muxerClient_->WriteSampleBuffer(trackIndex, sharedSampleBuffer->GetBase(), info);
+    return muxerClient_->WriteSampleBuffer(trackIndex, sharedSampleBuffer, info);
 }
 
 int32_t AVMuxerImpl::Stop()

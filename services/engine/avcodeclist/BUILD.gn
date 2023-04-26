@@ -68,5 +68,5 @@ ohos_static_library("av_codec_engine_avcodeclist") {
   ]
 
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }

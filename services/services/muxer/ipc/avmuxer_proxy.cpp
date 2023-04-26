@@ -44,10 +44,10 @@ int32_t AVMuxerProxy::DestroyStub()
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
-    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call DestroyStub, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call DestroyStub");
     return reply.ReadInt32();
 }
 
@@ -58,10 +58,10 @@ int32_t AVMuxerProxy::Init()
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
-    int error = Remote()->SendRequest(INIT, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Init, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(INIT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call Init");
     return reply.ReadInt32();
 }
 
@@ -72,12 +72,12 @@ int32_t AVMuxerProxy::SetLocation(float latitude, float longitude)
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
     data.WriteFloat(latitude);
     data.WriteFloat(longitude);
-    int error = Remote()->SendRequest(SET_LOCATION, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SetLocation, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(SET_LOCATION, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetLocation");
     return reply.ReadInt32();
 }
 
@@ -88,11 +88,11 @@ int32_t AVMuxerProxy::SetRotation(int32_t rotation)
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
     data.WriteInt32(rotation);
-    int error = Remote()->SendRequest(SET_ROTATION, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SetRotation, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(SET_ROTATION, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return reply.ReadInt32();
 }
 
@@ -104,12 +104,11 @@ int32_t AVMuxerProxy::SetParameter(const Format &generalFormat)
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
     AVCodecParcel::Marshalling(data, generalFormat);
     int32_t ret = Remote()->SendRequest(SET_PARAMETER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "SetParameter failed, error: %{public}d", ret);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "SetParameter failed");
 
     return reply.ReadInt32();
 }
@@ -121,14 +120,13 @@ int32_t AVMuxerProxy::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
+    data.WriteInt32(trackIndex);
     AVCodecParcel::Marshalling(data, trackFormat);
-    int32_t error = Remote()->SendRequest(ADD_TRACK, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call AddTrack, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(ADD_TRACK, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call AddTrack");
     
-    // int32_t trackId = reply.ReadInt32();
-
     return reply.ReadInt32();
 }
 
@@ -139,17 +137,14 @@ int32_t AVMuxerProxy::Start()
     MessageOption option;
 
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor");
 
-    int32_t error = Remote()->SendRequest(START, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Start, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(START, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call Start");
     return reply.ReadInt32();
 }
 
-
-
-
-int32_t AVMuxerProxy::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
+int32_t AVMuxerProxy::WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info)
 {
     CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, AVCS_ERR_INVALID_VAL, "sampleBuffer is nullptr");
     MessageParcel data;
@@ -157,11 +152,15 @@ int32_t AVMuxerProxy::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuff
     MessageOption option;
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
-   
+    data.WriteInt32(trackIndex);
+    WriteAVSharedMemoryToParcel(sampleBuffer, data);
+    data.WriteInt64(info.presentationTimeUs);
+    data.WriteInt32(info.size);
+    data.WriteInt32(info.offset);
+    // data.WriteInt32(info.flag);
 
-   
-    int32_t error = Remote()->SendRequest(WRITE_SAMPLE_BUFFER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call WriteTrackSample, error: %{public}d", error);
+    int32_t ret = Remote()->SendRequest(WRITE_SAMPLE_BUFFER, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call WriteTrackSample");
     return reply.ReadInt32();
 }
 
@@ -174,8 +173,8 @@ int32_t AVMuxerProxy::Stop()
     bool token = data.WriteInterfaceToken(AVMuxerProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(STOP, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Stop, error: %{public}d", error);
+    int ret = Remote()->SendRequest(STOP, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call Stop");
     return reply.ReadInt32();
 }
 }  // namespace Media

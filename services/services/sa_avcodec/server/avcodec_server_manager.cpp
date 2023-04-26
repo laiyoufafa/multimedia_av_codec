@@ -287,7 +287,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateMuxerStubObject()
     }
     sptr<AVMuxerStub> stub = AVMuxerStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create AVMuxerStub");
+        AVCODEC_LOGE("Failed to create AVMuxerStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();
@@ -305,7 +305,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateMuxerStubObject()
         dumperTbl_[StubType::MUXER].emplace_back(dumper);
         AVCODEC_LOGD("The number of muxer services(%{public}zu).", muxerStubMap_.size());
         if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
-            AVCODEC_LOGW("failed to call InstanceDump");
+            AVCODEC_LOGW("Failed to call InstanceDump");
         }
     }
     return object;

@@ -164,13 +164,13 @@ std::shared_ptr<IAVMuxer> AVCodecClient::CreateMuxerService() {
 
     sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
         IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_MUXER, listenerStub_->AsObject());
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "muxer proxy object is nullptr.");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Muxer proxy object is nullptr.");
 
     sptr<IAVMuxerService> muxerProxy = iface_cast<IAVMuxerService>(object);
-    CHECK_AND_RETURN_RET_LOG(muxerProxy != nullptr, nullptr, "muxer proxy is nullptr.");
+    CHECK_AND_RETURN_RET_LOG(muxerProxy != nullptr, nullptr, "Muxer proxy is nullptr.");
 
     std::shared_ptr<AVMuxerClient> muxerClient = AVMuxerClient::Create(muxerProxy);
-    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, nullptr, "failed to create muxer client.");
+    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, nullptr, "Failed to create muxer client.");
 
     muxerClientList_.push_back(muxerClient);
     return muxerClient;
