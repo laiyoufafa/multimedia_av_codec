@@ -13,36 +13,37 @@
  * limitations under the License.
  */
 
-#include "avcodeclist_service_proxy.h"
+#include "codeclist_service_proxy.h"
 #include "avcodec_parcel.h"
+#include "codeclist_parcel.h"
 // #include "avsharedmemory_ipc.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServiceProxy"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListServiceProxy"};
 }
 
 namespace OHOS {
 namespace Media {
-AVCodecListServiceProxy::AVCodecListServiceProxy(const sptr<IRemoteObject> &impl)
-    : IRemoteProxy<IStandardAVCodecListService>(impl)
+CodecListServiceProxy::CodecListServiceProxy(const sptr<IRemoteObject> &impl)
+    : IRemoteProxy<IStandardCodecListService>(impl)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecListServiceProxy::~AVCodecListServiceProxy()
+CodecListServiceProxy::~CodecListServiceProxy()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-std::string AVCodecListServiceProxy::FindDecoder(const Format &format)
+std::string CodecListServiceProxy::FindDecoder(const Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
     (void)AVCodecParcel::Marshalling(data, format);
@@ -52,13 +53,13 @@ std::string AVCodecListServiceProxy::FindDecoder(const Format &format)
     return reply.ReadString();
 }
 
-std::string AVCodecListServiceProxy::FindEncoder(const Format &format)
+std::string CodecListServiceProxy::FindEncoder(const Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, "", "Failed to write descriptor!");
 
     (void)AVCodecParcel::Marshalling(data, format);
@@ -68,7 +69,7 @@ std::string AVCodecListServiceProxy::FindEncoder(const Format &format)
     return reply.ReadString();
 }
 
-CapabilityData AVCodecListServiceProxy::CreateCapability(std::string codecName)
+CapabilityData CodecListServiceProxy::CreateCapability(std::string codecName)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -76,25 +77,25 @@ CapabilityData AVCodecListServiceProxy::CreateCapability(std::string codecName)
     Format profileFormat;
     CapabilityData capabilityData;
 
-    bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, capabilityData, "Failed to write descriptor!");
 
     (void)data.WriteString(codecName);
     int32_t ret = Remote()->SendRequest(CREATE_CAPABILITY, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, capabilityData,
         "GetCodecCapabilityInfos failed, error: %{public}d", ret);
-    (void)AVCodecListParcel::Unmarshalling(reply, capabilityData);
+    (void)CodecListParcel::Unmarshalling(reply, capabilityData);
 
     return capabilityData;
 }
 
-int32_t AVCodecListServiceProxy::DestroyStub()
+int32_t CodecListServiceProxy::DestroyStub()
 {
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;
 
-    bool token = data.WriteInterfaceToken(AVCodecListServiceProxy::GetDescriptor());
+    bool token = data.WriteInterfaceToken(CodecListServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(DESTROY, data, reply, option);

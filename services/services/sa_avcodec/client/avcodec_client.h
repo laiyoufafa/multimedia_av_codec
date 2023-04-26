@@ -32,6 +32,10 @@
 #include "codec_client.h"
 #endif
 
+#ifdef SUPPORT_CODECLIST            
+#include "codeclist_client.h"
+#endif
+
 #ifdef SUPPORT_SOURCE
 #include "source_client.h"
 #endif
@@ -58,6 +62,11 @@ public:
 #ifdef SUPPORT_CODEC
     std::shared_ptr<ICodecService> CreateCodecService() override;
     int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
+#endif
+
+#ifdef SUPPORT_CODECLIST
+    std::shared_ptr<ICodecListService> CreateCodecListService() override;
+    int32_t DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE

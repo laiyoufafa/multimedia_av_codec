@@ -13,23 +13,27 @@
  * limitations under the License.
  */
 
-#ifndef I_AVCODECLIST_SERVICE_H
-#define I_AVCODECLIST_SERVICE_H
+#ifndef CODECLIST_SERVICE_PROXY_H
+#define CODECLIST_SERVICE_PROXY_H
 
-#include "avcodec_info.h"
+#include "i_standard_codeclist_service.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
-class IAVCodecListService {
+class CodecListServiceProxy : public IRemoteProxy<IStandardCodecListService>, public NoCopyable {
 public:
-    // AVCodecList
-    virtual ~IAVCodecListService() = default;
-    virtual std::string FindVideoDecoder(const Format &format) = 0;
-    virtual std::string FindVideoEncoder(const Format &format) = 0;
-    virtual std::string FindAudioDecoder(const Format &format) = 0;
-    virtual std::string FindAudioEncoder(const Format &format) = 0;
-    virtual CapabilityData GetCapabilityData(std::string codecName) = 0;
+    explicit CodecListServiceProxy(const sptr<IRemoteObject> &impl);
+    virtual ~CodecListServiceProxy();
+
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(std::string codecName) override;
+    int32_t DestroyStub() override;
+
+private:
+    static inline BrokerDelegator<CodecListServiceProxy> delegator_;
 };
 } // namespace Media
 } // namespace OHOS
-#endif
+#endif // CODECLIST_SERVICE_PROXY_H

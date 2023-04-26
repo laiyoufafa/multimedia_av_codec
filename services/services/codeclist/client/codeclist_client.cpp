@@ -13,32 +13,32 @@
  * limitations under the License.
  */
 
-#include "avcodeclist_client.h"
+#include "codeclist_client.h"
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListClient"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListClient"};
 }
 
 namespace OHOS {
 namespace Media {
-std::shared_ptr<AVCodecListClient> AVCodecListClient::Create(const sptr<IStandardAVCodecListService> &ipcProxy)
+std::shared_ptr<CodecListClient> CodecListClient::Create(const sptr<IStandardCodecListService> &ipcProxy)
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "ipcProxy is nullptr..");
 
-    std::shared_ptr<AVCodecListClient> codecList = std::make_shared<AVCodecListClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(codecList != nullptr, nullptr, "failed to new AVCodecListClient..");
+    std::shared_ptr<CodecListClient> codecList = std::make_shared<CodecListClient>(ipcProxy);
+    CHECK_AND_RETURN_RET_LOG(codecList != nullptr, nullptr, "failed to new CodecListClient..");
 
     return codecList;
 }
 
-AVCodecListClient::AVCodecListClient(const sptr<IStandardAVCodecListService> &ipcProxy)
+CodecListClient::CodecListClient(const sptr<IStandardCodecListService> &ipcProxy)
     : codecListProxy_(ipcProxy)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecListClient::~AVCodecListClient()
+CodecListClient::~CodecListClient()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     if (codecListProxy_ != nullptr) {
@@ -47,27 +47,27 @@ AVCodecListClient::~AVCodecListClient()
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AVCodecListClient::MediaServerDied()
+void CodecListClient::AVCodecServerDied()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     codecListProxy_ = nullptr;
 }
 
-std::string AVCodecListClient::FindDecoder(const Format &format)
+std::string CodecListClient::FindDecoder(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
     return codecListProxy_->FindDecoder(format);
 }
 
-std::string AVCodecListClient::FindEncoder(const Format &format)
+std::string CodecListClient::FindEncoder(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecListProxy_ != nullptr, "", "codeclist service does not exist.");
     return codecListProxy_->FindEncoder(format);
 }
 
-CapabilityData AVCodecListClient::CreateCapability(std::string codecName)
+CapabilityData CodecListClient::CreateCapability(std::string codecName)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;

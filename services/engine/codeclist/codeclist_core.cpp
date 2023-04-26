@@ -14,28 +14,28 @@
  */
 
 #include <cmath> // fabs
-#include "avcodeclist_core.h"
-#include "avcodec_ability_singleton.h"
+#include "codeclist_core.h"
+#include "codec_ability_singleton.h"
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListCore"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListCore"};
     constexpr float EPSINON = 0.0001;
 }
 
 namespace OHOS {
 namespace Media {
-AVCodecListCore::AVCodecListCore()
+CodecListCore::CodecListCore()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecListCore::~AVCodecListCore()
+CodecListCore::~CodecListCore()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-bool AVCodecListCore::CheckBitrate(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckBitrate(const Format &format, const CapabilityData &data)
 {
     int32_t targetBitrate;
     if (!format.ContainKey("bitrate")) {
@@ -49,7 +49,7 @@ bool AVCodecListCore::CheckBitrate(const Format &format, const CapabilityData &d
     return true;
 }
 
-bool AVCodecListCore::CheckVideoResolution(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckVideoResolution(const Format &format, const CapabilityData &data)
 {
     int32_t targetWidth;
     int32_t targetHeight;
@@ -66,7 +66,7 @@ bool AVCodecListCore::CheckVideoResolution(const Format &format, const Capabilit
     return true;
 }
 
-bool AVCodecListCore::CheckVideoPixelFormat(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckVideoPixelFormat(const Format &format, const CapabilityData &data)
 {
     int32_t targetPixelFormat;
     if (!format.ContainKey("pixel_format")) {
@@ -74,13 +74,13 @@ bool AVCodecListCore::CheckVideoPixelFormat(const Format &format, const Capabili
         return true;
     }
     (void)format.GetIntValue("pixel_format", targetPixelFormat);
-    if (find(data.format.begin(), data.format.end(), targetPixelFormat) == data.format.end()) {
+    if (find(data.pixFormat.begin(), data.pixFormat.end(), targetPixelFormat) == data.pixFormat.end()) {
         return false;
     }
     return true;
 }
 
-bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckVideoFrameRate(const Format &format, const CapabilityData &data)
 {
     if (!format.ContainKey("frame_rate")) {
         AVCODEC_LOGD("The frame_rate of the format are not specified");
@@ -116,7 +116,7 @@ bool AVCodecListCore::CheckVideoFrameRate(const Format &format, const Capability
     return true;
 }
 
-bool AVCodecListCore::CheckAudioChannel(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckAudioChannel(const Format &format, const CapabilityData &data)
 {
     int32_t targetChannel;
     if (!format.ContainKey("channel_count")) {
@@ -130,7 +130,7 @@ bool AVCodecListCore::CheckAudioChannel(const Format &format, const CapabilityDa
     return true;
 }
 
-bool AVCodecListCore::CheckAudioSampleRate(const Format &format, const CapabilityData &data)
+bool CodecListCore::CheckAudioSampleRate(const Format &format, const CapabilityData &data)
 {
     int32_t targetSampleRate;
     if (!format.ContainKey("samplerate")) {
@@ -144,7 +144,7 @@ bool AVCodecListCore::CheckAudioSampleRate(const Format &format, const Capabilit
     return true;
 }
 
-bool AVCodecListCore::IsVideoCapSupport(const Format &format, const CapabilityData &data) 
+bool CodecListCore::IsVideoCapSupport(const Format &format, const CapabilityData &data) 
 {
     return CheckVideoResolution(format, data) &&
            CheckVideoPixelFormat(format, data) &&
@@ -152,7 +152,7 @@ bool AVCodecListCore::IsVideoCapSupport(const Format &format, const CapabilityDa
            CheckBitrate(format, data);
 }
 
-bool AVCodecListCore::IsAudioCapSupport(const Format &format, const CapabilityData &data) 
+bool CodecListCore::IsAudioCapSupport(const Format &format, const CapabilityData &data) 
 {
    return CheckAudioChannel(format, data) &&
           CheckAudioSampleRate(format, data) &&
@@ -160,7 +160,7 @@ bool AVCodecListCore::IsAudioCapSupport(const Format &format, const CapabilityDa
 }
 
 // mime是必要参数
-std::string AVCodecListCore::FindCodec(const Format &format, bool isEncoder)
+std::string CodecListCore::FindCodec(const Format &format, bool isEncoder)
 {
     (void)isEncoder;
 
@@ -185,7 +185,7 @@ std::string AVCodecListCore::FindCodec(const Format &format, bool isEncoder)
     if (isVendorKey) {
         (void)format.GetIntValue("codec_vendor_flag", isVendor);
     }
-    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilityArray();
+    std::vector<CapabilityData> capabilityDataArray = CodecAbilitySingleton::GetInstance().GetCapabilityArray();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
         if ((*iter).codecType != codecType ||
@@ -209,24 +209,24 @@ std::string AVCodecListCore::FindCodec(const Format &format, bool isEncoder)
     return "";
 }
 
-std::string AVCodecListCore::FindEncoder(const Format &format)
+std::string CodecListCore::FindEncoder(const Format &format)
 {
     return FindCodec(format, true);
 }
 
-std::string AVCodecListCore::FindDecoder(const Format &format)
+std::string CodecListCore::FindDecoder(const Format &format)
 {
     return FindCodec(format, false);
 }
 
-CapabilityData AVCodecListCore::CreateCapability(std::string codecName)
+CapabilityData CodecListCore::CreateCapability(std::string codecName)
 {              
     std::lock_guard<std::mutex> lock(mutex_);
     CapabilityData capData;
     if (codecName.empty()) {
         return capData;
     }
-    std::vector<CapabilityData> capabilityDataArray = AVCodecAbilitySingleton::GetInstance().GetCapabilityArray();
+    std::vector<CapabilityData> capabilityDataArray = CodecAbilitySingleton::GetInstance().GetCapabilityArray();
     auto iter = capabilityDataArray.begin();
     while (iter != capabilityDataArray.end()) {
         if (codecName == ((*iter).codecName)) {

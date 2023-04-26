@@ -27,7 +27,7 @@
 #include "codec_service_stub.h"
 #endif
 #ifdef SUPPORT_CODECLIST
-#include "avcodeclist_service_stub.h"
+#include "codeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
 #include "avdemuxer_stub.h"
@@ -193,7 +193,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
             "Please release the applied resources.", codecListStubMap_.size());
         return nullptr;
     }
-    sptr<AVCodecListServiceStub> stub = AVCodecListServiceStub::Create();
+    sptr<CodecListServiceStub> stub = CodecListServiceStub::Create();
     if (stub == nullptr) {
         AVCODEC_LOGE("failed to create AVCodecListServiceStub");
         return nullptr;

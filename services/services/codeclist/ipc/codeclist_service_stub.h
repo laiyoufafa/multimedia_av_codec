@@ -13,23 +13,23 @@
  * limitations under the License.
  */
 
-#ifndef AVCODECLIST_SERVICE_STUB_H
-#define AVCODECLIST_SERVICE_STUB_H
+#ifndef CODECLIST_SERVICE_STUB_H
+#define CODECLIST_SERVICE_STUB_H
 
 #include <map>
-#include "i_standard_avcodeclist_service.h"
+#include "i_standard_codeclist_service.h"
 #include "avcodec_death_recipient.h"
-#include "avcodeclist_server.h"
+#include "codeclist_server.h"
 #include "nocopyable.h"
 #include "avcodec_parcel.h"
-#include "avcodeclist_parcel.h"
+#include "codeclist_parcel.h"
 
 namespace OHOS {
 namespace Media {
-class AVCodecListServiceStub : public IRemoteStub<IStandardAVCodecListService>, public NoCopyable {
+class CodecListServiceStub : public IRemoteStub<IStandardCodecListService>, public NoCopyable {
 public:
-    static sptr<AVCodecListServiceStub> Create();
-    virtual ~AVCodecListServiceStub();
+    static sptr<CodecListServiceStub> Create();
+    virtual ~CodecListServiceStub();
 
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
     std::string FindDecoder(const Format &format) override;
@@ -38,17 +38,17 @@ public:
     int32_t DestroyStub() override;
 
 private:
-    AVCodecListServiceStub();
+    CodecListServiceStub();
     int32_t Init();
     int32_t DoFindDecoder(MessageParcel &data, MessageParcel &reply);
     int32_t DoFindEncoder(MessageParcel &data, MessageParcel &reply);
     int32_t DoCreateCapability(MessageParcel &data, MessageParcel &reply);
     int32_t DoDestroyStub(MessageParcel &data, MessageParcel &reply);
-    std::shared_ptr<IAVCodecListService> codecListServer_ = nullptr;
-    using AVCodecListStubFunc = int32_t(AVCodecListServiceStub::*)(MessageParcel &data, MessageParcel &reply);
-    std::map<uint32_t, AVCodecListStubFunc> codecListFuncs_;
+    std::shared_ptr<ICodecListService> codecListServer_ = nullptr;
+    using CodecListStubFunc = int32_t(CodecListServiceStub::*)(MessageParcel &data, MessageParcel &reply);
+    std::map<uint32_t, CodecListStubFunc> codecListFuncs_;
     std::mutex mutex_;
 };
 } // namespace Media
 } // namespace OHOS
-#endif // AVCODECLIST_SERVICE_STUB_H
+#endif // CODECLIST_SERVICE_STUB_H

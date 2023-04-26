@@ -13,56 +13,56 @@
  * limitations under the License.
  */
 
-#include "avcodeclist_parcel.h"
+#include "codeclist_parcel.h"
 #include "avcodec_log.h"
 
 namespace {
-constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListParcel"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListParcel"};
 }
 
 namespace OHOS {
 namespace Media {
-bool AVCodecListParcel::Marshalling(MessageParcel &parcel, CapabilityData &capabilityData)
+bool CodecListParcel::Marshalling(MessageParcel &parcel, CapabilityData &capabilityData)
 {
-    (void)parcel.WriteString(it->codecName);
-    (void)parcel.WriteString(it->mimeType);
-    (void)parcel.WriteBool(it->isVendor);
-    (void)parcel.WriteInt32(it->codecType);
-    (void)parcel.WriteInt32(it->maxInstance);
-    (void)parcel.WriteInt32(it->bitrate.minVal);
-    (void)parcel.WriteInt32(it->bitrate.maxVal);
-    (void)parcel.WriteInt32(it->channels.minVal);
-    (void)parcel.WriteInt32(it->channels.maxVal);
-    (void)parcel.WriteInt32(it->complexity.minVal);
-    (void)parcel.WriteInt32(it->complexity.maxVal);
-    (void)parcel.WriteInt32(it->alignment.width);
-    (void)parcel.WriteInt32(it->alignment.height);
-    (void)parcel.WriteInt32(it->width.minVal);
-    (void)parcel.WriteInt32(it->width.maxVal);
-    (void)parcel.WriteInt32(it->height.minVal);
-    (void)parcel.WriteInt32(it->height.maxVal);
-    (void)parcel.WriteInt32(it->frameRate.minVal);
-    (void)parcel.WriteInt32(it->frameRate.maxVal);
-    (void)parcel.WriteInt32(it->encodeQuality.minVal);
-    (void)parcel.WriteInt32(it->encodeQuality.maxVal);
-    (void)parcel.WriteInt32(it->blockPerFrame.minVal);
-    (void)parcel.WriteInt32(it->blockPerFrame.maxVal);
-    (void)parcel.WriteInt32(it->blockPerSecond.minVal);
-    (void)parcel.WriteInt32(it->blockPerSecond.maxVal);
-    (void)parcel.WriteInt32(it->blockSize.width);
-    (void)parcel.WriteInt32(it->blockSize.height);
-    (void)parcel.WriteInt32Vector(it->sampleRate);
-    (void)parcel.WriteInt32Vector(it->pixFormat);
-    (void)parcel.WriteInt32Vector(it->profiles);
-    (void)parcel.WriteInt32Vector(it->bitrateMode);
-    (void)Marshalling(parcel, it->measuredFrameRate);
-    (void)Marshalling(parcel, it->profileLevelsMap);
+    (void)parcel.WriteString(capabilityData.codecName);
+    (void)parcel.WriteString(capabilityData.mimeType);
+    (void)parcel.WriteBool(capabilityData.isVendor);
+    (void)parcel.WriteInt32(capabilityData.codecType);
+    (void)parcel.WriteInt32(capabilityData.maxInstance);
+    (void)parcel.WriteInt32(capabilityData.bitrate.minVal);
+    (void)parcel.WriteInt32(capabilityData.bitrate.maxVal);
+    (void)parcel.WriteInt32(capabilityData.channels.minVal);
+    (void)parcel.WriteInt32(capabilityData.channels.maxVal);
+    (void)parcel.WriteInt32(capabilityData.complexity.minVal);
+    (void)parcel.WriteInt32(capabilityData.complexity.maxVal);
+    (void)parcel.WriteInt32(capabilityData.alignment.width);
+    (void)parcel.WriteInt32(capabilityData.alignment.height);
+    (void)parcel.WriteInt32(capabilityData.width.minVal);
+    (void)parcel.WriteInt32(capabilityData.width.maxVal);
+    (void)parcel.WriteInt32(capabilityData.height.minVal);
+    (void)parcel.WriteInt32(capabilityData.height.maxVal);
+    (void)parcel.WriteInt32(capabilityData.frameRate.minVal);
+    (void)parcel.WriteInt32(capabilityData.frameRate.maxVal);
+    (void)parcel.WriteInt32(capabilityData.encodeQuality.minVal);
+    (void)parcel.WriteInt32(capabilityData.encodeQuality.maxVal);
+    (void)parcel.WriteInt32(capabilityData.blockPerFrame.minVal);
+    (void)parcel.WriteInt32(capabilityData.blockPerFrame.maxVal);
+    (void)parcel.WriteInt32(capabilityData.blockPerSecond.minVal);
+    (void)parcel.WriteInt32(capabilityData.blockPerSecond.maxVal);
+    (void)parcel.WriteInt32(capabilityData.blockSize.width);
+    (void)parcel.WriteInt32(capabilityData.blockSize.height);
+    (void)parcel.WriteInt32Vector(capabilityData.sampleRate);
+    (void)parcel.WriteInt32Vector(capabilityData.pixFormat);
+    (void)parcel.WriteInt32Vector(capabilityData.profiles);
+    (void)parcel.WriteInt32Vector(capabilityData.bitrateMode);
+    (void)Marshalling(parcel, capabilityData.measuredFrameRate);
+    (void)Marshalling(parcel, capabilityData.profileLevelsMap);
     AVCODEC_LOGD("success to Marshalling capabilityDataArray");
 
     return true;
 }
 
-bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<ImgSize, Range> &mapSizeToRange)
+bool CodecListParcel::Marshalling(MessageParcel &parcel, const std::map<ImgSize, Range> &mapSizeToRange)
 {
     parcel.WriteUint32(mapSizeToRange.size());
     for (auto it = mapSizeToRange.begin(); it != mapSizeToRange.end(); it++) {
@@ -74,7 +74,7 @@ bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<ImgSiz
     return true;
 }
 
-bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
+bool CodecListParcel::Marshalling(MessageParcel &parcel, const std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
 {
     parcel.WriteUint32(mapIntToVec.size());
     for (auto it = mapIntToVec.begin(); it != mapIntToVec.end(); it++) {
@@ -84,7 +84,7 @@ bool AVCodecListParcel::Marshalling(MessageParcel &parcel, const std::map<int32_
     return true;
 }
 
-bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &capabilityData)
+bool CodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &capabilityData)
 {
     capabilityData.codecName = parcel.ReadString();
     capabilityData.mimeType = parcel.ReadString();
@@ -114,7 +114,7 @@ bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &cap
     capabilityData.blockSize.width = parcel.ReadInt32();
     capabilityData.blockSize.height = parcel.ReadInt32();
     parcel.ReadInt32Vector(&capabilityData.sampleRate);
-    parcel.ReadInt32Vector(&capabilityData.format);
+    parcel.ReadInt32Vector(&capabilityData.pixFormat);
     parcel.ReadInt32Vector(&capabilityData.profiles);
     parcel.ReadInt32Vector(&capabilityData.bitrateMode);
     Unmarshalling(parcel, capabilityData.measuredFrameRate);
@@ -124,7 +124,7 @@ bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &cap
     return true;
 }
 
-bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<ImgSize, Range> &mapSizeToRange)
+bool CodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<ImgSize, Range> &mapSizeToRange)
 {
     uint32_t size = parcel.ReadUint32();
     for (uint32_t index = 0; index < size; index++) {
@@ -139,7 +139,7 @@ bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<ImgSize, R
     return true;
 }
 
-bool AVCodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
+bool CodecListParcel::Unmarshalling(MessageParcel &parcel, std::map<int32_t, std::vector<int32_t>> &mapIntToVec)
 {
     uint32_t size = parcel.ReadUint32();
     for (uint32_t index = 0; index < size; index++) {

@@ -13,32 +13,32 @@
  * limitations under the License.
  */
 
-#include "avcodec_ability_singleton.h"
+#include "codec_ability_singleton.h"
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecAbilitySingleton"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecAbilitySingleton"};
 }
 
 namespace OHOS {
 namespace Media {
-AVCodecAbilitySingleton& AVCodecAbilitySingleton::GetInstance()
+CodecAbilitySingleton& CodecAbilitySingleton::GetInstance()
 {
-    static AVCodecAbilitySingleton instance;
+    static CodecAbilitySingleton instance;
     return instance;
 }
 
-AVCodecAbilitySingleton::AVCodecAbilitySingleton()
+CodecAbilitySingleton::CodecAbilitySingleton()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecAbilitySingleton::~AVCodecAbilitySingleton()
+CodecAbilitySingleton::~CodecAbilitySingleton()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AVCodecAbilitySingleton::RegisterCapabilityArray(const std::vector<CapabilityData> &capaArray)
+void CodecAbilitySingleton::RegisterCapabilityArray(const std::vector<CapabilityData> &capaArray)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     capabilityDataArray_.insert(capabilityDataArray_.end(), capaArray.begin(),
@@ -46,7 +46,7 @@ void AVCodecAbilitySingleton::RegisterCapabilityArray(const std::vector<Capabili
     AVCODEC_LOGD("RegisterCapability success");
 }
 
-std::vector<CapabilityData> AVCodecAbilitySingleton::GetCapabilityArray()
+std::vector<CapabilityData> CodecAbilitySingleton::GetCapabilityArray()
 {
     std::lock_guard<std::mutex> lock(mutex_);
     return capabilityDataArray_;
