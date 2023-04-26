@@ -16,7 +16,6 @@
 #ifndef AVCODEC_ERRORS_H
 #define AVCODEC_ERRORS_H
 
-#include <map>
 #include <string>
 #include "errors.h"
 #include "native_averrors.h"
