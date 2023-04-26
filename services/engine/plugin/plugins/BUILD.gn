@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Huawei Device Co., Ltd.
+# Copyright (c) 2023 Huawei Device Co., Ltd.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -10,13 +10,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
-import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
-
-group("av_codec_engine_package") {
-  deps = [
-    "plugin:av_codec_plugin",
-    #"avcodeclist:av_codec_engine_avcodeclist",
-    ]
+group("av_codec_plugin_store") {
+  deps = []
+  deps += [ "muxer/ffmpeg_muxer:plugin_muxer_ffmpeg" ]
 }

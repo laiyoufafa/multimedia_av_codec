@@ -11,12 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/ohos.gni")
-import("//foundation/multimedia/av_codec/config.gni")
+import("//build/ohos/sa_profile/sa_profile.gni")
 
-group("av_codec_engine_package") {
-  deps = [
-    "plugin:av_codec_plugin",
-    #"avcodeclist:av_codec_engine_avcodeclist",
-    ]
+ohos_sa_profile("av_codec_service_sa_profile") {
+  sources = [ "3011.xml" ]
+  part_name = "multimedia_av_codec"
 }
+

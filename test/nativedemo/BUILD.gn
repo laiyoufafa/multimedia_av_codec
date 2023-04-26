@@ -63,13 +63,14 @@ ohos_executable("av_codec_demo") {
 
   deps = [
     "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
     "//foundation/multimedia/av_codec/services/services:av_codec_service",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
   ]
 
   external_deps = [
     "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
-    "multimedia_av_codec:av_codec_client",
   ]
   install_enable = false
 

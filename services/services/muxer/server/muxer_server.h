@@ -13,34 +13,37 @@
  * limitations under the License.
  */
 
-#ifndef MUXER_CLIENT_H
-#define MUXER_CLIENT_H
+#ifndef MUXER_SERVER_H
+#define MUXER_SERVER_H
 
-#include "i_avmuxer.h"
-#include "i_avmuxer_service.h"
+#include <mutex>
+#include "i_muxer_service.h"
+#include "i_muxer_engine.h"
+#include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {
-class AVMuxerClient : public IAVMuxer, public NoCopyable {
+namespace Media {   
+class MuxerServer : public IMuxerService, public NoCopyable {
 public:
-    static std::shared_ptr<AVMuxerClient> Create(const sptr<IAVMuxerService> &ipcProxy);
-    explicit AVMuxerClient(const sptr<IAVMuxerService> &ipcProxy);
-    ~AVMuxerClient();
+    static std::shared_ptr<IMuxerService> Create();
+    MuxerServer();
+    ~MuxerServer();
 
-    int32_t Init() override;
+    int32_t InitParameter(int32_t fd, OutputFormat format) override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
-    int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) override;
+    int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) override;
     int32_t Start() override;
-    int32_t WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info) override;
+    int32_t WriteSampleBuffer(std::shared_ptr<AVSharedMemory> sampleBuffer, const TrackSampleInfo &info) override;
     int32_t Stop() override;
+    void Release() override;
+    int32_t DumpInfo(int32_t fd);
 
-    void AVCodecServerDied();
 private:
-    std::mutex mutex_;
-    sptr<IAVMuxerService> muxerProxy_ = nullptr;
+    std::shared_ptr<IMuxerEngine> muxerEngine_ = nullptr;
+    int32_t appUid_ = 0;
+    int32_t appPid_ = 0;
 };
 }  // namespace Media
 }  // namespace OHOS
-#endif  // MUXER_CLIENT_H
+#endif
