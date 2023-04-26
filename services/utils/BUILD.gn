@@ -35,7 +35,7 @@ ohos_static_library("av_codec_format") {
   ]
 
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }
 
 ohos_shared_library("av_codec_service_utils") {
@@ -58,7 +58,8 @@ include_dirs = [
   sources = [
     "avdatasrcmemory.cpp",
     "avsharedmemorybase.cpp",
-    "avsharedmemorypool.cpp"
+    "avsharedmemorypool.cpp",
+    "task_thread.cpp"
   ]
   
   cflags = [
@@ -93,5 +94,5 @@ include_dirs = [
   ]
 
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }

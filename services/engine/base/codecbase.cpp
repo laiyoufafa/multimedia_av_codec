@@ -17,42 +17,50 @@
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecBase"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN,
+                                               "CodecBase"};
 }
 
 namespace OHOS {
 namespace Media {
 
-int32_t CodecBase::NotifyEos()
-{
-    AVCODEC_LOGW("NotifyEos is not supported");
-    return 0;
+int32_t CodecBase::NotifyEos() {
+  AVCODEC_LOGW("NotifyEos is not supported");
+  return 0;
 }
 
-sptr<Surface> CodecBase::CreateInputSurface()
-{
-    AVCODEC_LOGW("CreateInputSurface is not supported");
-    return nullptr;
+sptr<Surface> CodecBase::CreateInputSurface() {
+  AVCODEC_LOGW("CreateInputSurface is not supported");
+  return nullptr;
 }
 
-int32_t CodecBase::SetOutputSurface(sptr<Surface> surface)
-{
-    (void)surface;
-    AVCODEC_LOGW("SetOutputSurface is not supported");
-    return 0;
+int32_t CodecBase::SetOutputSurface(sptr<Surface> surface) {
+  (void)surface;
+  AVCODEC_LOGW("SetOutputSurface is not supported");
+  return 0;
 }
 
-int32_t CodecBase::RenderOutputBuffer(size_t index)
-{
-    (void)index;
-    AVCODEC_LOGW("RenderOutputBuffer is not supported");
-    return 0;
+int32_t CodecBase::RenderOutputBuffer(size_t index) {
+  (void)index;
+  AVCODEC_LOGW("RenderOutputBuffer is not supported");
+  return 0;
 }
 
-int32_t CodecBase::SignalRequestIDRFrame()
-{
-    AVCODEC_LOGW("SignalRequestIDRFrame is not supported");
-    return 0;
+int32_t CodecBase::SignalRequestIDRFrame() {
+  AVCODEC_LOGW("SignalRequestIDRFrame is not supported");
+  return 0;
+}
+
+std::shared_ptr<CodecBase> CodecBase::Create(const std::string &name) {
+  (void)name;
+  return std::shared_ptr<CodecBase>();
+}
+
+std::shared_ptr<CodecBase> CodecBase::Create(bool isEncoder,
+                                             const std::string &mime) {
+  (void)isEncoder;
+  (void)mime;
+  return std::shared_ptr<CodecBase>();
 }
 
 } // namespace Media

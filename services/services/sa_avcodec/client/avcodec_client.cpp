@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 #include "avcodec_client.h"
+#include "avcodec_xcollie.h"
+#include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
-#include "ipc_skeleton.h"
-#include "avcodec_xcollie.h"
 
 #ifdef SUPPORT_DEMUXER
 #include "i_avdemuxer_service.h"
@@ -35,34 +35,30 @@
 #include "i_standard_source_service.h"
 #endif
 
-#include "avcodec_log.h"
 #include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecClient"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecClient"};
 }
 
 namespace OHOS {
 namespace Media {
 
 static AVCodecClient avCodecClientInstance;
-IAVCodecService &AVCodecServiceFactory::GetInstance()
-{
+IAVCodecService &AVCodecServiceFactory::GetInstance() {
     return avCodecClientInstance;
 }
 
-AVCodecClient::AVCodecClient() noexcept
-{
+AVCodecClient::AVCodecClient() noexcept {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecClient::~AVCodecClient()
-{
+AVCodecClient::~AVCodecClient() {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-bool AVCodecClient::IsAlived()
-{
+bool AVCodecClient::IsAlived() {
     if (avCodecProxy_ == nullptr) {
         avCodecProxy_ = GetAVCodecProxy();
     }
@@ -70,8 +66,7 @@ bool AVCodecClient::IsAlived()
     return avCodecProxy_ != nullptr;
 }
 #ifdef SUPPORT_CODEC
-std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
-{
+std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
         AVCODEC_LOGE("av_codec service does not exist.");
@@ -92,8 +87,7 @@ std::shared_ptr<ICodecService> AVCodecClient::CreateCodecService()
     return codecClient;
 }
 
-int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecClient)
-{
+int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecClient) {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecClient != nullptr, AVCS_ERR_NO_MEMORY, "codec client is nullptr.");
     codecClientList_.remove(codecClient);
@@ -101,8 +95,7 @@ int32_t AVCodecClient::DestroyCodecService(std::shared_ptr<ICodecService> codecC
 }
 #endif
 #ifdef SUPPORT_CODECLIST
-std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService()
-{
+std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
         AVCODEC_LOGE("av_codec service does not exist.");
@@ -123,8 +116,7 @@ std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService()
     return codecListClient;
 }
 
-int32_t AVCodecClient::DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient)
-{
+int32_t AVCodecClient::DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient) {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(codecListClient != nullptr, AVCS_ERR_NO_MEMORY, "codeclist client is nullptr.");
     codecListClientList_.remove(codecListClient);
@@ -133,8 +125,7 @@ int32_t AVCodecClient::DestroyCodecListService(std::shared_ptr<ICodecListService
 #endif
 
 #ifdef SUPPORT_DEMUXER
-std::shared_ptr<IAVDemuxer> AVCodecClient::CreateDemuxerService()
-{
+std::shared_ptr<IAVDemuxer> AVCodecClient::CreateDemuxerService() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
         AVCODEC_LOGE("av_codec service does not exist.");
@@ -155,8 +146,7 @@ std::shared_ptr<IAVDemuxer> AVCodecClient::CreateDemuxerService()
     return demuxerClient;
 }
 
-int32_t AVCodecClient::DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxerClient)
-{
+int32_t AVCodecClient::DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxerClient) {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, AVCS_ERR_NO_MEMORY, "demuxer client is nullptr.");
     demuxerClientList_.remove(demuxerClient);
@@ -165,8 +155,7 @@ int32_t AVCodecClient::DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxer
 #endif
 
 #ifdef SUPPORT_MUXER
-std::shared_ptr<IAVMuxer> AVCodecClient::CreateMuxerService()
-{
+std::shared_ptr<IAVMuxer> AVCodecClient::CreateMuxerService() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
         AVCODEC_LOGE("av_codec service does not exist.");
@@ -187,8 +176,7 @@ std::shared_ptr<IAVMuxer> AVCodecClient::CreateMuxerService()
     return muxerClient;
 }
 
-int32_t AVCodecClient::DestroyMuxerService(std::shared_ptr<IAVMuxer> muxerClient)
-{
+int32_t AVCodecClient::DestroyMuxerService(std::shared_ptr<IAVMuxer> muxerClient) {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, AVCS_ERR_NO_MEMORY, "muxer client is nullptr.");
     muxerClientList_.remove(muxerClient);
@@ -197,8 +185,7 @@ int32_t AVCodecClient::DestroyMuxerService(std::shared_ptr<IAVMuxer> muxerClient
 #endif
 
 #ifdef SUPPORT_SOURCE
-std::shared_ptr<IAVMuxer> AVCodecClient::CreateSourceService()
-{
+std::shared_ptr<IAVMuxer> AVCodecClient::CreateSourceService() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (!IsAlived()) {
         AVCODEC_LOGE("av_codec service does not exist.");
@@ -219,8 +206,7 @@ std::shared_ptr<IAVMuxer> AVCodecClient::CreateSourceService()
     return source;
 }
 
-int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sourceClient)
-{
+int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sourceClient) {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(sourceClient != nullptr, AVCS_ERR_NO_MEMORY, "source client is nullptr.");
     sourceClientList_.remove(sourceClient);
@@ -228,25 +214,23 @@ int32_t AVCodecClient::DestroySourceService(std::shared_ptr<ISourceService> sour
 }
 #endif
 
-sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
-{
+sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy() {
     AVCODEC_LOGD("enter");
     sptr<ISystemAbilityManager> samgr = nullptr;
     COLLIE_LISTEN(samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager(),
-        "AVCodecClient::GetAVCodecProxy");
+                  "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(samgr != nullptr, nullptr, "system ability manager is nullptr.");
 
     sptr<IRemoteObject> object = nullptr;
-    COLLIE_LISTEN(object = samgr->GetSystemAbility(OHOS::AVCODEC_SERVICE_ID),
-        "AVCodecClient::GetAVCodecProxy");
+    COLLIE_LISTEN(object = samgr->GetSystemAbility(OHOS::AV_CODEC_SERVICE_ID), "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "avcodec object is nullptr.");
 
     avCodecProxy_ = iface_cast<IStandardAVCodecService>(object);
-    
+
     CHECK_AND_RETURN_RET_LOG(avCodecProxy_ != nullptr, nullptr, "avcodec proxy is nullptr.");
 
     pid_t pid = 0;
-    deathRecipient_ = new(std::nothrow) AVCodecDeathRecipient(pid);
+    deathRecipient_ = new (std::nothrow) AVCodecDeathRecipient(pid);
     CHECK_AND_RETURN_RET_LOG(deathRecipient_ != nullptr, nullptr, "failed to new AVCodecDeathRecipient.");
 
     deathRecipient_->SetNotifyCb(std::bind(&AVCodecClient::AVCodecServerDied, std::placeholders::_1));
@@ -256,19 +240,17 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
         return nullptr;
     }
 
-    listenerStub_ = new(std::nothrow) AVCodecListenerStub();
+    listenerStub_ = new (std::nothrow) AVCodecListenerStub();
     CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, nullptr, "failed to new AVCodecListenerStub");
     return avCodecProxy_;
 }
 
-void AVCodecClient::AVCodecServerDied(pid_t pid)
-{
+void AVCodecClient::AVCodecServerDied(pid_t pid) {
     AVCODEC_LOGE("av_codec server is died, pid:%{public}d!", pid);
     avCodecClientInstance.DoAVCodecServerDied();
 }
 
-void AVCodecClient::DoAVCodecServerDied()
-{
+void AVCodecClient::DoAVCodecServerDied() {
     std::lock_guard<std::mutex> lock(mutex_);
     if (avCodecProxy_ != nullptr) {
         (void)avCodecProxy_->AsObject()->RemoveDeathRecipient(deathRecipient_);
@@ -309,7 +291,6 @@ void AVCodecClient::DoAVCodecServerDied()
         }
     }
 #endif
-
 }
 } // namespace Media
 } // namespace OHOS
