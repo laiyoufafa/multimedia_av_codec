@@ -40,14 +40,10 @@ AVMuxerServer::AVMuxerServer()
 AVMuxerServer::~AVMuxerServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    // avmuxerEngine_ = nullptr;
 }
 
 int32_t AVMuxerServer::InitServer()
 {
-
 
     return AVCS_ERR_OK;
 }
@@ -66,7 +62,6 @@ int32_t AVMuxerServer::SetLocation(float latitude, float longitude)
     (void)latitude;
     (void)longitude;
     std::lock_guard<std::mutex> lock(mutex_);
-
 
     return AVCS_ERR_OK;
 }
@@ -106,7 +101,7 @@ int32_t AVMuxerServer::Start()
     return AVCS_ERR_OK;
 }
 
-int32_t AVMuxerServer::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
+int32_t AVMuxerServer::WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info)
 {
     // TODO:achieve it
     (void)trackIndex;

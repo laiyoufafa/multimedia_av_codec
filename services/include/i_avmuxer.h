@@ -19,7 +19,8 @@ public:
     virtual int32_t SetParameter(const Format &generalFormat) = 0;
     virtual int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) = 0;
     virtual int32_t Start() = 0;
-    virtual int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) = 0;
+    virtual int32_t WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer,
+                                     AVCodecBufferInfo info) = 0;
     virtual int32_t Stop() = 0;
 };
 } // namespace Media

@@ -134,7 +134,7 @@ int32_t AVMuxerStub::Start()
     return muxerServer_->Start();
 }
 
-int32_t AVMuxerStub::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info)
+int32_t AVMuxerStub::WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info)
 {
     CHECK_AND_RETURN_RET_LOG(muxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "muxer service is nullptr");
     return muxerServer_->WriteSampleBuffer(trackIndex, sampleBuffer, info);
@@ -162,14 +162,16 @@ int32_t AVMuxerStub::Init(MessageParcel &data, MessageParcel &reply)
     // TODO: 补充LOG说明
     (void)data;
     (void)reply;
+    bool ret = reply.WriteInt32(Init());
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(DestroyStub());
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
@@ -177,18 +179,16 @@ int32_t AVMuxerStub::SetLocation(MessageParcel &data, MessageParcel &reply)
 {
     float latitude = data.ReadFloat();
     float longitude = data.ReadFloat();
-
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetLocation(latitude, longitude)), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(SetLocation(latitude, longitude));
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::SetRotation(MessageParcel &data, MessageParcel &reply)
 {
     int32_t rotation = data.ReadInt32();
-
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetRotation(rotation)), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(SetRotation(rotation));
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
@@ -196,29 +196,26 @@ int32_t AVMuxerStub::SetParameter(MessageParcel &data, MessageParcel &reply)
 {
     Format format;
     AVCodecParcel::Unmarshalling(data, format);
-
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetParameter(format)), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(SetParameter(format));
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::AddTrack(MessageParcel &data, MessageParcel &reply)
 {
     Format generalFormat;
+    uint32_t trackIndex = data.ReadInt32();
     (void)AVCodecParcel::Unmarshalling(data, generalFormat);
-    // TODO:
-    uint32_t trackIndex = 0;
-
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(AddTrack(trackIndex, generalFormat)), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(AddTrack(trackIndex, generalFormat));
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::Start(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Start()), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(Start());
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
@@ -226,15 +223,22 @@ int32_t AVMuxerStub::WriteSampleBuffer(MessageParcel &data, MessageParcel &reply
 {
     (void)data;
     (void)reply;
-
+    uint32_t trackIndex = data.ReadInt32();
+    std::shared_ptr<AVSharedMemory> sampleBuffer = ReadAVSharedMemoryFromParcel(data);
+    AVCodecBufferInfo bufferInfo;
+    bufferInfo.presentationTimeUs = data.ReadInt64();
+    bufferInfo.size = data.ReadInt32();
+    bufferInfo.offset = data.ReadInt32();
+    bool ret = reply.WriteInt32(WriteSampleBuffer(trackIndex, sampleBuffer, bufferInfo));
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
 int32_t AVMuxerStub::Stop(MessageParcel &data, MessageParcel &reply)
 {
     (void)data;
-    // TODO: 补充LOG说明
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Stop()), AVCS_ERR_UNKNOWN, "");
+    bool ret = reply.WriteInt32(Stop());
+    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "MessageParcel write failed");
     return AVCS_ERR_OK;
 }
 
