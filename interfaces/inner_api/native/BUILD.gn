@@ -100,6 +100,16 @@ config("av_codec_client_local_config") {
   ]
 }
 
+config("av_codec_client_ipc_config") {
+  include_dirs = [
+    "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/client",
+    "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/ipc",
+    "$AV_CODEC_ROOT_DIR/services/services/common",
+    "$AV_CODEC_ROOT_DIR/services/services/muxer/client",
+    "$AV_CODEC_ROOT_DIR/services/services/muxer/ipc",
+  ]
+}
+
 config("av_codec_client_public_config") {
   include_dirs = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/avcodec",
@@ -111,6 +121,7 @@ config("av_codec_client_public_config") {
     "$AV_CODEC_ROOT_DIR/services/utils",
     "$AV_CODEC_ROOT_DIR/services/include",
     "$AV_CODEC_ROOT_DIR/services/dfx/include",
+    "$AV_CODEC_ROOT_DIR/services/utils/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
     "//utils/system/safwk/native/include",
     "//third_party/bounds_checking_function/include",
@@ -159,6 +170,7 @@ ohos_shared_library("av_codec_client") {
   install_enable = true
     public_configs = [
       ":av_codec_client_local_config",
+      ":av_codec_client_ipc_config",
       ":av_codec_client_public_config",
       ":av_codec_packege_include",
   ]
@@ -202,8 +214,8 @@ ohos_shared_library("av_codec_client") {
   if (multimedia_av_codec_support_muxer) {
     sources += [
       "$AV_CODEC_ROOT_DIR/frameworks/native/avmuxer/avmuxer_impl.cpp",
-      "$AV_CODEC_ROOT_DIR/services/services/muxer/client/avmuxer_client.cpp",
-      "$AV_CODEC_ROOT_DIR/services/services/muxer/ipc/avmuxer_proxy.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/muxer/client/muxer_client.cpp",
+      "$AV_CODEC_ROOT_DIR/services/services/muxer/ipc/muxer_service_proxy.cpp",
     ]
   }
   

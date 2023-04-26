@@ -16,39 +16,37 @@
 #ifndef I_STANDARD_MUXER_SERVICE_H
 #define I_STANDARD_MUXER_SERVICE_H
 
-#include "avcodec_info.h"
-#include "avcodec_common.h"
+#include "i_muxer_service.h"
 #include "iremote_proxy.h"
 
 namespace OHOS {
 namespace Media {
-class IAVMuxerService : public IRemoteBroker {
+class IStandardMuxerService : public IRemoteBroker {
 public:
-    virtual ~IAVMuxerService() = default;
-
-    virtual int32_t Init() = 0;
+    virtual ~IStandardMuxerService() = default;
+    virtual int32_t InitParameter(int32_t fd, OutputFormat format) = 0;
     virtual int32_t SetLocation(float latitude, float longitude) = 0;
     virtual int32_t SetRotation(int32_t rotation) = 0;
-    virtual int32_t SetParameter(const Format &generalFormat) = 0;
-    virtual int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) = 0;
+    virtual int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) = 0;
     virtual int32_t Start() = 0;
-    virtual int32_t WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info) = 0;
+    virtual int32_t WriteSampleBuffer(std::shared_ptr<AVSharedMemory> sampleBuffer, const TrackSampleInfo &info) = 0;
     virtual int32_t Stop() = 0;
+    virtual void Release() = 0;
+	virtual int32_t DestroyStub() = 0;
 
-    virtual int32_t DestroyStub() = 0;
     enum MuxerServiceMsg {
-        INIT,
+        INIT_PARAMETER = 0,
         SET_LOCATION,
         SET_ROTATION,
-        SET_PARAMETER,
         ADD_TRACK,
         START,
         WRITE_SAMPLE_BUFFER,
         STOP,
-        DESTROY_STUB,
+        RELEASE,
+		DESTROY,
     };
-
-    DECLARE_INTERFACE_DESCRIPTOR(u"IAVMuxerService");
+    
+    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardMuxerServiceq1a");
 };
 }  // namespace Media
 }  // namespace OHOS

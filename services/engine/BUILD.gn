@@ -16,6 +16,7 @@ import("//foundation/multimedia/av_codec/config.gni")
 
 group("av_codec_engine_package") {
   deps = [
+    "plugin:av_codec_plugin",
     "plugin:av_codec_engine_plugins",
     "common:av_codec_engine_common",
     "codec:av_codec_engine_codec"

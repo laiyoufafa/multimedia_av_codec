@@ -13,31 +13,35 @@
  * limitations under the License.
  */
 
-#ifndef MUXER_SERVICE_PROXY_H
-#define MUXER_SERVICE_PROXY_H
+#ifndef MUXER_CLIENT_H
+#define MUXER_CLIENT_H
 
-#include "i_avmuxer_service.h"
+#include <mutex>
+#include "i_muxer_service.h"
+#include "i_standard_muxer_service.h"
 
 namespace OHOS {
 namespace Media {
-class AVMuxerProxy : public IRemoteProxy<IAVMuxerService>, public NoCopyable {
+class MuxerClient : public IMuxerService, public NoCopyable {
 public:
-    explicit AVMuxerProxy(const sptr<IRemoteObject> &impl);
-    virtual ~AVMuxerProxy();
+    static std::shared_ptr<MuxerClient> Create(const sptr<IStandardMuxerService> &ipcProxy);
+    explicit MuxerClient(const sptr<IStandardMuxerService> &ipcProxy);
+    ~MuxerClient();
 
-    int32_t Init() override;
+    int32_t InitParameter(int32_t fd, OutputFormat format) override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
-    int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) override;
+    int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) override;
     int32_t Start() override;
-    int32_t WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info) override;
+    int32_t WriteSampleBuffer(std::shared_ptr<AVSharedMemory> sampleBuffer, const TrackSampleInfo &info) override;
     int32_t Stop() override;
+    void Release() override;
 
-    int32_t DestroyStub() override;
+    void AVCodecServerDied();
 private:
-    static inline BrokerDelegator<AVMuxerProxy> delegator_;
+    std::mutex mutex_;
+    sptr<IStandardMuxerService> muxerProxy_ = nullptr;
 };
 }  // namespace Media
 }  // namespace OHOS
-#endif  // MUXER_SERVICE_PROXY_H
+#endif  // MUXER_CLIENT_H
