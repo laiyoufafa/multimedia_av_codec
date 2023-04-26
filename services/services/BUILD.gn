@@ -95,9 +95,11 @@ config("av_codec_service_config") {
     "//foundation/multimedia/av_codec/services/services/codec/client",
     "//foundation/multimedia/av_codec/services/services/codec/ipc",
     "//foundation/multimedia/av_codec/services/services/codec/server",
-    "//foundation/multimedia/av_codec/services/services/codecbase/",
-    "//foundation/multimedia/av_codec/services/services/codecbase/server/",
-    "//foundation/multimedia/av_codec/services/services/codecbase/server/include/",
+    # "//foundation/multimedia/av_codec/services/services/codecbase/",
+    # "//foundation/multimedia/av_codec/services/services/codecbase/server/",
+    # "//foundation/multimedia/av_codec/services/services/codecbase/server/include/",
+    "//foundation/multimedia/av_codec/services/engine/base/",
+    "//foundation/multimedia/av_codec/services/engine/base/include/",
     "//foundation/multimedia/av_codec/services/services/common/",
     "//foundation/multimedia/av_codec/services/services/demuxer/",
     "//foundation/multimedia/av_codec/services/services/demuxer/client/",
@@ -161,6 +163,7 @@ ohos_shared_library("av_codec_service") {
       "codec/ipc/codec_listener_proxy.cpp",
       "codec/ipc/codec_service_stub.cpp",
       "codec/server/codec_server.cpp",
+      "$AV_CODEC_ROOT_DIR/services/engine/base/codecbase.cpp",
     ]
   }
   if (multimedia_av_codec_support_codeclist) {

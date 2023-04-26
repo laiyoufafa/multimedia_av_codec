@@ -36,17 +36,18 @@ public:
     virtual int32_t Flush() = 0;
     virtual int32_t Reset() = 0;
     virtual int32_t Release() = 0;
-    virtual int32_t NotifyEos() = 0;
     virtual int32_t SetParameter(const Format& format) = 0;
     virtual int32_t GetOutputFormat(Format& format) = 0;
-    virtual sptr<Surface> CreateInputSurface() = 0;
-    virtual int32_t SetOutputSurface(sptr<Surface> surface) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
     virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info, AVCodecBufferFlag& flag) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
-    virtual int32_t RenderOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
-    virtual int32_t SignalRequestIDRFrame() = 0;
+
+    int32_t NotifyEos();
+    sptr<Surface> CreateInputSurface();
+    int32_t SetOutputSurface(sptr<Surface> surface);
+    int32_t RenderOutputBuffer(size_t index);    
+    int32_t SignalRequestIDRFrame();
 };
 } // namespace Media
 } // namespace OHOS
