@@ -46,7 +46,6 @@ public:
 
         if (flag == CacheFlag::UPDATE_CACHE) {
             memory = ReadAVSharedMemoryFromParcel(parcel);
-
             CHECK_AND_RETURN_RET_LOG(memory != nullptr, AVCS_ERR_INVALID_VAL, "Failed to read memory from parcel");
 
             if (iter == caches_.end()) {
@@ -107,9 +106,6 @@ int32_t CodecServiceProxy::SetListenerObject(const sptr<IRemoteObject> &object)
     return reply.ReadInt32();
 }
 
-
-
-
 int32_t CodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     MessageParcel data;
@@ -124,7 +120,7 @@ int32_t CodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::st
     data.WriteString(name);
     int32_t ret = Remote()->SendRequest(INIT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "Init failed, error: %{public}d", ret);
+        "Init failed");
 
     return reply.ReadInt32();
 }
@@ -141,11 +137,10 @@ int32_t CodecServiceProxy::Configure(const Format &format)
     (void)AVCodecParcel::Marshalling(data, format);
     int32_t ret = Remote()->SendRequest(CONFIGURE, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
-        "Configure failed, error: %{public}d", ret);
+        "Configure failed");
 
     return reply.ReadInt32();
 }
-
 
 int32_t CodecServiceProxy::Start()
 {
@@ -157,6 +152,7 @@ int32_t CodecServiceProxy::Start()
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
     int32_t ret = Remote()->SendRequest(START, data, reply, option);
+    // TODO: delete error code
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION,
         "Start failed, error: %{public}d", ret);
 
@@ -317,7 +313,6 @@ std::shared_ptr<AVSharedMemory> CodecServiceProxy::GetInputBuffer(uint32_t index
     std::shared_ptr<AVSharedMemory> memory = nullptr;
     if (inputBufferCache_ != nullptr) {
         ret = inputBufferCache_->ReadFromParcel(index, reply, memory);
-
         // TODO: 添加LOG描述
         CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "");
     }
@@ -363,7 +358,6 @@ std::shared_ptr<AVSharedMemory> CodecServiceProxy::GetOutputBuffer(uint32_t inde
     std::shared_ptr<AVSharedMemory> memory = nullptr;
     if (outputBufferCache_ != nullptr) {
         ret = outputBufferCache_->ReadFromParcel(index, reply, memory);
-
         // TODO: 添加LOG描述
         CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "");
     }

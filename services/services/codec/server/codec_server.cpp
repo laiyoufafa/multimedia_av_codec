@@ -37,8 +37,10 @@ namespace OHOS {
 namespace Media {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
+    // TODO 
     std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
     int32_t ret = server->InitServer();
+    // TODO CHECK
     if (ret != AVCS_ERR_OK) {
         AVCODEC_LOGE("Failed to init codec server");
         return nullptr;
@@ -73,7 +75,6 @@ int32_t CodecServer::InitServer()
 int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    AVCodecTrace trace("CodecServer::Init");
     if (isMimeType) {
         bool isEncoder = (type == AVCODEC_TYPE_VIDEO_ENCODER) || (type == AVCODEC_TYPE_AUDIO_ENCODER);
         codecBase_ = CodecBase::Create(isEncoder,  name);
@@ -96,6 +97,7 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
 int32_t CodecServer::Configure(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
+    // TODO delete AVCodecTrace trace(std::string(__FUNCTION__));
     // AVCodecTrace trace("CodecServer::Configure");
     CHECK_AND_RETURN_RET_LOG(status_ == INITIALIZED, AVCS_ERR_INVALID_OPERATION, "In invalid state");
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
@@ -141,7 +143,7 @@ int32_t CodecServer::Flush()
     std::lock_guard<std::mutex> lock(mutex_);
     // AVCodecTrace trace("CodecServer::Flush");
     CHECK_AND_RETURN_RET_LOG(status_ == RUNNING || status_ == END_OF_STREAM,
-        AVCS_ERR_INVALID_OPERATION, "invalid state");
+        AVCS_ERR_INVALID_OPERATION, "Invalid state");
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
     int32_t ret = codecBase_->Flush();
     status_ = (ret == AVCS_ERR_OK ? FLUSHED : ERROR);
@@ -218,7 +220,6 @@ std::shared_ptr<AVSharedMemory> CodecServer::GetInputBuffer(uint32_t index)
 
 int32_t CodecServer::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
-    AVCodecTrace trace("CodecServer::QueueInputBuffer");
     std::lock_guard<std::mutex> lock(mutex_);
     firstFrameTraceId_ = FAKE_POINTER(this);
     if (isFirstFrameIn_) {
@@ -257,7 +258,6 @@ int32_t CodecServer::GetOutputFormat(Format &format)
 
 int32_t CodecServer::ReleaseOutputBuffer(uint32_t index, bool render)
 {
-    AVCodecTrace trace("CodecServer::ReleaseOutputBuffer");
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(status_ == RUNNING || status_ == END_OF_STREAM,
         AVCS_ERR_INVALID_OPERATION, "In invalid state");
@@ -352,6 +352,7 @@ void CodecServer::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info
 {
     std::lock_guard<std::mutex> lock(cbMutex_);
     if (isFirstFrameOut_) {
+        // TODO : start?
         AVCodecTrace::TraceEnd("CodecServer::FirstFrame", firstFrameTraceId_);
         isFirstFrameOut_ = false;
     } else {

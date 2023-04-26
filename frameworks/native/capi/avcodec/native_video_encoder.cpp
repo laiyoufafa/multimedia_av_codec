@@ -55,57 +55,64 @@ public:
     {
         std::unique_lock<std::mutex> lock(mutex_);
         (void)errorType;
-        if (codec_ != nullptr && callback_.onError != nullptr) {
-            int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
-            callback_.onError(codec_, extErr, userData_);
-        }
+
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onError != nullptr, "Callback is nullptr");
+        int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
+        callback_.onError(codec_, extErr, userData_);
     }
 
     void OnOutputFormatChanged(const Format &format) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onStreamChanged != nullptr) {
-            OHOS::sptr<OH_AVFormat> object = new(std::nothrow) OH_AVFormat(format);
-            // The object lifecycle is controlled by the current function stack
-            callback_.onStreamChanged(codec_, reinterpret_cast<OH_AVFormat *>(object.GetRefPtr()), userData_);
-        }
+
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onStreamChanged != nullptr, "Callback is nullptr");
+        OHOS::sptr<OH_AVFormat> object = new(std::nothrow) OH_AVFormat(format);
+        // The object lifecycle is controlled by the current function stack
+        callback_.onStreamChanged(codec_, reinterpret_cast<OH_AVFormat *>(object.GetRefPtr()), userData_);
     }
 
     void OnInputBufferAvailable(uint32_t index) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onNeedInputData != nullptr) {
-            struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec_);
-            CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "Context video decoder is nullptr!");
 
-            if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load() || videoEncObj->isEOS_.load()) {
-                AVCODEC_LOGD("At flush, eos or stop, no buffer available");
-                return;
-            }
-            callback_.onNeedInputData(codec_, index, nullptr, userData_);
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onNeedInputData != nullptr, "Callback is nullptr");
+
+        struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec_);
+        CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "Context video decoder is nullptr!");
+
+        if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load() || videoEncObj->isEOS_.load()) {
+            AVCODEC_LOGD("At flush, eos or stop, no buffer available");
+            return;
         }
+        callback_.onNeedInputData(codec_, index, nullptr, userData_);
     }
 
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onNeedOutputData != nullptr) {
-            struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec_);
-            CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "Context video decoder is nullptr!");
 
-            if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load()) {
-                AVCODEC_LOGD("At flush or stop, ignore");
-                return;
-            }
-            struct OH_AVCodecBufferAttr bufferAttr;
-            bufferAttr.pts = info.presentationTimeUs;
-            bufferAttr.size = info.size;
-            bufferAttr.offset = info.offset;
-            bufferAttr.flags = flag;
-            // The bufferInfo lifecycle is controlled by the current function stack
-            OH_AVMemory *data = GetOutputData(codec_, index);
-            callback_.onNeedOutputData(codec_, index, data, &bufferAttr, userData_);
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onNeedOutputData != nullptr, "Callback is nullptr");
+
+        struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec_);
+        CHECK_AND_RETURN_LOG(videoEncObj->videoEncoder_ != nullptr, "Context video decoder is nullptr!");
+
+        if (videoEncObj->isFlushing_.load() || videoEncObj->isStop_.load()) {
+            AVCODEC_LOGD("At flush or stop, ignore");
+            return;
         }
+
+        struct OH_AVCodecBufferAttr bufferAttr;
+        bufferAttr.pts = info.presentationTimeUs;
+        bufferAttr.size = info.size;
+        bufferAttr.offset = info.offset;
+        bufferAttr.flags = flag;
+        // The bufferInfo lifecycle is controlled by the current function stack
+        OH_AVMemory *data = GetOutputData(codec_, index);
+        callback_.onNeedOutputData(codec_, index, data, &bufferAttr, userData_);
     }
 
     void StopCallback()
@@ -124,7 +131,7 @@ private:
         CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, nullptr, "Video encoder is nullptr!");
 
         std::shared_ptr<AVSharedMemory> memory = videoEncObj->videoEncoder_->GetOutputBuffer(index);
-        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, failed to get output buffer!");
+        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, get output buffer failed!");
 
         for (auto &memoryObj : videoEncObj->memoryObjList_) {
             if (memoryObj->IsEqualMemory(memory)) {
@@ -133,7 +140,7 @@ private:
         }
 
         OHOS::sptr<OH_AVMemory> object = new(std::nothrow) OH_AVMemory(memory);
-        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to new OH_AVMemory");
+        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create OH_AVMemory failed");
 
         videoEncObj->memoryObjList_.push_back(object);
         return reinterpret_cast<OH_AVMemory *>(object.GetRefPtr());
@@ -150,10 +157,10 @@ struct OH_AVCodec *OH_VideoEncoder_CreateByMime(const char *mime)
     CHECK_AND_RETURN_RET_LOG(mime != nullptr, nullptr, "Mime is nullptr!");
 
     std::shared_ptr<AVCodecVideoEncoder> videoEncoder = VideoEncoderFactory::CreateByMime(mime);
-    CHECK_AND_RETURN_RET_LOG(videoEncoder != nullptr, nullptr, "Failed to create video encoder");
+    CHECK_AND_RETURN_RET_LOG(videoEncoder != nullptr, nullptr, "Create video encoder failed");
 
     struct VideoEncoderObject *object = new(std::nothrow) VideoEncoderObject(videoEncoder);
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create video encoder object");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create video encoder object failed");
 
     return object;
 }
@@ -163,10 +170,10 @@ struct OH_AVCodec *OH_VideoEncoder_CreateByName(const char *name)
     CHECK_AND_RETURN_RET_LOG(name != nullptr, nullptr, "Name is nullptr!");
 
     std::shared_ptr<AVCodecVideoEncoder> videoEncoder = VideoEncoderFactory::CreateByName(name);
-    CHECK_AND_RETURN_RET_LOG(videoEncoder != nullptr, nullptr, "Failed to create video encoder");
+    CHECK_AND_RETURN_RET_LOG(videoEncoder != nullptr, nullptr, "Create video encoder failed");
 
     struct VideoEncoderObject *object = new(std::nothrow) VideoEncoderObject(videoEncoder);
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create video encoder object");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create video encoder object failed");
 
     return object;
 }
@@ -280,7 +287,7 @@ OH_AVErrCode OH_VideoEncoder_Flush(struct OH_AVCodec *codec)
     }
     videoEncObj->memoryObjList_.clear();
     videoEncObj->isFlushing_.store(false);
-    AVCODEC_LOGD("set flush status to false");
+    AVCODEC_LOGD("Set flush status to false");
     return AV_ERR_OK;
 }
 
@@ -290,7 +297,7 @@ OH_AVErrCode OH_VideoEncoder_Reset(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(codec->magic_ == AVMagic::AVCODEC_MAGIC_VIDEO_ENCODER, AV_ERR_INVALID_VAL, "Codec magic error!");
 
     struct VideoEncoderObject *videoEncObj = reinterpret_cast<VideoEncoderObject *>(codec);
-    CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, AV_ERR_INVALID_VAL, "Video eSncoder is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(videoEncObj->videoEncoder_ != nullptr, AV_ERR_INVALID_VAL, "Video encoder is nullptr!");
     videoEncObj->isStop_.store(true);
     AVCODEC_LOGD("Set stop status to true");
 

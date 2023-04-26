@@ -54,59 +54,65 @@ public:
     {
         std::unique_lock<std::mutex> lock(mutex_);
         (void)errorType;
-        if (codec_ != nullptr && callback_.onError != nullptr) {
-            int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
-            callback_.onError(codec_, extErr, userData_);
-        }
+
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onError != nullptr, "Callback is nullptr");
+        int32_t extErr = AVCSErrorToOHAVErrCode(static_cast<AVCodecServiceErrCode>(errorCode));
+        callback_.onError(codec_, extErr, userData_);
     }
 
     void OnOutputFormatChanged(const Format &format) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onStreamChanged != nullptr) {
-            OHOS::sptr<OH_AVFormat> object = new(std::nothrow) OH_AVFormat(format);
-            // The object lifecycle is controlled by the current function stack
-            callback_.onStreamChanged(codec_, reinterpret_cast<OH_AVFormat *>(object.GetRefPtr()), userData_);
-        }
+
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onStreamChanged != nullptr, "Callback is nullptr");
+        OHOS::sptr<OH_AVFormat> object = new(std::nothrow) OH_AVFormat(format);
+        // The object lifecycle is controlled by the current function stack
+        callback_.onStreamChanged(codec_, reinterpret_cast<OH_AVFormat *>(object.GetRefPtr()), userData_);
     }
 
     void OnInputBufferAvailable(uint32_t index) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onNeedInputData != nullptr) {
-            struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec_);
-            CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "Video decoder is nullptr!");
 
-            if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load() || videoDecObj->isEOS_.load()) {
-                AVCODEC_LOGD("At flush, eos or stop, no buffer available");
-                return;
-            }
-            OH_AVMemory *data = GetInputData(codec_, index);
-            if (data != nullptr) {
-                callback_.onNeedInputData(codec_, index, data, userData_);
-            }
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onNeedInputData != nullptr, "Callback is nullptr");
+
+        struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec_);
+        CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "Video decoder is nullptr!");
+
+        if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load() || videoDecObj->isEOS_.load()) {
+            AVCODEC_LOGD("At flush, eos or stop, no buffer available");
+            return;
         }
+
+        OH_AVMemory *data = GetInputData(codec_, index);
+        CHECK_AND_RETURN_LOG(data != nullptr, "Data is nullptr, get input data failed");
+        callback_.onNeedInputData(codec_, index, data, userData_);
     }
 
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (codec_ != nullptr && callback_.onNeedOutputData != nullptr) {
-            struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec_);
-            CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "Video decoder is nullptr!");
+        CHECK_AND_RETURN_LOG(codec_ != nullptr, "Codec is nullptr");
+        CHECK_AND_RETURN_LOG(callback_.onNeedOutputData != nullptr, "Callback is nullptr");
 
-            if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load()) {
-                AVCODEC_LOGD("At flush or stop, ignore");
-                return;
-            }
-            struct OH_AVCodecBufferAttr bufferAttr;
-            bufferAttr.pts = info.presentationTimeUs;
-            bufferAttr.size = info.size;
-            bufferAttr.offset = info.offset;
-            bufferAttr.flags = flag;
-            // The bufferInfo lifecycle is controlled by the current function stack
-            callback_.onNeedOutputData(codec_, index, nullptr, &bufferAttr, userData_);
+        struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec_);
+        CHECK_AND_RETURN_LOG(videoDecObj->videoDecoder_ != nullptr, "Video decoder is nullptr!");
+
+        if (videoDecObj->isFlushing_.load() || videoDecObj->isStop_.load()) {
+            AVCODEC_LOGD("At flush or stop, ignore");
+            return;
         }
+
+        struct OH_AVCodecBufferAttr bufferAttr;
+        bufferAttr.pts = info.presentationTimeUs;
+        bufferAttr.size = info.size;
+        bufferAttr.offset = info.offset;
+        bufferAttr.flags = flag;
+        // The bufferInfo lifecycle is controlled by the current function stack
+        callback_.onNeedOutputData(codec_, index, nullptr, &bufferAttr, userData_);
     }
 
     void StopCallback()
@@ -125,7 +131,7 @@ private:
         CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, nullptr, "Video decoder is nullptr!");
 
         std::shared_ptr<AVSharedMemory> memory = videoDecObj->videoDecoder_->GetInputBuffer(index);
-        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, failed to get input buffer!");
+        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, get input buffer failed!");
 
         for (auto &memoryObj : videoDecObj->memoryObjList_) {
             if (memoryObj->IsEqualMemory(memory)) {
@@ -134,7 +140,7 @@ private:
         }
 
         OHOS::sptr<OH_AVMemory> object = new(std::nothrow) OH_AVMemory(memory);
-        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create OH_AVMemory");
+        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create OH_AVMemory failed");
 
         videoDecObj->memoryObjList_.push_back(object);
         return reinterpret_cast<OH_AVMemory *>(object.GetRefPtr());
@@ -149,7 +155,7 @@ private:
         CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, nullptr, "Video decoder is nullptr!");
 
         std::shared_ptr<AVSharedMemory> memory = videoDecObj->videoDecoder_->GetOutputBuffer(index);
-        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, failed get output buffer!");
+        CHECK_AND_RETURN_RET_LOG(memory != nullptr, nullptr, "Memory is nullptr, get output buffer failed!");
 
         for (auto &memoryObj : videoDecObj->memoryObjList_) {
             if (memoryObj->IsEqualMemory(memory)) {
@@ -158,7 +164,7 @@ private:
         }
 
         OHOS::sptr<OH_AVMemory> object = new(std::nothrow) OH_AVMemory(memory);
-        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create OH_AVMemory");
+        CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create OH_AVMemory failed");
 
         videoDecObj->memoryObjList_.push_back(object);
         return reinterpret_cast<OH_AVMemory *>(object.GetRefPtr());
@@ -175,10 +181,10 @@ struct OH_AVCodec *OH_VideoDecoder_CreateByMime(const char *mime)
     CHECK_AND_RETURN_RET_LOG(mime != nullptr, nullptr, "Mime is nullptr!");
 
     std::shared_ptr<AVCodecVideoDecoder> videoDecoder = VideoDecoderFactory::CreateByMime(mime);
-    CHECK_AND_RETURN_RET_LOG(videoDecoder != nullptr, nullptr, "Failed to create video decoder by mime!");
+    CHECK_AND_RETURN_RET_LOG(videoDecoder != nullptr, nullptr, "Create video decoder by mime failed!");
 
     struct VideoDecoderObject *object = new(std::nothrow) VideoDecoderObject(videoDecoder);
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create video decoder object!");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create video decoder object failed!");
 
     return object;
 }
@@ -188,10 +194,10 @@ struct OH_AVCodec *OH_VideoDecoder_CreateByName(const char *name)
     CHECK_AND_RETURN_RET_LOG(name != nullptr, nullptr, "Name is nullptr!");
 
     std::shared_ptr<AVCodecVideoDecoder> videoDecoder = VideoDecoderFactory::CreateByName(name);
-    CHECK_AND_RETURN_RET_LOG(videoDecoder != nullptr, nullptr, "Failed to create video decoder by name!");
+    CHECK_AND_RETURN_RET_LOG(videoDecoder != nullptr, nullptr, "Create video decoder by name failed!");
 
     struct VideoDecoderObject *object = new(std::nothrow) VideoDecoderObject(videoDecoder);
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Failed to create video fecoder object!");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Create video fecoder object failed!");
 
     return object;
 }
@@ -322,7 +328,7 @@ OH_AVErrCode OH_VideoDecoder_Reset(struct OH_AVCodec *codec)
     struct VideoDecoderObject *videoDecObj = reinterpret_cast<VideoDecoderObject *>(codec);
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "Video decoder is nullptr!");
     videoDecObj->isStop_.store(false);
-    AVCODEC_LOGD("Set stop status to true");
+    AVCODEC_LOGD("Set stop status to false");
     int32_t ret = videoDecObj->videoDecoder_->Reset();
     if (ret != AVCS_ERR_OK) {
         videoDecObj->isStop_.store(false);
@@ -387,8 +393,8 @@ OH_AVFormat *OH_VideoDecoder_GetOutputDescription(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Video decoder get output format failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
+    CHECK_AND_RETURN_RET_LOG(avFormat != nullptr, nullptr, "Create av format failed");
     avFormat->format_ = format;
-
     return avFormat;
 }
 
@@ -458,5 +464,6 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
 
 OH_AVErrCode OH_VideoDecoder_IsValid(OH_AVCodec *codec)
 {
+    (void)codec;
     return AV_ERR_UNSUPPORT;
 }

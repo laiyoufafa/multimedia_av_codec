@@ -27,7 +27,13 @@ std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecServic
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "Ipc proxy is nullptr.");
 
-    std::shared_ptr<CodecClient> codec = std::make_shared<CodecClient>(ipcProxy);
+    // TODO
+    std::shared_ptr<CodecClient> codec;
+    try {
+        codec = std::make_shared<CodecClient>(ipcProxy);
+    } catch {
+
+    }
     CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "Codec is nullptr, failed to create codec client.");
 
     int32_t ret = codec->CreateListenerObject();
@@ -45,6 +51,8 @@ CodecClient::CodecClient(const sptr<IStandardCodecService> &ipcProxy)
 CodecClient::~CodecClient()
 {
     std::lock_guard<std::mutex> lock(mutex_);
+
+    // TODO: logd
     if (codecProxy_ != nullptr) {
         (void)codecProxy_->DestroyStub();
     }
@@ -56,6 +64,8 @@ void CodecClient::AVCodecServerDied()
     std::lock_guard<std::mutex> lock(mutex_);
     codecProxy_ = nullptr;
     listenerStub_ = nullptr;
+
+    // TODO : logd
     if (callback_ != nullptr) {
         callback_->OnError(AVCODEC_ERROR_INTERNAL, AVCS_ERR_SERVICE_DIED);
     }

@@ -290,6 +290,7 @@ int32_t CodecServiceStub::SetParameter(const Format &format)
 
 int32_t CodecServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
+    AVCodecTrace trace(std::string(__FUNCTION__));
     (void)data;
     reply.WriteInt32(DestroyStub());
     return AVCS_ERR_OK;
@@ -309,6 +310,8 @@ int32_t CodecServiceStub::Init(MessageParcel &data, MessageParcel &reply)
     AVCodecType type = static_cast<AVCodecType>(data.ReadInt32());
     bool isMimeType = data.ReadBool();
     std::string name = data.ReadString();
+
+    // TODO: add check bool log
     reply.WriteInt32(Init(type, isMimeType, name));
     return AVCS_ERR_OK;
 }
@@ -406,11 +409,14 @@ int32_t CodecServiceStub::SetOutputSurface(MessageParcel &data, MessageParcel &r
 
 int32_t CodecServiceStub::GetInputBuffer(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET_LOG(inputBufferCache_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Input buffer cache is nullptr");
+    // TODO: 
+    CHECK_AND_RETURN_RET_LOG(inputBufferCache_ != nullptr, AVCS_ERR_NO_MEMORY, "Input buffer cache is nullptr");
     AVCodecTrace trace(std::string(__FUNCTION__));
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetInputBuffer(index);
+    // TODO check buffer
+
     return inputBufferCache_->WriteToParcel(index, buffer, reply);
 }
 
@@ -435,6 +441,8 @@ int32_t CodecServiceStub::GetOutputBuffer(MessageParcel &data, MessageParcel &re
 
     uint32_t index = data.ReadUint32();
     auto buffer = GetOutputBuffer(index);
+    // TODO 
+    
     return outputBufferCache_->WriteToParcel(index, buffer, reply);
 }
 
