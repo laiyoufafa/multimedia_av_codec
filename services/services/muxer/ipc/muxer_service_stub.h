@@ -16,50 +16,46 @@
 #ifndef MUXER_SERVICE_STUB_H
 #define MUXER_SERVICE_STUB_H
 
-#include <string>
-#include "i_avmuxer_service.h"
-#include "avmuxer_server.h"
+#include "i_standard_muxer_service.h"
+#include "muxer_server.h"
 #include "iremote_stub.h"
 
 namespace OHOS {
 namespace Media {
-class AVMuxerStub : public IRemoteStub<IAVMuxerService>, public NoCopyable {
+class MuxerServiceStub : public IRemoteStub<IStandardMuxerService>, public NoCopyable {
 public:
-    static sptr<AVMuxerStub> Create();
-    virtual ~AVMuxerStub();
+    static sptr<MuxerServiceStub> Create();
+    virtual ~MuxerServiceStub();
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    using MuxerStubFunc = int32_t(AVMuxerStub::*)(MessageParcel &data, MessageParcel &reply);
+    using MuxerStubFunc = int32_t(MuxerServiceStub::*)(MessageParcel &data, MessageParcel &reply);
 
-    int32_t Init() override;
+    int32_t InitParameter(int32_t fd, OutputFormat format) override;
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
-    int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) override;
+    int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) override;
     int32_t Start() override;
-    int32_t WriteSampleBuffer(uint32_t trackIndex, const std::shared_ptr<AVSharedMemory> &sampleBuffer, AVCodecBufferInfo info) override;
+    int32_t WriteSampleBuffer(std::shared_ptr<AVSharedMemory> sampleBuffer, const TrackSampleInfo &info) override;
     int32_t Stop() override;
-
-    int32_t DumpInfo(int32_t fd);
+    void Release() override;
     int32_t DestroyStub() override;
+    int32_t DumpInfo(int32_t fd);
+
 private:
-    AVMuxerStub();
-    int32_t InitStub();
-    int32_t Init(MessageParcel &data, MessageParcel &reply);
+    MuxerServiceStub();
+    int32_t Init();
+    int32_t InitParameter(MessageParcel &data, MessageParcel &reply);
     int32_t SetLocation(MessageParcel &data, MessageParcel &reply);
     int32_t SetRotation(MessageParcel &data, MessageParcel &reply);
-    int32_t SetParameter(MessageParcel &data, MessageParcel &reply);
     int32_t AddTrack(MessageParcel &data, MessageParcel &reply);
     int32_t Start(MessageParcel &data, MessageParcel &reply);
     int32_t WriteSampleBuffer(MessageParcel &data, MessageParcel &reply);
     int32_t Stop(MessageParcel &data, MessageParcel &reply);
-
-    int32_t GetDumpInfo(std::string& dumpInfo);
+    int32_t Release(MessageParcel &data, MessageParcel &reply);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
-    std::mutex mutex_;
-    std::shared_ptr<IAVMuxer> muxerServer_ = nullptr;
+    std::shared_ptr<IMuxerService> muxerServer_ {nullptr};
     std::map<uint32_t, MuxerStubFunc> muxerFuncs_;
 };
 }  // namespace Media
 }  // namespace OHOS
-#endif
+#endif // MUXER_SERVICE_STUB_H

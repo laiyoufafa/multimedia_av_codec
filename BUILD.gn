@@ -17,6 +17,6 @@ import("//build/ohos.gni")
 group("av_codec_packages") {
   public_deps = [
     "interfaces/inner_api/native:av_codec_client",
-    "services:av_codec_service",
+    "services/services:av_codec_service",
   ]
 }

@@ -16,18 +16,21 @@ import("//foundation/multimedia/av_codec/config.gni")
 
 ohos_executable("av_codec_demo") {
   include_dirs = [
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer",
+    "//foundation/multimedia/av_codec/interfaces/kits/c",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/services/services/factory",
+    "//foundation/multimedia/av_codec/services/engine/plugin/core",
+    "//foundation/multimedia/av_codec/services/engine/plugin/interface",
+    "//foundation/multimedia/av_codec/services/dfx/include",
+    "//foundation/multimedia/av_codec/services/utils/include",
     "./av_codec_audio",
     "./audio_demo",
     "./include",
-    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
-    "//foundation/multimedia/av_codec/interfaces/kits/c",
-    "//foundation/multimedia/av_codec/services/utils/include",
-    "//foundation/multimedia/av_codec/services/dfx/include",
   ]
 
   cflags = [
     "-Wall",
-    "-std=c++17",
     "-fno-rtti",
     "-fno-exceptions",
     "-fno-common",
@@ -48,15 +51,27 @@ ohos_executable("av_codec_demo") {
     "-Wno-deprecated-declarations",
   ]
 
+  cflags_cc = cflags
+  cflags_cc += ["-std=c++17"]
+
   sources = [
-    "./av_codec_demo.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/av_codec_demo.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/avmuxer_demo_base.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/avmuxer_demo.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/avmuxer_engine_demo.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/avmuxer_ffmpeg_demo.cpp",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/avmuxer_demo_common.c",
+    "//foundation/multimedia/av_codec/test/nativedemo/avmuxer/native_avmuxer_demo.c",
     "./audio_demo/avcodec_audio_encoder_inner_demo.cpp",
     "./audio_demo/avcodec_audio_decoder_demo.cpp",
     "./audio_demo/avcodec_audio_encoder_demo.cpp"
   ]
 
   deps = [
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/services:av_codec_service",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
     "//foundation/multimedia/av_codec/interfaces/kits/c:capi_packages"
   ]
 

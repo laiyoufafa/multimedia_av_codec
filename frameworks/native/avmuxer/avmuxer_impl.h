@@ -16,28 +16,27 @@
 #define AVMUXER_IMPL_H
 
 #include "avmuxer.h"
-#include "i_avmuxer.h"
+#include "i_muxer_service.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
 class AVMuxerImpl : public AVMuxer, public NoCopyable {
 public:
-    AVMuxerImpl(int32_t fd, AVOutputFormat format);
+    AVMuxerImpl(int32_t fd, OutputFormat format);
     ~AVMuxerImpl() override;
     int32_t Init();
     int32_t SetLocation(float latitude, float longitude) override;
     int32_t SetRotation(int32_t rotation) override;
-    int32_t SetParameter(const Format &generalFormat) override;
-    int32_t AddTrack(uint32_t &trackIndex, const Format &trackFormat) override;
+    int32_t AddTrack(int32_t &trackIndex, const MediaDescription &trackDesc) override;
     int32_t Start() override;
-    int32_t WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, AVCodecBufferInfo info) override;
+    int32_t WriteSampleBuffer(uint8_t *sampleBuffer, const TrackSampleInfo &info) override;
     int32_t Stop() override;
 
 private:
-    std::shared_ptr<IAVMuxer> muxerClient_ = nullptr;
+    std::shared_ptr<IMuxerService> muxerService_ = nullptr;
     int32_t fd_ = -1;
-    AVOutputFormat format_ = AV_OUTPUT_FORMAT_UNKNOWN;
+    OutputFormat format_ = OUTPUT_FORMAT_UNKNOWN;
 };
 } // namespace Media
 } // namespace OHOS

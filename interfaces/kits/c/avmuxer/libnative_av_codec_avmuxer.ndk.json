@@ -15,6 +15,8 @@
     { "name": "OH_AVFormat_GetStringValue" },
     { "name": "OH_AVFormat_GetBuffer" },
     { "name": "OH_AVFormat_DumpInfo" },
+    { "name": "OH_AVMemory_GetAddr" },
+    { "name": "OH_AVMemory_GetSize" },
     { "name": "OH_AVMuxer_Create" },
     { "name": "OH_AVMuxer_SetLocation" },
     { "name": "OH_AVMuxer_SetRotation" },
