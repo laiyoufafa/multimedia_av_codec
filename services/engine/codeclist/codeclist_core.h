@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCODECLIST_CORE_H
-#define AVCODECLIST_CORE_H
+#ifndef CODECLIST_CORE_H
+#define CODECLIST_CORE_H
 
 #include <mutex>
 #include "nocopyable.h"
@@ -23,10 +23,10 @@
 
 namespace OHOS {
 namespace Media {
-class __attribute__((visibility("default"))) AVCodecListCore : public NoCopyable {
+class __attribute__((visibility("default"))) CodecListCore : public NoCopyable {
 public:
-    AVCodecListCore();
-    ~AVCodecListCore();
+    CodecListCore();
+    ~CodecListCore();
     std::string FindEncoder(const Format &format);
     std::string FindDecoder(const Format &format);
     CapabilityData CreateCapability(std::string codecName);
@@ -45,4 +45,4 @@ private:
 };
 } // namespace Media
 } // namespace OHOS
-#endif // AVCODECLIST_CORE_H
+#endif // CODECLIST_CORE_H

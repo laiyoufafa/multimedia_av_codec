@@ -13,25 +13,29 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEABILITY_SINGLETON_H
-#define AVCODEABILITY_SINGLETON_H
+#ifndef CODECLIST_SERVER_H
+#define CODECLIST_SERVER_H
 
-#include <mutex>
-#include "avcodec_info.h"
+#include "i_codeclist_service.h"
+#include "codeclist_core.h"
+#include "nocopyable.h"
+
 namespace OHOS {
 namespace Media {
-class __attribute__((visibility("default"))) AVCodecAbilitySingleton : public NoCopyable {
+class CodecListServer : public ICodecListService, public NoCopyable {
 public:
-    ~AVCodecAbilitySingleton();
-    static AVCodecAbilitySingleton& GetInstance();
-    void RegisterCapabilityArray(const std::vector<CapabilityData> &capaArray);
-    std::vector<CapabilityData> GetCapabilityArray();
+    static std::shared_ptr<ICodecListService> Create();
+    CodecListServer();
+    virtual ~CodecListServer();
+
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
+    CapabilityData CreateCapability(const std::string codecName) override;
 
 private:
-    AVCodecAbilitySingleton();
-    std::vector<CapabilityData> capabilityDataArray_;
-    std::mutex mutex_;
+    bool Init();
+    std::shared_ptr<CodecListCore> codecListCore_;
 };
 } // namespace Media
 } // namespace OHOS
-#endif // AVCODEABILITY_SINGLETON_H
+#endif // CODECLIST_SERVER_H

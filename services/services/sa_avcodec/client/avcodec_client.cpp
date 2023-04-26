@@ -25,7 +25,7 @@
 #include "i_standard_codec_service.h"
 #endif
 #ifdef SUPPORT_CODECLIST
-#include "i_standard_avcodeclist_service.h"
+#include "i_standard_codeclist_service.h"
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -107,11 +107,11 @@ std::shared_ptr<ICodecListService> AVCodecClient::CreateCodecListService()
     }
 
     sptr<IRemoteObject> object = avCodecProxy_->GetSubSystemAbility(
-        IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODECList, listenerStub_->AsObject());
+        IStandardAVCodecService::AVCodecSystemAbility::AVCODEC_CODECLIST, listenerStub_->AsObject());
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "codeclist proxy object is nullptr.");
 
-    sptr<IStandardCodecListService> codecProxy = iface_cast<IStandardCodecListService>(object);
-    CHECK_AND_RETURN_RET_LOG(codecProxy != nullptr, nullptr, "codeclist proxy is nullptr.");
+    sptr<IStandardCodecListService> codecListProxy = iface_cast<IStandardCodecListService>(object);
+    CHECK_AND_RETURN_RET_LOG(codecListProxy != nullptr, nullptr, "codeclist proxy is nullptr.");
 
     std::shared_ptr<CodecListClient> codecListClient = CodecListClient::Create(codecListProxy);
     CHECK_AND_RETURN_RET_LOG(codecListClient != nullptr, nullptr, "failed to create codeclist client.");
@@ -282,11 +282,19 @@ void AVCodecClient::DoAVCodecServerDied()
         }
     }
 #endif
-#ifdef SUPPORT_CODECLIST
+#ifdef SUPPORT_CODEC
     for (auto &it : codecClientList_) {
         auto codecClient = std::static_pointer_cast<CodecClient>(it);
         if (codecClient != nullptr) {
             codecClient->AVCodecServerDied();
+        }
+    }
+#endif
+#ifdef SUPPORT_CODECLIST
+    for (auto &it : codecListClientList_) {
+        auto codecListClient = std::static_pointer_cast<CodecListClient>(it);
+        if (codecListClient != nullptr) {
+            codecListClient->AVCodecServerDied();
         }
     }
 #endif

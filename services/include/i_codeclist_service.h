@@ -13,37 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef I_STANDARD_AVCODECLIST_SERVICE_H
-#define I_STANDARD_AVCODECLIST_SERVICE_H
+#ifndef I_CODECLIST_SERVICE_H
+#define I_CODECLIST_SERVICE_H
 
-#include "ipc_types.h"
-#include "iremote_broker.h"
-#include "iremote_proxy.h"
-#include "iremote_stub.h"
 #include "avcodec_info.h"
 
 namespace OHOS {
 namespace Media {
-class IStandardAVCodecListService : public IRemoteBroker {
+class ICodecListService {
 public:
-    virtual ~IStandardAVCodecListService() = default;
+    virtual ~ICodecListService() = default;
     virtual std::string FindDecoder(const Format &format) = 0;
     virtual std::string FindEncoder(const Format &format) = 0;
-    virtual CapabilityData CreateCapability(std::string codecName) = 0;
-    virtual int32_t DestroyStub() = 0;
-
-    /**
-     * IPC code ID
-     */
-    enum AVCodecListServiceMsg : int32_t {
-        FIND_DECODER,
-        FIND_ENCODER,
-        CREATE_CAPABILITY,
-        DESTROY
-    };
-
-    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardAVCodecListService");
+    virtual CapabilityData CreateCapability(const std::string codecName) = 0;
 };
 } // namespace Media
 } // namespace OHOS
-#endif // I_STANDARD_AVCODECLIST_SERVICE_H
+#endif // I_CODECLIST_SERVICE_H
