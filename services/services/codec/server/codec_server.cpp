@@ -18,7 +18,7 @@
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-#include "engine_factory_repo.h"
+#include "codec_factory.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecServer"};
@@ -77,9 +77,9 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
 
     if (isMimeType) {
         bool isEncoder = (type == AVCODEC_TYPE_VIDEO_ENCODER) || (type == AVCODEC_TYPE_AUDIO_ENCODER);
-        codecBase_ = CodecBase::Create(isEncoder, name);
+        codecBase_ = CodecFactory::Instance().CreateCodecByMime(isEncoder, name);
     } else {
-        codecBase_ = EngineFactoryRepo::Instance().CreateCodecByName(name);
+        codecBase_ = CodecFactory::Instance().CreateCodecByName(name);
     }
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
 

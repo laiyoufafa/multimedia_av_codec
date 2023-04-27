@@ -13,26 +13,25 @@
  * limitations under the License.
  */
 
-#ifndef ENGINE_FACTORY_REPO_H
-#define ENGINE_FACTORY_REPO_H
+#ifndef CODEC_FACTORY_H
+#define CODEC_FACTORY_H
 
-#include <mutex>
 #include <memory>
 #include "codecbase.h"
 
 namespace OHOS {
 namespace Media {
-class EngineFactoryRepo {
+class CodecFactory {
 public:
-    static EngineFactoryRepo &Instance();
+    static CodecFactory &Instance();
+    std::shared_ptr<CodecBase> CreateCodecByMime(bool isEncoder, const std::string &mime);
     std::shared_ptr<CodecBase> CreateCodecByName(const std::string &name);
 
 private:
-    EngineFactoryRepo() = default;
-    ~EngineFactoryRepo();
+    CodecFactory() = default;
+    ~CodecFactory();
 
-    std::mutex mutex_;
 };
 } // namespace Media
 } // namespace OHOS
-#endif
+#endif // CODEC_FACTORY_H

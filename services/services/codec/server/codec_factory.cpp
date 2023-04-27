@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "engine_factory_repo.h"
+#include "codec_factory.h"
 #include <limits>
 #include <cinttypes>
 #include <dlfcn.h>
@@ -22,34 +22,36 @@
 #include "audio_ffmpeg_adapter.h"
 
 namespace {
-    static constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "EngineFactoryRepo"};
-#ifdef __aarch64__
-    static const std::string MEDIA_ENGINE_LIB_PATH = "/system/lib64/media";
-#else
-    static const std::string MEDIA_ENGINE_LIB_PATH = "/system/lib/media";
-#endif
-    static const std::string MEDIA_ENGINE_ENTRY_SYMBOL = "CreateEngineFactory";
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecFactory"};
 }
 
 namespace OHOS {
 namespace Media {
 
-EngineFactoryRepo &EngineFactoryRepo::Instance()
+CodecFactory &CodecFactory::Instance()
 {
-    static EngineFactoryRepo inst;
+    static CodecFactory inst;
     return inst;
 }
 
-EngineFactoryRepo::~EngineFactoryRepo()
+CodecFactory::~CodecFactory()
 {
 }
 
-std::shared_ptr<CodecBase> EngineFactoryRepo::CreateCodecByName(const std::string &name)
+std::shared_ptr<CodecBase> CodecFactory::CreateCodecByMime(bool isEncoder, const std::string &mime)
 {
-    std::shared_ptr<CodecBase> target = nullptr;
-    target = std::make_shared<AudioFFMpegAdapter>(name);
+    (void)isEncoder;
+    (void)mime;
+    AVCODEC_LOGD("CreateCodecByMime is not support");
+    return nullptr;
+}
+
+std::shared_ptr<CodecBase> CodecFactory::CreateCodecByName(const std::string &name)
+{
+    std::shared_ptr<CodecBase> codec = nullptr;
+    codec = std::make_shared<AudioFFMpegAdapter>(name);
     AVCODEC_LOGD("Create %{public}s", name.c_str());
-    return target;
+    return codec;
 }
 } // namespace Media
 } // namespace OHOS
