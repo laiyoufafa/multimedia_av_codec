@@ -214,7 +214,7 @@ int32_t AudioFfmpegDecoderPlugin::AllocateContext(const std::string &name)
         cachedFrame_ = std::shared_ptr<AVFrame>(av_frame_alloc(), [](AVFrame *fp) { av_frame_free(&fp); });
     }
     if (avCodec_ == nullptr) {
-        AVCODEC_LOGD("AllocateContext fail,parameter avcodec is nullptr.");
+        AVCODEC_LOGE("AllocateContext fail,parameter avcodec is nullptr.");
         return AVCodecServiceErrCode::AVCS_ERR_UNSUPPORT_PROTOCOL_TYPE;
     }
 
