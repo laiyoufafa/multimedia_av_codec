@@ -168,8 +168,11 @@ private:
     ~AVSourceTrackFormat() = delete;
 };
 
-std::vector<std::string_view> setTrackFormatSupportedList = {
-    AVSourceTrackFormat::VIDEO_BIT_STREAM_FORMAT,
+enum VideoBitStreamFormat {
+    UNKNOWN = 0,
+    AVCC,
+    HVCC,
+    ANNEXB
 };
 
 } // namespace Media

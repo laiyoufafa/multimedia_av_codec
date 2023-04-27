@@ -72,7 +72,7 @@ config("av_codec_capi_config") {
     "//foundation/multimedia/av_codec/services/engine/plugin/",
     "//foundation/multimedia/av_codec/services/engine/plugin/common",
     "//foundation/multimedia/av_codec/services/engine/plugin/core",
-    "//foundation/multimedia/av_codec/services/engine/plugin/interfaces",
+    "//foundation/multimedia/av_codec/services/engine/plugin/interface",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/ffmpeg_demuxer/",

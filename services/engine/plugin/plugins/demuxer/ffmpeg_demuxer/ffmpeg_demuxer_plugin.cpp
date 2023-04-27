@@ -139,17 +139,17 @@ int32_t FFmpegDemuxerPlugin::ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* av
     return flags;
 }
 
-int32_t FFmpegDemuxerPlugin::Create(uintptr_t sourceAttr)
+int32_t FFmpegDemuxerPlugin::Create(uintptr_t sourceAddr)
 {
     AVCODEC_LOGI("FFmpegDemuxerPlugin::Create is on call");
-    if ( std::is_object<decltype(sourceAttr)>::value ) {
-        formatContext_ = std::shared_ptr<AVFormatContext>((AVFormatContext*)sourceAttr);
+    if ( std::is_object<decltype(sourceAddr)>::value ) {
+        formatContext_ = std::shared_ptr<AVFormatContext>((AVFormatContext*)sourceAddr);
         SetBitStreamFormat();
         AVCODEC_LOGD("create FFmpegDemuxerPlugin successful.");
     } else {
         formatContext_ = nullptr;
         return AVCS_ERR_INVALID_VAL;
-        AVCODEC_LOGW("create FFmpegDemuxerPlugin failed, becasue sourceAttr is not a class address.");
+        AVCODEC_LOGW("create FFmpegDemuxerPlugin failed, becasue sourceAddr is not a class address.");
     }
     return AVCS_ERR_OK;
 }
@@ -194,10 +194,10 @@ int32_t FFmpegDemuxerPlugin::SetBitStreamFormat()
 
     std::string videoBitStreamFormatString = "";
     for ( auto const& pair: videoBitStreamFormat_ ) {
-        videoBitStreamFormatString += pair.first + " = " + std::to_string(pair.second) + " | ";
+        videoBitStreamFormatString += std::to_string(pair.first) + "=" + std::to_string(pair.second) + " | ";
     }
 
-    AVCODEC_LOGD("videoBitStreamFormat: %{public}s", videoBitStreamFormatString);
+    AVCODEC_LOGD("videoBitStreamFormat: %{public}s", videoBitStreamFormatString.c_str());
     
     return AVCS_ERR_OK;
 }
@@ -213,7 +213,7 @@ int32_t FFmpegDemuxerPlugin::SelectSourceTrackByID(uint32_t trackIndex)
         selectedTracksString << index;
     }
     AVCODEC_LOGI("Total track in file: %{public}d | add track index: %{public}d", formatContext_.get()->nb_streams, trackIndex);
-    AVCODEC_LOGI("Selected tracks in file: %{public}d ", selectedTracksString);
+    AVCODEC_LOGI("Selected tracks in file: %{public}s.", selectedTracksString.str().c_str());
 
     if ( trackIndex < 0 || trackIndex >= static_cast<int32_t>(formatContext_.get()->nb_streams)) {
         AVCODEC_LOGE("trackIndex is invalid! Just have %{public}d tracks in file", formatContext_.get()->nb_streams);
@@ -226,7 +226,7 @@ int32_t FFmpegDemuxerPlugin::SelectSourceTrackByID(uint32_t trackIndex)
     if (index == selectedTrackIds_.end()) {
         selectedTrackIds_.push_back(trackIndex);
     }else{
-        AVCODEC_LOGW("track %{public}d is already in selected list!", index);
+        AVCODEC_LOGW("track %{public}d is already in selected list!", trackIndex);
     }
 
     return AVCS_ERR_OK;
@@ -238,7 +238,8 @@ int32_t FFmpegDemuxerPlugin::UnselectSourceTrackByID(uint32_t trackIndex)
     for ( const auto &index : selectedTrackIds_ ) {
         selectedTracksString << index;
     }
-    AVCODEC_LOGI("Selected track in file: %{public}d | remove track: %{public}d", selectedTracksString, trackIndex);
+    AVCODEC_LOGI("Selected track in file: %{public}s | remove track: %{public}d", 
+        selectedTracksString.str().c_str(), trackIndex);
 
     // OSAL::ScopedLock lock(mutex_);
     auto index = std::find_if(selectedTrackIds_.begin(), selectedTrackIds_.end(),
@@ -247,7 +248,7 @@ int32_t FFmpegDemuxerPlugin::UnselectSourceTrackByID(uint32_t trackIndex)
     if (index != selectedTrackIds_.end()) {
         selectedTrackIds_.erase(index);
     }else{
-        AVCODEC_LOGW("Unselect track failed, track %{public}d is not in selected list!", index);
+        AVCODEC_LOGW("Unselect track failed, track %{public}d is not in selected list!", trackIndex);
         return AVCS_ERR_INVALID_VAL;
     }
 
@@ -284,10 +285,10 @@ void FFmpegDemuxerPlugin::InitBitStreamContext(const AVStream& avStream)
         AVCODEC_LOGD("codeTag is avc1, will convert avc1 to annexb");
         avBitStreamFilter = av_bsf_get_by_name("h264_mp4toannexb");
     } else if (strncmp(codeTag, "hevc", strlen("hevc")) == 0) {
-        AVCODEC_LOGD("codeTag is hevc, will convert hevc to annexb")
+        AVCODEC_LOGD("codeTag is hevc, will convert hevc to annexb");
         avBitStreamFilter = av_bsf_get_by_name("hevc_mp4toannexb");
     } else {
-        AVCODEC_LOGW("Can not find valid bit stream filter for %{public}s, stream will not be converted", codeTag)
+        AVCODEC_LOGW("Can not find valid bit stream filter for %{public}s, stream will not be converted", codeTag);
     }
     if (avBitStreamFilter && !avbsfContext_) {
         AVBSFContext* avbsfContext {nullptr};
@@ -314,9 +315,8 @@ void FFmpegDemuxerPlugin::ConvertAvcOrHevcToAnnexb(AVPacket& pkt)
     (void)av_bsf_receive_packet(avbsfContext_.get(), &pkt);
 }
 
-
-int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo& bufferInfo)
-{   
+int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo)
+{ 
     AVCODEC_LOGD("FFmpegDemuxerPlugin::CopyNextSample is on call");
 
     int ret = -1;
@@ -330,13 +330,12 @@ int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffe
         int frameSize = 0;
         trackIndex = pkt->stream_index;
         AVStream* avStream = formatContext_->streams[pkt->stream_index];
-        int64_t frameCount = GetTotalStreamFrames(pkt->stream_index);
         if (!sampleIndex_.count(pkt->stream_index)){
             sampleIndex_[pkt->stream_index]=1;
         }else{
             sampleIndex_[pkt->stream_index]++;
         }
-        bufferInfo.pts = ConvertTimeFromFFmpeg(pkt->pts, avStream->time_base);
+        bufferInfo.presentationTimeUs = AvTime2Ms(ConvertTimeFromFFmpeg(pkt->pts, avStream->time_base));
         bufferInfo.flags = ConvertFlagsFromFFmpeg(pkt, avStream);
         if (avStream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             frameSize = pkt->size;
@@ -405,7 +404,7 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
         int64_t ffTime = ConvertTimeToFFmpeg(mSeconds*1000*1000, avStream->time_base);
         if (avStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             if (ffTime > avStream->duration){
-                AVCODEC_LOGE("ERROR: Seek to timestamp = %{public}ld failed, max = %l{public}d\n", ffTime, avStream->duration);
+                AVCODEC_LOGE("ERROR: Seek to timestamp = %{public}ld failed, max = %{public}ld", ffTime, avStream->duration);
                 return AVCS_ERR_SEEK_FAILED;
             }
             if (AvTime2Ms(ConvertTimeFromFFmpeg(avStream->duration, avStream->time_base) - mSeconds) <= 100

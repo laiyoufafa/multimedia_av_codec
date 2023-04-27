@@ -20,6 +20,7 @@
 #include "securec.h"
 #include "source.h"
 #include "avcodec_log.h"
+#include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 
 namespace {
@@ -32,14 +33,13 @@ std::shared_ptr<ISourceEngine> ISourceEngineFactory::CreateSourceEngine(int32_t 
 {
     AVCodecTrace trace("ISourceEngineFactory::CreateSourceEngine");
     std::shared_ptr<ISourceEngine> sourceEngineImpl = std::make_shared<SourceEngineImpl>(appUid, appPid, uri);
-    CHECK_AND_RETURN_RET_LOG(demuxerEngineImpl != nullptr, nullptr, "create MuxerEngine implementation failed");
+    CHECK_AND_RETURN_RET_LOG(sourceEngineImpl != nullptr, nullptr, "create SourceEngine implementation failed");
     return sourceEngineImpl;
 }
 
 int32_t SourceEngineImpl::Create()
 {
     AVCODEC_LOGI("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
-    source_ = std::make_shared<Source>();
     if (source_ != nullptr) {
         AVCODEC_LOGI("state_ is INITIALIZED");
     } else {
@@ -52,16 +52,9 @@ SourceEngineImpl::SourceEngineImpl(int32_t appUid, int32_t appPid, const std::st
     : appUid_(appUid), appPid_(appPid), uri_(uri)
 {
     AVCODEC_LOGI("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
-    source_ = std::make_shared<Source>();
+    source_ = std::make_shared<Plugin::Source>();
     if (source_ == nullptr) {
         AVCODEC_LOGE("create demuxer engine failed");
-    } else {
-        int32_t ret = source_->Create(uri_);
-        if (ret == AVCS_ERR_OK) {
-            AVCODEC_LOGI("init demuxer engine successful");
-        } else {
-            AVCODEC_LOGE("init demuxer engine failed");
-        }
     }
 }
 
@@ -85,7 +78,7 @@ int32_t SourceEngineImpl::SetTrackFormat(const Format &format, uint32_t trackInd
 {
     AVCodecTrace trace("SourceEngineImpl::SetTrackFormat");
     AVCODEC_LOGI("SetTrackFormat");
-    return source_->SetTrackFormat(format, trackCount);
+    return source_->SetTrackFormat(format, trackIndex);
 }
 
 int32_t SourceEngineImpl::GetSourceFormat(Format &format)
@@ -99,7 +92,7 @@ int32_t SourceEngineImpl::GetTrackFormat(Format &format, uint32_t trackIndex)
 {
     AVCodecTrace trace("SourceEngineImpl::GetTrackFormat");
     AVCODEC_LOGI("GetTrackFormat");
-    return source_->GetTrackFormat(format,trackCount);
+    return source_->GetTrackFormat(format, trackIndex);
 }
 
 uintptr_t SourceEngineImpl::GetSourceAddr()

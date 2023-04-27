@@ -94,10 +94,10 @@ int32_t DemuxerServiceStub::DestroyStub()
     return AVCS_ERR_OK;
 }
 
-int32_t DemuxerServiceStub::Init(uint64_t attr)
+int32_t DemuxerServiceStub::Init(uint64_t sourceAddr)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
-    return demuxerServer_->Init(attr);
+    return demuxerServer_->Init(sourceAddr);
 }
 
 int32_t DemuxerServiceStub::SelectSourceTrackByID(uint32_t index)
@@ -138,8 +138,8 @@ int32_t DemuxerServiceStub::DumpInfo(int32_t fd)
 
 int32_t DemuxerServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
-    uint64_t attr = data.ReadUint64();
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(attr)), AVCS_ERR_UNKNOWN, "");   
+    uint64_t sourceAddr = data.ReadUint64();
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(sourceAddr)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 
@@ -184,6 +184,13 @@ int32_t DemuxerServiceStub::SeekToTime(MessageParcel &data, MessageParcel &reply
 
     // TODO: 添加LOG描述
     CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SeekToTime(mSeconds, seekMode)), AVCS_ERR_UNKNOWN, "");   
+    return AVCS_ERR_OK;
+}
+
+int32_t DemuxerServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+{
+    (void)data;
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "Reply DestroyStub failed!");
     return AVCS_ERR_OK;
 }
 

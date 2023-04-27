@@ -35,47 +35,17 @@ public:
     SourceEngineImpl(int32_t appUid, int32_t appPid, const std::string& uri);
     ~SourceEngineImpl() override;
     int32_t Create() override;
-    int32_t GetTrackCount(uint32_t &trackCount);
-    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex);
-    int32_t GetSourceFormat(Format &format);
-    int32_t GetTrackFormat(Format &format, uint32_t trackIndex);
-    uintptr_t GetSourceAddr();
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) override;
+    int32_t GetSourceFormat(Format &format) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex) override;
+    uintptr_t GetSourceAddr() override;
 
 private:
-    // int32_t StartThread(std::string name);
-    // int32_t StopThread() noexcept;
-    // void ThreadProcessor();
-    // bool CanAddTrack(std::string &mimeType);
-    // bool CheckKeys(std::string &mimeType, const Format &trackFormat);
-    // std::string ConvertStateToString(int32_t state);
-
-private:
-    std::string uri_;
-//     enum State {
-//         UNINITIALIZED,
-//         INITIALIZED,
-//         STARTED,
-//         STOPPED
-//     };
-//     struct BlockBuffer {
-//         uint32_t trackIndex_;
-//         std::shared_ptr<AVSharedMemory> buffer_;
-//         AVCodecBufferInfo info_;
-//     };
-
     int32_t appUid_ = -1;
     int32_t appPid_ = -1;
-// //     int64_t fd_ = -1;
-// //     OutputFormat format_;
-//     std::atomic<State> state_ = UNINITIALIZED;
-//     std::map<uint32_t, std::string> tracks_;
-//     BlockQueue<std::shared_ptr<BlockBuffer>> que_;
-//     std::string threadName_;
-//     std::mutex mutex_;
-//     std::condition_variable cond_;
-//     std::unique_ptr<std::thread> thread_ = nullptr;
-//     bool isThreadExit_ = true;
-    std::shared_ptr<Source> source_ = nullptr;
+    std::string uri_;
+    std::shared_ptr<Plugin::Source> source_ = nullptr;
 };
 } // namespace Media
 } // namespace OHOS

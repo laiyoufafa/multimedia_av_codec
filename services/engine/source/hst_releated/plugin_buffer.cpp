@@ -128,7 +128,8 @@ MemoryType Memory::GetMemoryType()
 
 Buffer::Buffer(BufferMetaType type) : trackID(0), pts(0), dts(0), duration(0), flag (0)
 {
-
+    // TODO
+    (void)type;
 }
 
 std::shared_ptr<Buffer> Buffer::CreateDefaultBuffer(BufferMetaType type, size_t capacity,
@@ -142,7 +143,9 @@ std::shared_ptr<Buffer> Buffer::CreateDefaultBuffer(BufferMetaType type, size_t 
 
 std::shared_ptr<Memory> Buffer::WrapMemory(uint8_t* data, size_t capacity, size_t size)
 {
-    auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(data, [](void* ptr) {})));
+    // TODO
+    // auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(data, [](void* ptr) {})));
+    auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(data, [](void* ptr) {(void)ptr;})));
     memory->size = size;
     this->data.push_back(memory);
     return memory;

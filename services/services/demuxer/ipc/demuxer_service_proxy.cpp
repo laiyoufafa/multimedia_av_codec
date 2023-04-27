@@ -49,7 +49,7 @@ int32_t DemuxerServiceProxy::DestroyStub()
     return reply.ReadInt32();
 }
 
-int32_t DemuxerServiceProxy::Init(uint64_t attr)
+int32_t DemuxerServiceProxy::Init(uint64_t sourceAddr)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -57,7 +57,7 @@ int32_t DemuxerServiceProxy::Init(uint64_t attr)
     bool token = data.WriteInterfaceToken(DemuxerServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    data.WriteUint64(attr);
+    data.WriteUint64(sourceAddr);
     int32_t error = Remote()->SendRequest(INIT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Init, error: %{public}d", error);
     return reply.ReadInt32();

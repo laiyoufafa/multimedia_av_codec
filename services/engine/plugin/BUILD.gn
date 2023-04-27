@@ -23,6 +23,7 @@ config("plugin_presets") {
     "//foundation/multimedia/av_codec/services/engine/plugin/common",
     "//foundation/multimedia/av_codec/services/engine/plugin/core",
     "//foundation/multimedia/av_codec/services/engine/plugin/interface",
+    "//foundation/multimedia/av_codec/services/engine/source/hst_releated",
     "//third_party/bounds_checking_function/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
   ]

@@ -28,6 +28,10 @@ namespace {
 namespace OHOS {
 namespace Media{
 
+std::vector<std::string_view> setTrackFormatSupportedList = {
+    AVSourceTrackFormat::VIDEO_BIT_STREAM_FORMAT,
+};
+
 std::shared_ptr<AVSource> AVSourceFactory::CreateWithURI(const std::string &uri)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
@@ -77,8 +81,6 @@ int32_t AVSourceImpl::Init(const std::string &uri)
     CHECK_AND_RETURN_RET_LOG(sourceClient_ != nullptr, 
         AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "Create source service failed when init sourceImpl");
     
-    // sourceClient_ = ISourceEngineFactory::CreateSourceEngine(-1, -1, uri);
-    CHECK_AND_RETURN_RET_LOG(sourceClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "source service died when get source attr!");
     int32_t ret = sourceClient_->Init(uri);
     if ( ret == AVCS_ERR_OK ) {
         uint32_t trackCount = 0;
@@ -116,7 +118,7 @@ AVSourceImpl::~AVSourceImpl()
 
 uintptr_t AVSourceImpl::GetSourceAddr()
 {
-    CHECK_AND_RETURN_RET_LOG(sourceClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "source service died when get source attr!");
+    CHECK_AND_RETURN_RET_LOG(sourceClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "source service died when get source addr!");
     
     return sourceClient_->GetSourceAddr();
 }

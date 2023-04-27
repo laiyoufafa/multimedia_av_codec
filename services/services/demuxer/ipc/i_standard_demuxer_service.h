@@ -26,7 +26,7 @@ public:
     virtual ~IStandardDemuxerService() = default;
 
     // 业务
-    virtual int32_t Init(uint64_t attr) = 0;
+    virtual int32_t Init(uint64_t sourceAddr) = 0;
     virtual int32_t SelectSourceTrackByID(uint32_t trackIndex) = 0;
     virtual int32_t UnselectSourceTrackByID(uint32_t trackIndex) = 0;
     virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) = 0;

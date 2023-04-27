@@ -18,13 +18,13 @@
 #include <algorithm>
 #include <dirent.h>
 #include "type_cast_ext.h"
-// #include "muxer_plugin.h"
-// #include "avcodec_log.h"
+#include "avcodec_log.h"
+#include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 
-// namespace {
-//     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerFactory"};
-// }
+namespace {
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "DemuxerFactory"};
+}
 
 namespace OHOS {
 namespace Media {
@@ -49,7 +49,7 @@ std::shared_ptr<Demuxer> DemuxerFactory::CreatePlugin(uintptr_t sourceAddr)
     
     AVCODEC_LOGD("create demuxer plugin from DemuxerFactory");
     std::string pluginName;
-    int32_t maxRank = 0;
+    uint32_t maxRank = 0;
     for (auto& name : registerData_->registerNames) {
         std::shared_ptr<PluginRegInfo> regInfo = registerData_->registerTable[name];
         if (regInfo->info->pluginType == PluginType::DEMUXER) {
@@ -69,14 +69,14 @@ std::shared_ptr<Demuxer> DemuxerFactory::CreatePlugin(uintptr_t sourceAddr)
         int32_t ret = plugin->Create(sourceAddr);
         
         if ( ret != AVCS_ERR_OK ) {
-            AVCODEC_LOGE("Create demuxer plugin failed, cannot create plugin!")
+            AVCODEC_LOGE("Create demuxer plugin failed, cannot create plugin!");
             return nullptr;
         }
-        AVCODEC_LOGD("create demuxer plugin successful! pluginName %{public}s(maxRank %{public}d)", maxRank, pluginName.c_str());
+        AVCODEC_LOGD("create demuxer plugin successful! pluginName %{public}s(maxRank %{public}d)", pluginName.c_str(), maxRank);
         return std::shared_ptr<Demuxer>(
                 new Demuxer(regInfo->packageDef->pkgVersion, regInfo->info->apiVersion, plugin));
     } else {
-        AVCODEC_LOGW("Create demuxer plugin failed, can not find any demuxer plugins!")
+        AVCODEC_LOGW("Create demuxer plugin failed, can not find any demuxer plugins!");
     }
     return nullptr;
 }
@@ -109,11 +109,11 @@ void DemuxerFactory::RegisterDynamicPlugins(const char* libDirPath)
             std::string libPath = libDirPath + g_fileSeparator + lib->d_name;
             loader = PluginLoader::Create(pluginName, libPath);
             if (loader) {
-                AVCODEC_LOGI("Create pluginLoader successful: %{public}s!", libName)
+                AVCODEC_LOGI("Create pluginLoader successful: %{public}s!", libName.c_str());
                 loader->FetchRegisterFunction()(std::make_shared<RegisterImpl>(registerData_, loader));
                 registeredLoaders_.push_back(loader);
             } else {
-                AVCODEC_LOGE("Create pluginLoader failed!")
+                AVCODEC_LOGE("Create pluginLoader failed!");
             }
         }
         closedir(libDir);

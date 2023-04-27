@@ -27,7 +27,7 @@ public:
     ~DemuxerClient();
 
     // 业务
-    int32_t Init(uint64_t attr) override;
+    int32_t Init(uint64_t sourceAddr) override;
     int32_t SelectSourceTrackByID(uint32_t index) override;
     int32_t UnselectSourceTrackByID(uint32_t index) override;
     int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) override;

@@ -22,11 +22,12 @@ namespace OHOS {
 namespace Media {
 class SourceBase {
 public:
+    virtual ~SourceBase() = 0;
     virtual int32_t Create(std::string& uri) = 0;
     virtual int32_t GetTrackCount(uint32_t &trackCount) = 0;
     virtual int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) = 0;
-    virtual int32_t GetTrackFormat(Format &format)  = 0;
-    virtual int32_t GetSourceFormat(Format &format, uint32_t trackIndex) = 0;
+    virtual int32_t GetSourceFormat(Format &format)  = 0;
+    virtual int32_t GetTrackFormat(Format &format, uint32_t trackIndex) = 0;
     virtual uintptr_t GetSourceAddr() = 0;
 };
 } // namespace Media

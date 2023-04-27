@@ -236,6 +236,19 @@ extern const char *OH_MD_KEY_START_TIME;
 extern const char *OH_MD_KEY_TYPE;
 
 /**
+ * @brief Format of video bitStream
+ * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @since 10
+ * @version 4.0
+ */
+typedef enum OH_VideoBitStreamFormat {
+    UNKNOWN = 0,
+    AVCC,
+    HVCC,
+    ANNEXB
+} OH_VideoBitStreamFormat;
+
+/**
  * @brief Media type.
  * @syscap SystemCapability.Multimedia.Media.CodecBase
  * @since 9

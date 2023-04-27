@@ -16,11 +16,6 @@
 #include "demuxer.h"
 #include "avcodec_errors.h"
 #include "demuxer_plugin.h"
-#include "avcodec_log.h"
-
-namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "Demuxer"};
-}
 
 namespace OHOS {
 namespace Media {

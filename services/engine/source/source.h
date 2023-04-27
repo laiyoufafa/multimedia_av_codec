@@ -20,6 +20,7 @@
 extern "C" {
 #endif
 #include "libavformat/avformat.h"
+#include "libavutil/opt.h"
 #ifdef __cplusplus
 }
 #endif
@@ -34,21 +35,19 @@ extern "C" {
 #include "sourcebase.h"
 
 
-
-using namespace OHOS::Media::Plugin;
-
-
+namespace OHOS {
+namespace Media {
+namespace Plugin {
 struct FfmpegRegister : PackageRegister {
 public:
     std::string name = "custom register";
     Status AddPlugin(const PluginDefBase& def) override;
     Status AddPackage(const PackageDef& def) override;
     std::shared_ptr<SourcePlugin> sourcePlugin {nullptr};
+private:
+    std::shared_ptr<PackageDef> packageDef;
 };
 
-
-namespace OHOS {
-namespace Media {
 class Source : public SourceBase {
 public:
     Source();
@@ -64,12 +63,11 @@ public:
         return sourcePlugin_;
     }
 
-
 private:
     struct CustomIOContext {
         SourcePlugin* sourcePlugin = nullptr;
-        int64_t offset = 0;
-        int64_t position = 0;
+        size_t offset = 0;
+        size_t position = 0;
         bool eof = false;
         size_t fileSize = 0;
         AVIOContext* avioContext = nullptr;
@@ -86,7 +84,7 @@ private:
     CustomIOContext customIOContext_;
     AVIOContext* avioContext_ = nullptr;
 
-    int32_t LoadDemuxerList(const std::string& uri);
+    int32_t LoadDemuxerList();
     int32_t LoadDynamicPlugin(const std::string& path);
     int32_t GuessInputFormat(const std::string& uri,  std::shared_ptr<AVInputFormat>& bestInputFormat);
     int32_t SniffInputFormat(const std::string& uri);
@@ -98,7 +96,7 @@ private:
 
     void ReadLoop();
 };
-
+} // namespace Plugin
 } // namespace Media
 } // namespace OHOS
 #endif // AVSOURCE_H

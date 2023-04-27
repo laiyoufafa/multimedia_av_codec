@@ -46,14 +46,12 @@ public:
     FFmpegDemuxerPlugin();
     ~FFmpegDemuxerPlugin();
     
-    int32_t Create(uintptr_t sourceAttr);
-    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo& bufferInfo);
+    int32_t Create(uintptr_t sourceAddr) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo) override;
     int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
     int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
     int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) override;
     std::vector<uint32_t> GetSelectedTrackIds();
-    // int32_t SetBitStreamFormat(VideoBitStreamFormat bitStreamFormat);
-
 
 private:
     bool IsInSelectedTrack(uint32_t trackIndex);

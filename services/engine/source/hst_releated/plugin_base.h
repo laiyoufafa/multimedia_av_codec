@@ -172,6 +172,9 @@ struct PluginBase {
      */
     virtual Status GetParameter(Tag tag, ValueType &value)
     {
+        // TODO
+        (void)tag;
+        (void)value;
         return Status::ERROR_UNIMPLEMENTED;
     }
 
@@ -190,6 +193,9 @@ struct PluginBase {
      */
     virtual Status SetParameter(Tag tag, const ValueType &value)
     {
+        // TODO
+        (void)tag;
+        (void)value;
         return Status::ERROR_UNIMPLEMENTED;
     }
 

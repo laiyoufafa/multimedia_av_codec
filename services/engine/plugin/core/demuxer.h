@@ -17,7 +17,7 @@
 #define PLUGIN_CORE_DEMUXER_H
 
 #include "format.h"
-#include "avcodec_base.h"
+#include "avcodec_common.h"
 #include "demuxer_plugin.h"
 
 namespace OHOS {

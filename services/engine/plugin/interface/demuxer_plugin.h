@@ -19,7 +19,6 @@
 #include "avcodec_common.h"
 #include "plugin_base.h"
 #include "plugin_definition.h"
-#include "avcodec_base.h"
 
 namespace OHOS {
 namespace Media {
@@ -32,7 +31,10 @@ struct DemuxerPlugin : public PluginBase {
     virtual int32_t SelectSourceTrackByID(uint32_t index) = 0;
     virtual int32_t UnselectSourceTrackByID(uint32_t index) = 0;
     virtual int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) = 0;
-    Status SetCallback(Callback* cb) {return Status::ERROR_UNIMPLEMENTED;};
+    Status SetCallback(Callback* cb) {
+        (void)cb;
+        return Status::ERROR_UNIMPLEMENTED;
+    };
 };
 
 /// Demuxer plugin api major number.
