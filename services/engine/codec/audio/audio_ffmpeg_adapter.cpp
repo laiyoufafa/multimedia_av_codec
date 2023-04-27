@@ -94,12 +94,12 @@ int32_t AudioFFMpegAdapter::Start()
 {
     AVCODEC_LOGD("Start enter");
     if (!callback_) {
-        AVCODEC_LOGE("ffmpeg adapter start error, callback not initlized .");
+        AVCODEC_LOGE("adapter start error, callback not initlized .");
         return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
     }
 
     if (!audioCodec) {
-        AVCODEC_LOGE("ffmpeg adapter start error, audio codec not initlized .");
+        AVCODEC_LOGE("adapter start error, audio codec not initlized .");
         return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
     }
 

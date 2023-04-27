@@ -1,22 +1,20 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
-
 ohos_static_library("av_codec_codec_base"){
     include_dirs=[
         "//foundation/graphic/graphic_2d/frameworks/surface/include",
-        "$AV_CODEC_ROOT_DIR/services/engine/base/include",
-        "$AV_CODEC_ROOT_DIR/services/engine/common/include",
-        "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
-        "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
-        "$AV_CODEC_ROOT_DIR/services/dfx/include",
+        "$av_codec_root_dir/services/engine/base/include",
+        "$av_codec_root_dir/services/engine/common/include",
+        "$av_codec_root_dir/interfaces/inner_api/native",
+        "$av_codec_root_dir/interfaces/kits/c",
+        "$av_codec_root_dir/services/dfx/include",
         "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
         "//third_party/ffmpeg",
     ]
 
     sources=[
-        "$AV_CODEC_ROOT_DIR/services/engine/base/codecbase.cpp"
+        "$av_codec_root_dir/services/engine/base/codecbase.cpp"
     ]
 
     deps=[
