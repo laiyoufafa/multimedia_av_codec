@@ -16,13 +16,16 @@
 #ifndef AVSOURCE_H
 #define AVSOURCE_H
 
+#include <vector>
 #include <memory>
 #include <string>
 #include "avcodec_common.h"
 #include "format.h"
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
+
+class AVSourceTrack;
 
 class AVSource {
 public:
@@ -35,22 +38,53 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual uint32_t GetTrackCount() = 0;
+    virtual int32_t GetTrackCount(uint32_t &trackCount) = 0;
 
     /**
      * @brief Return a {@link AVSourceTrack} object.
      * 
-     * @param trackId The index of the track.
+     * @param trackIndex The index of the track.
      * @return Returns {@link AVSourceTrack} if success; returns nullptr otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<SourceTrack> LoadSourceTrackByID(uint32_t trackId) = 0;
+    virtual std::shared_ptr<AVSourceTrack> GetSourceTrackByID(uint32_t trackIndex) = 0;
+
+    /**
+     * @brief Gets the parameters of the source.
+     * 
+     * @param format The empty parameters for storing data.
+     * @return Returns {@link Format} if success; returns nullptr otherwise.
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual int32_t GetSourceFormat(Format &format) = 0;
+
+    /**
+     * @brief Gets the address of the source.
+     * 
+     * @return Returns {@link Format} if success; returns nullptr otherwise.
+     * @since 4.0
+     * @version 4.0
+     */
+    virtual uintptr_t GetSourceAddr() = 0;
+
+    std::string sourceUri;
+
+private:
+    std::vector<AVSourceTrack*> tracks_ {};
 };
 
-class __attribute__((visibility("default"))) SourceFactory {
+class __attribute__((visibility("default"))) AVSourceFactory {
+public:
 #ifdef UNSUPPORT_SOURCE
     static std::shared_ptr<AVSource> CreateWithURI(const std::string &uri)
+    {
+        (void)uri;
+        return nullptr;
+    }
+
+    static std::shared_ptr<AVSource> CreateWithFD(int32_t fd, int64_t offset, int64_t size)
     {
         (void)uri;
         return nullptr;
@@ -67,10 +101,22 @@ class __attribute__((visibility("default"))) SourceFactory {
      */
     static std::shared_ptr<AVSource> CreateWithURI(const std::string &uri);
 
+    /**
+     * @brief Instantiate the preferred source of the fd.
+     *
+     * @param fd The fileDescriptor data source.
+     * @param offset The offset into the file where the data be read starts.
+     * @param size the length in bytes of the data to be read.
+     * @return Returns the preferred source.
+     * @since 4.0
+     * @version 4.0
+     */
+    static std::shared_ptr<AVSource> CreateWithFD(int32_t fd, int64_t offset, int64_t size);
+
 #endif
 private:
-    SourceFactory() = default;
-    ~SourceFactory() = default;
+    AVSourceFactory() = default;
+    ~AVSourceFactory() = default;
 };
 
 class AVSourceTrack {
@@ -80,25 +126,24 @@ public:
     /**
      * @brief Sets the parameters to the track.
      * 
-     * @param format The parameters.
+     * @param format The parameters to set.
      * @return Returns {@link MSEER_OK} if success; returns nullptr otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t SetParameter(const Format &param) = 0;
+    virtual int32_t SetTrackFormat(const Format &format) = 0;
 
     /**
      * @brief Gets the parameters of the track.
      * 
+     * @param format The empty parameters for storing data.
      * @return Returns {@link Format} if success; returns nullptr otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<Format> GetTrackFormat(Format &format) = 0;
-private:
-    uint32_t trackId_;
+    virtual int32_t GetTrackFormat(Format &format) = 0;
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif // AVSOURCE_H
 

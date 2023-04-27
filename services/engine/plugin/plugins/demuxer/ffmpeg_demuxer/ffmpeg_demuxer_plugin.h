@@ -16,34 +16,63 @@
 #ifndef FFMPEG_DEMUXER_PLUGIN_H
 #define FFMPEG_DEMUXER_PLUGIN_H
 
+#include <iostream>
+#include <stddef.h>
 #include <memory>
 #include <vector>
-#include "avcodec_common.h"
-#include "demuxer_plugin.h"
-#include "plugin/osal/thread/mutex.h"
-#include "source.h"
-#include "libavformat/avformat.h"
+#include <map>
 
-namespace OH{
+#ifdef __cplusplus 
+extern "C" {
+#endif
+#include "libavformat/avformat.h"
+#include "libavcodec/avcodec.h"
+#include "libavutil/dict.h"
+
+#ifdef __cplusplus
+}
+#endif
+
+#include "demuxer_plugin.h"
+#include "avcodec_common.h"
+#include "avsharedmemory.h"
+
+namespace OHOS{
 namespace Media{
 namespace Plugin{
 namespace FFmpeg{
-class FFmpegDemuxerPlugin : public DemuxerPlugin{
+class FFmpegDemuxerPlugin : public DemuxerPlugin {
 public:
-    FFmpegDemuxerPlugin(size_t sourceAttr);
-    ~FFmpegDemuxerPlugin() override;
+    FFmpegDemuxerPlugin();
+    ~FFmpegDemuxerPlugin();
+    
+    int32_t Create(uintptr_t sourceAttr);
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo& bufferInfo);
+    int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) override;
+    std::vector<uint32_t> GetSelectedTrackIds();
+    // int32_t SetBitStreamFormat(VideoBitStreamFormat bitStreamFormat);
 
-    Status AddSourceTrackByID(uint32_t index) override;
-    Status RemoveSourceTrackByID(uint32_t index) override;
-    Status CopyCurrentSampleToBuf(AVCodecBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    Status SeekToTimeStamp(int64_t mSeconds, SeekMode mode) override;
+
 private:
-    vector<int32_t> selectedTrackIds_;
-    OSAL::Mutex mutex_ {};
+    bool IsInSelectedTrack(uint32_t trackIndex);
+    int32_t ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* avStream);
+    int64_t GetTotalStreamFrames(int streamIndex);
+    int32_t SetBitStreamFormat();
+    void ConvertAvcOrHevcToAnnexb(AVPacket& pkt);
+    void InitBitStreamContext(const AVStream& avStream);
+
+    std::vector<uint32_t> selectedTrackIds_;
+    // OSAL::Mutex mutex_ {};
     std::shared_ptr<AVFormatContext> formatContext_;
+    std::shared_ptr<AVBSFContext> avbsfContext_ {nullptr};
+    std::map<uint32_t, VideoBitStreamFormat> videoBitStreamFormat_;
+    std::map<uint32_t, uint64_t> sampleIndex_;
+
 };
 } // namespace FFmpeg
 } // namespace Plugin
-} // namespace Media
+} // namespace AVCodec
 } // namespace OH
 #endif // FFMPEG_DEMUXER_PLUGIN_H

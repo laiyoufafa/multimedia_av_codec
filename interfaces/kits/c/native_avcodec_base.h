@@ -209,6 +209,32 @@ extern const char *OH_MD_KEY_I_FRAME_INTERVAL;
 /* Key of the surface rotation angle. value type is int32_t: should be {0, 90, 180, 270}, default is 0. */
 extern const char *OH_MD_KEY_ROTATION;
 
+// TODO Track
+extern const char *OH_MD_KEY_TRACK_INDEX;
+extern const char *OH_MD_KEY_TRACK_SAMPLE_COUNT;
+// extern const char *OH_MD_KEY_TRACK_TYPE;
+// extern const char *OH_MD_KEY_DURATION;
+// extern const char *OH_MD_KEY_BITRATE;
+// extern const char *OH_MD_KEY_ROTATION;
+// extern const char *OH_MD_KEY_WIDTH;
+// extern const char *OH_MD_KEY_HEIGHT;
+extern const char *OH_MD_KEY_BIT_STREAM_FORMAT;
+// TODO Source
+extern const char *OH_MD_KEY_TITLE;
+extern const char *OH_MD_KEY_ARTIST;
+extern const char *OH_MD_KEY_ALBUM;
+extern const char *OH_MD_KEY_ALBUM_ARTIST;
+extern const char *OH_MD_KEY_DATE;
+extern const char *OH_MD_KEY_COMMENT;
+extern const char *OH_MD_KEY_GENRE;
+extern const char *OH_MD_KEY_COPYRIGHT;
+extern const char *OH_MD_KEY_LANGUAGE;
+extern const char *OH_MD_KEY_DESCRIPTION;
+extern const char *OH_MD_KEY_LYRICS;
+extern const char *OH_MD_KEY_DURATION;
+extern const char *OH_MD_KEY_START_TIME;
+extern const char *OH_MD_KEY_TYPE;
+
 /**
  * @brief Media type.
  * @syscap SystemCapability.Multimedia.Media.CodecBase
@@ -243,6 +269,21 @@ typedef enum OH_AVCProfile {
 typedef enum OH_AACProfile {
     AAC_PROFILE_LC = 0,
 } OH_AACProfile;
+
+/**
+ * @brief Seek Mode
+ * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @since 10
+ * @version 4.0
+ */
+typedef enum OH_AVSeekMode {
+    /* seek to sync sample after the time */
+    SEEK_MODE_NEXT_SYNC = 0,
+    /* seek to sync sample before the time */
+    SEEK_MODE_PREVIOUS_SYNC,
+    /* seek to sync sample closest to time */
+    SEEK_MODE_CLOSEST_SYNC,
+} OH_AVSeekMode;
 
 #ifdef __cplusplus
 }

@@ -19,14 +19,17 @@
 #include <stdint.h>
 #include "native_avcodec_base.h"
 #include "native_averrors.h"
+#include "native_avsource.h"
 
 #ifdef __cplusplus
 extern "C"{
 #endif
 
+typedef struct OH_AVDemuxer OH_AVDemuxer;
+
 /**
  * @brief Creates a demuxer to demux media from source.
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param source Pointer to an OH_AVSource instance.
  * @return Returns a pointer to an OH_AVDemuxer instance
  * @since 10
@@ -36,10 +39,10 @@ OH_AVDemuxer *OH_AVDemuxer_CreateWithSource(OH_AVSource *source);
 
 /**
  * @brief Destroy the demuxer and free its resources.
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
  * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
@@ -47,64 +50,64 @@ OH_AVErrCode OH_AVDemuxer_Destroy(OH_AVDemuxer *demuxer);
 
 /**
  * @brief Add a track to the demuxer. Subsequent calls to 
- * `OH_AVDemuxer_CopyCurrentSampleToBuf` only retrieve information for 
+ * `OH_AVDemuxer_CopyNextSample` only retrieve information for 
  * the subset of tracks selected. One track can only be added once, and 
  * add the same track multiple times has no effect. 
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
- * @param trackId Enter the index value corresponding to the track.
+ * @param trackIndex Enter the index value corresponding to the track.
  * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
-OH_AVErrCode OH_AVDemuxer_AddSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackId);
+OH_AVErrCode OH_AVDemuxer_SelectSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackIndex);
 
 /**
  * @brief Remove a track from the demuxer. Subsequent calls to 
- * `OH_AVDemuxer_CopyCurrentSampleToBuf` only retrieve information for 
+ * `OH_AVDemuxer_CopyNextSample` only retrieve information for 
  * the subset of tracks selected.
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
- * @param trackId Enter the index value corresponding to the Track.
+ * @param trackIndex Enter the index value corresponding to the Track.
  * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
-OH_AVErrCode OH_AVDemuxer_RemoveSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackId);
+OH_AVErrCode OH_AVDemuxer_UnselectSourceTrackByID(OH_AVDemuxer *demuxer, uint32_t trackIndex);
 
 /**
  * @brief Retrieve the current sample in selected tracks and store it in buffer, 
  * and store buffer's info to attr.
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
- * @param buffer The empty buffer for storing data getting from `OH_AVCodec_GetInputBuffer`.
+ * @param trackIndex The param storing trackIndex of the buffer.
+ * @param buffer The empty buffer for storing data.
  * @param attr The empty OH_AVCodecBufferAttr struct for storing buffer info.
  * @return Returns AV_ERR_OK if the execution is successful,
- * otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
-OH_AVErrCode OH_AVDemuxer_CopyCurrentSampleToBuf(OH_AVDemuxer *demuxer, OH_AVBufferElement *buffer, OH_AVCodecBufferAttr *bufferInfo);
+OH_AVErrCode OH_AVDemuxer_CopyNextSample(OH_AVDemuxer *demuxer, uint32_t *trackIndex, uint8_t *buffer, OH_AVCodecBufferAttr *bufferInfo);
 
 /**
  * @brief All selected tracks seek near to the requested time according to 
  * the seek mode.
- * @syscap SystemCapability.Multimedia.AVCodec.Demuxer
+ * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
- * @param mSeconde The seconds for seeking.
+ * @param mSeconde The millisecond for seeking.
  * @param mode The mode for seeking. Value is:
- *             SEEK_NEXT_SYNC     > sync to keyframes after the time point.
- *             SEEK_PREVIOUS_SYNC > sync to keyframes before the time point.
- *             SEEK_CLOSEST_SYNC  > sync to closest keyframes.
- *             SEEK_CLOSEST       > sync to frames closest the time point.
+ *             SEEK_MODE_NEXT_SYNC     > seek to sync sample after the time.
+ *             SEEK_MODE_PREVIOUS_SYNC > seek to sync sample before the time.
+ *             SEEK_MODE_CLOSEST_SYNC  > seek to sync sample closest to time.
  * @return Returns AV_ERR_OK if the execution is successful,
- *         otherwise returns a specifis error code, refer to {@link OH_AVErrCode}
+ *         otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
-OH_AVErrCode OH_AVDemuxer_SeekToTimeStamp(OH_AVDemuxer *demuxer, int64_t mSeconds, OH_AVSeekMode mode);
+OH_AVErrCode OH_AVDemuxer_SeekToTime(OH_AVDemuxer *demuxer, int64_t mSeconds, OH_AVSeekMode mode);
 
 #ifdef __cplusplus
 }

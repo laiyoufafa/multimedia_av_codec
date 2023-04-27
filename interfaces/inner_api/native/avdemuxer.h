@@ -18,12 +18,12 @@
 #define AVDEMUXER_H
 
 #include <memory>
-#include <stdint>
+#include <stdint.h>
 #include "avcodec_common.h"
-#include "source.h"
+#include "avsource.h"
 
 namespace OHOS {
-namespace MediaAVCodec{
+namespace Media{
 class AVDemuxer {
 public:
     ~AVDemuxer() = default;
@@ -31,54 +31,55 @@ public:
     /**
      * @brief Add the sourceTrack by track id.
      *
-     * This function can only by called before {@link CopyCurrentSampleToBuf}.
+     * This function can only by called before {@link CopyNextSample}.
      * 
-     * @param index The index of the track to add.
+     * @param trackIndex The index of the track to add.
      * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
+    virtual int32_t SelectSourceTrackByID(uint32_t trackIndex) = 0;
 
     /**
      * @brief Remove the sourceTrack by track id.
      *
-     * This function can only by called before {@link CopyCurrentSampleToBuf}.
+     * This function can only by called before {@link CopyNextSample}.
      * 
-     * @param index The index of the track to remove.
+     * @param trackIndex The index of the track to remove.
      * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
+    virtual int32_t UnselectSourceTrackByID(uint32_t trackIndex) = 0;
 
     /**
      * @brief Copy the current sample to buffer, and save buffer attribute to attr.
      *
-     * @param buffer The BufferElement pointer to store data.
+     * @param trackIndex The param storing trackIndex of the buffer.
+     * @param buffer The buffer pointer to store data.
      * @param attr The CodecBufferAttr pointer to store data attribute.
      * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
+    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) = 0;
 
     /**
      * @brief All selected tracks seek near to the requested time according to the seek mode.
      * 
-     * @param mSeconds The seconds for seeking.
+     * @param mSeconds The millisecond for seeking.
      * @param mode The mode for seeking. Value. For details, see {@link SeekMode}.
      * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t SeekToTimeStamp(int64_t mSeconds, SeekMode mode) = 0;
+    virtual int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) = 0;
 };
 
-class __attribute__((visibility("default"))) DemuxerFactory {
+class __attribute__((visibility("default"))) AVDemuxerFactory {
 public:
 #ifdef UNSUPPORT_DEMUXER
-    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr)
+    static std::shared_ptr<AVDemuxer> CreateWithSource(AVSource& source)
     {
         return nullptr;
     }
@@ -91,13 +92,13 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    static std::shared_ptr<AVDemuxer> CreateWithSource(uint8_t sourceAddr);
+    static std::shared_ptr<AVDemuxer> CreateWithSource(AVSource& source);
 #endif
 private:
-    DemuxerFactory() = default;
-    ~DemuxerFactory() = default;
+    AVDemuxerFactory() = default;
+    ~AVDemuxerFactory() = default;
 
 };
-} // namespace MediaAVCodec
+} // namespace Media
 } // namespace OHOS
 #endif //AVDEMUXER_H

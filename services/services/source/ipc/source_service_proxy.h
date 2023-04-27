@@ -26,11 +26,11 @@ public:
     virtual ~SourceServiceProxy();
 
     int32_t Init(const std::string &uri) override;
-    int32_t GetTrackCount() override;
-    int32_t Destroy() override;
-    int32_t SetParameter(const Format &param, uint32_t trackId) override;
-    int32_t GetTrackFormat(Format &format, uint32_t trackId) override;
-    uint64_t GetSourceAttr() override;
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex) override;
+    int32_t GetSourceFormat(Format &format) override;
+    uint64_t GetSourceAddr() override;
 
     int32_t DestroyStub() override;
 private:

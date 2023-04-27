@@ -26,7 +26,7 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 
 namespace OHOS {
 namespace Media {
-REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AVCODEC_SERVICE_ID, true)
+REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AV_CODEC_SERVICE_ID, true)
 AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate) : SystemAbility(systemAbilityId, runOnCreate)
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));

@@ -20,7 +20,6 @@
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-#include "source_service_stub.h"
 #include "avcodec_log_dump.h"
 #include "avcodec_xcollie.h"
 #ifdef SUPPORT_CODEC
@@ -30,7 +29,7 @@
 #include "avcodeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
-#include "avdemuxer_stub.h"
+#include "demuxer_service_stub.h"
 #endif
 #ifdef SUPPORT_MUXER
 #include "avmuxer_stub.h"
@@ -250,9 +249,9 @@ sptr<IRemoteObject> AVCodecServerManager::CreateDemuxerStubObject()
             "Please release the applied resources.", demuxerStubMap_.size());
         return nullptr;
     }
-    sptr<AVDemuxerStub> stub = AVDemuxerStub::Create();
+    sptr<DemuxerServiceStub> stub = DemuxerServiceStub::Create();
     if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create AVDemuxerStub");
+        AVCODEC_LOGE("failed to create DemuxerServiceStub");
         return nullptr;
     }
     sptr<IRemoteObject> object = stub->AsObject();

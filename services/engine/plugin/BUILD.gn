@@ -10,15 +10,36 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
 
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
+config("plugin_presets") {
+  include_dirs = [
+    "//foundation/multimedia/av_codec/interfaces/kits/c",
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native",
+    "//foundation/multimedia/av_codec/services/dfx/include",
+    "//foundation/multimedia/av_codec/services/utils/include",
+    "//foundation/multimedia/av_codec/services/engine/plugin/common",
+    "//foundation/multimedia/av_codec/services/engine/plugin/core",
+    "//foundation/multimedia/av_codec/services/engine/plugin/interface",
+    "//third_party/bounds_checking_function/include",
+    "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
+  ]
 
-group("av_codec_engine_plugins") {
-  deps = []
-  if (multimedia_av_codec_support_demuxer) {
-    deps += [
-      #"plugins/demuxer:av_codec_engine_demuxer",
-    ]
-  }
+  cflags = [
+    "-O2",
+    "-fPIC",
+    "-Wall",
+    "-frtti",
+    "-fexceptions",
+  ]
+  cflags_cc = cflags
 }
+
+group("av_codec_plugin") {
+  deps = [
+    "plugins:av_codec_plugin_store",
+  ]
+}
+

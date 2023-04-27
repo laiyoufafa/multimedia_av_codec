@@ -13,10 +13,11 @@
 
 declare_args() {
   multimedia_av_codec_support_capi = true
-  multimedia_av_codec_support_codec = true
+  multimedia_av_codec_support_codec = false
   multimedia_av_codec_support_codeclist = false
-  multimedia_av_codec_support_demuxer = false
-  multimedia_av_codec_support_muxer = true
+  multimedia_av_codec_support_demuxer = true
+  multimedia_av_codec_support_source = true
+  multimedia_av_codec_support_muxer = false
   multimedia_av_codec_support_ffmpeg_demuxer = false
 }
 
@@ -50,6 +51,12 @@ if (multimedia_av_codec_support_muxer) {
   av_codec_defines += [ "SUPPORT_MUXER" ]
 } else {
   av_codec_defines += [ "UNSUPPORT_MUXER" ]
+}
+
+if (multimedia_av_codec_support_source) {
+  av_codec_defines += [ "SUPPORT_SOURCE" ]
+} else {
+  av_codec_defines += [ "UNSUPPORT_SOURCE" ]
 }
 
 if (multimedia_av_codec_support_ffmpeg_demuxer) {

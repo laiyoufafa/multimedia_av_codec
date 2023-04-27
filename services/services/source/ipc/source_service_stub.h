@@ -31,11 +31,11 @@ public:
     using SourceStubFunc = int32_t(SourceServiceStub::*)(MessageParcel &data, MessageParcel &reply);
 
     int32_t Init(const std::string &uri) override;
-    int32_t GetTrackCount() override;
-    int32_t Destroy() override;
-    int32_t SetParameter(const Format &param, uint32_t trackId) override;
-    int32_t GetTrackFormat(Format &format, uint32_t trackId) override;
-    uint64_t GetSourceAttr() override;
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex) override;
+    int32_t GetSourceFormat(Format &format) override;
+    uint64_t GetSourceAddr() override;
 
     int32_t DumpInfo(int32_t fd);
     int32_t DestroyStub() override;
@@ -46,9 +46,10 @@ private:
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t GetTrackCount(MessageParcel &data, MessageParcel &reply);
     int32_t Destroy(MessageParcel &data, MessageParcel &reply);
-    int32_t SetParameter(MessageParcel &data, MessageParcel &reply);
+    int32_t SetTrackFormat(MessageParcel &data, MessageParcel &reply);
     int32_t GetTrackFormat(MessageParcel &data, MessageParcel &reply);
-    int32_t GetSourceAttr(MessageParcel &data, MessageParcel &reply);
+    int32_t GetSourceFormat(MessageParcel &data, MessageParcel &reply);
+    int32_t GetSourceAddr(MessageParcel &data, MessageParcel &reply);
 
     int32_t GetDumpInfo(std::string& dumpInfo);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
@@ -59,4 +60,4 @@ private:
 };
 }  // namespace Media
 }  // namespace OHOS
-#endif
+#endif // SOURCE_SERVICE_STUB_H

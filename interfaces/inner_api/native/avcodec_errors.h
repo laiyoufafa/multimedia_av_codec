@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_ERRORS_H
-#define AVCODEC_ERRORS_H
+#ifndef AVCS_ERRORS_H
+#define AVCS_ERRORS_H
 
 #include <map>
 #include <string>
@@ -39,6 +39,7 @@ typedef enum AVCodecServiceErrCode : ErrCode {
     AVCS_ERR_CREATE_AVCODEC_SUB_SERVICE_FAILED,            // create avcodec sub service failed.
     AVCS_ERR_CREATE_MUXER_SUB_SERVICE_FAILED,              // create muxer sub service failed.
     AVCS_ERR_CREATE_DEMUXER_SUB_SERVICE_FAILED,            // create demuxer sub service failed.
+    AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED,             // create source sub service failed.
     AVCS_ERR_INVALID_STATE,                                // the state is not support this operation.
     AVCS_ERR_UNSUPPORT,                                    // unsupport interface.
     AVCS_ERR_UNSUPPORT_AUD_SRC_TYPE,                       // unsupport audio source type.
@@ -84,4 +85,4 @@ __attribute__((visibility("default"))) OH_AVErrCode AVCSErrorToOHAVErrCode(AVCod
 
 } // namespace Media
 } // namespace OHOS
-#endif // AVCODEC_ERRORS_H
+#endif // AVCS_ERRORS_H

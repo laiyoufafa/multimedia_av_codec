@@ -23,6 +23,8 @@ group("capi_packages") {
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
       "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avmuxer",
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avdemuxer",
+      "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_avsource",
     ]
   }
 }
@@ -64,10 +66,18 @@ config("av_codec_capi_config") {
     "//foundation/multimedia/av_codec/services/dfx/include/",
     "//foundation/multimedia/av_codec/services/engine/",
     "//foundation/multimedia/av_codec/services/engine/avcodeclist",
+    "//foundation/multimedia/av_codec/services/engine/demuxer",
+    "//foundation/multimedia/av_codec/services/engine/demuxer/include",
+    "//foundation/multimedia/av_codec/services/engine/factory",
     "//foundation/multimedia/av_codec/services/engine/plugin/",
+    "//foundation/multimedia/av_codec/services/engine/plugin/common",
+    "//foundation/multimedia/av_codec/services/engine/plugin/core",
+    "//foundation/multimedia/av_codec/services/engine/plugin/interfaces",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/ffmpeg_demuxer/",
+    "//foundation/multimedia/av_codec/services/engine/source",
+    "//foundation/multimedia/av_codec/services/engine/source/include",
     "//foundation/multimedia/av_codec/services/include/",
     "//foundation/multimedia/av_codec/services/services/",
     "//foundation/multimedia/av_codec/services/services/avcodeclist/",
@@ -205,6 +215,56 @@ ohos_shared_library("native_av_codec_avmuxer") {
   install_enable = true
   sources = [
     "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avmuxer/native_avmuxer.cpp",
+  ]
+
+  public_configs = [ ":av_codec_capi_config" ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "graphic_standard:surface",
+    "hiviewdfx_hilog_native:libhilog",
+    "graphic_standard:surface",
+  ]
+  output_extension = "so"
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
+
+ohos_shared_library("native_av_codec_avdemuxer") {
+  install_enable = true
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avdemuxer/native_avdemuxer.cpp",
+  ]
+
+  public_configs = [ ":av_codec_capi_config" ]
+
+  deps = [
+    "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
+  ]
+
+  external_deps = [
+    "c_utils:utils",
+    "graphic_standard:surface",
+    "hiviewdfx_hilog_native:libhilog",
+    "graphic_standard:surface",
+  ]
+  output_extension = "so"
+  subsystem_name = "multimedia"
+  part_name = "multimedia_av_codec"
+}
+
+ohos_shared_library("native_av_codec_avsource") {
+  install_enable = true
+  sources = [
+    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avsource/native_avsource.cpp",
   ]
 
   public_configs = [ ":av_codec_capi_config" ]

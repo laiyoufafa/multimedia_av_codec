@@ -16,87 +16,78 @@
 #include "source_server.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "avcodec_dfx.h"
+#include "ipc_skeleton.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServer"};
 }
 
-namespace OHOSmuxerServer {
+namespace OHOS {
 namespace Media {
 std::shared_ptr<ISourceService> SourceServer::Create()
 {
-    std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
-    CHECK_AND_RETURN_RET_LOG(sourceServer != nullptr, nullptr, "Source Service does not exist");
-    int32_t ret = sourceServer->InitServer();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init source server");
-    return sourceServer;
+    std::shared_ptr<SourceServer> server = std::make_shared<SourceServer>();
+    CHECK_AND_RETURN_RET_LOG(server != nullptr, nullptr, "Source Service does not exist");
+    return server;
 }
 
 SourceServer::SourceServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
+    appUid_ = IPCSkeleton::GetCallingUid();
+    appPid_ = IPCSkeleton::GetCallingPid();
 }
 
 SourceServer::~SourceServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    // sourceEngine_ = nullptr;
-}
-
-int32_t SourceServer::InitServer()
-{
-
-
-    return AVCS_ERR_OK;
+    sourceEngine_ = nullptr;
 }
 
 int32_t SourceServer::Init(const std::string &uri)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    sourceEngine_ = ISourceEngineFactory::CreateSourceEngine(appUid_, appPid_, uri);
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServer::GetTrackCount()
+int32_t SourceServer::GetTrackCount(uint32_t &trackCount)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    CHECK_AND_RETURN_RET_LOG(sourceEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    int32_t ret = sourceEngine_->GetTrackCount(trackCount);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServer::Destroy()
+int32_t SourceServer::SetTrackFormat(const Format &format, uint32_t trackIndex)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    CHECK_AND_RETURN_RET_LOG(sourceEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    int32_t ret = sourceEngine_->SetTrackFormat(format, trackIndex);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServer::SetParameter(const Format &param, uint32_t trackId)
+int32_t SourceServer::GetTrackFormat(Format &format, uint32_t trackIndex)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    CHECK_AND_RETURN_RET_LOG(sourceEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    int32_t ret = sourceEngine_->GetTrackFormat(format, trackIndex);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServer::GetTrackFormat(Format &format, uint32_t trackId)
+int32_t SourceServer::GetSourceFormat(Format &format)
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    CHECK_AND_RETURN_RET_LOG(sourceEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    int32_t ret = sourceEngine_->GetSourceFormat(format);
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return AVCS_ERR_OK;
 }
 
-uint64_t SourceServer::GetSourceAttr()
+uint64_t SourceServer::GetSourceAddr()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-
-
+    CHECK_AND_RETURN_RET_LOG(sourceEngine_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Demuxer engine does not exist");
+    int32_t ret = sourceEngine_->GetSourceAddr();
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, ret, "Failed to call SetRotation");
     return AVCS_ERR_OK;
 }
 }  // namespace Media

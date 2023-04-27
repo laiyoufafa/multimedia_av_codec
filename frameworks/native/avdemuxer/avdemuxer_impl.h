@@ -18,8 +18,9 @@
 
 #include <memory>
 #include "avdemuxer.h"
-#include "i_avdemuxer_service.h"
+#include "i_demuxer_service.h"
 #include "nocopyable.h"
+#include "avsource_impl.h"
 
 namespace OHOS {
 namespace Media{
@@ -28,14 +29,16 @@ public:
     AVDemuxerImpl();
     ~AVDemuxerImpl();
 
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
-    int32_t Init(Source *source);
+    int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) override;
+    int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) override;
+    int32_t Init(AVSource &source);
 
 private:
-    std::shared_ptr<IAVDemuxerService> demuxerService_ = nullptr;
+    std::shared_ptr<IDemuxerService> demuxerClient_ = nullptr;
+    uint16_t trackLogCount = 0;
+    std::string sourceUri_;
 };
 } // namespace Media
 } // namespace OHOS

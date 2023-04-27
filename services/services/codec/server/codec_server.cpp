@@ -160,7 +160,7 @@ int32_t CodecServer::NotifyEos()
     if (ret == AVCS_ERR_OK) {
         status_ = END_OF_STREAM;
         // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
-        // AVCODEC_LOGI("EOS state");
+        AVCODEC_LOGI("EOS state");
     }
     return ret;
 }

@@ -43,10 +43,18 @@ config("av_codec_packege_include") {
     "//foundation/multimedia/av_codec/services/dfx/include/",
     "//foundation/multimedia/av_codec/services/engine/",
     "//foundation/multimedia/av_codec/services/engine/avcodeclist",
+    "//foundation/multimedia/av_codec/services/engine/demuxer",
+    "//foundation/multimedia/av_codec/services/engine/demuxer/include",
+    "//foundation/multimedia/av_codec/services/engine/factory",
     "//foundation/multimedia/av_codec/services/engine/plugin/",
+    "//foundation/multimedia/av_codec/services/engine/plugin/common",
+    "//foundation/multimedia/av_codec/services/engine/plugin/core",
+    "//foundation/multimedia/av_codec/services/engine/plugin/interfaces",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/",
     "//foundation/multimedia/av_codec/services/engine/plugin/plugins/demuxer/ffmpeg_demuxer/",
+    "//foundation/multimedia/av_codec/services/engine/source",
+    "//foundation/multimedia/av_codec/services/engine/source/include",
     "//foundation/multimedia/av_codec/services/include/",
     "//foundation/multimedia/av_codec/services/services/",
     "//foundation/multimedia/av_codec/services/services/avcodeclist/",
@@ -66,9 +74,9 @@ config("av_codec_packege_include") {
     "//foundation/multimedia/av_codec/services/services/demuxer/ipc/",
     "//foundation/multimedia/av_codec/services/services/demuxer/server/",
     "//foundation/multimedia/av_codec/services/services/muxer/",
-    "//foundation/multimedia/av_codec/services/services/muxer/client/include",
-    "//foundation/multimedia/av_codec/services/services/muxer/ipc/include",
-    "//foundation/multimedia/av_codec/services/services/muxer/server/include",
+    "//foundation/multimedia/av_codec/services/services/muxer/client",
+    "//foundation/multimedia/av_codec/services/services/muxer/ipc",
+    "//foundation/multimedia/av_codec/services/services/muxer/server",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/client/",
     "//foundation/multimedia/av_codec/services/services/sa_avcodec/ipc/",
@@ -166,7 +174,6 @@ ohos_shared_library("av_codec_client") {
   ]
 
   sources = [
-#      "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
       "$AV_CODEC_ROOT_DIR/frameworks/native/common/avcodec_errors.cpp",
       "$AV_CODEC_ROOT_DIR/services/services/common/avsharedmemory_ipc.cpp",
       "$AV_CODEC_ROOT_DIR/services/services/sa_avcodec/client/avcodec_client.cpp",
@@ -194,7 +201,16 @@ ohos_shared_library("av_codec_client") {
   }
   if (multimedia_av_codec_support_demuxer) {
     sources += [
- #     "$AV_CODEC_ROOT_DIR/frameworks/native/avdemuxer/avdemuxer_impl.cpp",
+     "$AV_CODEC_ROOT_DIR/frameworks/native/avdemuxer/avdemuxer_impl.cpp",
+     "$AV_CODEC_ROOT_DIR/services/services/demuxer/client/demuxer_client.cpp",
+     "$AV_CODEC_ROOT_DIR/services/services/demuxer/ipc/demuxer_service_proxy.cpp",
+    ]
+  }
+  if (multimedia_av_codec_support_source) {
+    sources += [
+     "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
+     "$AV_CODEC_ROOT_DIR/services/services/source/client/source_client.cpp",
+     "$AV_CODEC_ROOT_DIR/services/services/source/ipc/source_service_proxy.cpp",
     ]
   }
   if (multimedia_av_codec_support_muxer) {

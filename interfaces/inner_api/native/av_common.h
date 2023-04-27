@@ -103,11 +103,6 @@ enum AVSeekMode : uint8_t {
      * the given timestamp.
      */
     AV_SEEK_CLOSEST_SYNC = 2,
-    /**
-     * @brief this mode is used to seek to a frame that is located right or closest at
-     * the given timestamp.
-     */
-    AV_SEEK_CLOSEST = 3,
 };
 
 /**

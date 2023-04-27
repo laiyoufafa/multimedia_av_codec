@@ -127,7 +127,7 @@ int32_t AVMuxerProxy::AddTrack(uint32_t &trackIndex, const Format &trackFormat)
     int32_t error = Remote()->SendRequest(ADD_TRACK, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call AddTrack, error: %{public}d", error);
     
-    // int32_t trackId = reply.ReadInt32();
+    // int32_t trackIndex = reply.ReadInt32();
 
     return reply.ReadInt32();
 }
