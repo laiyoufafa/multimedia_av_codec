@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -68,7 +68,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value, which is a 32-bit integer.
      * @return Returns <b>true</b> if the setting is successful; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutIntValue(const std::string_view &key, int32_t value);
@@ -79,7 +79,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value, which is a 64-bit integer.
      * @return Returns <b>true</b> if the setting is successful; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutLongValue(const std::string_view &key, int64_t value);
@@ -90,7 +90,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value, which is a single-precision floating-point number.
      * @return Returns <b>true</b> if the metadata is successfully set; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutFloatValue(const std::string_view &key, float value);
@@ -101,7 +101,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value, which is a double-precision floating-point number.
      * @return Returns <b>true</b> if the setting is successful; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutDoubleValue(const std::string_view &key, double value);
@@ -112,7 +112,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value, which is a string.
      * @return Returns <b>true</b> if the metadata is successfully set; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutStringValue(const std::string_view &key, const std::string_view &value);
@@ -124,7 +124,7 @@ public:
      * @param addr Indicates the metadata addr, which is a uint8_t *.
      * @param size Indicates the metadata addr size, which is a size_t.
      * @return Returns <b>true</b> if the metadata is successfully set; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool PutBuffer(const std::string_view &key, const uint8_t *addr, size_t size);
@@ -135,7 +135,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value to obtain, which is a 32-bit integer.
      * @return Returns <b>true</b> if the integer is successfully obtained; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetIntValue(const std::string_view &key, int32_t &value) const;
@@ -146,7 +146,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value to obtain, which is a 64-bit long integer.
      * @return Returns <b>true</b> if the integer is successfully obtained; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetLongValue(const std::string_view &key, int64_t &value) const;
@@ -158,7 +158,7 @@ public:
      * @param value Indicates the metadata value to obtain, which is a single-precision floating-point number.
      * @return Returns <b>true</b> if the single-precision number is successfully obtained; returns
      * <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetFloatValue(const std::string_view &key, float &value) const;
@@ -170,7 +170,7 @@ public:
      * @param value Indicates the metadata value to obtain, which is a double-precision floating-point number.
      * @return Returns <b>true</b> if the double-precision number is successfully obtained; returns
      * <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetDoubleValue(const std::string_view &key, double &value) const;
@@ -181,7 +181,7 @@ public:
      * @param key Indicates the metadata key.
      * @param value Indicates the metadata value to obtain, which is a string.
      * @return Returns <b>true</b> if the string is successfully obtained; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetStringValue(const std::string_view &key, std::string &value) const;
@@ -193,7 +193,7 @@ public:
      * @param addr Indicates the metadata addr to obtain, which is a uint8_t **.
      * @param size Indicates the metadata addr size to obtain, which is a size_t.
      * @return Returns <b>true</b> if the string is successfully obtained; returns <b>false</b> otherwise.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     bool GetBuffer(const std::string_view &key, uint8_t **addr, size_t &size) const;
@@ -233,7 +233,7 @@ public:
      * @brief Obtains the metadata map.
      *
      * @return Returns the map object.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     const FormatDataMap &GetFormatMap() const;
@@ -242,7 +242,7 @@ public:
      * @brief Convert the metadata map to string.
      *
      * @return Returns a converted string.
-     * @since 1.0
+     * @since 10
      * @version 1.0
      */
     std::string Stringify() const;

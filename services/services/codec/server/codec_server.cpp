@@ -288,7 +288,6 @@ int32_t CodecServer::SetParameter(const Format &format)
 int32_t CodecServer::SetCallback(const std::shared_ptr<AVCodecCallback> &callback)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(status_ == INITIALIZED, AVCS_ERR_INVALID_STATE, "In invalid state");
     {
         std::lock_guard<std::mutex> cbLock(cbMutex_);
         codecCb_ = callback;

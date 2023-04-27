@@ -18,7 +18,7 @@
 #include "avcodec_info.h"
 #include "avcodec_list.h"
 #include "nocopyable.h"
-#include "i_avcodeclist_service.h"
+#include "i_codeclist_service.h"
 
 namespace OHOS {
 namespace Media {
@@ -33,7 +33,7 @@ public:
     CapabilityData CreateCapability(const std::string codecName) override;
     
 private:
-    std::shared_ptr<IAVCodecListService> codecListService_ = nullptr;
+    std::shared_ptr<ICodecListService> codecListService_ = nullptr;
 };
 } // namespace Media
 } // namespace OHOS

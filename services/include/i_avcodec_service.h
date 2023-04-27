@@ -23,7 +23,7 @@
 #endif
 
 #ifdef SUPPORT_CODECLIST
-#include "i_avcodeclist_service.h"
+#include "i_codeclist_service.h"
 #endif
 
 #ifdef SUPPORT_DEMUXER
@@ -31,7 +31,7 @@
 #endif
 
 #ifdef SUPPORT_MUXER
-#include "i_avmuxer.h"
+#include "i_muxer_service.h"
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -54,7 +54,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual std::shared_ptr<IAVCodecListService> CreateAVCodecListService() = 0;
+    virtual std::shared_ptr<ICodecListService> CreateCodecListService() = 0;
 
     /**
      * @brief Destroy a codeclist service.
@@ -66,7 +66,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t DestroyAVCodecListService(std::shared_ptr<IAVCodecListService> avCodecList) = 0;
+    virtual int32_t DestroyCodecListService(std::shared_ptr<ICodecListService> avCodecList) = 0;
 #endif
 
 #ifdef SUPPORT_CODEC
@@ -99,8 +99,28 @@ public:
 #endif
 
 #ifdef SUPPORT_MUXER
-    virtual std::shared_ptr<IAVMuxer> CreateMuxerService() = 0;
-    virtual int32_t DestroyMuxerService(std::shared_ptr<IAVMuxer> muxer) = 0;
+    /**
+     * @brief Create an muxer service.
+     *
+     * All muxer functions must be created and obtained first.
+     *
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 10
+     * @version 4.0
+     */
+    virtual std::shared_ptr<IMuxerService> CreateMuxerService() = 0;
+
+    /**
+     * @brief Destroy a muxer service.
+     *
+     * call the API to destroy the muxer service.
+     *
+     * @param pointer to the muxer service.
+     * @return Returns a valid pointer if the setting is successful;
+     * @since 10
+     * @version 4.0
+     */
+    virtual int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) = 0;
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -114,7 +134,7 @@ public:
     /**
      * @brief IAVCodecService singleton
      *
-     * Create Recorder Service and Player Service Through the Avcodec Service.
+     * Create Muxer and Demuxer Service Through the AVCodec Service.
      *
      * @return Returns IAVCodecService singleton;
      * @since 4.0

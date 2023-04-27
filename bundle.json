@@ -10,7 +10,7 @@
     "dirs": {},
     "scripts": {},
     "component": {
-      "name": "multimedia_av_codec",
+      "name": "av_codec",
       "subsystem": "multimedia",
       "syscap": [
         "SystemCapability.Multimedia.Avcodec.Core",
@@ -56,7 +56,8 @@
             "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client"
           ],
           "service_group": [
-            "//foundation/multimedia/av_codec/services:av_codec_services_package"
+            "//foundation/multimedia/av_codec/services:av_codec_services_package",
+            "//foundation/multimedia/av_codec/sa_profile:av_codec_service_profile"
           ]
         },
         "inner_kits": [
@@ -76,7 +77,10 @@
             }
           }
         ],
-        "test": []
+      "test": [
+        "//foundation/multimedia/av_codec/test:av_codec_demo_test",
+        "//foundation/multimedia/av_codec/test:av_codec_unit_test"
+      ]
       }
     }
   }

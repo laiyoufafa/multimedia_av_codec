@@ -146,19 +146,19 @@ int32_t SourceServiceStub::DumpInfo(int32_t fd)
 int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     std::string uri = data.ReadString();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackCount(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::Destroy(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
@@ -167,7 +167,7 @@ int32_t SourceServiceStub::SetParameter(MessageParcel &data, MessageParcel &repl
     Format param;
     (void)AVCodecParcel::Unmarshalling(data, param);
     uint32_t trackId = data.ReadUint32();
-    CHECK_AND_RETURN_RET(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 
@@ -175,20 +175,20 @@ int32_t SourceServiceStub::GetTrackFormat(MessageParcel &data, MessageParcel &re
 {
     uint32_t trackId = data.ReadUint32();
     Format format;
-    CHECK_AND_RETURN_RET(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     AVCodecParcel::Marshalling(reply, format);
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetSourceAttr(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN, "WriteUint64 failed!");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN);
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
     return AVCS_ERR_OK;
 }
 

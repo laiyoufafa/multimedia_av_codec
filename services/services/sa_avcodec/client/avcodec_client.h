@@ -25,11 +25,15 @@
 #endif
 
 #ifdef SUPPORT_MUXER
-#include "avmuxer_client.h"
+#include "muxer_client.h"
 #endif
 
 #ifdef SUPPORT_CODEC
 #include "codec_client.h"
+#endif
+
+#ifdef SUPPORT_CODECLIST            
+#include "codeclist_client.h"
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -51,13 +55,18 @@ public:
 #endif
 
 #ifdef SUPPORT_MUXER
-    std::shared_ptr<IAVMuxer> CreateMuxerService() override;
-    int32_t DestroyMuxerService(std::shared_ptr<IAVMuxer> muxerClient) override;
+    std::shared_ptr<IMuxerService> CreateMuxerService() override;
+    int32_t DestroyMuxerService(std::shared_ptr<IMuxerService> muxer) override;
 #endif
 
 #ifdef SUPPORT_CODEC
     std::shared_ptr<ICodecService> CreateCodecService() override;
     int32_t DestroyCodecService(std::shared_ptr<ICodecService> codecClient) override;
+#endif
+
+#ifdef SUPPORT_CODECLIST
+    std::shared_ptr<ICodecListService> CreateCodecListService() override;
+    int32_t DestroyCodecListService(std::shared_ptr<ICodecListService> codecListClient) override;
 #endif
 
 #ifdef SUPPORT_SOURCE
@@ -80,7 +89,7 @@ private:
     std::list<std::shared_ptr<IAVDemuxer>> demuxerClientList_;
 #endif
 #ifdef SUPPORT_MUXER
-    std::list<std::shared_ptr<IAVMuxer>> muxerClientList_;
+    std::list<std::shared_ptr<IMuxerService>> muxerClientList_;
 #endif
 #ifdef SUPPORT_CODEC
     std::list<std::shared_ptr<ICodecService>> codecClientList_;

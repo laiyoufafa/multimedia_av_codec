@@ -14,13 +14,14 @@
 declare_args() {
   multimedia_av_codec_support_capi = true
   multimedia_av_codec_support_codec = true
-  multimedia_av_codec_support_codeclist = false
+  multimedia_av_codec_support_codeclist = true
   multimedia_av_codec_support_demuxer = false
   multimedia_av_codec_support_muxer = true
   multimedia_av_codec_support_ffmpeg_demuxer = false
-  multimedia_av_codec_support_test = false
+  multimedia_av_codec_support_test = true
 }
 
+av_codec_root_dir = "//foundation/multimedia/av_codec"
 av_codec_defines = []
 
 if (multimedia_av_codec_support_capi) {

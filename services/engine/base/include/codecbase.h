@@ -15,20 +15,21 @@
 #ifndef CODECBASE_H
 #define CODECBASE_H
 
-#include <string>
 #include "avcodec_common.h"
 #include "avsharedmemory.h"
 #include "surface.h"
+#include <string>
 
 namespace OHOS {
 namespace Media {
 class CodecBase {
 public:
+    CodecBase() = default;
     virtual ~CodecBase() = default;
-    static std::shared_ptr<CodecBase> Create(const std::string& name);
-    static std::shared_ptr<CodecBase> Create(bool isEncoder, const std::string& mime);
-    virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback>& callback) = 0;
-    virtual int32_t Configure(const Format& format) = 0;
+    static std::shared_ptr<CodecBase> Create(const std::string &name);
+    static std::shared_ptr<CodecBase> Create(bool isEncoder, const std::string &mime);
+    virtual int32_t SetCallback(const std::shared_ptr<AVCodecCallback> &callback) = 0;
+    virtual int32_t Configure(const Format &format) = 0;
     virtual int32_t Start() = 0;
     virtual int32_t Pause() = 0;
     virtual int32_t Resume() = 0;
@@ -36,18 +37,18 @@ public:
     virtual int32_t Flush() = 0;
     virtual int32_t Reset() = 0;
     virtual int32_t Release() = 0;
-    virtual int32_t SetParameter(const Format& format) = 0;
-    virtual int32_t GetOutputFormat(Format& format) = 0;
+    virtual int32_t SetParameter(const Format &format) = 0;
+    virtual int32_t GetOutputFormat(Format &format) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
-    virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo& info, AVCodecBufferFlag& flag) = 0;
+    virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo &info, AVCodecBufferFlag &flag) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
 
-    int32_t NotifyEos();
-    sptr<Surface> CreateInputSurface();
-    int32_t SetOutputSurface(sptr<Surface> surface);
-    int32_t RenderOutputBuffer(size_t index);    
-    int32_t SignalRequestIDRFrame();
+    virtual int32_t NotifyEos();
+    virtual sptr<Surface> CreateInputSurface();
+    virtual int32_t SetOutputSurface(sptr<Surface> surface);
+    virtual int32_t RenderOutputBuffer(size_t index);
+    virtual int32_t SignalRequestIDRFrame();
 };
 } // namespace Media
 } // namespace OHOS
