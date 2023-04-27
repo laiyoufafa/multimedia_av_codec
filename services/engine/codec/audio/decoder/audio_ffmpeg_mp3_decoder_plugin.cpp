@@ -17,6 +17,10 @@
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFFMpegMp3DecoderPlugin"};
+}
+
 namespace OHOS {
 namespace Media {
 #define BITRATE_RATIO 150
