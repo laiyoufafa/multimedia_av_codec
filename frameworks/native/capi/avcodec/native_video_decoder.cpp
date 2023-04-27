@@ -185,7 +185,7 @@ struct OH_AVCodec *OH_VideoDecoder_CreateByMime(const char *mime)
     struct VideoDecoderObject *object = new(std::nothrow) VideoDecoderObject(videoDecoder);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Video decoder create by mime failed!");
 
-    AVCODEC_LOGD("Video decoder create by mime successfully");
+    AVCODEC_LOGD("Video decoder create by mime successful");
     return object;
 }
 
@@ -199,7 +199,7 @@ struct OH_AVCodec *OH_VideoDecoder_CreateByName(const char *name)
     struct VideoDecoderObject *object = new(std::nothrow) VideoDecoderObject(videoDecoder);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Video decoder create by name failed!");
 
-    AVCODEC_LOGD("Video decoder create by name successfully");
+    AVCODEC_LOGD("Video decoder create by name successful");
     return object;
 }
 
@@ -226,7 +226,7 @@ OH_AVErrCode OH_VideoDecoder_Destroy(struct OH_AVCodec *codec)
     }
 
     delete codec;
-    AVCODEC_LOGD("Video decoder destroy successfully");
+    AVCODEC_LOGD("Video decoder destroy successful");
     return AV_ERR_OK;
 }
 
@@ -243,7 +243,7 @@ OH_AVErrCode OH_VideoDecoder_Configure(struct OH_AVCodec *codec, struct OH_AVFor
     int32_t ret = videoDecObj->videoDecoder_->Configure(format->format_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder configure failed!");
 
-    AVCODEC_LOGD("Video decoder configure successfully");
+    AVCODEC_LOGD("Video decoder configure successful");
     return AV_ERR_OK;
 }
 
@@ -259,7 +259,7 @@ OH_AVErrCode OH_VideoDecoder_Prepare(struct OH_AVCodec *codec)
     int32_t ret = videoDecObj->videoDecoder_->Prepare();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder prepare failed!");
 
-    AVCODEC_LOGD("Video decoder prepare successfully");
+    AVCODEC_LOGD("Video decoder prepare successful");
     return AV_ERR_OK;
 }
 
@@ -276,7 +276,7 @@ OH_AVErrCode OH_VideoDecoder_Start(struct OH_AVCodec *codec)
     int32_t ret = videoDecObj->videoDecoder_->Start();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder start failed!");
 
-    AVCODEC_LOGD("Video decoder start successfully");
+    AVCODEC_LOGD("Video decoder start successful");
     return AV_ERR_OK;
 }
 
@@ -297,7 +297,7 @@ OH_AVErrCode OH_VideoDecoder_Stop(struct OH_AVCodec *codec)
     }
     videoDecObj->memoryObjList_.clear();
 
-    AVCODEC_LOGD("Video decoder stop successfully");
+    AVCODEC_LOGD("Video decoder stop successful");
     return AV_ERR_OK;
 }
 
@@ -315,7 +315,7 @@ OH_AVErrCode OH_VideoDecoder_Flush(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder flush failed!");
     videoDecObj->memoryObjList_.clear();
     
-    AVCODEC_LOGD("Video decoder flush successfully");
+    AVCODEC_LOGD("Video decoder flush successful");
     return AV_ERR_OK;
 }
 
@@ -336,7 +336,7 @@ OH_AVErrCode OH_VideoDecoder_Reset(struct OH_AVCodec *codec)
     }
     videoDecObj->memoryObjList_.clear();
 
-    AVCODEC_LOGD("Video decoder reset successfully");
+    AVCODEC_LOGD("Video decoder reset successful");
     return AV_ERR_OK;
 }
 
@@ -353,7 +353,7 @@ OH_AVErrCode OH_VideoDecoder_SetSurface(OH_AVCodec *codec, OHNativeWindow *windo
     int32_t ret = videoDecObj->videoDecoder_->SetOutputSurface(window->surface);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder set output surface failed!");
 
-    AVCODEC_LOGD("Video decoder set output surface successfully");
+    AVCODEC_LOGD("Video decoder set output surface successful");
     return AV_ERR_OK;
 }
 
@@ -377,7 +377,7 @@ OH_AVErrCode OH_VideoDecoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
         videoDecObj->isEOS_.store(true);
     }
 
-    AVCODEC_LOGD("Video decoder push input data successfully");
+    AVCODEC_LOGD("Video decoder push input data successful");
     return AV_ERR_OK;
 }
 
@@ -397,7 +397,7 @@ OH_AVFormat *OH_VideoDecoder_GetOutputDescription(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(avFormat != nullptr, nullptr, "Video decoder get output description failed!");
     avFormat->format_ = format;
 
-    AVCODEC_LOGD("Video decoder get output description successfully");
+    AVCODEC_LOGD("Video decoder get output description successful");
     return avFormat;
 }
 
@@ -412,7 +412,7 @@ OH_AVErrCode OH_VideoDecoder_RenderOutputData(struct OH_AVCodec *codec, uint32_t
     int32_t ret = videoDecObj->videoDecoder_->ReleaseOutputBuffer(index, true);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder render output data failed!");
 
-    AVCODEC_LOGD("Video decoder render output data successfully");
+    AVCODEC_LOGD("Video decoder render output data successful");
     return AV_ERR_OK;
 }
 
@@ -428,7 +428,7 @@ OH_AVErrCode OH_VideoDecoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t i
     int32_t ret = videoDecObj->videoDecoder_->ReleaseOutputBuffer(index, false);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder free output data failed!");
 
-    AVCODEC_LOGD("Video decoder free output data successfully");
+    AVCODEC_LOGD("Video decoder free output data successful");
     return AV_ERR_OK;
 }
 
@@ -445,7 +445,7 @@ OH_AVErrCode OH_VideoDecoder_SetParameter(struct OH_AVCodec *codec, struct OH_AV
     int32_t ret = videoDecObj->videoDecoder_->SetParameter(format->format_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder set parameter failed!");
 
-    AVCODEC_LOGD("Video decoder set parameter successfully");
+    AVCODEC_LOGD("Video decoder set parameter successful");
     return AV_ERR_OK;
 }
 
@@ -468,7 +468,7 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
     int32_t ret = videoDecObj->videoDecoder_->SetCallback(videoDecObj->callback_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder set callback failed!");
 
-    AVCODEC_LOGD("Video decoder set callback successfully");
+    AVCODEC_LOGD("Video decoder set callback successful");
     return AV_ERR_OK;
 }
 
