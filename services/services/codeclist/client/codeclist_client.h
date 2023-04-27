@@ -13,30 +13,31 @@
  * limitations under the License.
  */
 
-#ifndef AVCODECLIST_SERVICE_CLIENT_H
-#define AVCODECLIST_SERVICE_CLIENT_H
+#ifndef CODECLIST_CLIENT_H
+#define CODECLIST_CLIENT_H
 
 #include <mutex>
-#include "i_avcodeclist_service.h"
-#include "i_standard_avcodeclist_service.h"
+#include "i_codeclist_service.h"
+#include "i_standard_codeclist_service.h"
 
 namespace OHOS {
 namespace Media {
-class AVCodecListClient : public IAVCodecListService {
+class CodecListClient : public ICodecListService {
 public:
-    static std::shared_ptr<AVCodecListClient> Create(const sptr<IStandardAVCodecListService> &ipcProxy);
-    explicit AVCodecListClient(const sptr<IStandardAVCodecListService> &ipcProxy);
-    ~AVCodecListClient();
+    static std::shared_ptr<CodecListClient> Create(const sptr<IStandardCodecListService> &ipcProxy);
+    explicit CodecListClient(const sptr<IStandardCodecListService> &ipcProxy);
+    ~CodecListClient();
     void MediaServerDied();
-    // IAVCodecListService override
-    std::string FindVideoDecoder(const Format &format) override;
-    std::string FindVideoEncoder(const Format &format) override;
+    // ICodecListService override
+    std::string FindDecoder(const Format &format) override;
+    std::string FindEncoder(const Format &format) override;
     CapabilityData CreateCapability(std::string codecName) override;
-
+    
+    void AVCodecServerDied();
 private:
-    sptr<IStandardAVCodecListService> codecListProxy_ = nullptr;
+    sptr<IStandardCodecListService> codecListProxy_ = nullptr;
     std::mutex mutex_;
 };
 } // namespace Media
 } // namespace OHOS
-#endif // AVCODECLIST_SERVICE_CLIENT_H
+#endif // CODECLIST_CLIENT_H

@@ -13,54 +13,54 @@
  * limitations under the License.
  */
 
-#include "avcodeclist_server.h"
+#include "codeclist_server.h"
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecListServer"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecListServer"};
 }
 
 namespace OHOS {
 namespace Media {
-std::shared_ptr<IAVCodecListService> AVCodecListServer::Create()
+std::shared_ptr<ICodecListService> CodecListServer::Create()
 {
-    std::shared_ptr<AVCodecListServer> server = std::make_shared<AVCodecListServer>();
+    std::shared_ptr<CodecListServer> server = std::make_shared<CodecListServer>();
     if (!server->Init()) {
-        AVCODEC_LOGE("failed to init AVCodecListServer");
+        AVCODEC_LOGE("failed to init CodecListServer");
         return nullptr;
     }
     return server;
 }
 
-AVCodecListServer::AVCodecListServer()
+CodecListServer::CodecListServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecListServer::~AVCodecListServer()
+CodecListServer::~CodecListServer()
 {
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-bool AVCodecListServer::Init()
+bool CodecListServer::Init()
 {
-    codecListCore_ = std::make_shared<AVCodecListCore>();
+    codecListCore_ = std::make_shared<CodecListCore>();
     CHECK_AND_RETURN_RET_LOG(codecListCore_ != nullptr, false,
         "Failed to create codec list core");
     return true;
 }
 
-std::string AVCodecListServer::FindDecoder(const Format &format)
+std::string CodecListServer::FindDecoder(const Format &format)
 {
     return codecListCore_->FindDecoder(format);
 }
 
-std::string AVCodecListServer::FindEncoder(const Format &format)
+std::string CodecListServer::FindEncoder(const Format &format)
 {
     return codecListCore_->FindEncoder(format);
 }
 
-CapabilityData AVCodecListServer::CreateCapability(const std::string codecName)
+CapabilityData CodecListServer::CreateCapability(const std::string codecName)
 {
     return codecListCore_->CreateCapability(codecName);
 }

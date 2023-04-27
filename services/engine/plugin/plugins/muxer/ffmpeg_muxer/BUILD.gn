@@ -31,12 +31,12 @@ ohos_shared_library("av_codec_plugin_FFmpegMuxer") {
   ]
 
   public_configs = [
-    "//foundation/multimedia/av_codec/services/engine/plugin:plugin_presets",
+    "$av_codec_root_dir/services/engine/plugin:plugin_presets",
   ]
 
   public_deps = [
+    "$av_codec_root_dir/services/utils:av_codec_format",
     "//third_party/bounds_checking_function:libsec_static",
-    "//foundation/multimedia/av_codec/services/utils:av_codec_format",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog",
     "//third_party/ffmpeg:libohosffmpeg",
   ]

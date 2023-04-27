@@ -21,6 +21,7 @@ declare_args() {
   multimedia_av_codec_support_test = true
 }
 
+av_codec_root_dir = "//foundation/multimedia/av_codec"
 av_codec_defines = []
 
 if (multimedia_av_codec_support_capi) {

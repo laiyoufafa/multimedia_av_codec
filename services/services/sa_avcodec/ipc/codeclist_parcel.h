@@ -22,10 +22,10 @@
 
 namespace OHOS {
 namespace Media {
-class AVCodecListParcel {
+class CodecListParcel {
 public:
-    AVCodecListParcel() = delete;
-    ~AVCodecListParcel() = delete;
+    CodecListParcel() = delete;
+    ~CodecListParcel() = delete;
 
     static bool Marshalling(MessageParcel &parcel, CapabilityData &capabilityData);
     static bool Marshalling(MessageParcel &parcel, const std::map<ImgSize, Range> &mapSizeToRange);
