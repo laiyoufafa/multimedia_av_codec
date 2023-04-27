@@ -16,9 +16,10 @@
 #ifndef AVCODEC_ERRORS_H
 #define AVCODEC_ERRORS_H
 
-#include <string>
 #include "errors.h"
 #include "native_averrors.h"
+#include <map>
+#include <string>
 
 namespace OHOS {
 namespace Media {
@@ -29,11 +30,11 @@ using AVCSErrCode = ErrCode;
 constexpr AVCSErrCode AVCS_MODULE = 0X01000;
 constexpr AVCSErrCode AVCS_ERR_OFFSET = ErrCodeOffset(SUBSYS_MULTIMEDIA, AVCS_MODULE);
 typedef enum AVCodecServiceErrCode : ErrCode {
-    AVCS_ERR_OK                = ERR_OK,
-    AVCS_ERR_NO_MEMORY         = AVCS_ERR_OFFSET + ENOMEM, // no memory
+    AVCS_ERR_OK = ERR_OK,
+    AVCS_ERR_NO_MEMORY = AVCS_ERR_OFFSET + ENOMEM,         // no memory
     AVCS_ERR_INVALID_OPERATION = AVCS_ERR_OFFSET + ENOSYS, // opertation not be permitted
-    AVCS_ERR_INVALID_VAL       = AVCS_ERR_OFFSET + EINVAL, // invalid argument
-    AVCS_ERR_UNKNOWN           = AVCS_ERR_OFFSET + 0x200,  // unkown error.
+    AVCS_ERR_INVALID_VAL = AVCS_ERR_OFFSET + EINVAL,       // invalid argument
+    AVCS_ERR_UNKNOWN = AVCS_ERR_OFFSET + 0x200,            // unkown error.
     AVCS_ERR_SERVICE_DIED,                                 // avcodec service died
     AVCS_ERR_CREATE_AVCODEC_SUB_SERVICE_FAILED,            // create avcodec sub service failed.
     AVCS_ERR_CREATE_MUXER_SUB_SERVICE_FAILED,              // create muxer sub service failed.
@@ -73,7 +74,17 @@ typedef enum AVCodecServiceErrCode : ErrCode {
     AVCS_ERR_DATA_SOURCE_IO_ERROR,                         // avcodec data source IO failed.
     AVCS_ERR_DATA_SOURCE_OBTAIN_MEM_ERROR,                 // avcodec data source get mem failed.
     AVCS_ERR_DATA_SOURCE_ERROR_UNKNOWN,                    // avcodec data source error unknow.
-    AVCS_ERR_EXTEND_START      = AVCS_ERR_OFFSET + 0xF000, // extend err start.
+
+    AVCS_ERR_NOT_ENOUGH_DATA,
+    AVCS_ERR_END_OF_STREAM,
+    AVCS_ERR_AGAIN,
+    AVCS_ERR_WRONG_STATE,
+    AVCS_ERR_CONFIGURE_MISMATCH_CHANNEL_COUNT,
+    AVCS_ERR_MISMATCH_SAMPLE_RATE,
+    AVCS_ERR_MISMATCH_BIT_RATE,
+    AVCS_ERR_CONFIGURE_ERROR,
+
+    AVCS_ERR_EXTEND_START = AVCS_ERR_OFFSET + 0xF000, // extend err start.
 } AVCodecServiceErrCode;
 
 __attribute__((visibility("default"))) std::string AVCSErrorToString(AVCodecServiceErrCode code);

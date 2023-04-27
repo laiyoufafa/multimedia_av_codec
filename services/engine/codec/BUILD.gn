@@ -12,11 +12,10 @@
 # limitations under the License.
 
 import("//build/ohos.gni")
+import("//foundation/multimedia/av_codec/config.gni")
 
-group("av_codec_services_package") {
+group("av_codec_engine_codec") {
   deps = [
-    "etc:av_codec_service.cfg",
-    "services:av_codec_service",
-    "utils:av_codec_service_utils"
-  ]
+    "audio:av_codec_audio_ffmpeg_codec",
+    ]
 }

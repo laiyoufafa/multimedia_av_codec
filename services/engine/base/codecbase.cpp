@@ -17,7 +17,7 @@
 #include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecBase"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecBase"};
 }
 
 namespace OHOS {
@@ -55,14 +55,14 @@ int32_t CodecBase::SignalRequestIDRFrame()
     return 0;
 }
 
-std::shared_ptr<CodecBase> CodecBase::Create(const std::string& name)
+std::shared_ptr<CodecBase> CodecBase::Create(const std::string &name)
 {
     AVCODEC_LOGW("Create is not supported");
     (void)name;
     return nullptr;
 }
 
-std::shared_ptr<CodecBase> CodecBase::Create(bool isEncoder, const std::string& mime)
+std::shared_ptr<CodecBase> CodecBase::Create(bool isEncoder, const std::string &mime)
 {
     AVCODEC_LOGW("Create is not supported");
     (void)isEncoder;

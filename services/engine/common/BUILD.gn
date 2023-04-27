@@ -1,0 +1,42 @@
+import("//build/ohos.gni")
+import("//foundation/multimedia/av_codec/config.gni")
+
+AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
+
+config("av_codec_engine_common_config"){
+    
+}
+ohos_shared_library("av_codec_engine_common"){
+    install_enable = true
+
+    include_dirs=[
+        "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
+        "//commonlibrary/c_utils/base/include",
+        "$AV_CODEC_ROOT_DIR/services/engine/common/include",
+        "$AV_CODEC_ROOT_DIR/services/utils/include",
+        "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+        "$AV_CODEC_ROOT_DIR/services/dfx/include",
+    ]
+
+    sources=[
+        "$AV_CODEC_ROOT_DIR/services/engine/common/share_memory.cpp",
+    ]
+
+    configs = [
+        ":av_codec_engine_common_config"
+    ]
+
+    public_deps= [
+        "//commonlibrary/c_utils/base:utils",
+        "//foundation/multimedia/av_codec/services/utils:av_codec_service_utils",
+        "//foundation/multimedia/av_codec/services/dfx:av_codec_service_dfx",
+        "//third_party/bounds_checking_function:libsec_static"
+        ]
+
+    external_deps = [
+        "c_utils:utils",
+        "hisysevent_native:libhisysevent",
+        "hitrace_native:hitrace_meter",
+        "hiviewdfx_hilog_native:libhilog"
+    ]
+}

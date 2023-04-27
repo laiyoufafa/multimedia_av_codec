@@ -58,7 +58,8 @@ include_dirs = [
   sources = [
     "avdatasrcmemory.cpp",
     "avsharedmemorybase.cpp",
-    "avsharedmemorypool.cpp"
+    "avsharedmemorypool.cpp",
+    "task_thread.cpp"
   ]
   
   cflags = [

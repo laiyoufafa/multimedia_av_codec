@@ -1,0 +1,60 @@
+import("//build/ohos.gni")
+import("//foundation/multimedia/av_codec/config.gni")
+
+AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
+
+ohos_static_library("av_codec_audio_ffmpeg_codec"){
+    include_dirs=[
+        "//foundation/graphic/graphic_2d/frameworks/surface/include",
+        "//commonlibrary/c_utils/base/include",
+        "$AV_CODEC_ROOT_DIR/services/engine/base/include",
+        "$AV_CODEC_ROOT_DIR/services/engine/common/include",
+        "$AV_CODEC_ROOT_DIR/services/engine/factory",
+        "$AV_CODEC_ROOT_DIR/services/utils/include",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/include/audio",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/include/audio/decoder",
+        "$AV_CODEC_ROOT_DIR/interfaces/inner_api/native",
+        "$AV_CODEC_ROOT_DIR/interfaces/kits/c",
+        "$AV_CODEC_ROOT_DIR/services/dfx/include",
+        "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
+        "//third_party/ffmpeg",
+    ]
+
+    sources=[
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/audio_buffer_info.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/audio_buffers_manager.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/audio_codec_worker.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/audio_ffmpeg_adapter.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_decoder_plugin.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_aac_decoder_plugin.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_flac_decoder_plugin.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_mp3_decoder_plugin.cpp",
+        "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_vorbis_decoder_plugin.cpp",
+    ]
+
+    deps=[
+        "//third_party/ffmpeg:libohosffmpeg",
+        "//foundation/multimedia/av_codec/services/engine/common:av_codec_engine_common",
+        "//foundation/multimedia/av_codec/services/engine/base:av_codec_codec_base",
+    ]
+
+    public_deps= [
+        "//commonlibrary/c_utils/base:utils",
+        "//foundation/multimedia/av_codec/services/utils:av_codec_service_utils",
+        "//foundation/multimedia/av_codec/services/utils:av_codec_format",
+        "//foundation/multimedia/av_codec/services/dfx:av_codec_service_dfx",
+        "//third_party/bounds_checking_function:libsec_static"
+        ]
+    
+    external_deps = [
+        "c_utils:utils",
+        "hisysevent_native:libhisysevent",
+        "hitrace_native:hitrace_meter",
+        "hiviewdfx_hilog_native:libhilog",
+        "graphic_standard:surface" 
+    ]
+
+    subsystem_name = "multimedia"
+    part_name = "av_codec"
+
+}

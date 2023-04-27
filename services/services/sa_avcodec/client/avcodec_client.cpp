@@ -13,10 +13,10 @@
  * limitations under the License.
  */
 #include "avcodec_client.h"
+#include "avcodec_xcollie.h"
+#include "ipc_skeleton.h"
 #include "iservice_registry.h"
 #include "system_ability_definition.h"
-#include "ipc_skeleton.h"
-#include "avcodec_xcollie.h"
 
 #ifdef SUPPORT_DEMUXER
 #include "i_avdemuxer_service.h"
@@ -32,11 +32,11 @@
 #include "i_standard_source_service.h"
 #endif
 
-#include "avcodec_log.h"
 #include "avcodec_errors.h"
+#include "avcodec_log.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecClient"};
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecClient"};
 }
 
 namespace OHOS {
@@ -230,20 +230,19 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
     AVCODEC_LOGD("enter");
     sptr<ISystemAbilityManager> samgr = nullptr;
     COLLIE_LISTEN(samgr = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager(),
-        "AVCodecClient::GetAVCodecProxy");
+                  "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(samgr != nullptr, nullptr, "system ability manager is nullptr.");
 
     sptr<IRemoteObject> object = nullptr;
-    COLLIE_LISTEN(object = samgr->GetSystemAbility(OHOS::AV_CODEC_SERVICE_ID),
-        "AVCodecClient::GetAVCodecProxy");
+    COLLIE_LISTEN(object = samgr->GetSystemAbility(OHOS::AV_CODEC_SERVICE_ID), "AVCodecClient::GetAVCodecProxy");
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "avcodec object is nullptr.");
 
     avCodecProxy_ = iface_cast<IStandardAVCodecService>(object);
-    
+
     CHECK_AND_RETURN_RET_LOG(avCodecProxy_ != nullptr, nullptr, "avcodec proxy is nullptr.");
 
     pid_t pid = 0;
-    deathRecipient_ = new(std::nothrow) AVCodecDeathRecipient(pid);
+    deathRecipient_ = new (std::nothrow) AVCodecDeathRecipient(pid);
     CHECK_AND_RETURN_RET_LOG(deathRecipient_ != nullptr, nullptr, "failed to new AVCodecDeathRecipient.");
 
     deathRecipient_->SetNotifyCb(std::bind(&AVCodecClient::AVCodecServerDied, std::placeholders::_1));
@@ -253,7 +252,7 @@ sptr<IStandardAVCodecService> AVCodecClient::GetAVCodecProxy()
         return nullptr;
     }
 
-    listenerStub_ = new(std::nothrow) AVCodecListenerStub();
+    listenerStub_ = new (std::nothrow) AVCodecListenerStub();
     CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, nullptr, "failed to new AVCodecListenerStub");
     return avCodecProxy_;
 }
@@ -314,7 +313,6 @@ void AVCodecClient::DoAVCodecServerDied()
         }
     }
 #endif
-
 }
 } // namespace Media
 } // namespace OHOS
