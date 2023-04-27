@@ -22,16 +22,19 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Ta
 namespace OHOS {
 namespace Media {
 
-TaskThread::TaskThread(std::string_view name) : name_(name), runningState_(RunningState::STOPPED), loop_(nullptr) {
+TaskThread::TaskThread(std::string_view name) : name_(name), runningState_(RunningState::STOPPED), loop_(nullptr)
+{
     AVCODEC_LOGD("task %{public}s ctor called", name_.data());
 }
 
-TaskThread::TaskThread(std::string_view name, std::function<void()> handler) : TaskThread(name) {
+TaskThread::TaskThread(std::string_view name, std::function<void()> handler) : TaskThread(name)
+{
     handler_ = std::move(handler);
     loop_ = std::make_unique<std::thread>(&TaskThread::Run, this);
 }
 
-TaskThread::~TaskThread() {
+TaskThread::~TaskThread()
+{
     AVCODEC_LOGD("task %{public}s dtor called", name_.data());
     runningState_ = RunningState::STOPPED;
     syncCond_.notify_all();
@@ -44,7 +47,8 @@ TaskThread::~TaskThread() {
     }
 }
 
-void TaskThread::Start() {
+void TaskThread::Start()
+{
     std::unique_lock lock(stateMutex_);
     runningState_ = RunningState::STARTED;
 
@@ -55,7 +59,8 @@ void TaskThread::Start() {
     AVCODEC_LOGD("task %{public}s start called", name_.data());
 }
 
-void TaskThread::Stop() {
+void TaskThread::Stop()
+{
     AVCODEC_LOGW("task %{public}s stop entered, current state: %{public}d", name_.data(), runningState_.load());
     std::unique_lock lock(stateMutex_);
     if (runningState_.load() != RunningState::STOPPED) {
@@ -72,7 +77,8 @@ void TaskThread::Stop() {
     AVCODEC_LOGW("task %{public}s stop exited", name_.data());
 }
 
-void TaskThread::StopAsync() {
+void TaskThread::StopAsync()
+{
     AVCODEC_LOGD("task %{public}s StopAsync called", name_.data());
     std::unique_lock lock(stateMutex_);
     if (runningState_.load() != RunningState::STOPPED) {
@@ -80,7 +86,8 @@ void TaskThread::StopAsync() {
     }
 }
 
-void TaskThread::Pause() {
+void TaskThread::Pause()
+{
     AVCODEC_LOGD("task %{public}s Pause called", name_.data());
     std::unique_lock lock(stateMutex_);
     switch (runningState_.load()) {
@@ -105,7 +112,8 @@ void TaskThread::Pause() {
     AVCODEC_LOGD("task %{public}s Pause done.", name_.data());
 }
 
-void TaskThread::PauseAsync() {
+void TaskThread::PauseAsync()
+{
     AVCODEC_LOGD("task %{public}s PauseAsync called", name_.data());
     std::unique_lock lock(stateMutex_);
     if (runningState_.load() == RunningState::STARTED) {
@@ -113,16 +121,19 @@ void TaskThread::PauseAsync() {
     }
 }
 
-void TaskThread::RegisterHandler(std::function<void()> handler) {
+void TaskThread::RegisterHandler(std::function<void()> handler)
+{
     AVCODEC_LOGI("task %{public}s RegisterHandler called", name_.data());
     handler_ = std::move(handler);
 }
 
-void TaskThread::doTask() {
+void TaskThread::doTask()
+{
     AVCODEC_LOGD("task %{public}s not override DoTask...", name_.data());
 }
 
-void TaskThread::Run() {
+void TaskThread::Run()
+{
     for (;;) {
         AVCODEC_LOGD("task %{public}s is running on state : %{public}d", name_.data(), runningState_.load());
         if (runningState_.load() == RunningState::STARTED) {

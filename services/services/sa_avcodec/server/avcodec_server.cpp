@@ -27,19 +27,23 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVCodecSer
 namespace OHOS {
 namespace Media {
 REGISTER_SYSTEM_ABILITY_BY_ID(AVCodecServer, AV_CODEC_SERVICE_ID, true)
-AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate) : SystemAbility(systemAbilityId, runOnCreate) {
+AVCodecServer::AVCodecServer(int32_t systemAbilityId, bool runOnCreate) : SystemAbility(systemAbilityId, runOnCreate)
+{
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
-AVCodecServer::~AVCodecServer() {
+AVCodecServer::~AVCodecServer()
+{
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-void AVCodecServer::OnDump() {
+void AVCodecServer::OnDump()
+{
     AVCODEC_LOGD("AVCodecServer OnDump");
 }
 
-void AVCodecServer::OnStart() {
+void AVCodecServer::OnStart()
+{
     AVCODEC_LOGD("AVCodecServer OnStart");
     bool res = Publish(this);
     if (res) {
@@ -47,12 +51,14 @@ void AVCodecServer::OnStart() {
     }
 }
 
-void AVCodecServer::OnStop() {
+void AVCodecServer::OnStop()
+{
     AVCODEC_LOGD("AVCodecServer OnStop");
 }
 
 sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::AVCodecSystemAbility subSystemId,
-                                                       const sptr<IRemoteObject> &listener) {
+                                                       const sptr<IRemoteObject> &listener)
+{
     int32_t ret = AVCodecServiceStub::SetDeathListener(listener);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed set death listener");
 
@@ -89,7 +95,8 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     }
 }
 
-int32_t AVCodecServer::Dump(int32_t fd, const std::vector<std::u16string> &args) {
+int32_t AVCodecServer::Dump(int32_t fd, const std::vector<std::u16string> &args)
+{
     if (fd <= 0) {
         AVCODEC_LOGW("Failed to check fd");
         return OHOS::INVALID_OPERATION;
