@@ -37,12 +37,10 @@ int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format)
         return checkresult;
     }
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        // std::cout << "init 1 OH error:" << ret << "\n";
         return ret;
     }
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        // std::cout << "init 2 OH error:" << ret << "\n";
         return ret;
     }
     return basePlugin->OpenContext();
@@ -77,14 +75,12 @@ uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
 {
 
     uint32_t size = int(bit_rate / 150);
-    // printf("in size %d \n", size);
     return size;
 }
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const
 {
     uint32_t size = (int(sample_rate / 31) + 128) * channels * sizeof(short);
-    // printf("out size %d %d\n", size, sample_rate);
     return size;
 }
 
