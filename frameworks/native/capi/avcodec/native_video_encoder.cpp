@@ -163,7 +163,7 @@ struct OH_AVCodec *OH_VideoEncoder_CreateByMime(const char *mime)
     struct VideoEncoderObject *object = new(std::nothrow) VideoEncoderObject(videoEncoder);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Video encoder create by mime failed");
 
-    AVCODEC_LOGD("Video encoder create by mime succeeded");
+    AVCODEC_LOGD("Video encoder create by mime successfully");
     return object;
 }
 
@@ -177,7 +177,7 @@ struct OH_AVCodec *OH_VideoEncoder_CreateByName(const char *name)
     struct VideoEncoderObject *object = new(std::nothrow) VideoEncoderObject(videoEncoder);
     CHECK_AND_RETURN_RET_LOG(object != nullptr, nullptr, "Video encoder create by name failed");
 
-    AVCODEC_LOGD("Video encoder create by name succeeded");
+    AVCODEC_LOGD("Video encoder create by name successfully");
     return object;
 }
 
@@ -204,7 +204,7 @@ OH_AVErrCode OH_VideoEncoder_Destroy(struct OH_AVCodec *codec)
     }
 
     delete codec;
-    AVCODEC_LOGD("Video encoder destroy succeeded");
+    AVCODEC_LOGD("Video encoder destroy successfully");
     return AV_ERR_OK;
 }
 
@@ -221,7 +221,7 @@ OH_AVErrCode OH_VideoEncoder_Configure(struct OH_AVCodec *codec, struct OH_AVFor
     int32_t ret = videoEncObj->videoEncoder_->Configure(format->format_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder configure failed!");
 
-    AVCODEC_LOGD("Video encoder configure succeeded");
+    AVCODEC_LOGD("Video encoder configure successfully");
     return AV_ERR_OK;
 }
 
@@ -236,7 +236,7 @@ OH_AVErrCode OH_VideoEncoder_Prepare(struct OH_AVCodec *codec)
     int32_t ret = videoEncObj->videoEncoder_->Prepare();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder prepare failed!");
 
-    AVCODEC_LOGD("Video encoder prepare succeeded");
+    AVCODEC_LOGD("Video encoder prepare successfully");
     return AV_ERR_OK;
 }
 
@@ -253,7 +253,7 @@ OH_AVErrCode OH_VideoEncoder_Start(struct OH_AVCodec *codec)
     int32_t ret = videoEncObj->videoEncoder_->Start();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder start failed!");
 
-    AVCODEC_LOGD("Video encoder start succeeded");
+    AVCODEC_LOGD("Video encoder start successfully");
     return AV_ERR_OK;
 }
 
@@ -274,7 +274,7 @@ OH_AVErrCode OH_VideoEncoder_Stop(struct OH_AVCodec *codec)
     }
     videoEncObj->memoryObjList_.clear();
 
-    AVCODEC_LOGD("Video encoder stop succeeded");
+    AVCODEC_LOGD("Video encoder stop successfully");
     return AV_ERR_OK;
 }
 
@@ -292,7 +292,7 @@ OH_AVErrCode OH_VideoEncoder_Flush(struct OH_AVCodec *codec)
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder flush failed!");
     videoEncObj->memoryObjList_.clear();
 
-    AVCODEC_LOGD("Video encoder flush succeeded");
+    AVCODEC_LOGD("Video encoder flush successfully");
     return AV_ERR_OK;
 }
 
@@ -313,7 +313,7 @@ OH_AVErrCode OH_VideoEncoder_Reset(struct OH_AVCodec *codec)
     }
     videoEncObj->memoryObjList_.clear();
 
-    AVCODEC_LOGD("Video encoder reset succeeded");
+    AVCODEC_LOGD("Video encoder reset successfully");
     return AV_ERR_OK;
 }
 
@@ -331,7 +331,7 @@ OH_AVErrCode OH_VideoEncoder_GetSurface(OH_AVCodec *codec, OHNativeWindow **wind
     *window = CreateNativeWindowFromSurface(&surface);
     CHECK_AND_RETURN_RET_LOG(*window != nullptr, AV_ERR_INVALID_VAL, "Video encoder get surface failed!");
 
-    AVCODEC_LOGD("Video encoder get surface succeeded");
+    AVCODEC_LOGD("Video encoder get surface successfully");
     return AV_ERR_OK;
 }
 
@@ -350,7 +350,7 @@ OH_AVFormat *OH_VideoEncoder_GetOutputDescription(struct OH_AVCodec *codec)
     videoEncObj->outputFormat_ = new(std::nothrow) OH_AVFormat(format);
     CHECK_AND_RETURN_RET_LOG(videoEncObj->outputFormat_ != nullptr, nullptr, "Video encoder get output description failed!");
 
-    AVCODEC_LOGD("Video encoder get output description succeeded");
+    AVCODEC_LOGD("Video encoder get output description successfully");
     return reinterpret_cast<OH_AVFormat *>(videoEncObj->outputFormat_.GetRefPtr());
 }
 
@@ -365,7 +365,7 @@ OH_AVErrCode OH_VideoEncoder_FreeOutputData(struct OH_AVCodec *codec, uint32_t i
     int32_t ret = videoEncObj->videoEncoder_->ReleaseOutputBuffer(index);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder free output data failed!");
 
-    AVCODEC_LOGD("Video encoder free output data succeeded");
+    AVCODEC_LOGD("Video encoder free output data successfully");
     return AV_ERR_OK;
 }
 
@@ -380,7 +380,7 @@ OH_AVErrCode OH_VideoEncoder_NotifyEndOfStream(OH_AVCodec *codec)
     int32_t ret = videoEncObj->videoEncoder_->NotifyEos();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder notify end of stream failed!");
 
-    AVCODEC_LOGD("Video encoder notify end of stream succeeded");
+    AVCODEC_LOGD("Video encoder notify end of stream successfully");
     return AV_ERR_OK;
 }
 
@@ -397,7 +397,7 @@ OH_AVErrCode OH_VideoEncoder_SetParameter(struct OH_AVCodec *codec, struct OH_AV
     int32_t ret = videoEncObj->videoEncoder_->SetParameter(format->format_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder set parameter failed!");
 
-    AVCODEC_LOGD("Video encoder set parameter succeeded");
+    AVCODEC_LOGD("Video encoder set parameter successfully");
     return AV_ERR_OK;
 }
 
@@ -420,7 +420,7 @@ OH_AVErrCode OH_VideoEncoder_SetCallback(
     int32_t ret = videoEncObj->videoEncoder_->SetCallback(videoEncObj->callback_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video encoder set callback failed!");
 
-    AVCODEC_LOGD("Video encoder set callback succeeded");
+    AVCODEC_LOGD("Video encoder set callback successfully");
     return AV_ERR_OK;
 }
 
@@ -444,7 +444,7 @@ OH_AVErrCode OH_VideoEncoder_PushInputData(struct OH_AVCodec *codec, uint32_t in
         videoEncObj->isEOS_.store(true);
     }
 
-    AVCODEC_LOGD("Video encoder push input data succeeded");
+    AVCODEC_LOGD("Video encoder push input data successfully");
     return AV_ERR_OK;
 }
 
