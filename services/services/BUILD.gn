@@ -182,7 +182,6 @@ ohos_shared_library("av_codec_service") {
       "codec/ipc/codec_listener_proxy.cpp",
       "codec/ipc/codec_service_stub.cpp",
       "codec/server/codec_server.cpp",
-      "$AV_CODEC_ROOT_DIR/services/engine/base/codecbase.cpp",
     ]
   }
   if (multimedia_av_codec_support_codeclist) {
@@ -204,6 +203,7 @@ ohos_shared_library("av_codec_service") {
     "$AV_CODEC_ROOT_DIR/services/utils:av_codec_format",
     "$AV_CODEC_ROOT_DIR/services/utils:av_codec_service_utils",
     "$AV_CODEC_ROOT_DIR/services/engine:av_codec_engine_package",
+    "$AV_CODEC_ROOT_DIR/services/engine/base:av_codec_codec_base",
   ]
 
   external_deps = [

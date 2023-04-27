@@ -30,12 +30,12 @@ ohos_static_library("av_codec_audio_ffmpeg_codec"){
         "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_flac_decoder_plugin.cpp",
         "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_mp3_decoder_plugin.cpp",
         "$AV_CODEC_ROOT_DIR/services/engine/codec/audio/decoder/audio_ffmpeg_vorbis_decoder_plugin.cpp",
-        "$AV_CODEC_ROOT_DIR/services/engine/base/codecbase.cpp"
     ]
 
     deps=[
         "//third_party/ffmpeg:libohosffmpeg",
         "//foundation/multimedia/av_codec/services/engine/common:av_codec_engine_common",
+        "//foundation/multimedia/av_codec/services/engine/base:av_codec_codec_base",
     ]
 
     public_deps= [
