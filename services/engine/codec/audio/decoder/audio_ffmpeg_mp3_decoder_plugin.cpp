@@ -37,10 +37,12 @@ int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format)
         return checkresult;
     }
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        AVCODEC_LOGE("mp3 init error.");
         return ret;
     }
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        AVCODEC_LOGE("mp3 init error.");
         return ret;
     }
     return basePlugin->OpenContext();
@@ -73,7 +75,6 @@ int32_t AudioFFMpegMp3DecoderPlugin::flush()
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
 {
-
     uint32_t size = int(bit_rate / 150);
     return size;
 }
