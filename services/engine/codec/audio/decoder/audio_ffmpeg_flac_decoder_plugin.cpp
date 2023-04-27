@@ -19,16 +19,19 @@
 namespace OHOS {
 namespace Media {
 
-AudioFFMpegFlacDecoderPlugin::AudioFFMpegFlacDecoderPlugin()
-    : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
+AudioFFMpegFlacDecoderPlugin::AudioFFMpegFlacDecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>())
+{
+}
 
-AudioFFMpegFlacDecoderPlugin::~AudioFFMpegFlacDecoderPlugin() {
+AudioFFMpegFlacDecoderPlugin::~AudioFFMpegFlacDecoderPlugin()
+{
     basePlugin->Release();
     basePlugin.reset();
     basePlugin = nullptr;
 }
 
-bool isTrueSampleRate(int sample) {
+bool isTrueSampleRate(int sample)
+{
     for (auto i : ff_flac_sample_rate_table) {
         if (i == sample) {
             return true;
@@ -37,7 +40,8 @@ bool isTrueSampleRate(int sample) {
     return false;
 }
 
-bool isTrueBitsPerSample(int bits_per_coded_rate) {
+bool isTrueBitsPerSample(int bits_per_coded_rate)
+{
     for (auto i : sample_size_table) {
         if (i == bits_per_coded_rate) {
             return true;
@@ -46,7 +50,8 @@ bool isTrueBitsPerSample(int bits_per_coded_rate) {
     return false;
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::init(const Format &format) {
+int32_t AudioFFMpegFlacDecoderPlugin::init(const Format &format)
+{
     int channels, sample_rate, bits_per_coded_rate;
     int64_t bit_rate;
     format.GetIntValue("channel-count", channels);
@@ -74,35 +79,43 @@ int32_t AudioFFMpegFlacDecoderPlugin::init(const Format &format) {
     return basePlugin->OpenContext();
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFFMpegFlacDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     return basePlugin->ProcessSendData(inputBuffer);
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFFMpegFlacDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     return basePlugin->ProcessRecieveData(outBuffer);
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::reset() {
+int32_t AudioFFMpegFlacDecoderPlugin::reset()
+{
     return basePlugin->Reset();
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::release() {
+int32_t AudioFFMpegFlacDecoderPlugin::release()
+{
     return basePlugin->Release();
 }
 
-int32_t AudioFFMpegFlacDecoderPlugin::flush() {
+int32_t AudioFFMpegFlacDecoderPlugin::flush()
+{
     return basePlugin->Flush();
 }
 
-uint32_t AudioFFMpegFlacDecoderPlugin::getInputBufferSize() const {
+uint32_t AudioFFMpegFlacDecoderPlugin::getInputBufferSize() const
+{
     return 65536;
 }
 
-uint32_t AudioFFMpegFlacDecoderPlugin::getOutputBufferSize() const {
+uint32_t AudioFFMpegFlacDecoderPlugin::getOutputBufferSize() const
+{
     return 65536;
 }
 
-Format AudioFFMpegFlacDecoderPlugin::GetFormat() const noexcept {
+Format AudioFFMpegFlacDecoderPlugin::GetFormat() const noexcept
+{
     return basePlugin->GetFormat();
 }
 

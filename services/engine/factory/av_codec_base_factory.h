@@ -31,7 +31,8 @@ private:
     AVCodecBaseFactory() = default;
     using builder = std::function<std::shared_ptr<I>(Args...)>;
 
-    static auto &builders() {
+    static auto &builders()
+    {
         static std::unordered_map<Identity, builder> container;
         return container;
     }
@@ -40,7 +41,8 @@ public:
     using self = AVCodecBaseFactory<I, Identity, Args...>;
 
     template <typename... TS>
-    static std::shared_ptr<I> make_sharePtr(const Identity &k, TS &&...args) {
+    static std::shared_ptr<I> make_sharePtr(const Identity &k, TS &&...args)
+    {
         auto it = builders().find(k);
         if (it == builders().end())
             return nullptr;
@@ -50,7 +52,8 @@ public:
     template <typename T>
     struct CodecRegister : public I {
         friend T;
-        static bool avRegister() {
+        static bool avRegister()
+        {
             const auto r = T::identify();
             AVCodecBaseFactory::builders()[r] = [](Args &&...args) -> std::shared_ptr<I> {
                 return std::make_shared<T>(std::forward<Args>(args)...);
@@ -60,7 +63,8 @@ public:
         static bool registered;
 
     private:
-        CodecRegister() : I() {
+        CodecRegister() : I()
+        {
             (void)registered;
         }
     };

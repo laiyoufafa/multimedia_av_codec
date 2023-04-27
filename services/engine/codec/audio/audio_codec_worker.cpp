@@ -44,12 +44,14 @@ AudioCodecWorker::AudioCodecWorker(const std::shared_ptr<IAudioFFMpegBaseCodec> 
       outputTask_(std::make_unique<TaskThread>(ASYNC_DECODE_FRAME)),
       callback_(callback),
       inputBuffer_(std::make_shared<AudioBuffersManager>(inputBufferSize, INPUT_BUFFER, 0, 0)),
-      outputBuffer_(std::make_shared<AudioBuffersManager>(outputBufferSize, OUTPUT_BUFFER, 0, 0)) {
+      outputBuffer_(std::make_shared<AudioBuffersManager>(outputBufferSize, OUTPUT_BUFFER, 0, 0))
+{
     inputTask_->RegisterHandler([this] { produceInputBuffer(); });
     outputTask_->RegisterHandler([this] { consumerOutputBuffer(); });
 }
 
-AudioCodecWorker::~AudioCodecWorker() {
+AudioCodecWorker::~AudioCodecWorker()
+{
     AVCODEC_LOGI("release all data of codec worker in destructor.");
 
     dispose();
@@ -75,7 +77,8 @@ AudioCodecWorker::~AudioCodecWorker() {
     }
 }
 
-bool AudioCodecWorker::PushInputData(const uint32_t &index) {
+bool AudioCodecWorker::PushInputData(const uint32_t &index)
+{
     AVCODEC_LOGD("Worker PushInputData enter");
     if (!callback_) {
         AVCODEC_LOGE("push input buffer failed in worker, callback is nullptr, please check the callback.");
@@ -98,7 +101,8 @@ bool AudioCodecWorker::PushInputData(const uint32_t &index) {
     return true;
 }
 
-bool AudioCodecWorker::Configure() {
+bool AudioCodecWorker::Configure()
+{
     AVCODEC_LOGD("Worker Configure enter");
     if (!codec_) {
         AVCODEC_LOGE("Configure failed in worker, codec is nullptr, please check the codec.");
@@ -119,7 +123,8 @@ bool AudioCodecWorker::Configure() {
     return true;
 }
 
-bool AudioCodecWorker::Start() {
+bool AudioCodecWorker::Start()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker Start enter");
     if (!callback_) {
@@ -134,7 +139,8 @@ bool AudioCodecWorker::Start() {
     return result;
 }
 
-bool AudioCodecWorker::Stop() {
+bool AudioCodecWorker::Stop()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker Stop enter");
     dispose();
@@ -154,7 +160,8 @@ bool AudioCodecWorker::Stop() {
     return true;
 }
 
-bool AudioCodecWorker::Pause() {
+bool AudioCodecWorker::Pause()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker Pause enter");
     dispose();
@@ -174,7 +181,8 @@ bool AudioCodecWorker::Pause() {
     return true;
 }
 
-bool AudioCodecWorker::Resume() {
+bool AudioCodecWorker::Resume()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker Resume enter");
     if (!callback_) {
@@ -189,7 +197,8 @@ bool AudioCodecWorker::Resume() {
     return result;
 }
 
-bool AudioCodecWorker::Release() {
+bool AudioCodecWorker::Release()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker Release enter");
     dispose();
@@ -215,25 +224,30 @@ bool AudioCodecWorker::Release() {
     return true;
 }
 
-std::shared_ptr<AudioBuffersManager> AudioCodecWorker::GetInputBuffer() const noexcept {
+std::shared_ptr<AudioBuffersManager> AudioCodecWorker::GetInputBuffer() const noexcept
+{
     AVCODEC_LOGD("Worker GetInputBuffer enter");
     return inputBuffer_;
 }
 
-std::shared_ptr<AudioBuffersManager> AudioCodecWorker::GetOutputBuffer() const noexcept {
+std::shared_ptr<AudioBuffersManager> AudioCodecWorker::GetOutputBuffer() const noexcept
+{
     AVCODEC_LOGD("Worker GetOutputBuffer enter");
     return outputBuffer_;
 }
 
-std::shared_ptr<AudioBufferInfo> AudioCodecWorker::GetOutputBufferInfo(const uint32_t &index) const noexcept {
+std::shared_ptr<AudioBufferInfo> AudioCodecWorker::GetOutputBufferInfo(const uint32_t &index) const noexcept
+{
     return outputBuffer_->getMemory(index);
 }
 
-std::shared_ptr<AudioBufferInfo> AudioCodecWorker::GetInputBufferInfo(const uint32_t &index) const noexcept {
+std::shared_ptr<AudioBufferInfo> AudioCodecWorker::GetInputBufferInfo(const uint32_t &index) const noexcept
+{
     return inputBuffer_->getMemory(index);
 }
 
-void AudioCodecWorker::produceInputBuffer() {
+void AudioCodecWorker::produceInputBuffer()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker produceInputBuffer enter");
     if (!isRunning) {
@@ -258,7 +272,8 @@ void AudioCodecWorker::produceInputBuffer() {
     AVCODEC_LOGD("Worker produceInputBuffer exit");
 }
 
-void AudioCodecWorker::consumerOutputBuffer() {
+void AudioCodecWorker::consumerOutputBuffer()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Worker consumerOutputBuffer enter");
     if (!isRunning) {
@@ -315,7 +330,8 @@ void AudioCodecWorker::consumerOutputBuffer() {
     AVCODEC_LOGD("Work consumerOutputBuffer exit");
 }
 
-void AudioCodecWorker::dispose() {
+void AudioCodecWorker::dispose()
+{
     AVCODEC_LOGD("Worker dispose enter");
     isRunning = false;
     isProduceInput = false;
@@ -331,7 +347,8 @@ void AudioCodecWorker::dispose() {
     outputCondition_.notify_all();
 }
 
-bool AudioCodecWorker::begin() {
+bool AudioCodecWorker::begin()
+{
     AVCODEC_LOGD("Worker begin enter");
     isRunning = true;
     isProduceInput = true;

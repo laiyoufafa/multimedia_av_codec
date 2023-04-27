@@ -28,7 +28,8 @@ AudioBufferInfo::AudioBufferInfo(const uint32_t &bufferSize, const std::string_v
       name_(name),
       buffer_(nullptr),
       metadata_(nullptr),
-      flag_(AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE) {
+      flag_(AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE)
+{
     if (metaSize_ > 0) {
         metadata_ = std::make_shared<ShareMemory>(metaSize_, std::string(name_) + "_metadata",
                                                   AVSharedMemory::Flags::FLAGS_READ_WRITE, 0);
@@ -38,23 +39,28 @@ AudioBufferInfo::AudioBufferInfo(const uint32_t &bufferSize, const std::string_v
                                             AVSharedMemory::Flags::FLAGS_READ_ONLY, 0);
 }
 
-std::shared_ptr<ShareMemory> AudioBufferInfo::GetBuffer() const noexcept {
+std::shared_ptr<ShareMemory> AudioBufferInfo::GetBuffer() const noexcept
+{
     return buffer_;
 }
 
-BufferStatus AudioBufferInfo::GetStatus() const noexcept {
+BufferStatus AudioBufferInfo::GetStatus() const noexcept
+{
     return status_;
 }
 
-bool AudioBufferInfo::IsAvilable() const noexcept {
+bool AudioBufferInfo::IsAvilable() const noexcept
+{
     return status_ == BufferStatus::IDEL;
 }
 
-bool AudioBufferInfo::CheckIsEos() const noexcept {
+bool AudioBufferInfo::CheckIsEos() const noexcept
+{
     return isEos_;
 }
 
-bool AudioBufferInfo::SetBufferOwned() {
+bool AudioBufferInfo::SetBufferOwned()
+{
     if (buffer_) {
         status_ = BufferStatus::OWNE_BY_CLIENT;
         return true;
@@ -62,7 +68,8 @@ bool AudioBufferInfo::SetBufferOwned() {
     return false;
 }
 
-void AudioBufferInfo::SetEos(bool eos) {
+void AudioBufferInfo::SetEos(bool eos)
+{
     isEos_ = eos;
     if (isEos_) {
         flag_ = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_EOS;
@@ -71,27 +78,33 @@ void AudioBufferInfo::SetEos(bool eos) {
     }
 }
 
-void AudioBufferInfo::SetBufferAttr(const AVCodecBufferInfo &attr) {
+void AudioBufferInfo::SetBufferAttr(const AVCodecBufferInfo &attr)
+{
     info_ = attr;
 }
 
-AVCodecBufferInfo AudioBufferInfo::GetBufferAttr() const noexcept {
+AVCodecBufferInfo AudioBufferInfo::GetBufferAttr() const noexcept
+{
     return info_;
 }
 
-AVCodecBufferFlag AudioBufferInfo::GetFlag() const noexcept {
+AVCodecBufferFlag AudioBufferInfo::GetFlag() const noexcept
+{
     return flag_;
 }
 
-std::shared_ptr<ShareMemory> AudioBufferInfo::GetMetadata() const noexcept {
+std::shared_ptr<ShareMemory> AudioBufferInfo::GetMetadata() const noexcept
+{
     return metadata_;
 }
 
-bool AudioBufferInfo::IsHasMetaData() const noexcept {
+bool AudioBufferInfo::IsHasMetaData() const noexcept
+{
     return isHasMeta_;
 }
 
-bool AudioBufferInfo::Reset() {
+bool AudioBufferInfo::Reset()
+{
     if (buffer_) {
         isEos_ = false;
         status_ = BufferStatus::IDEL;

@@ -27,13 +27,15 @@ namespace Media {
 
 AudioFFMpegAacDecoderPlugin::AudioFFMpegAacDecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
 
-AudioFFMpegAacDecoderPlugin::~AudioFFMpegAacDecoderPlugin() {
+AudioFFMpegAacDecoderPlugin::~AudioFFMpegAacDecoderPlugin()
+{
     basePlugin->Release();
     basePlugin.reset();
     basePlugin = nullptr;
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::init(const Format &format) {
+int32_t AudioFFMpegAacDecoderPlugin::init(const Format &format)
+{
     int type;
 
     format.GetIntValue("aac-type", type);
@@ -56,35 +58,43 @@ int32_t AudioFFMpegAacDecoderPlugin::init(const Format &format) {
     return basePlugin->OpenContext();
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFFMpegAacDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     return basePlugin->ProcessSendData(inputBuffer);
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFFMpegAacDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     return basePlugin->ProcessRecieveData(outBuffer);
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::reset() {
+int32_t AudioFFMpegAacDecoderPlugin::reset()
+{
     return basePlugin->Reset();
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::release() {
+int32_t AudioFFMpegAacDecoderPlugin::release()
+{
     return basePlugin->Release();
 }
 
-int32_t AudioFFMpegAacDecoderPlugin::flush() {
+int32_t AudioFFMpegAacDecoderPlugin::flush()
+{
     return basePlugin->Flush();
 }
 
-uint32_t AudioFFMpegAacDecoderPlugin::getInputBufferSize() const {
+uint32_t AudioFFMpegAacDecoderPlugin::getInputBufferSize() const
+{
     return 8192;
 }
 
-uint32_t AudioFFMpegAacDecoderPlugin::getOutputBufferSize() const {
+uint32_t AudioFFMpegAacDecoderPlugin::getOutputBufferSize() const
+{
     return 4 * 1024 * 8;
 }
 
-Format AudioFFMpegAacDecoderPlugin::GetFormat() const noexcept {
+Format AudioFFMpegAacDecoderPlugin::GetFormat() const noexcept
+{
     return basePlugin->GetFormat();
 }
 

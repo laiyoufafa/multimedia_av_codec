@@ -21,13 +21,15 @@ namespace Media {
 
 AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
 
-AudioFFMpegMp3DecoderPlugin::~AudioFFMpegMp3DecoderPlugin() {
+AudioFFMpegMp3DecoderPlugin::~AudioFFMpegMp3DecoderPlugin()
+{
     basePlugin->Release();
     basePlugin.reset();
     basePlugin = nullptr;
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format) {
+int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format)
+{
 
     int32_t ret = basePlugin->AllocateContext("mp3");
     int32_t checkresult = AudioFFMpegMp3DecoderPlugin::checkinit(format);
@@ -46,44 +48,53 @@ int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format) {
     return basePlugin->OpenContext();
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFFMpegMp3DecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     return basePlugin->ProcessSendData(inputBuffer);
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFFMpegMp3DecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     return basePlugin->ProcessRecieveData(outBuffer);
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::reset() {
+int32_t AudioFFMpegMp3DecoderPlugin::reset()
+{
     return basePlugin->Reset();
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::release() {
+int32_t AudioFFMpegMp3DecoderPlugin::release()
+{
     return basePlugin->Release();
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::flush() {
+int32_t AudioFFMpegMp3DecoderPlugin::flush()
+{
     return basePlugin->Flush();
 }
 
-uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const {
+uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
+{
 
     uint32_t size = int(bit_rate / 150);
     // printf("in size %d \n", size);
     return size;
 }
 
-uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const {
+uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const
+{
     uint32_t size = (int(sample_rate / 31) + 128) * channels * sizeof(short);
     // printf("out size %d %d\n", size, sample_rate);
     return size;
 }
 
-Format AudioFFMpegMp3DecoderPlugin::GetFormat() const noexcept {
+Format AudioFFMpegMp3DecoderPlugin::GetFormat() const noexcept
+{
     return basePlugin->GetFormat();
 }
 
-int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format) {
+int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format)
+{
 #define SUPPORT_SAMPLE_RATE 9
     int sample_rate_pick[SUPPORT_SAMPLE_RATE] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
 

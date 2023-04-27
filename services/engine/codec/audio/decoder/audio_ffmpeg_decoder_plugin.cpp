@@ -32,12 +32,14 @@ const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
 
 AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin() {}
 
-AudioFfmpegDecoderPlugin::~AudioFfmpegDecoderPlugin() {
+AudioFfmpegDecoderPlugin::~AudioFfmpegDecoderPlugin()
+{
     CloseCtxLocked();
     avCodecContext_.reset();
 }
 
-int32_t AudioFfmpegDecoderPlugin::ProcessSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFfmpegDecoderPlugin::ProcessSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("ffmpeg Plugin ProcessSendData enter");
     AVCODEC_LOGD("Plugin ProcessSendData enter");
@@ -53,13 +55,15 @@ int32_t AudioFfmpegDecoderPlugin::ProcessSendData(const std::shared_ptr<AudioBuf
     return ret;
 }
 
-std::string AVStrError(int errnum) {
+std::string AVStrError(int errnum)
+{
     char errbuf[AV_ERROR_MAX_STRING_SIZE] = {0};
     av_strerror(errnum, errbuf, AV_ERROR_MAX_STRING_SIZE);
     return std::string(errbuf);
 }
 
-int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("ffmpeg Plugin SendBuffer enter");
     AVCODEC_LOGD("Plugin SendBuffer enter");
@@ -95,7 +99,8 @@ int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferIn
     }
 }
 
-int32_t AudioFfmpegDecoderPlugin::ProcessRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFfmpegDecoderPlugin::ProcessRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     if (!outBuffer) {
         AVCODEC_LOGE("outBuffer is nullptr");
@@ -113,7 +118,8 @@ int32_t AudioFfmpegDecoderPlugin::ProcessRecieveData(std::shared_ptr<AudioBuffer
     return status;
 }
 
-int32_t AudioFfmpegDecoderPlugin::ReceiveBuffer(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFfmpegDecoderPlugin::ReceiveBuffer(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Plugin receiveBuffer enter");
     auto ret = avcodec_receive_frame(avCodecContext_.get(), cachedFrame_.get());
@@ -157,7 +163,8 @@ int32_t AudioFfmpegDecoderPlugin::ReceiveBuffer(std::shared_ptr<AudioBufferInfo>
     return status;
 }
 
-int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Plugin ReceiveFrameSucc enter");
     int32_t channels = cachedFrame_->channels;
@@ -185,20 +192,23 @@ int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferIn
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFfmpegDecoderPlugin::Reset() {
+int32_t AudioFfmpegDecoderPlugin::Reset()
+{
     CloseCtxLocked();
     avCodecContext_.reset();
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFfmpegDecoderPlugin::Release() {
+int32_t AudioFfmpegDecoderPlugin::Release()
+{
     std::unique_lock lock(avMutext_);
     auto ret = CloseCtxLocked();
     avCodecContext_.reset();
     return ret;
 }
 
-int32_t AudioFfmpegDecoderPlugin::Flush() {
+int32_t AudioFfmpegDecoderPlugin::Flush()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     std::unique_lock lock(avMutext_);
     if (avCodecContext_ != nullptr) {
@@ -208,7 +218,8 @@ int32_t AudioFfmpegDecoderPlugin::Flush() {
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFfmpegDecoderPlugin::AllocateContext(const std::string &name) {
+int32_t AudioFfmpegDecoderPlugin::AllocateContext(const std::string &name)
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Plugin AllocateContext enter");
     {
@@ -235,7 +246,8 @@ int32_t AudioFfmpegDecoderPlugin::AllocateContext(const std::string &name) {
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format) {
+int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format)
+{
     AVCODEC_LOGD("Plugin InitContext enter");
     format.GetIntValue(CHANNEL_COUNT_KEY, avCodecContext_->channels);
     format.GetIntValue(SAMPLE_RATE_KEY, avCodecContext_->sample_rate);
@@ -250,7 +262,8 @@ int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format) {
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFfmpegDecoderPlugin::OpenContext() {
+int32_t AudioFfmpegDecoderPlugin::OpenContext()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Plugin OpenContext enter");
     avPacket_ = std::shared_ptr<AVPacket>(av_packet_alloc(), [](AVPacket *ptr) { av_packet_free(&ptr); });
@@ -265,23 +278,28 @@ int32_t AudioFfmpegDecoderPlugin::OpenContext() {
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-Format AudioFfmpegDecoderPlugin::GetFormat() const noexcept {
+Format AudioFfmpegDecoderPlugin::GetFormat() const noexcept
+{
     return format_;
 }
 
-std::shared_ptr<AVCodecContext> AudioFfmpegDecoderPlugin::GetCodecContext() const noexcept {
+std::shared_ptr<AVCodecContext> AudioFfmpegDecoderPlugin::GetCodecContext() const noexcept
+{
     return avCodecContext_;
 }
 
-std::shared_ptr<AVPacket> AudioFfmpegDecoderPlugin::GetCodecAVPacket() const noexcept {
+std::shared_ptr<AVPacket> AudioFfmpegDecoderPlugin::GetCodecAVPacket() const noexcept
+{
     return avPacket_;
 }
 
-std::shared_ptr<AVFrame> AudioFfmpegDecoderPlugin::GetCodecCacheFrame() const noexcept {
+std::shared_ptr<AVFrame> AudioFfmpegDecoderPlugin::GetCodecCacheFrame() const noexcept
+{
     return cachedFrame_;
 }
 
-int32_t AudioFfmpegDecoderPlugin::CloseCtxLocked() {
+int32_t AudioFfmpegDecoderPlugin::CloseCtxLocked()
+{
     AVCodecTrace trace(std::string(__FUNCTION__));
     if (avCodecContext_ != nullptr) {
         auto res = avcodec_close(avCodecContext_.get());

@@ -34,11 +34,13 @@ AudioBuffersManager::AudioBuffersManager(const uint32_t &bufferSize, const std::
       metaSize_(metaSize),
       align_(align),
       name_(name),
-      bufferInfo_(DEFALT_BUFFER_LENGTH) {
+      bufferInfo_(DEFALT_BUFFER_LENGTH)
+{
     initBuffers();
 }
 
-std::shared_ptr<AudioBufferInfo> AudioBuffersManager::getMemory(const uint32_t &index) const noexcept {
+std::shared_ptr<AudioBufferInfo> AudioBuffersManager::getMemory(const uint32_t &index) const noexcept
+{
     if (index >= bufferInfo_.size()) {
         return nullptr;
     }
@@ -46,7 +48,8 @@ std::shared_ptr<AudioBufferInfo> AudioBuffersManager::getMemory(const uint32_t &
     return bufferInfo;
 }
 
-bool AudioBuffersManager::SetBufferBusy(const uint32_t &index) {
+bool AudioBuffersManager::SetBufferBusy(const uint32_t &index)
+{
     if (index < bufferInfo_.size()) {
         bufferInfo_[index]->SetBufferOwned();
         return true;
@@ -54,7 +57,8 @@ bool AudioBuffersManager::SetBufferBusy(const uint32_t &index) {
     return false;
 }
 
-void AudioBuffersManager::initBuffers() {
+void AudioBuffersManager::initBuffers()
+{
     std::unique_lock lock(stateMutex_);
     AVCODEC_LOGI("start allocate %{public}s buffers,buffer size:%{public}d", name_.data(), bufferSize_);
     for (size_t i = 0; i < DEFALT_BUFFER_LENGTH; i++) {
@@ -64,7 +68,8 @@ void AudioBuffersManager::initBuffers() {
     AVCODEC_LOGI("end allocate %{public}s buffers", name_.data());
 }
 
-bool AudioBuffersManager::RequestNewBuffer(uint32_t *index, std::shared_ptr<AudioBufferInfo> &buffer) {
+bool AudioBuffersManager::RequestNewBuffer(uint32_t *index, std::shared_ptr<AudioBufferInfo> &buffer)
+{
     buffer = createNewBuffer();
     if (buffer == nullptr) {
         return false;
@@ -73,7 +78,8 @@ bool AudioBuffersManager::RequestNewBuffer(uint32_t *index, std::shared_ptr<Audi
     return true;
 }
 
-bool AudioBuffersManager::RequestAvialbaleIndex(uint32_t *index) {
+bool AudioBuffersManager::RequestAvialbaleIndex(uint32_t *index)
+{
     isRunning_ = true;
     while (inBufIndexQue_.empty() && isRunning_) {
         AVCODEC_LOGD("Request empty %{public}s buffer", name_.data());
@@ -89,7 +95,8 @@ bool AudioBuffersManager::RequestAvialbaleIndex(uint32_t *index) {
     return true;
 }
 
-void AudioBuffersManager::ReleaseAll() {
+void AudioBuffersManager::ReleaseAll()
+{
     AVCODEC_LOGI("Release all %{public}s buffer.", name_.data());
     std::unique_lock lock(stateMutex_);
     for (uint32_t i = 0; i < bufferInfo_.size(); i++) {
@@ -100,7 +107,8 @@ void AudioBuffersManager::ReleaseAll() {
     avilableCondition_.notify_all();
 }
 
-bool AudioBuffersManager::RelaseBuffer(const uint32_t &index) {
+bool AudioBuffersManager::RelaseBuffer(const uint32_t &index)
+{
     if (index < bufferInfo_.size()) {
         std::unique_lock lock(avilableMuxt_);
         bufferInfo_[index]->Reset();
@@ -111,7 +119,8 @@ bool AudioBuffersManager::RelaseBuffer(const uint32_t &index) {
     return false;
 }
 
-std::shared_ptr<AudioBufferInfo> AudioBuffersManager::createNewBuffer() {
+std::shared_ptr<AudioBufferInfo> AudioBuffersManager::createNewBuffer()
+{
     std::shared_ptr<AudioBufferInfo> buffer = std::make_shared<AudioBufferInfo>(bufferSize_, name_, metaSize_, align_);
     bufferInfo_.push_back(buffer);
     return buffer;

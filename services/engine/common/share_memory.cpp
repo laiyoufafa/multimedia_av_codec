@@ -29,7 +29,8 @@ namespace OHOS {
 namespace Media {
 
 ShareMemory::ShareMemory(size_t capacity, const std::string_view &name, uint32_t flags, size_t align)
-    : capacity_(capacity), size_(0), flags_(flags), offset(0), name_(name) {
+    : capacity_(capacity), size_(0), flags_(flags), offset(0), name_(name)
+{
     capacity_ = align ? (capacity_ + align - 1) : capacity;
     AVCODEC_LOGI("allocate share memory,memory size:%{public}d, align:%{public}d, name:%{public}s", capacity_, align,
                  name_.data());
@@ -45,7 +46,8 @@ ShareMemory::ShareMemory(size_t capacity, const std::string_view &name, uint32_t
                                  reinterpret_cast<uintptr_t>(base_));
 }
 
-ShareMemory::~ShareMemory() {
+ShareMemory::~ShareMemory()
+{
     if (base_ != nullptr) {
         (void)::munmap(base_, static_cast<size_t>(size_));
         base_ = nullptr;
@@ -60,7 +62,8 @@ ShareMemory::~ShareMemory() {
     }
 }
 
-size_t ShareMemory::Write(const uint8_t *in, size_t writeSize, size_t position) {
+size_t ShareMemory::Write(const uint8_t *in, size_t writeSize, size_t position)
+{
     size_t start = 0;
     if (position == INVALID_POSITION) {
         start = size_;
@@ -78,7 +81,8 @@ size_t ShareMemory::Write(const uint8_t *in, size_t writeSize, size_t position) 
     return length;
 }
 
-size_t ShareMemory::Read(uint8_t *out, size_t readSize, size_t position) {
+size_t ShareMemory::Read(uint8_t *out, size_t readSize, size_t position)
+{
     size_t start = 0;
     size_t maxLength = size_;
     if (position != INVALID_POSITION) {
@@ -92,38 +96,46 @@ size_t ShareMemory::Read(uint8_t *out, size_t readSize, size_t position) {
     return length;
 }
 
-int32_t ShareMemory::GetShareMemoryFd() {
+int32_t ShareMemory::GetShareMemoryFd()
+{
     return fd_;
 }
 
-uint8_t *ShareMemory::GetBase() const {
+uint8_t *ShareMemory::GetBase() const
+{
     return base_ + offset;
 }
 
-uint32_t ShareMemory::GetFlags() const {
+uint32_t ShareMemory::GetFlags() const
+{
     return flags_;
 }
 
-void ShareMemory::Reset() {
+void ShareMemory::Reset()
+{
     this->size_ = 0;
 }
 
-size_t ShareMemory::GetCapacity() const noexcept {
+size_t ShareMemory::GetCapacity() const noexcept
+{
     return size_;
 }
 
-int32_t ShareMemory::GetSize() const {
+int32_t ShareMemory::GetSize() const
+{
     return capacity_;
 }
 
-const uint8_t *ShareMemory::GetReadOnlyData(size_t position) {
+const uint8_t *ShareMemory::GetReadOnlyData(size_t position)
+{
     if (position > capacity_) {
         return nullptr;
     }
     return GetBase() + position;
 }
 
-uint8_t *ShareMemory::GetWritableAddr(size_t estimatedWriteSize, size_t position) {
+uint8_t *ShareMemory::GetWritableAddr(size_t estimatedWriteSize, size_t position)
+{
     if (position + estimatedWriteSize > capacity_) {
         return nullptr;
     }
@@ -132,7 +144,8 @@ uint8_t *ShareMemory::GetWritableAddr(size_t estimatedWriteSize, size_t position
     return ptr;
 }
 
-int32_t ShareMemory::mapMemory(bool isRemote) {
+int32_t ShareMemory::mapMemory(bool isRemote)
+{
     unsigned int port = PROT_READ | PROT_WRITE;
     if (isRemote && (flags_ & FLAGS_READ_ONLY)) {
         port &= ~PROT_WRITE;

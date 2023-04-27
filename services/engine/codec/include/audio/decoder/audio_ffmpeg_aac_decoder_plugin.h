@@ -36,7 +36,8 @@ public:
     uint32_t getInputBufferSize() const override;
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
-    const static std::string_view identify() {
+    const static std::string_view identify()
+    {
         return "OH.Media.Codec.AAC.FFMPEGAac";
     }
 

@@ -21,15 +21,19 @@ namespace OHOS {
 namespace Media {
 
 AudioFFMpegVorbisDecoderPlugin::AudioFFMpegVorbisDecoderPlugin()
-    : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
+    : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>())
+{
+}
 
-AudioFFMpegVorbisDecoderPlugin::~AudioFFMpegVorbisDecoderPlugin() {
+AudioFFMpegVorbisDecoderPlugin::~AudioFFMpegVorbisDecoderPlugin()
+{
     basePlugin->Release();
     basePlugin.reset();
     basePlugin = nullptr;
 }
 
-std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext(const Format &format) {
+std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext(const Format &format)
+{
     auto encodec = avcodec_find_encoder_by_name("libvorbis");
     if (encodec == nullptr) {
         return nullptr;
@@ -56,8 +60,8 @@ std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext
     return encodeContext;
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::AssignExtradata(std::shared_ptr<AVCodecContext> &context,
-                                                        const Format &format) {
+int32_t AudioFFMpegVorbisDecoderPlugin::AssignExtradata(std::shared_ptr<AVCodecContext> &context, const Format &format)
+{
     if (context == nullptr) {
         // std::cout << " null pointer" << std::endl;
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
@@ -82,7 +86,8 @@ int32_t AudioFFMpegVorbisDecoderPlugin::AssignExtradata(std::shared_ptr<AVCodecC
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::init(const Format &format) {
+int32_t AudioFFMpegVorbisDecoderPlugin::init(const Format &format)
+{
     int32_t ret = basePlugin->AllocateContext("vorbis");
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
         // std::cout << "init 1 OH error:" << ret << "\n";
@@ -98,35 +103,43 @@ int32_t AudioFFMpegVorbisDecoderPlugin::init(const Format &format) {
     return basePlugin->OpenContext();
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer) {
+int32_t AudioFFMpegVorbisDecoderPlugin::processSendData(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
+{
     return basePlugin->ProcessSendData(inputBuffer);
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer) {
+int32_t AudioFFMpegVorbisDecoderPlugin::processRecieveData(std::shared_ptr<AudioBufferInfo> &outBuffer)
+{
     return basePlugin->ProcessRecieveData(outBuffer);
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::reset() {
+int32_t AudioFFMpegVorbisDecoderPlugin::reset()
+{
     return basePlugin->Reset();
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::release() {
+int32_t AudioFFMpegVorbisDecoderPlugin::release()
+{
     return basePlugin->Release();
 }
 
-int32_t AudioFFMpegVorbisDecoderPlugin::flush() {
+int32_t AudioFFMpegVorbisDecoderPlugin::flush()
+{
     return basePlugin->Flush();
 }
 
-uint32_t AudioFFMpegVorbisDecoderPlugin::getInputBufferSize() const {
+uint32_t AudioFFMpegVorbisDecoderPlugin::getInputBufferSize() const
+{
     return 8192;
 }
 
-uint32_t AudioFFMpegVorbisDecoderPlugin::getOutputBufferSize() const {
+uint32_t AudioFFMpegVorbisDecoderPlugin::getOutputBufferSize() const
+{
     return 2 * 4096 * 2;
 }
 
-Format AudioFFMpegVorbisDecoderPlugin::GetFormat() const noexcept {
+Format AudioFFMpegVorbisDecoderPlugin::GetFormat() const noexcept
+{
     return basePlugin->GetFormat();
 }
 
