@@ -64,6 +64,10 @@ public:
 
     int32_t Release() override;
 
+    int32_t Pause() override;
+
+    int32_t Resume() override;
+
     int32_t NotifyEos() override;
 
     int32_t SetParameter(const Format &format) override;

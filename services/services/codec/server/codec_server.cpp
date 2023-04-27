@@ -18,7 +18,7 @@
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
-// #include "engine_factory_repo.h"
+#include "engine_factory_repo.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecServer"};
@@ -74,21 +74,22 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
 {
     std::lock_guard<std::mutex> lock(mutex_);
     AVCodecTrace trace("CodecServer::Init");
+
     if (isMimeType) {
         bool isEncoder = (type == AVCODEC_TYPE_VIDEO_ENCODER) || (type == AVCODEC_TYPE_AUDIO_ENCODER);
-        codecBase_ = CodecBase::Create(isEncoder,  name);
+        codecBase_ = CodecBase::Create(isEncoder, name);
     } else {
-        codecBase_ = CodecBase::Create(name);
+        codecBase_ = EngineFactoryRepo::Instance().CreateCodecByName(name);
     }
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "codecBase is nullptr");
-    
+
+    status_ = INITIALIZED;
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
     CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "failed to new CodecBaseCallback");
 
     int32_t ret = codecBase_->SetCallback(callback);
     CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
 
-    status_ = INITIALIZED;
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return AVCS_ERR_OK;
 }
