@@ -15,6 +15,7 @@
 
 #include <list>
 #include <mutex>
+#include <exception>
 #include "native_avcodec_base.h"
 #include "native_avcodec_videodecoder.h"
 #include "native_avmagic.h"
@@ -459,7 +460,7 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
 
     try {
         videoDecObj->callback_ = std::make_shared<NativeVideoDecoderCallback>(codec, callback, userData);
-    } catch (const exception& exc) {
+    } catch (const std::exception& exc) {
         AVCODEC_LOGE("Video decoder set callback failed! Exc: %{public}s", exc.what());
         return AV_ERR_INVALID_VAL;
     }

@@ -14,6 +14,7 @@
  */
 
 #include "avcodec_video_decoder_impl.h"
+#include <exception>
 #include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
@@ -29,17 +30,17 @@ std::shared_ptr<AVCodecVideoDecoder> VideoDecoderFactory::CreateByMime(const std
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
 
-    std::shared_ptr<AVCodecVideoDecoderImpl> impl;
+    std::shared_ptr<AVCodecVideoDecoderImpl> impl = nullptr;
     try {
         impl = std::make_shared<AVCodecVideoDecoderImpl>();
-    } catch (const exception& exc) {
-        AVCODEC_LOGE("Create AVCodec video decoder impl failed");
+    } catch (const std::exception& exc) {
+        AVCODEC_LOGE("AVCodec video decoder impl create failed! Exc: %{public}s", exc.what());
         return nullptr;
     }   
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_DECODER, true, mime);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, 
-        nullptr, "Init AVCodec video decoder impl failed");
+        nullptr, "AVCodec video decoder impl init failed");
 
     return impl;
 }
@@ -48,17 +49,17 @@ std::shared_ptr<AVCodecVideoDecoder> VideoDecoderFactory::CreateByName(const std
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
 
-    std::shared_ptr<AVCodecVideoDecoderImpl> impl;
+    std::shared_ptr<AVCodecVideoDecoderImpl> impl = nullptr;
     try {
         impl = std::make_shared<AVCodecVideoDecoderImpl>();
-    } catch (const exception& exc) {
-        AVCODEC_LOGE("Create AVCodec video decoder impl failed");
+    } catch (const std::exception& exc) {
+        AVCODEC_LOGE("AVCodec video decoder impl create failed! Exc: %{public}s", exc.what());
         return nullptr;
     }   
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_DECODER, false, name);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, 
-        nullptr, "Init AVCodec video decoder impl failed");
+        nullptr, "AVCodec video decoder impl init failed");
 
     return impl;
 }
@@ -68,7 +69,7 @@ int32_t AVCodecVideoDecoderImpl::Init(AVCodecType type, bool isMimeType, const s
     AVCodecTrace trace(std::string(__FUNCTION__));
     codecService_ = AVCodecServiceFactory::GetInstance().CreateCodecService();
     CHECK_AND_RETURN_RET_LOG(codecService_ != nullptr, 
-        AVCS_ERR_INVALID_OPERATION, "Create codec service failed");
+        AVCS_ERR_INVALID_OPERATION, "Codec service create failed");
 
     return codecService_->Init(type, isMimeType, name);
 }

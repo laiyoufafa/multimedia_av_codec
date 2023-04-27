@@ -41,7 +41,7 @@ void CodecListenerProxy::OnError(AVCodecErrorType errorType, int32_t errorCode)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     bool token = data.WriteInterfaceToken(CodecListenerProxy::GetDescriptor());
-    CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
+    CHECK_AND_RETURN_LOG(token, "Write descriptor failed!");
 
     data.WriteInt32(static_cast<int32_t>(errorType));
     data.WriteInt32(errorCode);
@@ -55,7 +55,7 @@ void CodecListenerProxy::OnOutputFormatChanged(const Format &format)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     bool token = data.WriteInterfaceToken(CodecListenerProxy::GetDescriptor());
-    CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
+    CHECK_AND_RETURN_LOG(token, "Write descriptor failed!");
 
     (void)AVCodecParcel::Marshalling(data, format);
     int error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_FORMAT_CHANGED, data, reply, option);
@@ -68,13 +68,11 @@ void CodecListenerProxy::OnInputBufferAvailable(uint32_t index)
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     bool token = data.WriteInterfaceToken(CodecListenerProxy::GetDescriptor());
-    CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
+    CHECK_AND_RETURN_LOG(token, "Write descriptor failed!");
 
     data.WriteUint32(index);
     int error = Remote()->SendRequest(CodecListenerMsg::ON_INPUT_BUFFER_AVAILABLE, data, reply, option);
-    //TODO
-    CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, 
-        "Send request \"ON_INPUT_BUFFER_AVAILABLE\" failed, error: %{public}d", error);
+    CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "Send request failed");
 }
 
 void CodecListenerProxy::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
@@ -83,7 +81,7 @@ void CodecListenerProxy::OnOutputBufferAvailable(uint32_t index, AVCodecBufferIn
     MessageParcel reply;
     MessageOption option(MessageOption::TF_ASYNC);
     bool token = data.WriteInterfaceToken(CodecListenerProxy::GetDescriptor());
-    CHECK_AND_RETURN_LOG(token, "Failed to write descriptor!");
+    CHECK_AND_RETURN_LOG(token, "Write descriptor failed!");
 
     data.WriteUint32(index);
     data.WriteInt64(info.presentationTimeUs);
@@ -91,9 +89,7 @@ void CodecListenerProxy::OnOutputBufferAvailable(uint32_t index, AVCodecBufferIn
     data.WriteInt32(info.offset);
     data.WriteInt32(static_cast<int32_t>(flag));
     int error = Remote()->SendRequest(CodecListenerMsg::ON_OUTPUT_BUFFER_AVAILABLE, data, reply, option);
-    //TODO 
-    CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, 
-        "Send request \"ON_OUTPUT_BUFFER_AVAILABLE\" failed, error: %{public}d", error);
+    CHECK_AND_RETURN_LOG(error == AVCS_ERR_OK, "Send request failed");
 }
 
 CodecListenerCallback::CodecListenerCallback(const sptr<IStandardCodecListener> &listener)

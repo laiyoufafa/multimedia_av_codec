@@ -14,6 +14,7 @@
  */
 
 #include "codec_client.h"
+#include <exception>
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
@@ -27,17 +28,16 @@ std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecServic
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "Ipc proxy is nullptr.");
 
-    // TODO
-    std::shared_ptr<CodecClient> codec;
+    std::shared_ptr<CodecClient> codec = nullptr;
     try {
         codec = std::make_shared<CodecClient>(ipcProxy);
-    } catch {
-
+    } catch (const std::exception& exc) {
+        AVCODEC_LOGE("Codec client create failed! Exc: %{public}s", exc.what());
+        return nullptr;
     }
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "Codec is nullptr, failed to create codec client.");
 
     int32_t ret = codec->CreateListenerObject();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to create listener object.");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec client create failed");
 
     return codec;
 }
@@ -52,9 +52,10 @@ CodecClient::~CodecClient()
 {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    // TODO: logd
     if (codecProxy_ != nullptr) {
         (void)codecProxy_->DestroyStub();
+    } else {
+        AVCODEC_LOGD("Codec proxy is nullptr");
     }
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
@@ -65,18 +66,20 @@ void CodecClient::AVCodecServerDied()
     codecProxy_ = nullptr;
     listenerStub_ = nullptr;
 
-    // TODO : logd
     if (callback_ != nullptr) {
         callback_->OnError(AVCODEC_ERROR_INTERNAL, AVCS_ERR_SERVICE_DIED);
+    } else {
+        AVCODEC_LOGD("Callback is callback");
     }
 }
 
 int32_t CodecClient::CreateListenerObject()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    listenerStub_ = new(std::nothrow) CodecListenerStub();
-    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create codec listener stub object");
     CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
+    
+    listenerStub_ = new(std::nothrow) CodecListenerStub();
+    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec listener stub create failed");
 
     sptr<IRemoteObject> object = listenerStub_->AsObject();
     CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Listener object is nullptr.");
