@@ -240,7 +240,7 @@ HWTEST_F(AvmuxerUnitTest, Muxer_Stop_001, TestSize.Level0)
     OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
     std::shared_ptr<AVMuxer> avmuxer = AVMuxerFactory::CreateAVMuxer(fd_, outputFormat);
     ASSERT_NE(avmuxer, nullptr);
-
+    
     std::shared_ptr<MediaDescription> videoParams = std::make_shared<MediaDescription>();
     videoParams->PutStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, CodecMimeType::VIDEO_MPEG4);
     videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, 352);

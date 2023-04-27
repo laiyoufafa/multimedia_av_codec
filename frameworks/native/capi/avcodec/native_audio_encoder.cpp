@@ -417,7 +417,7 @@ OH_AVErrCode OH_AudioEncoder_SetCallback(
     return AV_ERR_OK;
 }
 
-OH_AVErrCode OH_AudioEncoder_IsValid(OH_AVCodec *codec)
+OH_AVErrCode OH_AudioEncoder_IsValid(OH_AVCodec *codec, bool *isVaild)
 {
     return AV_ERR_UNSUPPORT;
 }
