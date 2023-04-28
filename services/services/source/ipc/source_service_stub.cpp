@@ -52,11 +52,10 @@ SourceServiceStub::~SourceServiceStub()
 int32_t SourceServiceStub::InitStub()
 {
     sourceServer_ = SourceServer::Create();
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create source server");
 
     sourceFuncs_[INIT] = &SourceServiceStub::Init;
     sourceFuncs_[GET_TRACK_COUNT] = &SourceServiceStub::GetTrackCount;
-    sourceFuncs_[DESTROY] = &SourceServiceStub::Destroy;
     sourceFuncs_[SET_TRACK_FORMAT] = &SourceServiceStub::SetTrackFormat;
     sourceFuncs_[GET_TRACK_FORMAT] = &SourceServiceStub::GetTrackFormat;
     sourceFuncs_[GET_SOURCE_FORMAT] = &SourceServiceStub::GetSourceFormat;
@@ -142,6 +141,13 @@ int32_t SourceServiceStub::DumpInfo(int32_t fd)
     CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
     write(fd, dumpInfo.c_str(), dumpInfo.size());
 
+    return AVCS_ERR_OK;
+}
+
+int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+{
+    (void)data;
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "Reply DestroyStub failed!");
     return AVCS_ERR_OK;
 }
 

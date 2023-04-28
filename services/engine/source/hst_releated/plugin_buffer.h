@@ -75,9 +75,9 @@ public:
                                                        std::shared_ptr<Allocator> allocator = nullptr,
                                                        size_t align = 1);
 
-    std::shared_ptr<Memory> WrapMemory(uint8_t* data, size_t capacity, size_t size);
+    std::shared_ptr<Memory> WrapMemory(uint8_t* dataptr, size_t capacity, size_t size);
 
-    std::shared_ptr<Memory> WrapMemoryPtr(std::shared_ptr<uint8_t> data, size_t capacity, size_t size);
+    std::shared_ptr<Memory> WrapMemoryPtr(std::shared_ptr<uint8_t> dataptr, size_t capacity, size_t size);
 
     std::shared_ptr<Memory> AllocMemory(std::shared_ptr<Allocator> allocator, size_t capacity, size_t align = 1);
 

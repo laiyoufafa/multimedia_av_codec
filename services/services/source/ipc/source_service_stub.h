@@ -45,7 +45,6 @@ private:
 
     int32_t Init(MessageParcel &data, MessageParcel &reply);
     int32_t GetTrackCount(MessageParcel &data, MessageParcel &reply);
-    int32_t Destroy(MessageParcel &data, MessageParcel &reply);
     int32_t SetTrackFormat(MessageParcel &data, MessageParcel &reply);
     int32_t GetTrackFormat(MessageParcel &data, MessageParcel &reply);
     int32_t GetSourceFormat(MessageParcel &data, MessageParcel &reply);

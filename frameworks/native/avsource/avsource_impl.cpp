@@ -20,6 +20,7 @@
 #include "avcodec_dfx.h"
 #include <vector>
 #include <unistd.h>
+#include <fcntl.h>
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSourceImpl"};
@@ -220,7 +221,7 @@ bool AVSourceImpl::TrackIndexIsValid(uint32_t trackIndex)
         }
         trackCount_ = trackCount;
     }
-    return (trackIndex>=0 && trackCount_>=0 && trackIndex<=trackCount_);
+    return (trackIndex>=0 && (uint32_t)trackCount_>=0 && trackIndex<=(uint32_t)trackCount_);
 }
 
 AVSourceTrackImpl::AVSourceTrackImpl(AVSourceImpl *source, uint32_t trackIndex)

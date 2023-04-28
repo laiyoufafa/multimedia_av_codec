@@ -141,19 +141,19 @@ std::shared_ptr<Buffer> Buffer::CreateDefaultBuffer(BufferMetaType type, size_t 
     return buffer;
 }
 
-std::shared_ptr<Memory> Buffer::WrapMemory(uint8_t* data, size_t capacity, size_t size)
+std::shared_ptr<Memory> Buffer::WrapMemory(uint8_t* dataptr, size_t capacity, size_t size)
 {
     // TODO
     // auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(data, [](void* ptr) {})));
-    auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(data, [](void* ptr) {(void)ptr;})));
+    auto memory = std::shared_ptr<Memory>(new Memory(capacity, std::shared_ptr<uint8_t>(dataptr, [](void* ptr) {(void)ptr;})));
     memory->size = size;
     this->data.push_back(memory);
     return memory;
 }
 
-std::shared_ptr<Memory> Buffer::WrapMemoryPtr(std::shared_ptr<uint8_t> data, size_t capacity, size_t size)
+std::shared_ptr<Memory> Buffer::WrapMemoryPtr(std::shared_ptr<uint8_t> dataptr, size_t capacity, size_t size)
 {
-    auto memory = std::shared_ptr<Memory>(new Memory(capacity, data));
+    auto memory = std::shared_ptr<Memory>(new Memory(capacity, dataptr));
     memory->size = size;
     this->data.push_back(memory);
     return memory;
