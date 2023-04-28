@@ -340,11 +340,11 @@ void AudioCodecWorker::dispose()
         inBufIndexQue_.pop();
     }
 
-    inputBuffer_->ReleaseAll();
-    outputBuffer_->ReleaseAll();
-
     inputCondition_.notify_all();
     outputCondition_.notify_all();
+
+    inputBuffer_->ReleaseAll();
+    outputBuffer_->ReleaseAll();
 }
 
 bool AudioCodecWorker::begin()

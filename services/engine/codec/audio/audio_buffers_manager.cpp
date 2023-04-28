@@ -97,12 +97,12 @@ bool AudioBuffersManager::RequestAvialbaleIndex(uint32_t *index)
 
 void AudioBuffersManager::ReleaseAll()
 {
-    AVCODEC_LOGI("Release all %{public}s buffer.", name_.data());
-    std::unique_lock lock(stateMutex_);
-    for (uint32_t i = 0; i < bufferInfo_.size(); i++) {
+    AVCODEC_LOGI("step in release all %{public}s buffer.", name_.data());
+    for (uint32_t i = 0; i < bufferInfo_.size(); ++i) {
         bufferInfo_[i]->Reset();
         inBufIndexQue_.push(i);
     }
+    AVCODEC_LOGI("step out release all %{public}s buffer.", name_.data());
     isRunning_ = false;
     avilableCondition_.notify_all();
 }

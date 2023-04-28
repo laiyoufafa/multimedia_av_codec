@@ -14,6 +14,11 @@
  */
 
 #include "audio_buffer_info.h"
+#include "avcodec_log.h"
+
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioBufferInfo"};
+}
 
 namespace OHOS {
 namespace Media {
@@ -37,6 +42,22 @@ AudioBufferInfo::AudioBufferInfo(const uint32_t &bufferSize, const std::string_v
     }
     buffer_ = std::make_shared<ShareMemory>(bufferSize_, std::string(name_) + "_buffer",
                                             AVSharedMemory::Flags::FLAGS_READ_ONLY, 0);
+}
+
+AudioBufferInfo::~AudioBufferInfo()
+{
+    if (buffer_) {
+        buffer_.reset();
+        buffer_ = nullptr;
+    }
+
+    if (metadata_) {
+        metadata_.reset();
+        metadata_ = nullptr;
+    }
+    isEos_ = false;
+
+    status_ = BufferStatus::IDEL;
 }
 
 std::shared_ptr<ShareMemory> AudioBufferInfo::GetBuffer() const noexcept
@@ -105,11 +126,15 @@ bool AudioBufferInfo::IsHasMetaData() const noexcept
 
 bool AudioBufferInfo::Reset()
 {
-    if (buffer_) {
-        isEos_ = false;
-        status_ = BufferStatus::IDEL;
-        buffer_->Reset();
-        return true;
+    try {
+        if (buffer_) {
+            isEos_ = false;
+            status_ = BufferStatus::IDEL;
+            buffer_->Reset();
+            return true;
+        }
+    } catch (std::exception ex) {
+        AVCODEC_LOGE("Reset Buffer Exception:%{public}s", ex.what());
     }
 
     return false;

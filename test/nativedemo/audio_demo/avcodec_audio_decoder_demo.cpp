@@ -14,9 +14,10 @@
  */
 
 #include "avcodec_audio_decoder_demo.h"
-#include "avcodec_errors.h"
 #include "avcodec_common.h"
+#include "avcodec_errors.h"
 #include "demo_log.h"
+#include "native_avcodec_base.h"
 #include "securec.h"
 #include <iostream>
 #include <unistd.h>
@@ -34,22 +35,25 @@ constexpr uint32_t FRAME_DURATION_US = 33000;
 constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
 } // namespace
 
-static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData) {
+static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData)
+{
     (void)codec;
     (void)errorCode;
     (void)userData;
     cout << "Error received, errorCode:" << errorCode << endl;
 }
 
-static void OnOutputFormatChanged(OH_AVCodec *codec, OH_AVFormat *format, void *userData) {
+static void OnOutputFormatChanged(OH_AVCodec *codec, OH_AVFormat *format, void *userData)
+{
     (void)codec;
     (void)format;
     (void)userData;
     cout << "OnOutputFormatChanged received" << endl;
 }
 
-static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, void *userData) {
-    (void)codec;    
+static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, void *userData)
+{
+    (void)codec;
     ADecSignal *signal_ = static_cast<ADecSignal *>(userData);
     cout << "OnInputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->inMutex_);
@@ -59,7 +63,8 @@ static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemor
 }
 
 static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, OH_AVCodecBufferAttr *attr,
-                             void *userData) {
+                                    void *userData)
+{
     (void)codec;
     ADecSignal *signal_ = static_cast<ADecSignal *>(userData);
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
@@ -70,23 +75,27 @@ static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemo
     signal_->outCond_.notify_all();
 }
 
-void ADecDemo::RunCase() {
+void ADecDemo::RunCase()
+{
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     OH_AVFormat *format = OH_AVFormat_Create();
-    OH_AVFormat_SetIntValue(format, "channel-count", CHANNEL_COUNT);
-    OH_AVFormat_SetIntValue(format, "sample-rate", SAMPLE_RATE);
+    OH_AVFormat_SetIntValue(format, OH_MD_KEY_AUD_CHANNEL_COUNT, CHANNEL_COUNT);
+    OH_AVFormat_SetIntValue(format, OH_MD_KEY_AUD_SAMPLE_RATE, SAMPLE_RATE);
     OH_AVFormat_SetIntValue(format, "bits_per_coded-rate", BITS_PER_CODED_RATE);
-    OH_AVFormat_SetLongValue(format, "bits-rate", BITS_RATE);
+    OH_AVFormat_SetLongValue(format, OH_MD_KEY_BITRATE, BITS_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
     sleep(3); // start run 3s
+
     DEMO_CHECK_AND_RETURN_LOG(Stop() == AVCS_ERR_OK, "Fatal: Stop fail");
+    std::cout << "end stop!\n";
     DEMO_CHECK_AND_RETURN_LOG(Release() == AVCS_ERR_OK, "Fatal: Release fail");
 }
 
-ADecDemo::~ADecDemo() {
+ADecDemo::~ADecDemo()
+{
     OH_AudioDecoder_Destroy(audioDec_);
     if (signal_) {
         delete signal_;
@@ -94,7 +103,8 @@ ADecDemo::~ADecDemo() {
     }
 }
 
-int32_t ADecDemo::CreateDec() {
+int32_t ADecDemo::CreateDec()
+{
 
     audioDec_ = OH_AudioDecoder_CreateByName("OH.Media.Codec.MP3.FFMPEGMp3");
     DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
@@ -109,11 +119,13 @@ int32_t ADecDemo::CreateDec() {
     return AVCS_ERR_OK;
 }
 
-int32_t ADecDemo::Configure(OH_AVFormat *format) {
+int32_t ADecDemo::Configure(OH_AVFormat *format)
+{
     return OH_AudioDecoder_Configure(audioDec_, format);
 }
 
-int32_t ADecDemo::Start() {
+int32_t ADecDemo::Start()
+{
     isRunning_.store(true);
 
     testFile_ = std::make_unique<std::ifstream>();
@@ -129,48 +141,51 @@ int32_t ADecDemo::Start() {
     return OH_AudioDecoder_Start(audioDec_);
 }
 
-int32_t ADecDemo::Stop() {
+int32_t ADecDemo::Stop()
+{
     isRunning_.store(false);
-
+    std::cout << "start inputLoop_!\n";
     if (inputLoop_ != nullptr && inputLoop_->joinable()) {
         unique_lock<mutex> lock(signal_->inMutex_);
         signal_->inCond_.notify_all();
         lock.unlock();
         inputLoop_->join();
-        inputLoop_.reset();
     }
-
+    std::cout << "start outputLoop_!\n";
     if (outputLoop_ != nullptr && outputLoop_->joinable()) {
         unique_lock<mutex> lock(signal_->outMutex_);
         signal_->outCond_.notify_all();
         lock.unlock();
         outputLoop_->join();
-        outputLoop_.reset();
     }
-
+    std::cout << "start stop!\n";
     return OH_AudioDecoder_Stop(audioDec_);
 }
 
-int32_t ADecDemo::Flush() {
+int32_t ADecDemo::Flush()
+{
     return OH_AudioDecoder_Flush(audioDec_);
 }
 
-int32_t ADecDemo::Reset() {
+int32_t ADecDemo::Reset()
+{
     return OH_AudioDecoder_Reset(audioDec_);
 }
 
-int32_t ADecDemo::Release() {
+int32_t ADecDemo::Release()
+{
     return OH_AudioDecoder_Destroy(audioDec_);
 }
 
-void ADecDemo::InputFunc() {
+void ADecDemo::InputFunc()
+{
     while (true) {
         if (!isRunning_.load()) {
             break;
         }
 
         unique_lock<mutex> lock(signal_->inMutex_);
-        signal_->inCond_.wait(lock, [this]() { return signal_->inQueue_.size() > 0; });
+        signal_->inCond_.wait(lock, [this]() { return (signal_->inQueue_.size() > 0 || !isRunning_.load()); });
 
         if (!isRunning_.load()) {
             break;
@@ -216,14 +231,15 @@ void ADecDemo::InputFunc() {
     }
 }
 
-void ADecDemo::OutputFunc() {
+void ADecDemo::OutputFunc()
+{
     while (true) {
         if (!isRunning_.load()) {
             break;
         }
 
         unique_lock<mutex> lock(signal_->outMutex_);
-        signal_->outCond_.wait(lock, [this]() { return signal_->outQueue_.size() > 0; });
+        signal_->outCond_.wait(lock, [this]() { return (signal_->outQueue_.size() > 0 || !isRunning_.load()); });
 
         if (!isRunning_.load()) {
             break;
@@ -234,7 +250,10 @@ void ADecDemo::OutputFunc() {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
             break;
         }
-
+        OH_AVCodecBufferAttr *attr = signal_->attrQueue_.front();
+        if (attr->flags == AVCODEC_BUFFER_FLAGS_EOS) {
+            isRunning_.store(false);
+        }
         signal_->outBufferQueue_.pop();
         signal_->attrQueue_.pop();
         signal_->outQueue_.pop();
