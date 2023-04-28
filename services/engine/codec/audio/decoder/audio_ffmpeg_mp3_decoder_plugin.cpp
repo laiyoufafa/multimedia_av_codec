@@ -15,6 +15,7 @@
 
 #include "audio_ffmpeg_mp3_decoder_plugin.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
 
 namespace OHOS {
 namespace Media {
@@ -93,10 +94,9 @@ int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format)
 {
 #define SUPPORT_SAMPLE_RATE 9
     int sample_rate_pick[SUPPORT_SAMPLE_RATE] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
-
-    format.GetIntValue("channel-count", channels);
-    format.GetIntValue("sample-rate", sample_rate);
-    format.GetLongValue("bits-rate", bit_rate);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, channels);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, sample_rate);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, bit_rate);
     if (channels < 1 || channels > 2) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }

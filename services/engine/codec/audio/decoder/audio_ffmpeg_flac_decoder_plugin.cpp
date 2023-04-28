@@ -15,6 +15,7 @@
 
 #include "audio_ffmpeg_flac_decoder_plugin.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
 
 namespace OHOS {
 namespace Media {
@@ -54,9 +55,9 @@ int32_t AudioFFMpegFlacDecoderPlugin::init(const Format &format)
 {
     int channels, sample_rate, bits_per_coded_rate;
     int64_t bit_rate;
-    format.GetIntValue("channel-count", channels);
-    format.GetIntValue("sample-rate", sample_rate);
-    format.GetLongValue("bits-rate", bit_rate);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, channels);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, sample_rate);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, bit_rate);
     format.GetIntValue("bits_per_coded-rate", bits_per_coded_rate);
     if (!isTrueSampleRate(sample_rate)) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
