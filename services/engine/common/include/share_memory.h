@@ -37,7 +37,7 @@ public:
 
     int32_t GetShareMemoryFd();
     void Reset();
-    size_t GetCapacity() const noexcept;
+    size_t GetUsedSize() const noexcept;
 
     const uint8_t *GetReadOnlyData(size_t position = 0);
 

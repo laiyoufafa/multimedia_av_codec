@@ -116,7 +116,7 @@ void ShareMemory::Reset()
     this->size_ = 0;
 }
 
-size_t ShareMemory::GetCapacity() const noexcept
+size_t ShareMemory::GetUsedSize() const noexcept
 {
     return size_;
 }
