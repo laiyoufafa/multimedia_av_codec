@@ -119,6 +119,14 @@ int32_t AudioFFMpegAdapter::Start()
     return ret;
 }
 
+int32_t AudioFFMpegAdapter::Pause()
+{
+    return AVCodecServiceErrCode::AVCS_ERR_OK;
+}
+int32_t AudioFFMpegAdapter::Resume()
+{
+    return AVCodecServiceErrCode::AVCS_ERR_OK;
+}
 int32_t AudioFFMpegAdapter::Stop()
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
@@ -484,11 +492,11 @@ int32_t AudioFFMpegAdapter::doRelease()
 std::string_view AudioFFMpegAdapter::stateToString(CodecState state)
 {
     std::map<CodecState, std::string_view> stateStrMap = {
-        {CodecState::RELEASED, " RELEASED"},     {CodecState::INITLIZED, " INITLIZED"},
-        {CodecState::FLUSHED, " FLUSHED"},       {CodecState::RUNNING, " RUNNING"},
+        {CodecState::RELEASED, " RELEASED"}, {CodecState::INITLIZED, " INITLIZED"},
+        {CodecState::FLUSHED, " FLUSHED"}, {CodecState::RUNNING, " RUNNING"},
         {CodecState::INITLIZING, " INITLIZING"}, {CodecState::STARTING, " STARTING"},
-        {CodecState::STOPPING, " STOPPING"},     {CodecState::FLUSHING, " FLUSHING"},
-        {CodecState::RESUMING, " RESUMING"},     {CodecState::RRELEASING, " RRELEASING"},
+        {CodecState::STOPPING, " STOPPING"}, {CodecState::FLUSHING, " FLUSHING"},
+        {CodecState::RESUMING, " RESUMING"}, {CodecState::RRELEASING, " RRELEASING"},
     };
     return stateStrMap[state];
 }

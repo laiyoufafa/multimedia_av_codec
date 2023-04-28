@@ -472,7 +472,7 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
     return AV_ERR_OK;
 }
 
-OH_AVErrCode OH_VideoDecoder_IsValid(OH_AVCodec *codec)
+OH_AVErrCode OH_VideoDecoder_IsValid(OH_AVCodec *codec, bool *isVaild)
 {
     (void)codec;
     return AV_ERR_UNSUPPORT;

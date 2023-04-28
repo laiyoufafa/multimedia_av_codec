@@ -459,7 +459,7 @@ OH_AVErrCode OH_VideoEncoder_SetSurface(OH_AVCodec *codec, OHNativeWindow *windo
 }
 
 
-OH_AVErrCode OH_VideoEncoder_IsValid(OH_AVCodec *codec)
+OH_AVErrCode OH_VideoEncoder_IsValid(OH_AVCodec *codec, bool *isVaild)
 {
     return AV_ERR_UNSUPPORT;
 }

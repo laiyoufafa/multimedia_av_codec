@@ -420,7 +420,7 @@ OH_AVErrCode OH_AudioDecoder_SetCallback(
     return AV_ERR_OK;
 }
 
-OH_AVErrCode OH_AudioDecoder_IsValid(OH_AVCodec *codec)
+OH_AVErrCode OH_AudioDecoder_IsValid(OH_AVCodec *codec, bool *isVaild)
 {
     return AV_ERR_UNSUPPORT;
 }
