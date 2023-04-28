@@ -88,7 +88,7 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
     CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "failed to new CodecBaseCallback");
 
     int32_t ret = codecBase_->SetCallback(callback);
-    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
 
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return AVCS_ERR_OK;
