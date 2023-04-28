@@ -28,13 +28,8 @@ std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecServic
 {
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "Ipc proxy is nullptr.");
 
-    std::shared_ptr<CodecClient> codec = nullptr;
-    try {
-        codec = std::make_shared<CodecClient>(ipcProxy);
-    } catch (const std::exception& exc) {
-        AVCODEC_LOGE("Codec client create failed! Exc: %{public}s", exc.what());
-        return nullptr;
-    }
+    std::shared_ptr<CodecClient> codec = std::make_shared<CodecClient>(ipcProxy);
+    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "Codec client create failed!");
 
     int32_t ret = codec->CreateListenerObject();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec client create failed");

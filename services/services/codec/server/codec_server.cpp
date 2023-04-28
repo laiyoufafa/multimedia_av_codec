@@ -38,13 +38,8 @@ namespace OHOS {
 namespace Media {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
-    std::shared_ptr<CodecServer> server = nullptr;
-    try {
-        server = std::make_shared<CodecServer>()
-    } catch (const std::exception& exc) {
-        AVCODEC_LOGE("Codec server create failed!");
-        return nullptr;
-    }
+    std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
+    CHECK_AND_RETURN_RET_LOG(server != nullptr, nullptr, "Codec server create failed!");
 
     int32_t ret = server->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec server init failed!");
@@ -86,19 +81,14 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
     }
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "CodecBase is nullptr");
     
-    std::shared_ptr<AVCodecCallback> callback = nullptr;
-    try {
-        callback = std::make_shared<CodecBaseCallback>(shared_from_this());
-    } catch (const std::exception& exc) {
-        AVCODEC_LOGE("Codecbase callback create failed!");
-        return AVCS_ERR_NO_MEMORY;
-    }
-
+    std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
+    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase callback create failed!");
+    
     int32_t ret = codecBase_->SetCallback(callback);
     CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "Codecbase set callback failed");
 
     status_ = INITIALIZED;
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return AVCS_ERR_OK;
 }
@@ -112,7 +102,7 @@ int32_t CodecServer::Configure(const Format &format)
     int32_t ret = codecBase_->Configure(format);
 
     status_ = (ret == AVCS_ERR_OK ? CONFIGURED : ERROR);
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return ret;
 }
@@ -129,7 +119,7 @@ int32_t CodecServer::Start()
     } else {
         status_ = (ret == AVCS_ERR_OK ? FLUSHED : ERROR);
     }
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return ret;
 }
@@ -141,7 +131,7 @@ int32_t CodecServer::Stop()
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
     int32_t ret = codecBase_->Stop();
     status_ = (ret == AVCS_ERR_OK ? CONFIGURED : ERROR);
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return ret;
 }
@@ -154,7 +144,7 @@ int32_t CodecServer::Flush()
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
     int32_t ret = codecBase_->Flush();
     status_ = (ret == AVCS_ERR_OK ? FLUSHED : ERROR);
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     return ret;
 }
@@ -167,7 +157,7 @@ int32_t CodecServer::NotifyEos()
     int32_t ret = codecBase_->NotifyEos();
     if (ret == AVCS_ERR_OK) {
         status_ = END_OF_STREAM;
-        AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+        AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
         // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     }
     return ret;
@@ -179,7 +169,7 @@ int32_t CodecServer::Reset()
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
     int32_t ret = codecBase_->Reset();
     status_ = (ret == AVCS_ERR_OK ? INITIALIZED : ERROR);
-    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+    AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
     lastErrMsg_.clear();
     return ret;
@@ -235,7 +225,7 @@ int32_t CodecServer::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
     if (flag & AVCODEC_BUFFER_FLAG_EOS) {
         if (ret == AVCS_ERR_OK) {
             status_ = END_OF_STREAM;
-            AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_));
+            AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
             // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
         }
     }

@@ -30,13 +30,8 @@ std::shared_ptr<AVCodecVideoEncoder> VideoEncoderFactory::CreateByMime(const std
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
 
-    std::shared_ptr<AVCodecVideoEncoderImpl> impl = nullptr;
-    try {
-        impl = std::make_shared<AVCodecVideoEncoderImpl>();
-    } catch (const std::exception& exc) {
-        AVCODEC_LOGE("AVCodec video encoder impl create failed! Exc: %{public}s", exc.what());
-        return nullptr;
-    }
+    std::shared_ptr<AVCodecVideoEncoderImpl> impl = std::make_shared<AVCodecVideoEncoderImpl>();
+    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "AVCodec video encoder impl create failed!");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_ENCODER, true, mime);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, 
@@ -49,13 +44,8 @@ std::shared_ptr<AVCodecVideoEncoder> VideoEncoderFactory::CreateByName(const std
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
 
-    std::shared_ptr<AVCodecVideoEncoderImpl> impl = nullptr;
-    try {
-        impl = std::make_shared<AVCodecVideoEncoderImpl>();
-    } catch (const std::exception& exc) {
-        AVCODEC_LOGE("AVCodec video encoder impl create failed! Exc: %{public}s", exc.what());
-        return nullptr;
-    }
+    std::shared_ptr<AVCodecVideoEncoderImpl> impl = std::make_shared<AVCodecVideoEncoderImpl>();
+    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "AVCodec video encoder impl create failed!");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_ENCODER, false, name);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, 
