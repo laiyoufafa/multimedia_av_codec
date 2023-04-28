@@ -15,11 +15,14 @@
 
 #include "audio_ffmpeg_mp3_decoder_plugin.h"
 #include "avcodec_errors.h"
+#include "avcodec_log.h"
 #include "media_description.h"
 
 namespace OHOS {
 namespace Media {
-
+#define BITRATE_RATIO 150
+#define SAMPLERATE_RATIO 31
+#define BITRATE_MAX 320000
 AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
 
 AudioFFMpegMp3DecoderPlugin::~AudioFFMpegMp3DecoderPlugin()
@@ -38,10 +41,12 @@ int32_t AudioFFMpegMp3DecoderPlugin::init(const Format &format)
         return checkresult;
     }
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        AVCODEC_LOGE("mp3 init error.");
         return ret;
     }
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        AVCODEC_LOGE("mp3 init error.");
         return ret;
     }
     return basePlugin->OpenContext();
@@ -74,14 +79,13 @@ int32_t AudioFFMpegMp3DecoderPlugin::flush()
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
 {
-
-    uint32_t size = int(bit_rate / 150);
+    uint32_t size = int(bit_rate / BITRATE_RATIO);
     return size;
 }
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const
 {
-    uint32_t size = (int(sample_rate / 31) + 128) * channels * sizeof(short);
+    uint32_t size = (int(sample_rate / SAMPLERATE_RATIO) + 128) * channels * sizeof(short);
     return size;
 }
 
@@ -100,7 +104,7 @@ int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format)
     if (channels < 1 || channels > 2) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }
-    if (bit_rate > 320000) {
+    if (bit_rate > BITRATE_MAX) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }
 

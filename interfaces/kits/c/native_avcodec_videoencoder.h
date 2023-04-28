@@ -253,12 +253,14 @@ OH_AVErrCode OH_VideoEncoder_SetSurface(OH_AVCodec *codec, OHNativeWindow *windo
  * switchback from the background
  * @syscap SystemCapability.Multimedia.Media.VideoEncoder
  * @param codec Pointer to an OH_AVCodec instance
+ * @param isVaild Pointer to an bool instance, true: the codec instance is vaild, false: the codec
+ * instance is invalid  
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
  */
-OH_AVErrCode OH_VideoEncoder_IsValid(OH_AVCodec *codec);
+OH_AVErrCode OH_VideoEncoder_IsValid(OH_AVCodec *codec, bool *isVaild);
 
 /**
  * @brief The bitrate mode of video encoder.

@@ -92,6 +92,8 @@ config("av_codec_service_config") {
     "$av_codec_root_dir/services/services/source/ipc/",
     "$av_codec_root_dir/services/services/source/server/",
     "$av_codec_root_dir/services/utils/include/",
+    "$av_codec_root_dir/services/engine/codec/include/audio/",
+    "$av_codec_root_dir/services/engine/common/include/",
     # "$av_codec_root_dir/services/services/codecbase/",
     # "$av_codec_root_dir/services/services/codecbase/server/",
     # "$av_codec_root_dir/services/services/codecbase/server/include/",
@@ -173,6 +175,7 @@ ohos_shared_library("av_codec_service") {
     "$av_codec_root_dir/services/utils:av_codec_service_utils",
     "$av_codec_root_dir/services/engine:av_codec_engine_package",
     "$av_codec_root_dir/services/engine/base:av_codec_codec_base",
+    "$av_codec_root_dir/services/engine/codec/audio:av_codec_audio_ffmpeg_codec",
   ]
 
   if (multimedia_av_codec_support_codeclist) {
