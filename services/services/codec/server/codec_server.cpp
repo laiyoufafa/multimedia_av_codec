@@ -83,9 +83,9 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
     
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
     CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase callback create failed!");
-    
+
     int32_t ret = codecBase_->SetCallback(callback);
-    CHECK_AND_RETURN_RET_LOG(ret, AVCS_ERR_INVALID_OPERATION, "Codecbase set callback failed");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
 
     status_ = INITIALIZED;
     AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
