@@ -1,7 +1,8 @@
 
+#include <ctime>
 #include "videodec_ffmpeg_demo.h"
 #include "avcodec_common.h" //AVCodecBufferInfo
-#include <ctime>
+#include "securec.h"
 
 extern "C" {
 #include <string.h>
@@ -297,8 +298,8 @@ int32_t VDecFfmpegSample::ConfigureVideoDecoder()
     format.PutIntValue("height", DEFAULT_HEIGHT);
     format.PutIntValue("input_buffer_cnt", IN_BUFFER_CNT);
     format.PutIntValue("surface_pixformat", static_cast<int32_t>(VideoPixelFormat::BGRA));
-    format.PutIntValue("surface_rotation", static_cast<int32_t>(SurfaceRotation::SURFACE_ROTATION_90));
-    format.PutIntValue("surface_scale_type", static_cast<int32_t>(VideoScaleType::VIDEO_SCALE_TYPE_FIT));
+    format.PutIntValue("surface_rotation", static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_90));
+    format.PutIntValue("surface_scale_type", static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_TO_WINDOW));
     
 
     // 配置config信息
@@ -313,9 +314,9 @@ int32_t VDecFfmpegSample::SetparameterVideoDecoder()
 {
     Format format;
     format.PutIntValue("bitrate", static_cast<int64_t>(DEFAULT_FRAME_RATE));
-    format.PutIntValue("surface_rotation", static_cast<int32_t>(SurfaceRotation::SURFACE_ROTATION_180));
+    format.PutIntValue("surface_rotation", static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_180));
     format.PutIntValue("surface_pixformat", static_cast<int32_t>(VideoPixelFormat::RGBA));
-    format.PutIntValue("surface_scale_type", static_cast<int32_t>(VideoScaleType::VIDEO_SCALE_TYPE_FIT_CROP));
+    format.PutIntValue("surface_scale_type", static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_CROP));
 
     // 配置config信息
     if (vdec_->SetParameter(format) != AVCS_ERR_OK) {
