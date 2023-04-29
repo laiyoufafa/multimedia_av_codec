@@ -19,7 +19,6 @@
 #include "refbase.h"
 #include "surface.h"
 #include "avsharedmemory.h"
-#include "plugin_types.h"
 #include "sync_fence.h"
 
 namespace OHOS {
@@ -32,11 +31,6 @@ namespace {
     constexpr int32_t TIMEOUT=0;
 }
 
-const std::unordered_map<Codec::VideoScaleType, ScalingMode> scaleTypeMap = {
-    { Codec::VideoScaleType::VIDEO_SCALE_TYPE_FIT, ScalingMode::SCALING_MODE_SCALE_TO_WINDOW },
-    { Codec::VideoScaleType::VIDEO_SCALE_TYPE_FIT_CROP, ScalingMode::SCALING_MODE_SCALE_CROP}
-};
-
 class SurfaceMemory : public AVSharedMemory {
 public:
     SurfaceMemory() = default;
@@ -46,7 +40,7 @@ public:
     static void SetSurface(sptr<Surface> surface);
     static void SetConfig(int32_t width, int32_t height, int32_t format, uint64_t usage = USAGE, 
                             int32_t strideAlign = SURFACE_STRIDE_ALIGN, int32_t timeout = TIMEOUT);
-    static void SetScaleType(Codec::VideoScaleType videoScaleType);
+    static void SetScaleType(ScalingMode videoScaleMode);
     
     size_t Write(const uint8_t *in, size_t writeSize, size_t position = INVALID_POSITION);
     size_t Read(uint8_t *out, size_t readSize, size_t position = INVALID_POSITION);

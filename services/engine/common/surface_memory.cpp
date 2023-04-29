@@ -25,15 +25,6 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Su
 }
 namespace OHOS {
 namespace Media {
-
-OHOS::ScalingMode GetScaleType(Codec::VideoScaleType scaleType)
-{
-    if (!scaleTypeMap.count(scaleType)) {
-        return OHOS::SCALING_MODE_SCALE_TO_WINDOW;
-    }
-    return scaleTypeMap.at(scaleType);
-}
-
 sptr<Surface> SurfaceMemory::surface_ = nullptr;
 BufferRequestConfig SurfaceMemory::requestConfig_ = {0};
 ScalingMode SurfaceMemory::scalingMode_ = {ScalingMode::SCALING_MODE_SCALE_TO_WINDOW};
@@ -203,9 +194,9 @@ void SurfaceMemory::SetConfig(int32_t width, int32_t height, int32_t format, uin
     };
 }
 
-void SurfaceMemory::SetScaleType(Codec::VideoScaleType videoScaleType)
+void SurfaceMemory::SetScaleType(ScalingMode videoScaleMode)
 {
-    scalingMode_ = GetScaleType(videoScaleType);
+    scalingMode_ = videoScaleMode;
 } 
 
 uint8_t* SurfaceMemory::GetBase() const

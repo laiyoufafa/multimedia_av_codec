@@ -6,6 +6,7 @@
 #include "avcodec_dfx.h"
 #include "codec_utils.h"
 #include "utils.h"
+#include "securec.h"
 
 namespace OHOS { namespace Media { namespace Codec {
 
@@ -212,29 +213,29 @@ int32_t FCodec::Configure(const Format &format)
         }
         if (it.first == std::string("surface_rotation") && it.second.type == FORMAT_TYPE_INT32) {
             if (format.GetIntValue(it.first, val32)) {
-                SurfaceRotation sr = static_cast<SurfaceRotation>(val32);
-                if (sr == SurfaceRotation::SURFACE_ROTATION_0 || sr == SurfaceRotation::SURFACE_ROTATION_90
-                    || sr == SurfaceRotation::SURFACE_ROTATION_180 || sr == SurfaceRotation::SURFACE_ROTATION_270) {
+                GraphicTransformType sr = static_cast<GraphicTransformType>(val32);
+                if (sr == GraphicTransformType::GRAPHIC_ROTATE_NONE || sr == GraphicTransformType::GRAPHIC_ROTATE_90
+                    || sr == GraphicTransformType::GRAPHIC_ROTATE_180 || sr == GraphicTransformType::GRAPHIC_ROTATE_270) {
                     decParams_[Tag::SURFACE_ROTATION] = val32;
                     surfaceRotate_ = sr;
                     continue;
                 }
             }
             AVCODEC_LOGW("Set parameter failed: %{public}s, please check your value, use default value: %{public}d",
-                         it.first.c_str(), SurfaceRotation::SURFACE_ROTATION_0);
+                         it.first.c_str(), GraphicTransformType::GRAPHIC_ROTATE_NONE);
             continue;
         }
         if (it.first == std::string("surface_scale_type") && it.second.type == FORMAT_TYPE_INT32) {
             if (format.GetIntValue(it.first, val32)) {
-                VideoScaleType ss = static_cast<VideoScaleType>(val32);
-                if (ss == VideoScaleType::VIDEO_SCALE_TYPE_FIT || ss == VideoScaleType::VIDEO_SCALE_TYPE_FIT_CROP) {
+                ScalingMode ss = static_cast<ScalingMode>(val32);
+                if (ss == ScalingMode::SCALING_MODE_SCALE_TO_WINDOW || ss == ScalingMode::SCALING_MODE_SCALE_CROP) {
                     decParams_[Tag::SURFACE_SCALE_TYPE] = val32;
-                    scalingType_ = ss;
+                    scalingMode_ = ss;
                     continue;
                 }
             }
             AVCODEC_LOGW("Set parameter failed: %{public}s, please check your value, use default value: %{public}d",
-                         it.first.c_str(), VideoScaleType::VIDEO_SCALE_TYPE_FIT);
+                         it.first.c_str(), ScalingMode::SCALING_MODE_SCALE_TO_WINDOW);
             continue;
         }
         AVCODEC_LOGW("Set parameter failed: %{public}s, unsupport name", it.first.c_str());
@@ -464,12 +465,12 @@ int32_t FCodec::SetParameter(const Format &format)
         }
         if (it.first == std::string("surface_rotation") && it.second.type == FORMAT_TYPE_INT32 && surface_ != nullptr) {
             if (format.GetIntValue(it.first, val32)) {
-                SurfaceRotation sr = static_cast<SurfaceRotation>(val32);
-                if (sr == SurfaceRotation::SURFACE_ROTATION_0 || sr == SurfaceRotation::SURFACE_ROTATION_90
-                    || sr == SurfaceRotation::SURFACE_ROTATION_180 || sr == SurfaceRotation::SURFACE_ROTATION_270) {
+                GraphicTransformType sr = static_cast<GraphicTransformType>(val32);
+                if (sr == GraphicTransformType::GRAPHIC_ROTATE_NONE || sr == GraphicTransformType::GRAPHIC_ROTATE_90
+                    || sr == GraphicTransformType::GRAPHIC_ROTATE_180 || sr == GraphicTransformType::GRAPHIC_ROTATE_270) {
                     decParams_[Tag::SURFACE_ROTATION] = val32;
                     surfaceRotate_ = sr;
-                    surface_->SetTransform(TranslateSurfaceRotation(surfaceRotate_));
+                    surface_->SetTransform(surfaceRotate_);
                     AVCODEC_LOGW("Success to set surface_rotation: %{public}d", surfaceRotate_);
                     continue;
                 }
@@ -480,12 +481,12 @@ int32_t FCodec::SetParameter(const Format &format)
         if (it.first == std::string("surface_scale_type") && it.second.type == FORMAT_TYPE_INT32
             && surface_ != nullptr) {
             if (format.GetIntValue(it.first, val32)) {
-                VideoScaleType ss = static_cast<VideoScaleType>(val32);
-                if (ss == VideoScaleType::VIDEO_SCALE_TYPE_FIT || ss == VideoScaleType::VIDEO_SCALE_TYPE_FIT_CROP) {
+                ScalingMode ss = static_cast<ScalingMode>(val32);
+                if (ss == ScalingMode::SCALING_MODE_SCALE_TO_WINDOW || ss == ScalingMode::SCALING_MODE_SCALE_CROP) {
                     decParams_[Tag::SURFACE_SCALE_TYPE] = val32;
-                    scalingType_ = ss;
-                    SurfaceMemory::SetScaleType(scalingType_);
-                    AVCODEC_LOGW("Success to set surface_scale_type: %{public}d", scalingType_);
+                    scalingMode_ = ss;
+                    SurfaceMemory::SetScaleType(scalingMode_);
+                    AVCODEC_LOGW("Success to set surface_scale_type: %{public}d", scalingMode_);
                     continue;
                 }   
             } 
@@ -502,8 +503,8 @@ template <typename T>
 void FCodec::GetParameter(Tag tag, T &val)
 {
     auto ret = decParams_.find(tag);
-    if (ret != decParams_.end() && ret->second.SameTypeWith(typeid(T))) {
-        val = AnyCast<T>(ret->second);
+    if (ret != decParams_.end() && ret->second.type() == typeid(T)) {
+        val = std::any_cast<T>(ret->second);
     } else {
         AVCODEC_LOGW("Parameter %{public}d is not found or type mismatch. ", static_cast<int32_t>(tag));
     }
@@ -605,8 +606,8 @@ int32_t FCodec::AllocateBuffers()
                                  "Failed to allocate output buffer: unsupported surface format");
         SurfaceMemory::SetSurface(surface_);
         SurfaceMemory::SetConfig(static_cast<int32_t>(width_), static_cast<int32_t>(height_), surfacePixelFmt);
-        SurfaceMemory::SetScaleType(scalingType_);
-        surface_->SetTransform(TranslateSurfaceRotation(surfaceRotate_));
+        SurfaceMemory::SetScaleType(scalingMode_);
+        surface_->SetTransform(surfaceRotate_);
     }
     for (uint32_t i = 0; i < outBufferCnt_; i++) {
         std::shared_ptr<AVBuffer> buf = std::make_shared<AVBuffer>();

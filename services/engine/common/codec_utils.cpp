@@ -6,47 +6,31 @@ namespace OHOS { namespace Media { namespace Codec {
 static const uint32_t VIDEO_ALIGN_SIZE = 16; // 16字节对齐
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FCodec"};
+std::map<VideoPixelFormat, AVPixelFormat> g_pixelFormatMap = {
+    {VideoPixelFormat::YUV410P, AV_PIX_FMT_YUV410P},
+    {VideoPixelFormat::YUV411P, AV_PIX_FMT_YUV411P},
+    {VideoPixelFormat::YUV420P, AV_PIX_FMT_YUV420P},
+    {VideoPixelFormat::NV12, AV_PIX_FMT_NV12},
+    {VideoPixelFormat::NV21, AV_PIX_FMT_NV21},
+    {VideoPixelFormat::YUYV422, AV_PIX_FMT_YUYV422},
+    {VideoPixelFormat::YUV422P, AV_PIX_FMT_YUV422P},
+    {VideoPixelFormat::YUV444P, AV_PIX_FMT_YUV444P},
+    {VideoPixelFormat::RGBA, AV_PIX_FMT_RGBA},
+    {VideoPixelFormat::ARGB, AV_PIX_FMT_ARGB},
+    {VideoPixelFormat::ABGR, AV_PIX_FMT_ABGR},
+    {VideoPixelFormat::BGRA, AV_PIX_FMT_BGRA},
+    {VideoPixelFormat::RGB24, AV_PIX_FMT_RGB24},
+    {VideoPixelFormat::BGR24, AV_PIX_FMT_BGR24},
+    {VideoPixelFormat::PAL8, AV_PIX_FMT_PAL8},
+    {VideoPixelFormat::GRAY8, AV_PIX_FMT_GRAY8},
+    {VideoPixelFormat::MONOWHITE, AV_PIX_FMT_MONOWHITE},
+    {VideoPixelFormat::MONOBLACK, AV_PIX_FMT_MONOBLACK},
+    {VideoPixelFormat::YUVJ420P, AV_PIX_FMT_YUVJ420P},
+    {VideoPixelFormat::YUVJ422P, AV_PIX_FMT_YUVJ422P},
+    {VideoPixelFormat::YUVJ444P, AV_PIX_FMT_YUVJ444P},
+};
 }
 
-GraphicTransformType TranslateSurfaceRotation(const SurfaceRotation& rotation)
-{
-    switch (rotation) {
-        case SurfaceRotation::SURFACE_ROTATION_90: {
-            return GRAPHIC_ROTATE_270;
-        }
-        case SurfaceRotation::SURFACE_ROTATION_180: {
-            return GRAPHIC_ROTATE_180;
-        }
-        case SurfaceRotation::SURFACE_ROTATION_270: {
-            return GRAPHIC_ROTATE_90;
-        }
-        default:
-            return GRAPHIC_ROTATE_NONE;
-    }
-}
-
-PixelFormat TranslateSurfaceFormat(const VideoPixelFormat& surfaceFormat)
-{
-    switch (surfaceFormat) {
-        case VideoPixelFormat::YUV420P: {
-            return PixelFormat::PIXEL_FMT_YCBCR_420_P;
-        }
-        case VideoPixelFormat::RGBA: {
-            return PixelFormat::PIXEL_FMT_RGBA_8888;
-        }
-        case VideoPixelFormat::BGRA: {
-            return PixelFormat::PIXEL_FMT_BGRA_8888;
-        }
-        case VideoPixelFormat::NV12: {
-            return PixelFormat::PIXEL_FMT_YCBCR_420_SP;
-        }
-        case VideoPixelFormat::NV21: {
-            return PixelFormat::PIXEL_FMT_YCRCB_420_SP;
-        }
-        default:
-            return PixelFormat::PIXEL_FMT_BUTT;
-    }
-}
 int32_t ConvertVideoFrame(std::shared_ptr<Scale> scale, std::shared_ptr<AVFrame> frame, uint8_t **dstData,
                                   int32_t *dstLineSize, AVPixelFormat dstPixFmt)
 {
@@ -132,6 +116,108 @@ int32_t WriteRgbData(const std::shared_ptr<SurfaceMemory> &frameBuffer, uint8_t 
         return AVCS_ERR_UNSUPPORT;
     }
     AVCODEC_LOGD("WriteRgbData success");
+    return AVCS_ERR_OK;
+}
+
+std::string AVStrError(int errnum)
+{
+    char errbuf[AV_ERROR_MAX_STRING_SIZE] = {0};
+    av_strerror(errnum, errbuf, AV_ERROR_MAX_STRING_SIZE);
+    return std::string(errbuf);
+}
+
+PixelFormat TranslateSurfaceFormat(const VideoPixelFormat& surfaceFormat)
+{
+    switch (surfaceFormat) {
+        case VideoPixelFormat::YUV420P: {
+            return PixelFormat::PIXEL_FMT_YCBCR_420_P;
+        }
+        case VideoPixelFormat::RGBA: {
+            return PixelFormat::PIXEL_FMT_RGBA_8888;
+        }
+        case VideoPixelFormat::BGRA: {
+            return PixelFormat::PIXEL_FMT_BGRA_8888;
+        }
+        case VideoPixelFormat::NV12: {
+            return PixelFormat::PIXEL_FMT_YCBCR_420_SP;
+        }
+        case VideoPixelFormat::NV21: {
+            return PixelFormat::PIXEL_FMT_YCRCB_420_SP;
+        }
+        default:
+            return PixelFormat::PIXEL_FMT_BUTT;
+    }
+}
+
+VideoPixelFormat ConvertPixelFormatFromFFmpeg(int32_t ffmpegPixelFormat)
+{
+    auto iter = std::find_if(g_pixelFormatMap.begin(), g_pixelFormatMap.end(),
+        [&] (const std::pair<VideoPixelFormat, AVPixelFormat>& tmp) -> bool {
+        return tmp.second == ffmpegPixelFormat;
+    });
+    return iter == g_pixelFormatMap.end() ? VideoPixelFormat::UNKNOWN : iter->first;
+}
+
+AVPixelFormat ConvertPixelFormatToFFmpeg(VideoPixelFormat pixelFormat)
+{
+    auto iter = std::find_if(g_pixelFormatMap.begin(), g_pixelFormatMap.end(),
+        [&] (const std::pair<VideoPixelFormat, AVPixelFormat>& tmp) -> bool {
+        return tmp.first == pixelFormat;
+    });
+    return iter == g_pixelFormatMap.end() ? AV_PIX_FMT_NONE : iter->second;
+}
+
+bool IsYuvFormat(AVPixelFormat format)
+{
+    return (format == AV_PIX_FMT_YUV420P || format == AV_PIX_FMT_NV12 || format == AV_PIX_FMT_NV21 ||
+            format == AV_PIX_FMT_YUYV422 || format == AV_PIX_FMT_YUV422P || format == AV_PIX_FMT_YUV444P ||
+            format == AV_PIX_FMT_YUV410P || format == AV_PIX_FMT_YUV411P || format == AV_PIX_FMT_YUVJ420P ||
+            format == AV_PIX_FMT_YUVJ422P || format == AV_PIX_FMT_YUVJ444P);
+}
+
+bool IsRgbFormat(AVPixelFormat format)
+{
+    return (format == AV_PIX_FMT_ABGR || format == AV_PIX_FMT_ARGB || format == AV_PIX_FMT_RGBA ||
+            format == AV_PIX_FMT_BGRA || format == AV_PIX_FMT_RGB24 || format == AV_PIX_FMT_BGR24);
+}
+
+// #if defined(VIDEO_SUPPORT)
+int32_t Scale::Init(const ScalePara& scalePara, uint8_t** dstData, int32_t* dstLineSize)
+{
+    scalePara_ = scalePara;
+    if (swsCtx_ != nullptr) {
+        return AVCS_ERR_OK;
+    }
+    auto swsContext = sws_getContext(scalePara_.srcWidth, scalePara_.srcHeight, scalePara_.srcFfFmt,
+        scalePara_.dstWidth, scalePara_.dstHeight, scalePara_.dstFfFmt,
+        SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+    if(swsContext == nullptr){
+        return AVCS_ERR_UNKNOWN;
+    }
+    swsCtx_ = std::shared_ptr<SwsContext>(swsContext, [](struct SwsContext *ptr) {
+        if (ptr != nullptr) {
+            sws_freeContext(ptr);
+        }
+    });
+    auto ret = av_image_alloc(dstData, dstLineSize, scalePara_.dstWidth, scalePara_.dstHeight,
+        scalePara_.dstFfFmt, scalePara_.align);
+    if(ret < 0){
+        return AVCS_ERR_UNKNOWN;
+    }
+    for (int32_t i = 0; dstLineSize[i] > 0; i++) {
+        if (dstData[i] && !dstLineSize[i]) {
+            return AVCS_ERR_UNKNOWN;
+        }
+    }
+    return AVCS_ERR_OK;
+}
+
+int32_t Scale::Convert(uint8_t** srcData, const int32_t* srcLineSize, uint8_t** dstData, int32_t* dstLineSize)
+{
+    auto res = sws_scale(swsCtx_.get(), srcData, srcLineSize, 0, scalePara_.srcHeight, dstData, dstLineSize);
+    if(res < 0){
+        return AVCS_ERR_UNKNOWN;
+    }
     return AVCS_ERR_OK;
 }
 

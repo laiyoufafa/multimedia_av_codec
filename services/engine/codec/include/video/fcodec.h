@@ -7,20 +7,14 @@
 #include <atomic>
 #include <shared_mutex>
 #include <tuple>
+#include <any>
 #include "codecbase.h"
 #include "avcodec_errors.h" //Errorcode
 #include "avcodec_common.h"  //AVCodecBufferInfo & callback
 #include "surface_memory.h"
 #include "share_memory.h"  
-#include "ffmpeg_utils.h"
 #include "task_thread.h"
 #include "codec_utils.h" 
-
-extern "C" {
-#include "libavcodec/avcodec.h"
-#include "libswscale/swscale.h"
-#include "libavutil/imgutils.h"
-};
 
 namespace OHOS { namespace Media { namespace Codec {
 
@@ -101,7 +95,7 @@ private:
     std::atomic<State> state_{State::Uninitialized};
     uint32_t width_{0};
     uint32_t height_{0};
-    std::map<Tag, Any> decParams_;
+    std::map<Tag, std::any> decParams_;
     bool isUpTodate_{false};
     // INIT
     std::shared_ptr<AVCodec> avCodec_{nullptr};
@@ -125,8 +119,8 @@ private:
     uint32_t outBufferSize_;
     sptr<Surface> surface_{nullptr};
     VideoPixelFormat outputPixelFmt_{VideoPixelFormat::RGBA};
-    VideoScaleType scalingType_ {VideoScaleType::VIDEO_SCALE_TYPE_FIT};
-    SurfaceRotation surfaceRotate_{SurfaceRotation::SURFACE_ROTATION_0};
+    ScalingMode scalingMode_ {ScalingMode::SCALING_MODE_SCALE_TO_WINDOW};
+    GraphicTransformType surfaceRotate_{GraphicTransformType::GRAPHIC_ROTATE_NONE};
 
     std::shared_ptr<TaskThread> sendTask_{nullptr};
     std::shared_ptr<TaskThread> receiveTask_{nullptr};
