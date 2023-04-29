@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,64 +13,69 @@
  * limitations under the License.
  */
 
-#ifndef FCODEC_PLUGIN_COMMON_SURFACE_MEMORY_H
-#define FCODEC_PLUGIN_COMMON_SURFACE_MEMORY_H
+#ifndef AV_CODEC_SURFACE_MEMORY_H
+#define AV_CODEC_SURFACE_MEMORY_H
 
-// #if !defined(OHOS_LITE) && defined(VIDEO_SUPPORT)
-
-#include <shared_mutex>
-#include "surface_allocator.h"
-#include "type_cast_ext.h"
-// #include "task.h"
+#include "refbase.h"
+#include "surface.h"
+#include "avsharedmemory.h"
+#include "plugin_types.h"
+#include "sync_fence.h"
 
 namespace OHOS {
 namespace Media {
-namespace Codec {
-class SurfaceMemory : public Memory {
+
+namespace {
+    constexpr size_t INVALID_POSITION = -1;
+    constexpr uint64_t USAGE = BUFFER_USAGE_CPU_READ | BUFFER_USAGE_CPU_WRITE | BUFFER_USAGE_MEM_DMA;
+    constexpr int32_t  SURFACE_STRIDE_ALIGN = 8;
+    constexpr int32_t TIMEOUT=0;
+}
+
+const std::unordered_map<Codec::VideoScaleType, ScalingMode> scaleTypeMap = {
+    { Codec::VideoScaleType::VIDEO_SCALE_TYPE_FIT, ScalingMode::SCALING_MODE_SCALE_TO_WINDOW },
+    { Codec::VideoScaleType::VIDEO_SCALE_TYPE_FIT_CROP, ScalingMode::SCALING_MODE_SCALE_CROP}
+};
+
+class SurfaceMemory : public AVSharedMemory {
 public:
-    ~SurfaceMemory();
+    SurfaceMemory() = default;
+    virtual ~SurfaceMemory() override;
+    static std::shared_ptr<SurfaceMemory> Create();
 
-    sptr<SurfaceBuffer> GetSurfaceBuffer();
-
-    int32_t GetFlushFence();
-
-    BufferHandle *GetBufferHandle();
-
-    uint32_t GetSurfaceBufferStride();
-
-    void SetNeedRender(bool needRender);
-    void ReleaseSurfaceBuffer();
-private:
-    explicit SurfaceMemory(size_t capacity, std::shared_ptr<Allocator> allocator = nullptr, size_t align = 1);
-
-    uint8_t *GetRealAddr() const override;
-
-private:
+    static void SetSurface(sptr<Surface> surface);
+    static void SetConfig(int32_t width, int32_t height, int32_t format, uint64_t usage = USAGE, 
+                            int32_t strideAlign = SURFACE_STRIDE_ALIGN, int32_t timeout = TIMEOUT);
+    static void SetScaleType(Codec::VideoScaleType videoScaleType);
+    
+    size_t Write(const uint8_t *in, size_t writeSize, size_t position = INVALID_POSITION);
+    size_t Read(uint8_t *out, size_t readSize, size_t position = INVALID_POSITION);
+    void Reset();
     void AllocSurfaceBuffer();
-
-    // mutable Mutex memMutex_ {};
-    mutable std::mutex memMutex_ {};
-
-    /// Surface buffer
+    void ReleaseSurfaceBuffer();
+    sptr<SurfaceBuffer> GetSurfaceBuffer();
+    uint32_t GetSurfaceBufferStride();
+    int32_t GetFlushFence();
+    int32_t GetUsedSize() const;
+    void UpdateSurfaceBufferScaleMode();
+    void SetNeedRender(bool needRender);
+    virtual uint8_t* GetBase() const override;
+    virtual int32_t GetSize() const override;
+    virtual uint32_t GetFlags() const final;
+private:
+    // Allocated memory size.
     sptr<SurfaceBuffer> surfaceBuffer_ {nullptr};
-
-    std::shared_ptr<SurfaceAllocator> surfaceAllocator_ {nullptr};
-
-    /// the fence fd for Surface
+    size_t size_{0};
     int32_t fence_ {-1};
-
-    size_t bufferSize_ {0};
-
     uint32_t stride_ {0};
-
     bool needRender_ {false};
 
-    friend class Buffer;
-    friend class FBuffer;
+    static sptr<Surface> surface_;
+    static BufferRequestConfig requestConfig_;
+    static ScalingMode scalingMode_;
 };
-} // namespace Codec
-} // namespace Media
-} // namespace OHOS
 
-// #endif
-#endif // FCODEC_PLUGIN_COMMON_SURFACE_MEMORY_H
+} // namespace OHOS
+} // namespace Media
+#endif
+

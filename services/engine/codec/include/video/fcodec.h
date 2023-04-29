@@ -10,13 +10,11 @@
 #include "codecbase.h"
 #include "avcodec_errors.h" //Errorcode
 #include "avcodec_common.h"  //AVCodecBufferInfo & callback
-#include "plugin_buffer.h"   //buffer
-#include "surface_memory.h"  //SurfaceMemory surface_allocator
+#include "surface_memory.h"
+#include "share_memory.h"  
 #include "ffmpeg_utils.h"
 #include "task_thread.h"
-#include "share_memory.h"
 #include "codec_utils.h" 
-// #include "AVCodecBase.h"
 
 extern "C" {
 #include "libavcodec/avcodec.h"
@@ -24,7 +22,6 @@ extern "C" {
 #include "libavutil/imgutils.h"
 };
 
-// using namespace  OHOS::Media::Codec;
 namespace OHOS { namespace Media { namespace Codec {
 
 class FCodec : public CodecBase {
@@ -52,19 +49,6 @@ public:
     int32_t Pause() override;
     int32_t Resume() override;
 
-    struct BufferInfo
-    {
-    public:
-        BufferInfo(size_t index, uint32_t flag, int32_t offset, int32_t size, int64_t pts) :
-            index_(index), flag_(flag), offset_(offset), size_(size), pts_(pts){};
-        ~BufferInfo() = default;
-
-        size_t index_;
-        uint32_t flag_;
-        int32_t offset_;
-        int32_t size_;
-        int64_t pts_;
-    };
 
     struct AVBuffer
     {
@@ -77,17 +61,15 @@ public:
             OWNED_BY_USER,
             OWNED_BY_SURFACE,
         };
-        // std::vector<std::shared_ptr<ShareMemory>> shabuffer_ {};
-        std::shared_ptr<ShareMemory> shabuffer_;
-        std::shared_ptr<Buffer> buffer_;
+
+        std::shared_ptr<AVSharedMemory> memory_;
         std::atomic<status> owner_;
-        uint64_t flag_;
-        int64_t pts_;
+        AVCodecBufferInfo bufferInfo_;
+        AVCodecBufferFlag bufferFlag_;
     };
 
 private:
     int32_t Init(const std::string &name);
-    std::shared_ptr<AVSharedMemory> GetBuffer(size_t index, uint32_t port);
 
     enum struct State : int32_t {
         Uninitialized,
@@ -128,8 +110,6 @@ private:
     // Start
     std::shared_ptr<AVPacket> avPacket_{nullptr};
     std::shared_ptr<AVFrame> cachedFrame_{nullptr};
-    // std::shared_ptr<ShareAllocator> shaAlloc_{nullptr};
-    std::shared_ptr<SurfaceAllocator> sfAlloc_{nullptr};
     // Receive frame
     uint8_t *scaleData_[AV_NUM_DATA_POINTERS];
     int32_t scaleLineSize_[AV_NUM_DATA_POINTERS];
@@ -139,7 +119,7 @@ private:
     std::vector<std::shared_ptr<AVBuffer>> buffers_[2];
     std::list<size_t> codecAvailBuffers_; // 保留
     std::list<size_t> renderBuffers_;
-    std::list<std::shared_ptr<FCodec::BufferInfo>> inBufQue_;
+    std::list<size_t> inBufQue_;
     uint32_t inBufferCnt_;  // 输入buffer个数，默认8个
     uint32_t outBufferCnt_; // 输入buffer个数，默认8个
     uint32_t outBufferSize_;
