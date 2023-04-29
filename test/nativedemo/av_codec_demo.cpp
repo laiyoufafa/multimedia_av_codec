@@ -23,12 +23,14 @@
 #include "avcodec_audio_encoder_inner_demo.h"
 #include "avcodec_audio_decoder_demo.h"
 #include "avcodec_audio_encoder_demo.h"
+#include "videodec_ffmpeg_demo.h"
 
 using namespace OHOS;
 using namespace OHOS::Media;
 using namespace OHOS::Media::Plugin;
 using namespace OHOS::Media::AudioDemo;
 using namespace OHOS::Media::InnerAudioDemo;
+using namespace OHOS::Media::Codec;
 using namespace std;
 
 constexpr int RUN_TIME = 600;
@@ -145,6 +147,32 @@ static int RunAudioInnerEncoder()
     return 0;
 }
 
+static int RunVideoInnerDecoder()
+{      
+    auto vdec = std::make_unique<VDecFfmpegSample>();
+    const char *INP_DIR = "/data/bigbuckbunny_480x272.h264";
+    const char *OUT_DIR = "/data/bigbuckbunny_480x272.yuv";
+    if (vdec == nullptr) {
+        cout << "vdec is null" << endl;
+    }
+
+    FILE *inFp = fopen(INP_DIR, "rb");
+    if (inFp == nullptr) {
+        cout << "failed to open input" << endl;
+        return 0;
+    }
+
+    FILE *outFp = fopen(OUT_DIR, "wb");
+    if (outFp == nullptr) {
+        cout << "failed to open output" << endl;
+        return 0;
+    }
+
+    vdec->RunVideoDec(nullptr, "", inFp, outFp);
+    cout << "video decoder sample end" << endl;
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     constexpr int minRequiredArgCount = 2;
@@ -164,6 +192,7 @@ int main(int argc, char *argv[])
     cout << "8:inner_muxer with multithread write" << endl;
     cout << "9:ffmpeg_muxer" << endl;
     cout << "10:engine_muxer" << endl;
+    cout << "11:Video Inner Decoder" << endl;
 
     string mode;
     (void)getline(cin, mode);
@@ -200,6 +229,8 @@ int main(int argc, char *argv[])
         RunFfmpegMuxer();
     } else if (mode == "10") {
         RunEngineMuxer();
+    } else if (mode == "11") {
+        RunVideoInnerDecoder();
     }  else {
         cout << "no that selection" << endl;
     }
