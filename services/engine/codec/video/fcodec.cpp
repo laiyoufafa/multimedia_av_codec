@@ -1090,22 +1090,11 @@ int32_t FCodec::SetCallback(const std::shared_ptr<AVCodecCallback> &callback)
 }
 
 int32_t FCodec::Pause() {
-    return 0;
+    return AVCS_ERR_OK;
 }
 
 int32_t FCodec::Resume() {
-    return 0;
-}
-int32_t FCodec::NotifyEos() {
-    return 0;
-}
-
-int32_t FCodec::SignalRequestIDRFrame() {
-    return 0;
-}
-
-sptr<Surface> FCodec::CreateInputSurface() {
-    return nullptr;
+    return AVCS_ERR_OK;
 }
 
 // #endif
