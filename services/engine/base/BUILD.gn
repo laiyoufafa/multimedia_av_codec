@@ -12,11 +12,6 @@ ohos_static_library("av_codec_codec_base"){
         "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
         "//third_party/ffmpeg",
     ]
-    cflags = [
-    "-frtti",
-    "-fexceptions",
-    ]
-    cflags_cc = cflags
 
     sources=[
         "$av_codec_root_dir/services/engine/base/codecbase.cpp"
