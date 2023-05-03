@@ -21,6 +21,7 @@ using namespace OHOS::Media;
 // #if 0
 namespace {
 const string CODEC_NAME = "video_decoder.avc";
+// const string VIDEOMIMETYPE = "video/avc";
 constexpr uint32_t DEFAULT_WIDTH = 480;
 constexpr uint32_t DEFAULT_HEIGHT = 272;
 const uint32_t YUV420P = 3; 
@@ -38,6 +39,7 @@ public:
     std::queue<int32_t> inIdxQueue_;
     std::queue<int32_t> outIdxQueue_;
     std::queue<AVCodecBufferInfo> infoQueue_;
+    std::queue<AVCodecBufferFlag> flagQueue_;
 };
 
 class BufferCallback : public AVCodecCallback {
@@ -75,6 +77,7 @@ void BufferCallback::OnOutputBufferAvailable(size_t index, AVCodecBufferInfo inf
     unique_lock<mutex> lock(userData_->outMutex_);
     userData_->outIdxQueue_.push(index);
     userData_->infoQueue_.push(info);
+    userData_->flagQueue_.push(flag);
     userData_->outCond_.notify_all();
     (void)flag;
 }
@@ -117,11 +120,11 @@ void FCodecUnitTest::SetUp(void)
 {   
     
     codecName_ = "";
-    vdec_ = OHOS::Media::Codec::FCodec::Create(codecName_);
+    vdec_ = std::make_shared<OHOS::Media::Codec::FCodec>(codecName_);
     ASSERT_EQ(nullptr, vdec_);
 
     codecName_ = CODEC_NAME;
-    vdec_ = OHOS::Media::Codec::FCodec::Create(codecName_);
+    vdec_ = std::make_shared<OHOS::Media::Codec::FCodec>(codecName_);
     ASSERT_NE(nullptr, vdec_);
 
     signal_ = new VDecSignal();

@@ -38,10 +38,10 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FCodec"};
 }
 
-std::shared_ptr<CodecBase> FCodec::Create(const std::string &name)
+FCodec::FCodec(const std::string &name)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
-    CHECK_AND_RETURN_RET_LOG(!name.empty(), nullptr, "Create codec failed:  empty name");
+    CHECK_AND_RETURN_LOG(!name.empty(), "Create codec failed:  empty name");
     std::string fcodecName;
     for (size_t i = 0; i < numSupportCodec; ++i) {
         if (SupportCodec[i].codecName == name) {
@@ -49,22 +49,16 @@ std::shared_ptr<CodecBase> FCodec::Create(const std::string &name)
             break;
         }
     }
-    CHECK_AND_RETURN_RET_LOG(!fcodecName.empty(), nullptr, "Create codec failed:  not support name: %{public}s",
+    CHECK_AND_RETURN_LOG(!fcodecName.empty(), "Create codec failed: not support name: %{public}s",
                              name.c_str());
-    try {
-        std::shared_ptr<FCodec> fCodec = std::make_shared<FCodec>();
-        int32_t ret = fCodec->Init(fcodecName);
-        return ret == AVCS_ERR_OK ? fCodec : nullptr;
-    } catch (const std::exception &e) {
-        AVCODEC_LOGE("Create codec failed,  error: %{public}s", e.what());
-        return nullptr;
-    }
+    int32_t ret = Init(fcodecName);
+    CHECK_AND_RETURN_LOG(ret == AVCS_ERR_OK, "Create codec failed: init codec error");
 }
 
-std::shared_ptr<CodecBase> FCodec::Create(bool isEncoder, const std::string &mime)
+FCodec::FCodec(bool isEncoder, const std::string &mime)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
-    CHECK_AND_RETURN_RET_LOG(!mime.empty(), nullptr, "Create codec failed:  empty mime");
+    CHECK_AND_RETURN_LOG(!mime.empty(), "Create codec failed:  empty mime");
     std::string fcodecName;
     for (size_t i = 0; i < numSupportCodec; ++i) {
         if (SupportCodec[i].mimeType == mime && SupportCodec[i].isEncoder == isEncoder) {
@@ -72,16 +66,20 @@ std::shared_ptr<CodecBase> FCodec::Create(bool isEncoder, const std::string &mim
             break;
         }
     }
-    CHECK_AND_RETURN_RET_LOG(!fcodecName.empty(), nullptr, "Create codec failed:  not support mime: %{public}s",
+    CHECK_AND_RETURN_LOG(!fcodecName.empty(), "Create codec failed: not support mime: %{public}s",
                              mime.c_str());
-    try {
-        std::shared_ptr<FCodec> fCodec = std::make_shared<FCodec>();
-        int32_t ret = fCodec->Init(fcodecName);
-        return ret == AVCS_ERR_OK ? fCodec : nullptr;
-    } catch (const std::exception &e) {
-        AVCODEC_LOGE("Create codec failed,  error: %{public}s", e.what());
-        return nullptr;
-    }
+
+    int32_t ret = Init(fcodecName);
+    CHECK_AND_RETURN_LOG(ret == AVCS_ERR_OK, "Create codec failed: init codec error");
+
+}
+
+FCodec::~FCodec()
+{
+    callback_ = nullptr;
+    surface_ = nullptr;
+    Release();
+    state_ = State::Uninitialized;
 }
 
 int32_t FCodec::Init(const std::string &name)
@@ -92,15 +90,10 @@ int32_t FCodec::Init(const std::string &name)
     CHECK_AND_RETURN_RET_LOG(avCodec_ != nullptr, AVCS_ERR_INVALID_VAL,
                              "Init codec failed:  cannot find codec with name %{public}s", name.c_str());
     codecName_ = name;
-    try {
-        sendTask_ = std::make_shared<TaskThread>("sendFrame");
-        sendTask_->RegisterHandler([this] { sendFrame(); });
-        receiveTask_ = std::make_shared<TaskThread>("receiveFrame");
-        receiveTask_->RegisterHandler([this] { receiveFrame(); });
-    } catch (const std::exception &e) {
-        AVCODEC_LOGE("Init codec failed:,  error: %{public}s", e.what());
-        return AVCS_ERR_INVALID_OPERATION;
-    }
+    sendTask_ = std::make_shared<TaskThread>("sendFrame");
+    sendTask_->RegisterHandler([this] { sendFrame(); });
+    receiveTask_ = std::make_shared<TaskThread>("receiveFrame");
+    receiveTask_->RegisterHandler([this] { receiveFrame(); });
     state_ = State::Initialized;
     AVCODEC_LOGI("Init codec successful,  state: Uninitialized -> Initialized");
     return AVCS_ERR_OK;
@@ -119,21 +112,17 @@ int32_t FCodec::Configure(const Format &format)
     width_ = DEFAULT_VIDEO_WEIGHT;
     decParams_[Tag::VIDEO_HEIGHT] = DEFAULT_VIDEO_HEIGHT;
     height_ = DEFAULT_VIDEO_HEIGHT;
-    try {
-        avCodecContext_ =
-            std::shared_ptr<AVCodecContext>(avcodec_alloc_context3(avCodec_.get()), [](AVCodecContext *p) {
-                if (p != nullptr) {
-                    if (p->extradata) {
-                        av_free(p->extradata);
-                        p->extradata = nullptr;
-                    }
-                    avcodec_free_context(&p);
+    avCodecContext_ =
+        std::shared_ptr<AVCodecContext>(avcodec_alloc_context3(avCodec_.get()), [](AVCodecContext *p) {
+            if (p != nullptr) {
+                if (p->extradata) {
+                    av_free(p->extradata);
+                    p->extradata = nullptr;
                 }
-            });
-    } catch (const std::exception &e) {
-        AVCODEC_LOGE("Allocate context failed,  error: %{public}s", e.what());
-        return AVCS_ERR_INVALID_OPERATION;
-    }
+                avcodec_free_context(&p);
+            }
+        });
+    CHECK_AND_RETURN_RET_LOG(avCodecContext_ != nullptr, AVCS_ERR_INVALID_OPERATION, "Configure codec failed: Allocate context error");
     int64_t val64 = 0;
     int32_t val32 = 0;
     for (auto &it : format.GetFormatMap()) {
@@ -305,19 +294,12 @@ int32_t FCodec::Start()
     CHECK_AND_RETURN_RET_LOG(avcodec_open2(avCodecContext_.get(), avCodec_.get(), nullptr) == 0, AVCS_ERR_UNKNOWN,
                              "Start codec failed: cannot open avcodec");
     sLock.unlock();
-    try {
-        int32_t ret = AllocateBuffers();
-        if (ret != AVCS_ERR_OK) {
-            std::unique_lock<std::mutex> sLock(syncMutex_);
-            avcodec_close(avCodecContext_.get());
-            AVCODEC_LOGE("Start codec failed: cannot allocate buffers");
-            return ret;
-        }
-    } catch (const std::exception &e) {
-        AVCODEC_LOGE("Create codec failed,  error: %{public}s", e.what());
+    int32_t ret = AllocateBuffers();
+    if (ret != AVCS_ERR_OK) {
         std::unique_lock<std::mutex> sLock(syncMutex_);
         avcodec_close(avCodecContext_.get());
-        return AVCS_ERR_INVALID_OPERATION;
+        AVCODEC_LOGE("Start codec failed: cannot allocate buffers");
+        return ret;
     }
     state_ = State::Running;
     receiveTask_->Start();
@@ -503,10 +485,10 @@ template <typename T>
 void FCodec::GetParameter(Tag tag, T &val)
 {
     auto ret = decParams_.find(tag);
-    if (ret != decParams_.end() && ret->second.type() == typeid(T)) {
+    if (ret != decParams_.end() ) {
         val = std::any_cast<T>(ret->second);
     } else {
-        AVCODEC_LOGW("Parameter %{public}d is not found or type mismatch. ", static_cast<int32_t>(tag));
+        AVCODEC_LOGW("Parameter %{public}d is not found. ", static_cast<int32_t>(tag));
     }
 }
 
@@ -802,13 +784,13 @@ int32_t FCodec::FillFrameBuffer(const std::shared_ptr<AVBuffer> &frameBuffer)
     int32_t ret;
     std::shared_ptr<AVSharedMemory> frameMomory = frameBuffer->memory_;
     if (IsYuvFormat(avFormat)) {
-        std::shared_ptr<ShareMemory> buffer = std::dynamic_pointer_cast<ShareMemory>(frameMomory);
+        std::shared_ptr<ShareMemory> buffer = ReinterpretPointerCast<ShareMemory>(frameMomory);
         CHECK_AND_RETURN_RET_LOG(buffer != nullptr, AVCS_ERR_INVALID_VAL, "Failed to dynamic cast AVSharedMemory to ShareMemory");
         buffer->Reset();
         ret = WriteYuvData(buffer, scaleData_, scaleLineSize_, outputPixelFmt_, height_, width_);
         frameBuffer->bufferInfo_.size = buffer->GetUsedSize();
     } else if (IsRgbFormat(avFormat)) {
-        std::shared_ptr<SurfaceMemory> buffer = std::dynamic_pointer_cast<SurfaceMemory>(frameMomory);
+        std::shared_ptr<SurfaceMemory> buffer = ReinterpretPointerCast<SurfaceMemory>(frameMomory);
         CHECK_AND_RETURN_RET_LOG(buffer != nullptr, AVCS_ERR_INVALID_VAL, "Failed to dynamic cast AVSharedMemory to SurfaceMemory");
         buffer->Reset();
         ret = WriteRgbData(buffer, scaleData_, scaleLineSize_, outputPixelFmt_, height_, width_);
@@ -915,7 +897,7 @@ void FCodec::renderFrame()
     std::shared_ptr<AVBuffer> outputBuffer = buffers_[INDEX_OUTPUT][index];
     oLock.unlock();
 
-    std::shared_ptr<SurfaceMemory>  surfaceMemory = std::dynamic_pointer_cast<SurfaceMemory>(outputBuffer->memory_);
+    std::shared_ptr<SurfaceMemory>  surfaceMemory = ReinterpretPointerCast<SurfaceMemory>(outputBuffer->memory_);
     while(true){
         if(surfaceMemory->GetSurfaceBuffer() == nullptr){
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -985,7 +967,7 @@ int32_t FCodec::RenderOutputBuffer(size_t index)
         && buffers_[INDEX_OUTPUT][index]->owner_ == AVBuffer::OWNED_BY_USER) {
         // render
         std::shared_ptr<AVBuffer> outputBuffer = buffers_[INDEX_OUTPUT][index];
-        std::shared_ptr<SurfaceMemory>  surfaceMemory = std::dynamic_pointer_cast<SurfaceMemory>(outputBuffer->memory_);
+        std::shared_ptr<SurfaceMemory>  surfaceMemory = ReinterpretPointerCast<SurfaceMemory>(outputBuffer->memory_);
 
         int32_t ret = UpdateSurfaceMemory(surfaceMemory, outputBuffer->bufferInfo_.presentationTimeUs);
         if (ret != AVCS_ERR_OK) {
@@ -1012,13 +994,8 @@ int32_t FCodec::SetOutputSurface(sptr<Surface> surface)
     CHECK_AND_RETURN_RET_LOG(surface != nullptr, AVCS_ERR_INVALID_VAL, "Set output surface failed: surface is NULL");
     surface_ = surface;
     if (renderTask_ == nullptr) {
-        try {
-            renderTask_ = std::make_shared<TaskThread>("renderFrame");
-            renderTask_->RegisterHandler([this] { (void)renderFrame(); });
-        } catch (const std::exception &e) {
-            AVCODEC_LOGD("Create render task failed, error: %{public}s", e.what());
-            return AVCS_ERR_INVALID_OPERATION;
-        }
+        renderTask_ = std::make_shared<TaskThread>("renderFrame");
+        renderTask_->RegisterHandler([this] { (void)renderFrame(); });
     }
     return AVCS_ERR_OK;
 }

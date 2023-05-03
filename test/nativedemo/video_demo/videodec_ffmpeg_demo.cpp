@@ -273,9 +273,9 @@ void VDecFfmpegSample::BasicTest4(){
 int32_t VDecFfmpegSample::CreateVideoDecoder(string codeName)
 {
     if (!codeName.empty()) {
-        vdec_ = FCodec::Create(codeName.c_str()); // 当传入codecname，调用byname创建
+        vdec_ = std::make_shared<FCodec>(codeName.c_str());// 当传入codecname，调用byname创建
     } else {
-        vdec_ = FCodec::Create(false, MIME_TYPE.c_str()); // codecname为空，调用bymine创建
+        vdec_ = std::make_shared<FCodec>(false, MIME_TYPE.c_str()); // codecname为空，调用bymine创建
     }
     return vdec_ == nullptr ? AVCS_ERR_UNKNOWN : AVCS_ERR_OK;
 }

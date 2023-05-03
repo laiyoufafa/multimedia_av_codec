@@ -64,8 +64,8 @@ include_dirs = [
   
   cflags = [
     "-std=c++17",
-    "-frtti",
-    "-fexceptions",
+    "-fno-rtti",
+    "-fno-exceptions",
     "-Wall",
     "-fno-common",
     "-fstack-protector-strong",

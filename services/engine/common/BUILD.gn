@@ -1,15 +1,6 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-config("av_codec_engine_common_config") {
-
-  cflags = [
-    "-frtti",
-    "-fexceptions",
-  ]
-  cflags_cc = cflags
-}
-
 ohos_static_library("av_codec_engine_common"){
     include_dirs=[
         "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
@@ -47,9 +38,6 @@ ohos_static_library("av_codec_engine_common"){
         "//third_party/ffmpeg:libohosffmpeg",
         ]
 
-    public_configs = [
-        ":av_codec_engine_common_config",
-    ]
 
     external_deps = [
         "c_utils:utils",

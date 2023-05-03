@@ -1,16 +1,6 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-config("av_codec_config") {
-
-  cflags = [
-    "-frtti",
-    "-fexceptions",
-  ]
-  cflags_cc = cflags
-}
-
-
 ohos_static_library("av_codec_video_ffmpeg_codec"){
     include_dirs=[
         "//foundation/graphic/graphic_2d/frameworks/surface/include",
@@ -31,9 +21,6 @@ ohos_static_library("av_codec_video_ffmpeg_codec"){
         "//third_party/ffmpeg",
     ]
 
-    public_configs = [
-        ":av_codec_config",
-    ]
   defines = []
   defines += av_codec_defines
 

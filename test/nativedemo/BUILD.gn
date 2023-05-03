@@ -29,18 +29,15 @@ ohos_executable("av_codec_demo") {
     "./include",
     "./video_demo",
     "$av_codec_root_dir/services/engine/codec/include/video",
-    "//foundation/graphic/graphic_2d/interfaces/inner_api",
-    "//foundation/graphic/graphic_2d/interfaces/inner_api/common",
-    "//foundation/graphic/graphic_2d/utils/sync_fence/export",
-    "//drivers/peripheral/display/interfaces/include",
-    "//third_party/ffmpeg",
     "$av_codec_root_dir/services/engine/common/include",
+    "//foundation/graphic/graphic_2d/interfaces/inner_api",
+    "//third_party/ffmpeg",
   ]
 
   cflags = [
     "-Wall",
-    "-frtti",
-    "-fexceptions",
+    "-fno-rtti",
+    "-fno-exceptions",
     "-fno-common",
     "-fstack-protector-strong",
     "-Wshadow",
@@ -83,8 +80,6 @@ ohos_executable("av_codec_demo") {
     "$av_codec_root_dir/services/utils:av_codec_format",
     "$av_codec_root_dir/interfaces/kits/c:capi_packages",
     "$av_codec_root_dir/services/engine/codec/video:av_codec_video_ffmpeg_codec",
-    "//third_party/ffmpeg:libohosffmpeg",
-    "$av_codec_root_dir/services/engine/common:av_codec_engine_common",
   ]
 
   external_deps = [
