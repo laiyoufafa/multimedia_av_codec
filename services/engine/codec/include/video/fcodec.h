@@ -1,30 +1,29 @@
 #ifndef FCODEC_H
 #define FCODEC_H
 
-#include <vector>
-#include <map>
-#include <list>
+#include "avcodec_common.h" //AVCodecBufferInfo & callback
+#include "avcodec_errors.h" //Errorcode
+#include "codec_utils.h"
+#include "codecbase.h"
+#include "share_memory.h"
+#include "surface_memory.h"
+#include "task_thread.h"
+#include <any>
 #include <atomic>
+#include <list>
+#include <map>
 #include <shared_mutex>
 #include <tuple>
-#include <any>
-#include "codecbase.h"
-#include "avcodec_errors.h" //Errorcode
-#include "avcodec_common.h"  //AVCodecBufferInfo & callback
-#include "surface_memory.h"
-#include "share_memory.h"  
-#include "task_thread.h"
-#include "codec_utils.h" 
+#include <vector>
 
-namespace OHOS { namespace Media { namespace Codec {
-
+namespace OHOS {
+namespace Media {
+namespace Codec {
 class FCodec : public CodecBase {
 public:
-    FCodec() = default;
-    ~FCodec() override = default;
-    static std::shared_ptr<CodecBase> Create(const std::string &name);
-    static std::shared_ptr<CodecBase> Create(bool isEncoder, const std::string &mime);
-
+    explicit FCodec(const std::string &name);
+    explicit FCodec(bool isEncoder, const std::string &mime);
+    ~FCodec() override;
     int32_t Configure(const Format &format) override;
     int32_t Start() override;
     int32_t Stop() override;
@@ -43,9 +42,7 @@ public:
     int32_t Pause() override;
     int32_t Resume() override;
 
-
-    struct AVBuffer
-    {
+    struct AVBuffer {
     public:
         AVBuffer() = default;
         ~AVBuffer() = default;
@@ -81,10 +78,10 @@ private:
     template <typename T>
     void GetParameter(Tag tag, T &val);
     bool IsActive() const;
-    void ResetContext(bool isFlush=false);
+    void ResetContext(bool isFlush = false);
     std::tuple<uint32_t, uint32_t> CalculateBufferSize();
     int32_t AllocateBuffers();
-    int32_t ReleaseBuffers(bool isFlush=false);
+    int32_t ReleaseBuffers(bool isFlush = false);
     void sendFrame();
     void receiveFrame();
     void renderFrame();
@@ -119,7 +116,7 @@ private:
     uint32_t outBufferSize_;
     sptr<Surface> surface_{nullptr};
     VideoPixelFormat outputPixelFmt_{VideoPixelFormat::RGBA};
-    ScalingMode scalingMode_ {ScalingMode::SCALING_MODE_SCALE_TO_WINDOW};
+    ScalingMode scalingMode_{ScalingMode::SCALING_MODE_SCALE_TO_WINDOW};
     GraphicTransformType surfaceRotate_{GraphicTransformType::GRAPHIC_ROTATE_NONE};
 
     std::shared_ptr<TaskThread> sendTask_{nullptr};
@@ -135,6 +132,8 @@ private:
     bool isSendWait_ = false;
 };
 
-}}} // namespace OHOS::Media::Codec
+} // namespace Codec
+} // namespace Media
+} // namespace OHOS
 
 #endif // FCODEC_H
