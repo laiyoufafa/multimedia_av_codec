@@ -89,7 +89,7 @@ bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& out
         out = "vdec is null";
         return false;
     }
-    vdec->RunVideoDec(surface, "", 1, inFp, outFp);
+    vdec->RunVideoDec(surface, "", inFp, outFp);
 
     g_surfaceId = surfaceID;
     out = g_surfaceId + "," + std::to_string(inFd) + "," + std::to_string(outFd);
