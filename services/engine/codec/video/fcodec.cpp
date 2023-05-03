@@ -563,7 +563,7 @@ int32_t FCodec::AllocateBuffers()
     uint32_t bufferCnt = 0;
     for (uint32_t i = 0; i < inBufferCnt_; i++) {
         std::shared_ptr<AVBuffer> buf = std::make_shared<AVBuffer>();
-        buf->memory_ = std::make_shared<ShareMemory>(inBufferSize, std::string("inBuffer")+std::to_string(0));
+        buf->memory_ = std::make_shared<ShareMemory>(inBufferSize, std::string("inBuffer")+std::to_string(i));
         if(buf->memory_ == nullptr || buf->memory_->GetBase() == nullptr) {
             AVCODEC_LOGE("Allocate input buffer failed, index=%{public}d", i);
             continue;
@@ -594,7 +594,7 @@ int32_t FCodec::AllocateBuffers()
     for (uint32_t i = 0; i < outBufferCnt_; i++) {
         std::shared_ptr<AVBuffer> buf = std::make_shared<AVBuffer>();
         if(surface_==nullptr){
-            buf->memory_ = std::make_shared<ShareMemory>(outBufferSize_, std::string("outBuffer")+std::to_string(0));
+            buf->memory_ = std::make_shared<ShareMemory>(outBufferSize_, std::string("outBuffer")+std::to_string(i));
         }else{
             buf->memory_ = SurfaceMemory::Create();
         }
