@@ -784,13 +784,13 @@ int32_t FCodec::FillFrameBuffer(const std::shared_ptr<AVBuffer> &frameBuffer)
     int32_t ret;
     std::shared_ptr<AVSharedMemory> frameMomory = frameBuffer->memory_;
     if (IsYuvFormat(avFormat)) {
-        std::shared_ptr<ShareMemory> buffer = ReinterpretPointerCast<ShareMemory>(frameMomory);
+        std::shared_ptr<ShareMemory> buffer = std::static_pointer_cast<ShareMemory>(frameMomory);
         CHECK_AND_RETURN_RET_LOG(buffer != nullptr, AVCS_ERR_INVALID_VAL, "Failed to dynamic cast AVSharedMemory to ShareMemory");
         buffer->Reset();
         ret = WriteYuvData(buffer, scaleData_, scaleLineSize_, outputPixelFmt_, height_, width_);
         frameBuffer->bufferInfo_.size = buffer->GetUsedSize();
     } else if (IsRgbFormat(avFormat)) {
-        std::shared_ptr<SurfaceMemory> buffer = ReinterpretPointerCast<SurfaceMemory>(frameMomory);
+        std::shared_ptr<SurfaceMemory> buffer = std::static_pointer_cast<SurfaceMemory>(frameMomory);
         CHECK_AND_RETURN_RET_LOG(buffer != nullptr, AVCS_ERR_INVALID_VAL, "Failed to dynamic cast AVSharedMemory to SurfaceMemory");
         buffer->Reset();
         ret = WriteRgbData(buffer, scaleData_, scaleLineSize_, outputPixelFmt_, height_, width_);
@@ -897,7 +897,7 @@ void FCodec::renderFrame()
     std::shared_ptr<AVBuffer> outputBuffer = buffers_[INDEX_OUTPUT][index];
     oLock.unlock();
 
-    std::shared_ptr<SurfaceMemory>  surfaceMemory = ReinterpretPointerCast<SurfaceMemory>(outputBuffer->memory_);
+    std::shared_ptr<SurfaceMemory>  surfaceMemory = std::static_pointer_cast<SurfaceMemory>(outputBuffer->memory_);
     while(true){
         if(surfaceMemory->GetSurfaceBuffer() == nullptr){
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -967,7 +967,7 @@ int32_t FCodec::RenderOutputBuffer(size_t index)
         && buffers_[INDEX_OUTPUT][index]->owner_ == AVBuffer::OWNED_BY_USER) {
         // render
         std::shared_ptr<AVBuffer> outputBuffer = buffers_[INDEX_OUTPUT][index];
-        std::shared_ptr<SurfaceMemory>  surfaceMemory = ReinterpretPointerCast<SurfaceMemory>(outputBuffer->memory_);
+        std::shared_ptr<SurfaceMemory>  surfaceMemory = std::static_pointer_cast<SurfaceMemory>(outputBuffer->memory_);
 
         int32_t ret = UpdateSurfaceMemory(surfaceMemory, outputBuffer->bufferInfo_.presentationTimeUs);
         if (ret != AVCS_ERR_OK) {
