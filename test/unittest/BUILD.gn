@@ -45,50 +45,6 @@ av_codec_unittest_cflags = [
 ]
 
 ##################################################################################################################
-ohos_unittest("av_muxer_unit_test") {
-    module_out_path = module_output_path
-    include_dirs = av_codec_unittest_include_dirs
-    include_dirs += [
-        "./",
-    ]
-    cflags = av_codec_unittest_cflags
-
-    if (multimedia_av_codec_support_muxer) {
-        sources = [
-            "./avmuxer_test/avmuxer_unittest.cpp",
-        ]
-    }
-
-    external_deps = [
-    "av_codec:av_codec_client",
-  ]
-
-    resource_config_file = "$AV_CODE_ROOT_DIR/test/unittest/ohos_test.xml"
-}
-
-##################################################################################################################
-ohos_unittest("format_unit_test") {
-    module_out_path = module_output_path
-    include_dirs = av_codec_unittest_include_dirs
-    include_dirs += [
-        "./",
-    ]
-    cflags = av_codec_unittest_cflags
-
-    if (multimedia_av_codec_support_muxer) {
-        sources = [
-            "./format_unit_test.cpp",
-        ]
-    }
-
-    public_deps = [
-        "$AV_CODE_ROOT_DIR/services/utils:av_codec_format",
-    ]
-
-    resource_config_file = "$AV_CODE_ROOT_DIR/test/unittest/ohos_test.xml"
-}
-
-##################################################################################################################
 ohos_unittest("av_video_unit_test") {
     module_out_path = module_output_path
     include_dirs = av_codec_unittest_include_dirs
@@ -123,7 +79,7 @@ ohos_unittest("av_video_unit_test") {
         "$av_codec_root_dir/services/engine/codec/video:av_codec_video_ffmpeg_codec",
     ]
 
-    resource_config_file = "$av_codec_root_dir/test/unittest/ohos_test.xml"
+    resource_config_file = "$av_codec_root_dir/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################
@@ -170,5 +126,5 @@ ohos_unittest("av_audio_unit_test") {
         "graphic_standard:surface"
     ]
 
-    resource_config_file = "$av_codec_root_dir/test/unittest/ohos_test.xml"
+    resource_config_file = "$av_codec_root_dir/test/unittest/resources/ohos_test.xml"
 }
