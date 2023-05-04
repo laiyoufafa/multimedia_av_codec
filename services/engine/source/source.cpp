@@ -844,7 +844,6 @@ int32_t Source::InitAVFormatContext()
 
 // void Source::ReadSourceLoop()
 // {
-//     auto bufferVector = customIOContext_->bufMemory;
 //     auto bufferVector = std::make_shared<Buffer>();
 //     int result =static_cast<int>(customIOContext->sourcePlugin->Read(bufferVector, static_cast<size_t>(readSize)));
 //     que_.Push(bufferVector);
@@ -910,6 +909,7 @@ int32_t Source::InitAVFormatContext()
 //             }
 //             customIOContext->position = customIOContext->offset;
 //             que_.clear();
+//             ReadSourceLoop();
 //         }
 //         // AVCODEC_LOGD("AVReadPacket read data size = %{public}d", static_cast<int>(bufferVector->GetMemory()->GetSize()));
 //         // if (result == 0) {
