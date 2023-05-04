@@ -27,7 +27,6 @@ namespace Media {
 std::shared_ptr<SourceClient> SourceClient::Create(const sptr<IStandardSourceService> &ipcProxy)
 {
     std::shared_ptr<SourceClient> avSourceClient = std::make_shared<SourceClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(avSourceClient != nullptr, nullptr, "Failed to create source client");
     return avSourceClient;
 }
 

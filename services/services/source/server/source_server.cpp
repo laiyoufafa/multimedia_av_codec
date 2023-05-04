@@ -26,7 +26,6 @@ namespace Media {
 std::shared_ptr<ISourceService> SourceServer::Create()
 {
     std::shared_ptr<SourceServer>  = std::make_shared<SourceServer>();
-    CHECK_AND_RETURN_RET_LOG(sourceServer != nullptr, nullptr, "Source Service does not exist");
     int32_t ret = sourceServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init source server");
     return sourceServer;

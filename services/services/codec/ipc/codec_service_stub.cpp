@@ -15,7 +15,6 @@
 
 #include "codec_service_stub.h"
 #include <unistd.h>
-#include <exception>
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "avcodec_parcel.h"
@@ -183,7 +182,6 @@ int32_t CodecServiceStub::SetListenerObject(const sptr<IRemoteObject> &object)
     CHECK_AND_RETURN_RET_LOG(listener != nullptr, AVCS_ERR_NO_MEMORY, "Listener is nullptr");
 
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecListenerCallback>(listener);
-    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Codec listener callback create failed!");
 
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     (void)codecServer_->SetCallback(callback);

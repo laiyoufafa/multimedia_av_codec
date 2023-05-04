@@ -27,7 +27,6 @@ std::shared_ptr<CodecListClient> CodecListClient::Create(const sptr<IStandardCod
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "ipcProxy is nullptr..");
 
     std::shared_ptr<CodecListClient> codecList = std::make_shared<CodecListClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(codecList != nullptr, nullptr, "failed to new CodecListClient..");
 
     return codecList;
 }

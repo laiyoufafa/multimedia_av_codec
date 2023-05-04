@@ -14,7 +14,6 @@
  */
 
 #include "codec_client.h"
-#include <exception>
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
 
@@ -29,7 +28,6 @@ std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecServic
     CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "Ipc proxy is nullptr.");
 
     std::shared_ptr<CodecClient> codec = std::make_shared<CodecClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "Codec client create failed!");
 
     int32_t ret = codec->CreateListenerObject();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec client create failed");

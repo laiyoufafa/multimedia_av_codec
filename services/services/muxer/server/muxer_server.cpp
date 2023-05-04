@@ -29,7 +29,6 @@ namespace Media {
 std::shared_ptr<IMuxerService> MuxerServer::Create()
 {
     std::shared_ptr<MuxerServer> muxerServer = std::make_shared<MuxerServer>();
-    CHECK_AND_RETURN_RET_LOG(muxerServer != nullptr, nullptr, "Muxer Service does not exist");
     return muxerServer;
 }
 

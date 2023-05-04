@@ -14,7 +14,6 @@
  */
 
 #include "avcodec_video_encoder_impl.h"
-#include <exception>
 #include "i_avcodec_service.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
@@ -31,7 +30,6 @@ std::shared_ptr<AVCodecVideoEncoder> VideoEncoderFactory::CreateByMime(const std
     AVCodecTrace trace(std::string(__FUNCTION__));
 
     std::shared_ptr<AVCodecVideoEncoderImpl> impl = std::make_shared<AVCodecVideoEncoderImpl>();
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "AVCodec video encoder impl create failed!");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_ENCODER, true, mime);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, 
@@ -45,7 +43,6 @@ std::shared_ptr<AVCodecVideoEncoder> VideoEncoderFactory::CreateByName(const std
     AVCodecTrace trace(std::string(__FUNCTION__));
 
     std::shared_ptr<AVCodecVideoEncoderImpl> impl = std::make_shared<AVCodecVideoEncoderImpl>();
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "AVCodec video encoder impl create failed!");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_VIDEO_ENCODER, false, name);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, 

@@ -15,7 +15,6 @@
 
 #include <list>
 #include <mutex>
-#include <exception>
 #include "native_avcodec_base.h"
 #include "native_avcodec_videodecoder.h"
 #include "native_avmagic.h"
@@ -444,7 +443,6 @@ OH_AVErrCode OH_VideoDecoder_SetCallback(
     CHECK_AND_RETURN_RET_LOG(videoDecObj->videoDecoder_ != nullptr, AV_ERR_INVALID_VAL, "Video decoder is nullptr!");
 
     videoDecObj->callback_ = std::make_shared<NativeVideoDecoderCallback>(codec, callback, userData);
-    CHECK_AND_RETURN_RET_LOG(videoDecObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "Video decoder set callback failed!");
 
     int32_t ret = videoDecObj->videoDecoder_->SetCallback(videoDecObj->callback_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "Video decoder set callback failed!");

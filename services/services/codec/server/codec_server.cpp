@@ -15,7 +15,6 @@
 
 #include "codec_server.h"
 #include <map>
-#include <exception>
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
@@ -39,7 +38,6 @@ namespace Media {
 std::shared_ptr<ICodecService> CodecServer::Create()
 {
     std::shared_ptr<CodecServer> server = std::make_shared<CodecServer>();
-    CHECK_AND_RETURN_RET_LOG(server != nullptr, nullptr, "Codec server create failed!");
 
     int32_t ret = server->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec server init failed!");
@@ -82,7 +80,6 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "CodecBase is nullptr");
     
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
-    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase callback create failed!");
 
     int32_t ret = codecBase_->SetCallback(callback);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
