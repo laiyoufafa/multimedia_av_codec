@@ -132,19 +132,19 @@ private:
 
 class AVSourceFormat {
 public:
-    static constexpr std::string_view SOURCE_TITLE         = "source/title";            //< string
-    static constexpr std::string_view SOURCE_ARTIST        = "source/artist";           //< std::string, artist
-    static constexpr std::string_view SOURCE_ALBUM         = "source/album";            //< std::string, album
-    static constexpr std::string_view SOURCE_ALBUM_ARTIST  = "source/album_artist";     //< std::string, album artist
-    static constexpr std::string_view SOURCE_DATE          = "source/date";             //< std::string, media date, format：YYYY-MM-DD
-    static constexpr std::string_view SOURCE_COMMENT       = "source/comment";          //< std::string, comment
-    static constexpr std::string_view SOURCE_GENRE         = "source/genre";            //< std::string, genre
-    static constexpr std::string_view SOURCE_COPYRIGHT     = "source/copyright";        //< std::string, copyright
-    static constexpr std::string_view SOURCE_LANGUAGE      = "source/language";         //< std::string, language
-    static constexpr std::string_view SOURCE_DESCRIPTION   = "source/description";      //< std::string, description
-    static constexpr std::string_view SOURCE_LYRICS        = "source/lyrics";           //< std::string, cyrics
-    static constexpr std::string_view SOURCE_DURATION      = "source/duration";         //< int64_t, duration based on {@link HST_TIME_BASE}
-    static constexpr std::string_view SOURCE_TYPE          = "source/type";             //< std::string, sourece type
+    static constexpr std::string_view SOURCE_TITLE         = "title";            //< string
+    static constexpr std::string_view SOURCE_ARTIST        = "artist";           //< std::string, artist
+    static constexpr std::string_view SOURCE_ALBUM         = "album";            //< std::string, album
+    static constexpr std::string_view SOURCE_ALBUM_ARTIST  = "album_artist";     //< std::string, album artist
+    static constexpr std::string_view SOURCE_DATE          = "date";             //< std::string, media date, format：YYYY-MM-DD
+    static constexpr std::string_view SOURCE_COMMENT       = "comment";          //< std::string, comment
+    static constexpr std::string_view SOURCE_GENRE         = "genre";            //< std::string, genre
+    static constexpr std::string_view SOURCE_COPYRIGHT     = "copyright";        //< std::string, copyright
+    static constexpr std::string_view SOURCE_LANGUAGE      = "language";         //< std::string, language
+    static constexpr std::string_view SOURCE_DESCRIPTION   = "description";      //< std::string, description
+    static constexpr std::string_view SOURCE_LYRICS        = "lyrics";           //< std::string, cyrics
+    static constexpr std::string_view SOURCE_DURATION      = "duration";         //< int64_t, duration based on {@link HST_TIME_BASE}
+    static constexpr std::string_view SOURCE_TYPE          = "type";             //< std::string, sourece type
 private:
     AVSourceFormat() = delete;
     ~AVSourceFormat() = delete;
@@ -153,16 +153,16 @@ private:
 
 class AVSourceTrackFormat {
 public:
-    static constexpr std::string_view TRACK_INDEX               = "track/index";
-    static constexpr std::string_view TRACK_SAMPLE_COUNT        = "track/sample_count";
-    static constexpr std::string_view TRACK_TYPE                = "track/type";
-    static constexpr std::string_view TRACK_DURATION            = "track/duration";
-    static constexpr std::string_view TRACK_BITRATE             = "track/bit_rate";
-    static constexpr std::string_view VIDEO_TRACK_ROTATION      = "videotrack/rotation";
-    static constexpr std::string_view VIDEO_TRACK_WIDTH         = "videotrack/width";
-    static constexpr std::string_view VIDEO_TRACK_HEIGHT        = "videotrack/height";
-    static constexpr std::string_view VIDEO_PIXEL_FORMAT        = "video/pixel";
-    static constexpr std::string_view VIDEO_BIT_STREAM_FORMAT   = "video/bit_stream";
+    static constexpr std::string_view TRACK_INDEX               = "track_index";
+    static constexpr std::string_view TRACK_SAMPLE_COUNT        = "track_sample_count";
+    static constexpr std::string_view TRACK_TYPE                = "track_type";
+    static constexpr std::string_view TRACK_DURATION            = "duration";
+    static constexpr std::string_view TRACK_BITRATE             = "bitrate";
+    static constexpr std::string_view VIDEO_TRACK_ROTATION      = "rotation_angle";
+    static constexpr std::string_view VIDEO_TRACK_WIDTH         = "width";
+    static constexpr std::string_view VIDEO_TRACK_HEIGHT        = "height";
+    static constexpr std::string_view VIDEO_PIXEL_FORMAT        = "pixel_format";
+    static constexpr std::string_view VIDEO_BIT_STREAM_FORMAT   = "bit_stream_format";
 private:
     AVSourceTrackFormat() = delete;
     ~AVSourceTrackFormat() = delete;

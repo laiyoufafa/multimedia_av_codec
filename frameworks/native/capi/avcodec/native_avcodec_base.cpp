@@ -40,6 +40,23 @@ const char *OH_MD_KEY_AUD_SAMPLE_RATE = "sample_rate";
 const char *OH_MD_KEY_I_FRAME_INTERVAL = "i_frame_interval";
 const char *OH_MD_KEY_ROTATION = "rotation_angle";
 
+const char *OH_MD_KEY_TRACK_INDEX = "track_index";
+const char *OH_MD_KEY_TRACK_SAMPLE_COUNT = "track_sample_count";
+const char *OH_MD_KEY_BIT_STREAM_FORMAT = "bit_stream_format";
+const char *OH_MD_KEY_TITLE = "title";
+const char *OH_MD_KEY_ARTIST = "artist";
+const char *OH_MD_KEY_ALBUM = "album";
+const char *OH_MD_KEY_ALBUM_ARTIST = "album_artist";
+const char *OH_MD_KEY_DATE = "date";
+const char *OH_MD_KEY_COMMENT = "comment";
+const char *OH_MD_KEY_GENRE = "genre";
+const char *OH_MD_KEY_COPYRIGHT = "copyright";
+const char *OH_MD_KEY_LANGUAGE = "language";
+const char *OH_MD_KEY_DESCRIPTION = "description";
+const char *OH_MD_KEY_LYRICS = "lyrics";
+const char *OH_MD_KEY_DURATION = "duration";
+const char *OH_MD_KEY_START_TIME = "start_time";
+const char *OH_MD_KEY_TYPE = "type";
 #ifdef __cplusplus
 }
 #endif
