@@ -97,13 +97,14 @@ OH_AVErrCode OH_AVDemuxer_CopyNextSample(OH_AVDemuxer *demuxer, uint32_t *trackI
  * the seek mode.
  * @syscap SystemCapability.Multimedia.Media.Spliter
  * @param demuxer Pointer to an OH_AVDemuxer instance.
- * @param mSeconde The millisecond for seeking.
+ * @param mSeconde The millisecond for seeking, the timestamp is the position of 
+ * the file relative to the start of the file.
  * @param mode The mode for seeking. Value is:
  *             SEEK_MODE_NEXT_SYNC     > seek to sync sample after the time.
  *             SEEK_MODE_PREVIOUS_SYNC > seek to sync sample before the time.
  *             SEEK_MODE_CLOSEST_SYNC  > seek to sync sample closest to time.
  * @return Returns AV_ERR_OK if the execution is successful,
- *         otherwise returns a specific error code, refer to {@link OH_AVErrCode}
+ * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 4.0
 */
