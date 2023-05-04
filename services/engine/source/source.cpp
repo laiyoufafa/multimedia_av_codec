@@ -795,6 +795,8 @@ int32_t Source::InitAVFormatContext()
 //         que_.SetActive(false);
 //         StopThread();
 //     }
+//     state_ = STOPPED;
+//     que_.SetActive(false, false);
 
 //     formatContext_ = nullptr;
 //     inputFormat_ = nullptr;
@@ -879,19 +881,6 @@ int32_t Source::InitAVFormatContext()
 //     StartThread("source_read_loop");
 
 //     return AVCS_ERR_OK;
-// }
-
-// int32_t Source::Stop()
-// {
-//     AVCodecTrace trace("Source::Stop");
-//     AVCODEC_LOGI("Stop");
-//     std::unique_lock<std::mutex> lock(mutex_);
-//     CHECK_AND_RETURN_RET_LOG(state_ == STARTED, AVCS_ERR_INVALID_OPERATION,
-//         "The state is not STARTED. The current state is %{public}s", ConvertStateToString(state_).c_str());
-//     state_ = STOPPED;
-//     que_.SetActive(false, false);
-//     cond_.wait(lock, [this] { return que_.Empty(); });
-//     return StopThread();
 // }
 
 // int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
