@@ -74,13 +74,15 @@ OH_AVErrCode OH_AVSource_Destroy(OH_AVSource *source)
 OH_AVErrCode OH_AVSource_GetTrackCount(OH_AVSource *source, uint32_t *trackCount)
 {
     CHECK_AND_RETURN_RET_LOG(source != nullptr, AV_ERR_INVALID_VAL, "Get track count failed because input source is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(source->magic_ == AVMagic::AVCODEC_MAGIC_AVSOURCE, AV_ERR_INVALID_VAL, "magic error!");
+
     CHECK_AND_RETURN_RET_LOG(trackCount != nullptr, AV_ERR_INVALID_VAL, "Get track count failed because input trackCount is nullptr!");
     
     struct AVSourceObject *sourceObj = reinterpret_cast<AVSourceObject *>(source);
     CHECK_AND_RETURN_RET_LOG(sourceObj->source_ != nullptr, AV_ERR_INVALID_VAL, "New AVSourceObject failed when get track count!");
 
     int32_t ret = sourceObj->source_->GetTrackCount(*trackCount);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source_ GetTrackCount failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "source_ GetTrackCount failed!");
 
     return AV_ERR_OK;
 }
@@ -88,6 +90,7 @@ OH_AVErrCode OH_AVSource_GetTrackCount(OH_AVSource *source, uint32_t *trackCount
 struct OH_AVSourceTrack *OH_AVSource_GetSourceTrackByID(OH_AVSource *source, uint32_t trackIndex)
 {
     CHECK_AND_RETURN_RET_LOG(source != nullptr, nullptr, "Load track failed because input source is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(source->magic_ == AVMagic::AVCODEC_MAGIC_AVSOURCE, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AVSourceObject *sourceObj = reinterpret_cast<AVSourceObject *>(source);
     CHECK_AND_RETURN_RET_LOG(sourceObj->source_ != nullptr, nullptr, "New AVSourceObject failed when load track!");
@@ -103,13 +106,14 @@ struct OH_AVSourceTrack *OH_AVSource_GetSourceTrackByID(OH_AVSource *source, uin
 OH_AVFormat *OH_AVSource_GetSourceFormat(OH_AVSource *source)
 {
     CHECK_AND_RETURN_RET_LOG(source != nullptr, nullptr, "Get source format failed because input source is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(source->magic_ == AVMagic::AVCODEC_MAGIC_AVSOURCE, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AVSourceObject *sourceObj = reinterpret_cast<AVSourceObject *>(source);
     CHECK_AND_RETURN_RET_LOG(sourceObj->source_ != nullptr, nullptr, "New AVSourceObject failed when get source format!");
 
     Format format;
     int32_t ret = sourceObj->source_->GetSourceFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, nullptr, "source_ GetSourceFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "source_ GetSourceFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;
@@ -121,13 +125,15 @@ OH_AVFormat *OH_AVSource_GetSourceFormat(OH_AVSource *source)
 OH_AVErrCode OH_AVSourceTrack_SetTrackFormat(OH_AVSourceTrack *sourceTrack, OH_AVFormat *format)
 {
     CHECK_AND_RETURN_RET_LOG(sourceTrack != nullptr, AV_ERR_INVALID_VAL, "Set format failed because input sourceTrack is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(sourceTrack->magic_ == AVMagic::AVCODEC_MAGIC_AVSOURCETRACK, AV_ERR_INVALID_VAL, "magic error!");
+
     CHECK_AND_RETURN_RET_LOG(format != nullptr, AV_ERR_INVALID_VAL, "Set format failed because input param is nullptr!");
 
     struct AVSourceTrackObject *sourceTrackObj = reinterpret_cast<AVSourceTrackObject *>(sourceTrack);
     CHECK_AND_RETURN_RET_LOG(sourceTrackObj->sourceTrack_ != nullptr, AV_ERR_INVALID_VAL, "New AVSourceObject failed when set track format!");
 
     int32_t ret = sourceTrackObj->sourceTrack_->SetTrackFormat(format->format_);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack SetTrackFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "sourceTrack SetTrackFormat failed!");
 
     return AV_ERR_OK;
 }
@@ -135,13 +141,14 @@ OH_AVErrCode OH_AVSourceTrack_SetTrackFormat(OH_AVSourceTrack *sourceTrack, OH_A
 OH_AVFormat *OH_AVSourceTrack_GetTrackFormat(OH_AVSourceTrack *sourceTrack)
 {
     CHECK_AND_RETURN_RET_LOG(sourceTrack != nullptr, nullptr, "Set format failed because input sourceTrack is nullptr!");
+    CHECK_AND_RETURN_RET_LOG(sourceTrack->magic_ == AVMagic::AVCODEC_MAGIC_AVSOURCETRACK, AV_ERR_INVALID_VAL, "magic error!");
 
     struct AVSourceTrackObject *sourceTrackObj = reinterpret_cast<AVSourceTrackObject *>(sourceTrack);
     CHECK_AND_RETURN_RET_LOG(sourceTrackObj->sourceTrack_ != nullptr, nullptr, "New AVSourceObject failed when get track format!");
     
     Format format;
     int32_t ret = sourceTrackObj->sourceTrack_->GetTrackFormat(format);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, nullptr, "sourceTrack GetTrackFormat failed!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "sourceTrack GetTrackFormat failed!");
 
     OH_AVFormat *avFormat = OH_AVFormat_Create();
     avFormat->format_ = format;

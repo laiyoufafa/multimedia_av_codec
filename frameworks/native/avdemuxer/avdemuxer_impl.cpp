@@ -37,7 +37,7 @@ namespace Media{
 
 std::shared_ptr<AVDemuxer> AVDemuxerFactory::CreateWithSource(AVSource &source)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxerFactory::CreateWithSource");
 
     AVCODEC_LOGI("create demuxerImpl from source %{public}s", source.sourceUri.c_str());
 
@@ -52,7 +52,7 @@ std::shared_ptr<AVDemuxer> AVDemuxerFactory::CreateWithSource(AVSource &source)
 
 int32_t AVDemuxerImpl::Init(AVSource &source)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxer::Init");
 
     demuxerClient_ = AVCodecServiceFactory::GetInstance().CreateDemuxerService();
     CHECK_AND_RETURN_RET_LOG(demuxerClient_ != nullptr, 
@@ -68,16 +68,12 @@ int32_t AVDemuxerImpl::Init(AVSource &source)
 
 AVDemuxerImpl::AVDemuxerImpl()
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("init demuxerImpl");
     AVCODEC_LOGD("AVDemuxerImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVDemuxerImpl::~AVDemuxerImpl()
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("uninit demuxerImpl for source %{public}s", sourceUri_.c_str());
     if (demuxerClient_ != nullptr) {
         (void)AVCodecServiceFactory::GetInstance().DestroyDemuxerService(demuxerClient_);
@@ -88,7 +84,7 @@ AVDemuxerImpl::~AVDemuxerImpl()
 
 int32_t AVDemuxerImpl::SelectSourceTrackByID(uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxer::SelectSourceTrackByID");
 
     AVCODEC_LOGI("select source track: trackIndex=%{public}d", trackIndex);
 
@@ -98,7 +94,7 @@ int32_t AVDemuxerImpl::SelectSourceTrackByID(uint32_t trackIndex)
 
 int32_t AVDemuxerImpl::UnselectSourceTrackByID(uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxer::UnselectSourceTrackByID");
 
     AVCODEC_LOGI("unselect source track: trackIndex=%{public}d", trackIndex);
 
@@ -108,7 +104,7 @@ int32_t AVDemuxerImpl::UnselectSourceTrackByID(uint32_t trackIndex)
 
 int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxer::CopyNextSample");
 
     AVCODEC_LOGI("CopyNextSample");
 
@@ -126,10 +122,10 @@ int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVC
     std::shared_ptr<AVSharedMemoryBase> memory = 
         std::make_shared<AVSharedMemoryBase>(bufferInfo.size, AVSharedMemory::FLAGS_READ_WRITE, "sampleBuffer");
     int32_t ret = memory->Init();
-    CHECK_AND_RETURN_RET_LOG(ret!= AVCS_ERR_OK, AVCS_ERR_NO_MEMORY, "Copy sample failed by demuxerService!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_NO_MEMORY, "Copy sample failed by demuxerService!");
 
     ret = demuxerClient_->CopyNextSample(trackIndex, memory->GetBase(), bufferInfo);
-    CHECK_AND_RETURN_RET_LOG(ret!= AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "Copy sample failed by demuxerService!");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "Copy sample failed by demuxerService!");
     
     errno_t rc = memcpy_s(buffer, memory->GetSize(), memory->GetBase(), memory->GetSize());
     CHECK_AND_RETURN_RET_LOG(rc == EOK, AVCS_ERR_UNKNOWN, "memcpy_s failed");
@@ -142,7 +138,7 @@ int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVC
 
 int32_t AVDemuxerImpl::SeekToTime(int64_t mSeconds, AVSeekMode mode)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVDemuxer::SeekToTime");
 
     AVCODEC_LOGI("seek to time: mSeconds=%{public}lld; mode=%{public}d", mSeconds, mode);
 
@@ -150,9 +146,7 @@ int32_t AVDemuxerImpl::SeekToTime(int64_t mSeconds, AVSeekMode mode)
 
     CHECK_AND_RETURN_RET_LOG(mSeconds >= 0, AVCS_ERR_INVALID_VAL, "Seek failed because input mSeconds is negative!");
     
-    int32_t ret = demuxerClient_->SeekToTime(mSeconds, mode);
-
-    return ret;
+    return demuxerClient_->SeekToTime(mSeconds, mode);
 }
 
 } // namespace Media

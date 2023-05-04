@@ -148,8 +148,8 @@ int32_t FFmpegDemuxerPlugin::Create(uintptr_t sourceAddr)
         AVCODEC_LOGD("create FFmpegDemuxerPlugin successful.");
     } else {
         formatContext_ = nullptr;
-        return AVCS_ERR_INVALID_VAL;
         AVCODEC_LOGW("create FFmpegDemuxerPlugin failed, becasue sourceAddr is not a class address.");
+        return AVCS_ERR_INVALID_VAL;
     }
     return AVCS_ERR_OK;
 }
@@ -186,8 +186,9 @@ int32_t FFmpegDemuxerPlugin::SetBitStreamFormat()
                 if ( auto value = videoBitStreamFormatStringMap.at(tag->value) ) {
                     videoBitStreamFormat_[i] = value;
                     AVCODEC_LOGD("SetBitStreamFormat successful, track %{public}d, %{public}s", i, tag->value);
+                } else {
+                    AVCODEC_LOGW("SetBitStreamFormat failed, %{public}s is not supported, Output stream foramt will not change!", tag->value);
                 }
-                AVCODEC_LOGW("SetBitStreamFormat failed, %{public}s is not supported, Output stream foramt will not change!", tag->value);
             }
         }
     }
@@ -379,7 +380,6 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
 {
     AVCODEC_LOGD("FFmpegDemuxerPlugin::SeekToTime is on call");
 
-    // TODO fix 会丢一帧 
     if (!seekModeToFFmpegSeekFlags.count(mode)) {
         AVCODEC_LOGE("unsupported seek mode: %{public}d", static_cast<uint32_t>(mode));
         return AVCS_ERR_SEEK_FAILED;
@@ -416,7 +416,6 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
                 ffTime = 0;
             }
             int keyFrameIdx = av_index_search_timestamp(avStream, ffTime, flags);
-            printf("= the seek key frame index is %d:\n",keyFrameIdx);
             if (keyFrameIdx < 0) {
                 flags = seekModeToFFmpegSeekFlags.at(AVSeekMode::SEEK_MODE_CLOSEST_SYNC);
                 keyFrameIdx = av_index_search_timestamp(avStream, ffTime, flags);

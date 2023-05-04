@@ -97,12 +97,12 @@ void DemuxerFactory::RegisterDynamicPlugins(const char* libDirPath)
                 continue;
             }
             std::string libName = lib->d_name;
-            AVCODEC_LOGD("Regist dyanmic plugin: libName %{public}s", libName.c_str());
             if (libName.find(g_libFileHead) ||  
                 libName.find(g_fileMark) == std::string::npos ||
                 libName.compare(libName.size() - g_libFileTail.size(), g_libFileTail.size(), g_libFileTail)) {
                 continue;
             }
+            AVCODEC_LOGD("Regist dyanmic plugin: libName %{public}s", libName.c_str());
 
             std::string pluginName =
                 libName.substr(g_libFileHead.size(), libName.size() - g_libFileHead.size() - g_libFileTail.size());

@@ -35,7 +35,7 @@ std::vector<std::string_view> setTrackFormatSupportedList = {
 
 std::shared_ptr<AVSource> AVSourceFactory::CreateWithURI(const std::string &uri)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSourceFactory::CreateWithURI");
     
     AVCODEC_LOGI("create source with uri: uri=%{private}s", uri.c_str());
 
@@ -51,7 +51,7 @@ std::shared_ptr<AVSource> AVSourceFactory::CreateWithURI(const std::string &uri)
 
 std::shared_ptr<AVSource> AVSourceFactory::CreateWithFD(int32_t fd, int64_t offset, int64_t size)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSourceFactory::CreateWithFD");
 
     AVCODEC_LOGI("create source with fd: fd=%{private}d, offset=%{public}lld, size=%{public}lld", fd, offset, size);
 
@@ -76,7 +76,7 @@ std::shared_ptr<AVSource> AVSourceFactory::CreateWithFD(int32_t fd, int64_t offs
 
 int32_t AVSourceImpl::Init(const std::string &uri)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::Init");
     
     sourceClient_ = AVCodecServiceFactory::GetInstance().CreateSourceService();
     CHECK_AND_RETURN_RET_LOG(sourceClient_ != nullptr, 
@@ -93,16 +93,12 @@ int32_t AVSourceImpl::Init(const std::string &uri)
 
 AVSourceImpl::AVSourceImpl()
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("init sourceImpl");
     AVCODEC_LOGD("AVSourceImpl:0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 
 AVSourceImpl::~AVSourceImpl()
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("uninit sourceImpl for source %{public}s", sourceUri.c_str());
     if (sourceClient_ != nullptr) {
         (void)AVCodecServiceFactory::GetInstance().DestroySourceService(sourceClient_);
@@ -126,7 +122,7 @@ uintptr_t AVSourceImpl::GetSourceAddr()
 
 int32_t AVSourceImpl::GetTrackCount(uint32_t &trackCount)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::GetTrackCount");
 
     AVCODEC_LOGI("get track count by source");
 
@@ -144,7 +140,7 @@ int32_t AVSourceImpl::GetTrackCount(uint32_t &trackCount)
 
 std::shared_ptr<AVSourceTrack> AVSourceImpl::GetSourceTrackByID(uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::GetSourceTrackByID");
 
     AVCODEC_LOGI("get source track from source: trackIndex=%{public}d", trackIndex);
 
@@ -160,7 +156,7 @@ std::shared_ptr<AVSourceTrack> AVSourceImpl::GetSourceTrackByID(uint32_t trackIn
 
 int32_t AVSourceImpl::GetSourceFormat(Format &format)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::GetSourceFormat");
 
     AVCODEC_LOGI("get source format: format=%{public}s", format.Stringify().c_str());
 
@@ -171,7 +167,7 @@ int32_t AVSourceImpl::GetSourceFormat(Format &format)
 
 int32_t AVSourceImpl::GetTrackFormat(Format &format, uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::GetTrackFormat");
 
     AVCODEC_LOGI("get source track format: trackIndex=%{public}d, format=%{public}s", trackIndex, format.Stringify().c_str());
 
@@ -185,7 +181,7 @@ int32_t AVSourceImpl::GetTrackFormat(Format &format, uint32_t trackIndex)
 
 int32_t AVSourceImpl::SetTrackFormat(const Format &format, uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSource::SetTrackFormat");
 
     AVCODEC_LOGI("set source track format: trackIndex=%{public}d, format=%{public}s", trackIndex, format.Stringify().c_str());
 
@@ -226,8 +222,6 @@ bool AVSourceImpl::TrackIndexIsValid(uint32_t trackIndex)
 
 AVSourceTrackImpl::AVSourceTrackImpl(AVSourceImpl *source, uint32_t trackIndex)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("init source track: trackIndex=%{public}d", trackIndex);
     
     trackIndex_ = trackIndex;
@@ -238,8 +232,6 @@ AVSourceTrackImpl::AVSourceTrackImpl(AVSourceImpl *source, uint32_t trackIndex)
 
 AVSourceTrackImpl::~AVSourceTrackImpl()
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
-
     AVCODEC_LOGI("uninit sourceTrackImpl");
     if (sourceImpl_ != nullptr) {
         sourceImpl_ = nullptr;
@@ -249,14 +241,14 @@ AVSourceTrackImpl::~AVSourceTrackImpl()
 
 int32_t AVSourceTrackImpl::SetTrackFormat(const Format &format)
 {
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSourceTrack::SetTrackFormat");
 
     return sourceImpl_->SetTrackFormat(format, trackIndex_);
 }
 
 int32_t AVSourceTrackImpl::GetTrackFormat(Format &format)
 {   
-    AVCodecTrace trace(std::string(__FUNCTION__));
+    AVCodecTrace trace("AVSourceTrack::GetTrackFormat");
 
     return sourceImpl_->GetTrackFormat(format, trackIndex_);
 }

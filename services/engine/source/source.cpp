@@ -144,7 +144,7 @@ int32_t ParseProtocol(const std::string& uri, std::string& protocol)
 
 RegisterFunc OpenFilePlugin(const std::string& path, const std::string& name)
 {
-    AVCODEC_LOGD("ParseProtocol, input: path=%{public}s, name=%{public}s", path.c_str(), name.c_str());
+    AVCODEC_LOGD("OpenFilePlugin, input: path=%{public}s, name=%{public}s", path.c_str(), name.c_str());
     void *handler = nullptr;
 
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
@@ -261,10 +261,10 @@ int32_t Source::SetTrackFormat(const Format &format, uint32_t trackIndex)
         if ( iter->first == AVSourceTrackFormat::VIDEO_BIT_STREAM_FORMAT ) {
             if ( stream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO) {
                 AVCODEC_LOGE("track is not video, set VIDEO_BIT_STREAM_FORMAT failed!");
+                return AVCS_ERR_INVALID_OPERATION;
             }
             int32_t streamFormat = iter->second.val.int32Val;
             AVCODEC_LOGD("SetTrackFormat format: streamFormat: %{public}d, codec_id: %{public}d", streamFormat, stream->codecpar->codec_id);
-            CHECK_AND_RETURN_RET_LOG(stream->codecpar->codec_type != AVMEDIA_TYPE_VIDEO, AVCS_ERR_INVALID_OPERATION, "input format is invalid!");
             if ( (streamFormat == VideoBitStreamFormat::AVCC && stream->codecpar->codec_id != AV_CODEC_ID_H264) || 
                  (streamFormat == VideoBitStreamFormat::HVCC && stream->codecpar->codec_id != AV_CODEC_ID_HEVC )) {
                 return AVCS_ERR_INVALID_OPERATION;
@@ -276,149 +276,6 @@ int32_t Source::SetTrackFormat(const Format &format, uint32_t trackIndex)
     
     return AVCS_ERR_OK;
 }
-
-
-// int32_t Source::GetSourceFormat(Format &format)
-// {
-//     AVCODEC_LOGI("Source::GetFormat is on call");
-//     CHECK_AND_RETURN_RET_LOG(formatContext_ != nullptr, AVCS_ERR_INVALID_OPERATION, "formatContext_ is nullptr!")
-
-//     Format::FormatDataMap formatMap = format.GetFormatMap();
-//     int32_t ret;
-//     for (auto formatItem = formatMap.begin(); formatItem != formatMap.end(); formatItem++) {
-//         AVCODEC_LOGD("get source fromat: formatItem->first: %{public}s", (formatItem->first).c_str());
-//         if (formatItem->first == AVSourceFormat::SOURCE_TITLE) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "title", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss title info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_ARTIST) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "artist", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss artist info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_ALBUM) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "album", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss album info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_ALBUM_ARTIST) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "album_artist", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss album_artist info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_DATE) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "data", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss data info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_COMMENT) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "comment", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss comment info in file");
-//             }
-//             continue;
-//         }   
-//         if (formatItem->first == AVSourceFormat::SOURCE_GENRE) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "genre", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss genre info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_COPYRIGHT) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "copyright", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss copyright info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_LANGUAGE) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "language", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss language info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_DESCRIPTION) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "description", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss description info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_LYRICS) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "lyrics", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss lyrics info in file");
-//             }
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_DURATION) {
-//             ret = format.PutLongValue( formatItem->first,
-//                     formatContext_->duration
-//                 );
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss album_artist info in file");
-//             continue;
-//         }
-//         if (formatItem->first == AVSourceFormat::SOURCE_TYPE) {
-//             auto valPtr = av_dict_get(formatContext_->metadata, "media_type", nullptr, AV_DICT_IGNORE_SUFFIX);
-//             if (valPtr == nullptr) {
-//                 AVCODEC_LOGW("No find %{public}s", (formatItem->first).c_str());
-//             } else {
-//                 ret = format.PutStringValue( formatItem->first, valPtr->value);    
-//             CHECK_AND_CONTINUE_LOG ( ret != AVCS_ERR_OK, "Put track info failed: miss media_type info in file");
-//             }
-//             continue;
-//         }
-//         AVCODEC_LOGW("Unsupported format %{public}s, please check format", (formatItem->first).c_str());
-
-//     }
-//     return AVCS_ERR_OK;
-// }
 
 int32_t Source::GetSourceFormat(Format &format)
 {
@@ -624,7 +481,7 @@ int32_t Source::Create(std::string& uri)
 {
     AVCODEC_LOGI("Source::Create is called");
     int32_t ret = LoadDynamicPlugin(uri);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "load source plugin fail !")
+    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when load source plugin!")
 
     std::shared_ptr<MediaSource> mediaSource = std::make_shared<MediaSource>(uri);
     AVCODEC_LOGD("mediaSource Init: %{public}s", mediaSource->GetSourceUri().c_str());
@@ -633,16 +490,19 @@ int32_t Source::Create(std::string& uri)
         return AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED;
     }
 
-    sourcePlugin_->SetSource(mediaSource);
+    Status pluginRet = sourcePlugin_->SetSource(mediaSource);
+    CHECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
 
     ret = LoadDemuxerList();
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "load demuxerlist fail !")
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when load demuxerlist!")
 
     ret = SniffInputFormat(uri);
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "find input format fail !")
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when find input format!")
+    CHECK_AND_RETURN_RET_LOG(inputFormat_ != nullptr, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when find input format, cannnot match any input format!")
 
     ret = InitAVFormatContext();
-    CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "parse source info fail !")
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when parse source info!")
+    CHECK_AND_RETURN_RET_LOG(formatContext_ != nullptr, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when init AVFormatContext!")
 
     return AVCS_ERR_OK;
 }
@@ -667,6 +527,7 @@ int32_t Source::LoadDemuxerList()
             std::shared_ptr<AVInputFormat>(const_cast<AVInputFormat*>(plugin), [](void*) {});
     }
     if (g_pluginInputFormat.empty()) {
+        AVCODEC_LOGW("cannot load any format demuxer")
         return AVCS_ERR_INVALID_OPERATION;
     }
     return AVCS_ERR_OK;
@@ -775,8 +636,13 @@ void Source::InitAVIOContext(int flags)
 
     constexpr int bufferSize = 4096;
     customIOContext_.sourcePlugin = sourcePlugin_.get();
-    sourcePlugin_->GetSize(customIOContext_.fileSize);
-    sourcePlugin_->SeekTo(0);
+    
+    Status pluginRet = sourcePlugin_->GetSize(customIOContext_.fileSize);
+    HECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
+
+    pluginRet = sourcePlugin_->SeekTo(0);
+    CHECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
+
     customIOContext_.offset=0;
     customIOContext_.eof=false;
     auto buffer = static_cast<unsigned char*>(av_malloc(bufferSize));
@@ -847,7 +713,7 @@ int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
 
     if ((customIOContext->avioContext->seekable == (int) Seekable::SEEKABLE)&&(customIOContext->fileSize!=0)) {
         if ( customIOContext->offset > customIOContext->fileSize) {
-            printf("ERROR: offset: %zu is larger than totalSize: %zu" ,customIOContext->offset, customIOContext->fileSize);
+            AVCODEC_LOGW("ERROR: offset: %{public}zu is larger than totalSize: %{public}zu" ,customIOContext->offset, customIOContext->fileSize);
             return AVCS_ERR_SEEK_FAILED;
         }
         if( static_cast<size_t>(customIOContext->offset+bufSize) > customIOContext->fileSize) {
@@ -860,7 +726,7 @@ int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
         if (customIOContext->position != customIOContext->offset){
             int err = (int)customIOContext->sourcePlugin->SeekTo(customIOContext->offset);
             if(err < 0){
-                printf("ERROR: Seek to %zu fail,err=%d\n", customIOContext->offset,err);
+                AVCODEC_LOGD("ERROR: Seek to %{public}zu fail,err=%{public}d\n", customIOContext->offset,err);
                 return AVCS_ERR_SEEK_FAILED;
             }
             customIOContext->position = customIOContext->offset;
@@ -889,11 +755,12 @@ int32_t Source::InitAVFormatContext()
 {
     AVFormatContext *formatContext = avformat_alloc_context();
     if (formatContext == nullptr) {
-        AVCODEC_LOGE("InitAVFormatContext  failed.");
+        AVCODEC_LOGE("InitAVFormatContext failed, because  alloc AVFormatContext failed.");
         return AVCS_ERR_INVALID_OPERATION;
     }
     InitAVIOContext(AVIO_FLAG_READ);
     if (avioContext_==nullptr ) {
+        AVCODEC_LOGE("InitAVFormatContext failed, because  init AVIOContext failed.");
         return AVCS_ERR_INVALID_OPERATION;
     }
 
