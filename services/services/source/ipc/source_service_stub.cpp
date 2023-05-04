@@ -134,7 +134,6 @@ uint64_t SourceServiceStub::GetSourceAttr()
 int32_t SourceServiceStub::DumpInfo(int32_t fd)
 {
     std::string dumpInfo;
-    dumpInfo += "# SourceServiceStub";
     GetDumpInfo(dumpInfo);
 
     CHECK_AND_RETURN_RET_LOG(fd != -1, AVCS_ERR_INVALID_VAL, "Attempt to write to a invalid fd: %{public}d", fd);
@@ -194,8 +193,38 @@ int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply
 
 int32_t SourceServiceStub::GetDumpInfo(std::string& dumpInfo)
 {
-    dumpInfo += "## pid: " + std::to_string(getpid());
-    dumpInfo += "## uid: " + std::to_string(getuid());
+    dumpInfo += "Input_Url: " + "" + "\n";
+
+    dumpInfo += "Source_Info\n";
+    dumpInfo += "\tTitle: " + "" + "\n";
+    dumpInfo += "\tArtist: " + "" + "\n";
+    dumpInfo += "\tAlbum: " + "" + "\n";
+    dumpInfo += "\tAlbum_Artist: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tComment: " + "" + "\n";
+    dumpInfo += "\tGenre: " + "" + "\n";
+    dumpInfo += "\tCopyright: " + "" + "\n";
+    dumpInfo += "\tLanguage: " + "" + "\n";
+    dumpInfo += "\tDescription: " + "" + "\n";
+    dumpInfo += "\tLyrics: " + "" + "\n";
+    dumpInfo += "\tDuration: " + "" + "\n";
+    dumpInfo += "\tType: " + "" + "\n";
+
+    dumpInfo += "Video_TrackInfo" + "" + "\n";    
+    dumpInfo += "\t: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+    dumpInfo += "\tDate: " + "" + "\n";
+
+
     return AVCS_ERR_OK;
 }
 }  // namespace Media

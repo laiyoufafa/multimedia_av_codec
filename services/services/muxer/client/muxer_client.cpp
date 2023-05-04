@@ -26,7 +26,6 @@ namespace Media {
 std::shared_ptr<MuxerClient> MuxerClient::Create(const sptr<IStandardMuxerService> &ipcProxy)
 {
     std::shared_ptr<MuxerClient> muxerClient = std::make_shared<MuxerClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(muxerClient != nullptr, nullptr, "Create muxer client failed");
     return muxerClient;
 }
 

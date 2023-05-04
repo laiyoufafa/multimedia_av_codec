@@ -412,7 +412,6 @@ OH_AVErrCode OH_AudioDecoder_SetCallback(
     CHECK_AND_RETURN_RET_LOG(audioDecObj->audioDecoder_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     audioDecObj->callback_ = std::make_shared<NativeAudioDecoderCallback>(codec, callback, userData);
-    CHECK_AND_RETURN_RET_LOG(audioDecObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "audioDecoder_ is nullptr!");
 
     int32_t ret = audioDecObj->audioDecoder_->SetCallback(audioDecObj->callback_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioDecoder SetCallback failed!");
