@@ -27,7 +27,6 @@ namespace Media{
 std::shared_ptr<AVCodec> SourceFactory::CreateWithURI(const std::string &uri)
 {
     std::shared_ptr<AVSourceImpl> sourceImpl = std::make_shared<AVSourceImpl>();
-    CHECK_AND_RETURN_RET_LOG(sourceImpl != nullptr, nullptr, "failed to new AVSourceImpl");
 
     AVCodecType codeType = encoder ? AVCODEC_TYPE_ENCODER : AVCODEC_TYPE_DECODER;
     int32_t ret = sourceImpl->Init(uri);;

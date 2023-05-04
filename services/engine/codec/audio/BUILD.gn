@@ -25,7 +25,7 @@ ohos_static_library("av_codec_audio_ffmpeg_codec"){
     ]
 
     sources=[
-        "$av_codec_root_dir/services/services/codec/server/codec_factory.cpp",
+        #"$av_codec_root_dir/services/services/codec/server/codec_factory.cpp",
         "$av_codec_root_dir/services/engine/codec/audio/audio_buffer_info.cpp",
         "$av_codec_root_dir/services/engine/codec/audio/audio_buffers_manager.cpp",
         "$av_codec_root_dir/services/engine/codec/audio/audio_codec_worker.cpp",

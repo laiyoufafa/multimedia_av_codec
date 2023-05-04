@@ -36,7 +36,6 @@ std::shared_ptr<AVMuxer> AVMuxerFactory::CreateAVMuxer(int32_t fd, OutputFormat 
     CHECK_AND_RETURN_RET_LOG(lseek(fd, 0, SEEK_CUR) != -1, nullptr, "The fd is not seekable");
 
     std::shared_ptr<AVMuxerImpl> impl = std::make_shared<AVMuxerImpl>(fd, format);
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "Create avmuxer implementation failed");
 
     int32_t ret = impl->Init();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Init avmuxer implementation failed");

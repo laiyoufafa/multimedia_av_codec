@@ -409,7 +409,6 @@ OH_AVErrCode OH_AudioEncoder_SetCallback(
     CHECK_AND_RETURN_RET_LOG(audioEncObj->audioEncoder_ != nullptr, AV_ERR_INVALID_VAL, "audioEncoder_ is nullptr!");
 
     audioEncObj->callback_ = std::make_shared<NativeAudioEncoderCallback>(codec, callback, userData);
-    CHECK_AND_RETURN_RET_LOG(audioEncObj->callback_ != nullptr, AV_ERR_INVALID_VAL, "callback_ is nullptr!");
 
     int32_t ret = audioEncObj->audioEncoder_->SetCallback(audioEncObj->callback_);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "audioEncoder SetCallback failed!");
@@ -417,7 +416,7 @@ OH_AVErrCode OH_AudioEncoder_SetCallback(
     return AV_ERR_OK;
 }
 
-OH_AVErrCode OH_AudioEncoder_IsValid(OH_AVCodec *codec)
+OH_AVErrCode OH_AudioEncoder_IsValid(OH_AVCodec *codec, bool *isVaild)
 {
     return AV_ERR_UNSUPPORT;
 }

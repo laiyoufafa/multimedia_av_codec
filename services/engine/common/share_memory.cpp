@@ -29,7 +29,7 @@ namespace OHOS {
 namespace Media {
 
 ShareMemory::ShareMemory(size_t capacity, const std::string_view &name, uint32_t flags, size_t align)
-    : capacity_(capacity), size_(0), flags_(flags), offset(0), name_(name)
+    : capacity_(capacity), name_(name), flags_(flags)
 {
     capacity_ = align ? (capacity_ + align - 1) : capacity;
     AVCODEC_LOGI("allocate share memory,memory size:%{public}d, align:%{public}d, name:%{public}s", capacity_, align,
@@ -116,7 +116,7 @@ void ShareMemory::Reset()
     this->size_ = 0;
 }
 
-size_t ShareMemory::GetCapacity() const noexcept
+size_t ShareMemory::GetUsedSize() const
 {
     return size_;
 }

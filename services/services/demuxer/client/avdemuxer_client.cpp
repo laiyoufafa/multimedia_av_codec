@@ -10,7 +10,6 @@ namespace Media {
 std::shared_ptr<AVDemuxerClient> AVDemuxerClient::Create(const sptr<IAVDemuxerService> &ipcProxy)
 {
     std::shared_ptr<AVDemuxerClient> demuxerClient = std::make_shared<AVDemuxerClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(demuxerClient != nullptr, nullptr, "Failed to create demuxer client");
     return demuxerClient;
 }
 

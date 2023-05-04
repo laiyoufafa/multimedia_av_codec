@@ -45,8 +45,6 @@ CodecListServer::~CodecListServer()
 bool CodecListServer::Init()
 {
     codecListCore_ = std::make_shared<CodecListCore>();
-    CHECK_AND_RETURN_RET_LOG(codecListCore_ != nullptr, false,
-        "Failed to create codec list core");
     return true;
 }
 

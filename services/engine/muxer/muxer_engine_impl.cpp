@@ -60,7 +60,6 @@ std::shared_ptr<IMuxerEngine> IMuxerEngineFactory::CreateMuxerEngine(int32_t app
     CHECK_AND_RETURN_RET_LOG((fcntl(fd, F_GETFL, 0) & O_RDWR) == O_RDWR, nullptr, "no permission to read and write fd");
     CHECK_AND_RETURN_RET_LOG(lseek(fd, 0, SEEK_CUR) != -1, nullptr, "the fd is not seekable");
     std::shared_ptr<IMuxerEngine> muxerEngineImpl = std::make_shared<MuxerEngineImpl>(appUid, appPid, fd, format);
-    CHECK_AND_RETURN_RET_LOG(muxerEngineImpl != nullptr, nullptr, "create MuxerEngine implementation failed");
     return muxerEngineImpl;
 }
 

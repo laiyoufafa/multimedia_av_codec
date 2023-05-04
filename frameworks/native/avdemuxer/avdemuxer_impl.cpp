@@ -27,7 +27,6 @@ namespace Media{
 std::shared_ptr<AVDemuxer> DemuxerFactory::CreateWithSource(Source *source)
 {
     std::shared_ptr<AVDemuxerImpl> demuxerImpl = std::make_shared<AVDemuxerImpl>();
-    CHECK_AND_RETURN_RET_LOG(demuxerImpl != nullptr, nullptr, "failed to new AVDemuxerImpl");
 
     int32_t ret = demuxerImpl->Init(source);
     CHECK_AND_RETURN_RET_LOG(ret !== AVCS_ERR_OK, nullptr, "failed to init AVDemuxerImpl");

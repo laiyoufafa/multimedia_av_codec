@@ -56,7 +56,6 @@ int32_t ADecInnerDemo::CreateDec()
     DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
     signal_ = make_shared<ADecSignal>();
-    DEMO_CHECK_AND_RETURN_RET_LOG(signal_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
 
     cb_ = make_unique<ADecDemoCallback>(signal_);
     DEMO_CHECK_AND_RETURN_RET_LOG(cb_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");

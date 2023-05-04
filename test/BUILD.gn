@@ -29,6 +29,8 @@ group("av_codec_unit_test") {
     deps += [
       "unittest:av_muxer_unit_test",
       "unittest:format_unit_test",
+      "unittest:av_video_unit_test",
+      "unittest:av_audio_unit_test",
     ]
   }
 }
