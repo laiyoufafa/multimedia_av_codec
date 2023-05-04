@@ -789,5 +789,158 @@ int32_t Source::InitAVFormatContext()
 
 
 
+// Source::~Source()
+// {   
+//     if (state_ == STARTED) {
+//         que_.SetActive(false);
+//         StopThread();
+//     }
+
+//     formatContext_ = nullptr;
+//     inputFormat_ = nullptr;
+//     sourcePlugin_ = nullptr;
+//     register_ = nullptr;
+//     avioContext_ = nullptr;
+//     AVCODEC_LOGI("Source::~Source is on call");
+// }
+
+// int32_t Source::StartThread(std::string name)
+// {
+//     threadName_ = name;
+//     if (thread_ != nullptr) {
+//         AVCODEC_LOGW("Started already! [%{public}s]", threadName_.c_str());
+//         return AVCS_ERR_OK;
+//     }
+//     isThreadExit_ = false;
+//     thread_ = std::make_unique<std::thread>(&Source::ReadSourceLoop, this);
+//     AVCodecTrace::TraceBegin("demuxer_write_thread", FAKE_POINTER(thread_.get()));
+//     AVCODEC_LOGD("thread started! [%{public}s]", threadName_.c_str());
+//     return AVCS_ERR_OK;
+// }
+
+// int32_t Source::StopThread() noexcept
+// {
+//     if (isThreadExit_) {
+//         AVCODEC_LOGD("Stopped already! [%{public}s]", threadName_.c_str());
+//         return AVCS_ERR_OK;
+//     }
+//     if (std::this_thread::get_id() == thread_->get_id()) {
+//         AVCODEC_LOGD("Stop at the task thread, reject");
+//         return AVCS_ERR_INVALID_OPERATION;
+//     }
+
+//     std::unique_ptr<std::thread> t;
+//     isThreadExit_ = true;
+//     cond_.notify_all();
+//     std::swap(thread_, t);
+//     if (t != nullptr && t->joinable()) {
+//         t->join();
+//     }
+//     thread_ = nullptr;
+//     return AVCS_ERR_OK;
+// }
+
+// void Source::ReadSourceLoop()
+// {
+//     auto bufferVector = customIOContext_->bufMemory;
+//     auto bufferVector = std::make_shared<Buffer>();
+//     int result =static_cast<int>(customIOContext->sourcePlugin->Read(bufferVector, static_cast<size_t>(readSize)));
+//     que_.Push(bufferVector);
+// }
+
+// int32_t Source::Create(std::string& uri)
+// {
+//     AVCODEC_LOGI("Source::Create is called");
+//     int32_t ret = LoadDynamicPlugin(uri);
+//     CHECK_AND_RETURN_RET_LOG(ret != AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when load source plugin!")
+
+//     std::shared_ptr<MediaSource> mediaSource = std::make_shared<MediaSource>(uri);
+//     AVCODEC_LOGD("mediaSource Init: %{public}s", mediaSource->GetSourceUri().c_str());
+//     if( sourcePlugin_==nullptr ){
+//         AVCODEC_LOGE("load sourcePlugin_ fail !");
+//         return AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED;
+//     }
+
+//     Status pluginRet = sourcePlugin_->SetSource(mediaSource);
+//     CHECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
+
+//     ret = LoadDemuxerList();
+//     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when load demuxerlist!")
+
+//     ret = SniffInputFormat(uri);
+//     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when find input format!")
+//     CHECK_AND_RETURN_RET_LOG(inputFormat_ != nullptr, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when find input format, cannnot match any input format!")
+
+//     ret = InitAVFormatContext();
+//     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when parse source info!")
+//     CHECK_AND_RETURN_RET_LOG(formatContext_ != nullptr, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when init AVFormatContext!")
+
+//     state_ = STARTED;
+//     StartThread("source_read_loop");
+
+//     return AVCS_ERR_OK;
+// }
+
+// int32_t Source::Stop()
+// {
+//     AVCodecTrace trace("Source::Stop");
+//     AVCODEC_LOGI("Stop");
+//     std::unique_lock<std::mutex> lock(mutex_);
+//     CHECK_AND_RETURN_RET_LOG(state_ == STARTED, AVCS_ERR_INVALID_OPERATION,
+//         "The state is not STARTED. The current state is %{public}s", ConvertStateToString(state_).c_str());
+//     state_ = STOPPED;
+//     que_.SetActive(false, false);
+//     cond_.wait(lock, [this] { return que_.Empty(); });
+//     return StopThread();
+// }
+
+// int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
+// {
+//     int rtv = -1;
+//     auto readSize = bufSize;
+//     auto customIOContext = static_cast<CustomIOContext*>(opaque);
+    
+
+//     if ((customIOContext->avioContext->seekable == (int) Seekable::SEEKABLE)&&(customIOContext->fileSize!=0)) {
+//         if ( customIOContext->offset > customIOContext->fileSize) {
+//             AVCODEC_LOGW("ERROR: offset: %{public}zu is larger than totalSize: %{public}zu" ,customIOContext->offset, customIOContext->fileSize);
+//             return AVCS_ERR_SEEK_FAILED;
+//         }
+//         if( static_cast<size_t>(customIOContext->offset+bufSize) > customIOContext->fileSize) {
+//             readSize = customIOContext->fileSize - customIOContext->offset;
+//         }
+//         if (buf!=nullptr && bufferVector->GetMemory()!=nullptr) {
+//             auto memSize = static_cast<int>(bufferVector->GetMemory()->GetCapacity());
+//             readSize = (readSize > memSize) ? memSize : readSize;
+//         }
+//         if (customIOContext->position != customIOContext->offset){
+//             int err = (int)customIOContext->sourcePlugin->SeekTo(customIOContext->offset);
+//             if(err < 0){
+//                 AVCODEC_LOGD("ERROR: Seek to %{public}zu fail,err=%{public}d\n", customIOContext->offset,err);
+//                 return AVCS_ERR_SEEK_FAILED;
+//             }
+//             customIOContext->position = customIOContext->offset;
+//             que_.clear();
+//         }
+//         // AVCODEC_LOGD("AVReadPacket read data size = %{public}d", static_cast<int>(bufferVector->GetMemory()->GetSize()));
+//         // if (result == 0) {
+//         //     rtv = bufferVector->GetMemory()->GetSize();
+
+//         //     customIOContext->offset += rtv;
+//         //     customIOContext->position += rtv;
+            
+//         // } else if (static_cast<int>(result) == 1) { 
+//         //     customIOContext->eof=true;
+//         //     rtv = AVERROR_EOF;
+//         // } else {
+//         //     AVCODEC_LOGE("AVReadPacket failed with rtv = %{public}d", static_cast<int>(result));
+//         // }
+//     }
+
+//     auto bufferVector = que_.Pop();
+
+//     return rtv;
+// }
+
 } // namespace Media
 } // namespace OHOS

@@ -34,6 +34,10 @@ extern "C" {
 #include "plugin_definition.h"
 #include "sourcebase.h"
 
+// #include <atomic>
+// #include <mutex>
+// #include <condition_variable>
+// #include "block_queue.h"
 
 namespace OHOS {
 namespace Media {
@@ -95,6 +99,20 @@ private:
     int32_t InitAVFormatContext();
 
     void ReadLoop();
+
+    enum State {
+        UNINITIALIZED,
+        INITIALIZED,
+        STARTED,
+        STOPPED
+    };
+    std::atomic<State> state_ = UNINITIALIZED;
+    BlockQueue<std::shared_ptr<BlockBuffer>> que_;
+    std::string threadName_;
+    std::mutex mutex_;
+    std::condition_variable cond_;
+    std::unique_ptr<std::thread> thread_ = nullptr;
+    bool isThreadExit_ = true;
 };
 } // namespace Plugin
 } // namespace Media
