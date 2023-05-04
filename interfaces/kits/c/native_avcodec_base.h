@@ -209,30 +209,40 @@ extern const char *OH_MD_KEY_I_FRAME_INTERVAL;
 /* Key of the surface rotation angle. value type is int32_t: should be {0, 90, 180, 270}, default is 0. */
 extern const char *OH_MD_KEY_ROTATION;
 
-// TODO Track
+/* Key for track index, value type is uint32_t */
 extern const char *OH_MD_KEY_TRACK_INDEX;
+/* Key for track sample count, value type is uint64_t */
 extern const char *OH_MD_KEY_TRACK_SAMPLE_COUNT;
-// extern const char *OH_MD_KEY_TRACK_TYPE;
-// extern const char *OH_MD_KEY_DURATION;
-// extern const char *OH_MD_KEY_BITRATE;
-// extern const char *OH_MD_KEY_ROTATION;
-// extern const char *OH_MD_KEY_WIDTH;
-// extern const char *OH_MD_KEY_HEIGHT;
+/* Key for bit stream format, see @OH_VideoBitStreamFormat, OH_VideoBitStreamFormat */
 extern const char *OH_MD_KEY_BIT_STREAM_FORMAT;
-// TODO Source
+
+/* source format Key for title, value type is string */
 extern const char *OH_MD_KEY_TITLE;
+/* source format Key for artist, value type is string */
 extern const char *OH_MD_KEY_ARTIST;
+/* source format Key for album, value type is string */
 extern const char *OH_MD_KEY_ALBUM;
+/* source format Key for album_artist, value type is string */
 extern const char *OH_MD_KEY_ALBUM_ARTIST;
+/* source format Key for date, value type is string */
 extern const char *OH_MD_KEY_DATE;
+/* source format Key for comment, value type is string */
 extern const char *OH_MD_KEY_COMMENT;
+/* source format Key for genre, value type is string */
 extern const char *OH_MD_KEY_GENRE;
+/* source format Key for copyright, value type is string */
 extern const char *OH_MD_KEY_COPYRIGHT;
+/* source format Key for language, value type is string */
 extern const char *OH_MD_KEY_LANGUAGE;
+/* source format Key for description, value type is string */
 extern const char *OH_MD_KEY_DESCRIPTION;
+/* source format Key for lyrics, value type is string */
 extern const char *OH_MD_KEY_LYRICS;
+/* source format Key for duration, value type is int64_t */
 extern const char *OH_MD_KEY_DURATION;
+/* source format Key for start_time, value type is string */
 extern const char *OH_MD_KEY_START_TIME;
+/* source format Key for type, value type is string */
 extern const char *OH_MD_KEY_TYPE;
 
 /**
