@@ -30,7 +30,7 @@ DemuxerClient::~DemuxerClient()
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
 
-int32_t DemuxerClient::Init(uint64_t sourceAddr)
+int32_t DemuxerClient::Init(uintptr_t sourceAddr)
 {
     std::lock_guard<std::mutex> lock(mutex_);
     CHECK_AND_RETURN_RET_LOG(demuxerProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "source service does not exist.");

@@ -847,7 +847,7 @@ int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
 
     if ((customIOContext->avioContext->seekable == (int) Seekable::SEEKABLE)&&(customIOContext->fileSize!=0)) {
         if ( customIOContext->offset > customIOContext->fileSize) {
-            printf("ERROR: offset: %ld is larger than totalSize: %ld" ,customIOContext->offset, customIOContext->fileSize);
+            printf("ERROR: offset: %zu is larger than totalSize: %zu" ,customIOContext->offset, customIOContext->fileSize);
             return AVCS_ERR_SEEK_FAILED;
         }
         if( static_cast<size_t>(customIOContext->offset+bufSize) > customIOContext->fileSize) {
@@ -860,7 +860,7 @@ int Source::AVReadPacket(void *opaque, uint8_t *buf, int bufSize)
         if (customIOContext->position != customIOContext->offset){
             int err = (int)customIOContext->sourcePlugin->SeekTo(customIOContext->offset);
             if(err < 0){
-                printf("ERROR: Seek to %ld fail,err=%d\n", customIOContext->offset,err);
+                printf("ERROR: Seek to %zu fail,err=%d\n", customIOContext->offset,err);
                 return AVCS_ERR_SEEK_FAILED;
             }
             customIOContext->position = customIOContext->offset;

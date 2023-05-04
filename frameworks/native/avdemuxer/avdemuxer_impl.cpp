@@ -144,7 +144,7 @@ int32_t AVDemuxerImpl::SeekToTime(int64_t mSeconds, AVSeekMode mode)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
 
-    AVCODEC_LOGI("seek to time: mSeconds=%{public}ld; mode=%{public}d", mSeconds, mode);
+    AVCODEC_LOGI("seek to time: mSeconds=%{public}lld; mode=%{public}d", mSeconds, mode);
 
     CHECK_AND_RETURN_RET_LOG(demuxerClient_ != nullptr, AVCS_ERR_INVALID_OPERATION, "demuxer service died when seek!");
 

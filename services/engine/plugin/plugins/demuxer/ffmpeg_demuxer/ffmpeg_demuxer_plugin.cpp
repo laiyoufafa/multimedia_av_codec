@@ -404,7 +404,7 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
         int64_t ffTime = ConvertTimeToFFmpeg(mSeconds*1000*1000, avStream->time_base);
         if (avStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             if (ffTime > avStream->duration){
-                AVCODEC_LOGE("ERROR: Seek to timestamp = %{public}ld failed, max = %{public}ld", ffTime, avStream->duration);
+                AVCODEC_LOGE("ERROR: Seek to timestamp = %{public}lld failed, max = %{public}lld", ffTime, avStream->duration);
                 return AVCS_ERR_SEEK_FAILED;
             }
             if (AvTime2Ms(ConvertTimeFromFFmpeg(avStream->duration, avStream->time_base) - mSeconds) <= 100
@@ -412,7 +412,7 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
                 flags = seekModeToFFmpegSeekFlags.at(AVSeekMode::SEEK_MODE_PREVIOUS_SYNC);
             }
             if (ffTime < 0) {
-                AVCODEC_LOGW("invalid ffmpeg time: %{public}ld ms, will be set to 0",ffTime);
+                AVCODEC_LOGW("invalid ffmpeg time: %{public}lld ms, will be set to 0",ffTime);
                 ffTime = 0;
             }
             int keyFrameIdx = av_index_search_timestamp(avStream, ffTime, flags);
@@ -434,8 +434,8 @@ int32_t FFmpegDemuxerPlugin::SeekToTime(int64_t mSeconds, AVSeekMode mode)
             }
         }
         int64_t realSeekTime = ConvertTimeFromFFmpeg(ffTime, avStream->time_base);
-        AVCODEC_LOGD("realSeekTime: %{public}ld", realSeekTime);
-        AVCODEC_LOGD("seek param: trackIndex=%{public}d, ffTime=%{public}ld, flags=%{public}d", trackIndex, ffTime, flags);
+        AVCODEC_LOGD("realSeekTime: %{public}lld", realSeekTime);
+        AVCODEC_LOGD("seek param: trackIndex=%{public}d, ffTime=%{public}lld, flags=%{public}d", trackIndex, ffTime, flags);
 
         auto rtv = av_seek_frame(formatContext_.get(), trackIndex, ffTime, flags); 
         if (rtv < 0) {
