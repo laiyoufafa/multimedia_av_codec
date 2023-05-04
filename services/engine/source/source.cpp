@@ -527,7 +527,7 @@ int32_t Source::LoadDemuxerList()
             std::shared_ptr<AVInputFormat>(const_cast<AVInputFormat*>(plugin), [](void*) {});
     }
     if (g_pluginInputFormat.empty()) {
-        AVCODEC_LOGW("cannot load any format demuxer")
+        AVCODEC_LOGW("cannot load any format demuxer");
         return AVCS_ERR_INVALID_OPERATION;
     }
     return AVCS_ERR_OK;
@@ -636,12 +636,17 @@ void Source::InitAVIOContext(int flags)
 
     constexpr int bufferSize = 4096;
     customIOContext_.sourcePlugin = sourcePlugin_.get();
-    
     Status pluginRet = sourcePlugin_->GetSize(customIOContext_.fileSize);
-    HECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
-
+    if (pluginRet !=Status::OK){
+         AVCODEC_LOGE("get file size failed when set data source for plugin!");
+         return;
+    }
     pluginRet = sourcePlugin_->SeekTo(0);
-    CHECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!")
+    if (pluginRet !=Status::OK){
+         AVCODEC_LOGE("seek to 0 failed when set data source for plugin!");
+         return;
+    }
+    // CHECK_AND_RETURN_RET_LOG(pluginRet == Status::OK, AVCS_ERR_CREATE_SOURCE_SUB_SERVICE_FAILED, "create source failed when set data source for plugin!");
 
     customIOContext_.offset=0;
     customIOContext_.eof=false;
@@ -653,6 +658,7 @@ void Source::InitAVIOContext(int flags)
     if (buffer == nullptr) {
         AVCODEC_LOGE("AllocAVIOContext failed to av_malloc...");
         return;
+
     }
     avioContext_ = avio_alloc_context(buffer, bufferSize, flags & AVIO_FLAG_WRITE, (void*)(&customIOContext_),
                                                   AVReadPacket, NULL, AVSeek);
@@ -660,7 +666,7 @@ void Source::InitAVIOContext(int flags)
     if (avioContext_ == nullptr) {
         AVCODEC_LOGE("AllocAVIOContext failed to avio_alloc_context...");
         av_free(buffer);
-        return;
+
     }
     Seekable seekable = sourcePlugin_->GetSeekable();
     AVCODEC_LOGD("seekable_ is %{public}d", (int)seekable);

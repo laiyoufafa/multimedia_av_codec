@@ -100,19 +100,20 @@ private:
 
     void ReadLoop();
 
-    enum State {
-        UNINITIALIZED,
-        INITIALIZED,
-        STARTED,
-        STOPPED
-    };
-    std::atomic<State> state_ = UNINITIALIZED;
-    BlockQueue<std::shared_ptr<BlockBuffer>> que_;
-    std::string threadName_;
-    std::mutex mutex_;
-    std::condition_variable cond_;
-    std::unique_ptr<std::thread> thread_ = nullptr;
-    bool isThreadExit_ = true;
+    // enum State {
+    //     UNINITIALIZED,
+    //     INITIALIZED,
+    //     STARTED,
+    //     STOPPED
+    // };
+    // std::atomic<State> state_ = UNINITIALIZED;
+    // BlockQueue<std::shared_ptr<BlockBuffer>> que_;
+    // std::string threadName_;
+    // std::mutex mutex_;
+    // std::condition_variable cond_;
+    // std::unique_ptr<std::thread> thread_ = nullptr;
+    // bool isThreadExit_ = true;
+
 };
 } // namespace Plugin
 } // namespace Media
