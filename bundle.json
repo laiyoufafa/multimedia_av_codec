@@ -10,7 +10,7 @@
     "dirs": {},
     "scripts": {},
     "component": {
-      "name": "multimedia_av_codec",
+      "name": "av_codec",
       "subsystem": "multimedia",
       "syscap": [
         "SystemCapability.Multimedia.Avcodec.Core",

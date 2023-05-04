@@ -242,5 +242,5 @@ ohos_shared_library("av_codec_client") {
   ]
 
   subsystem_name = "multimedia"
-  part_name = "multimedia_av_codec"
+  part_name = "av_codec"
 }
