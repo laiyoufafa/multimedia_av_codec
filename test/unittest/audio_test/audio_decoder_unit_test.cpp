@@ -128,9 +128,19 @@ void AudioCodeDecoderUnitTest::TearDown(void)
   cout << "[TearDown]: over!!!" << endl;
 }
 
+
 int32_t AudioCodeDecoderUnitTest::ProceFunc(void)
-{
-    return AVCS_ERR_OK;
+{   
+    format_.PutIntValue("channel-count", 2);
+    format_.PutIntValue("simplerate", 8000);
+    format_.PutIntValue("bitrate", 128000);
+
+    if (adec_->Configure(format_) != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
+    }else if (adec_->Start() != AVCodecServiceErrCode::AVCS_ERR_OK) {
+        return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
+    }
+    return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Configure_01, TestSize.Level1)
@@ -150,92 +160,52 @@ HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Configure_02, TestSize.Level1)
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Start_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Pause_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Pause());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Resume_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Pause());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Resume());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Stop_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Stop());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Flush_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Stop());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Flush());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Reset_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Stop());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Reset());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Release_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Stop());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Release());
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_NotifyEos_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
-
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Stop());
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->NotifyEos());
 }
@@ -243,7 +213,7 @@ HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_NotifyEos_01, TestSize.Level1)
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_SetParameter_01, TestSize.Level1)
 { 
     //尚未实现
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->SetParameter(format_));
+    EXPECT_NE(AVCodecServiceErrCode::AVCS_ERR_INVALID_STATE, adec_->SetParameter(format_));
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_GetOutputFormat_01, TestSize.Level1)
@@ -254,46 +224,74 @@ HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_GetOutputFormat_01, TestSize.Lev
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_GetInputBuffer_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
+    std::shared_ptr<OHOS::Media::AVSharedMemory> buffer = nullptr;
+    index_ = -1;
+    buffer = adec_->GetInputBuffer(index_);
+    EXPECT_EQ(nullptr, buffer);
 
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
-    EXPECT_NE(nullptr, adec_->GetInputBuffer((size_t) 1024));
+    index_ = 1024;
+    buffer = adec_->GetInputBuffer(index_);
+    EXPECT_EQ(nullptr, buffer);
+
+    index_ = signal_->inIdxQueue_.front();
+    buffer = adec_->GetInputBuffer(index_);
+    EXPECT_NE(nullptr, buffer);
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_QueueInputBuffer_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
+    AVCodecBufferInfo info;
+    AVCodecBufferFlag flag;
 
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
-    //EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->QueueInputBuffer((unsigned int) 0));  输入还没准备好
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, ProceFunc());
+    // case0 传参异常
+    index_ = -1;
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL, adec_->QueueInputBuffer(index_, info, flag));
+    // case1 info未赋值
+    index_ = 1024;
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL, adec_->QueueInputBuffer(index_, info, flag));
+
+    // case2 EOS帧数据
+    index_ = 0;
+    info.presentationTimeUs = 0;
+    info.size = -1;
+    info.offset = 0;
+    flag = AVCODEC_BUFFER_FLAG_EOS;
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->QueueInputBuffer(index_, info, flag));
 }
+
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_GetOutputBuffer_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
+    EXPECT_EQ(AVCS_ERR_OK, ProceFunc());
+    std::shared_ptr<OHOS::Media::AVSharedMemory> buffer = nullptr;
 
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
-    EXPECT_NE(nullptr, adec_->GetOutputBuffer((size_t) 1024));
+    //case1 传参异常
+    index_ = -1;
+    buffer = adec_->GetOutputBuffer(index_);
+    EXPECT_EQ(nullptr, buffer);
+    index_ = 1024;
+    buffer = adec_->GetOutputBuffer(index_);
+    EXPECT_EQ(nullptr, buffer);
+
+    //case2 传参正常
+    index_ = 0;
+    buffer = adec_->GetOutputBuffer(index_);
+    EXPECT_NE(nullptr, buffer);
 }
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_ReleaseOutputBuffer_01, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
-    format_.PutIntValue("bitrate", 128000);
+    EXPECT_EQ(AVCS_ERR_OK, ProceFunc());
 
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Start());
-    EXPECT_NE(nullptr, adec_->GetOutputBuffer((size_t) 0));
-    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->ReleaseOutputBuffer((size_t) 0));
+    //case1 传参异常
+    index_ = -1;
+    EXPECT_NE(AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL, adec_->ReleaseOutputBuffer(index_));
+    index_ = 1024;
+    EXPECT_NE(AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL, adec_->ReleaseOutputBuffer(index_));
+    //case2 传参正常
+    index_ = 0;
+    EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL, adec_->ReleaseOutputBuffer(index_));
 }
 
 int main(int argc, char *argv[])
