@@ -20,7 +20,12 @@ extern "C" {
 #endif
 
 const char *OH_AVCODEC_MIMETYPE_VIDEO_AVC = "video/avc";
+const char *OH_AVCODEC_MIMETYPE_VIDEO_MPEG4 = "video/mp4v-es";
 const char *OH_AVCODEC_MIMETYPE_AUDIO_AAC = "audio/mp4a-latm";
+const char *OH_AVCODEC_MIMETYPE_AUDIO_MPEG = "audio/mpeg";
+const char *OH_AVCODEC_MIMETYPE_IMAGE_JPG = "image/jpeg";
+const char *OH_AVCODEC_MIMETYPE_IMAGE_PNG = "image/png";
+const char *OH_AVCODEC_MIMETYPE_IMAGE_BMP = "image/bmp";
 const char *OH_ED_KEY_TIME_STAMP = "timeStamp";
 const char *OH_ED_KEY_EOS = "endOfStream";
 const char *OH_MD_KEY_TRACK_TYPE = "track_type";
@@ -39,6 +44,7 @@ const char *OH_MD_KEY_AUD_CHANNEL_COUNT = "channel_count";
 const char *OH_MD_KEY_AUD_SAMPLE_RATE = "sample_rate";
 const char *OH_MD_KEY_I_FRAME_INTERVAL = "i_frame_interval";
 const char *OH_MD_KEY_ROTATION = "rotation_angle";
+const char *OH_MD_KEY_CODEC_CONFIG = "codec_config";
 
 const char *OH_MD_KEY_TRACK_INDEX = "track_index";
 const char *OH_MD_KEY_TRACK_SAMPLE_COUNT = "track_sample_count";

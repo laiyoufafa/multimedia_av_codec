@@ -60,16 +60,11 @@ struct AVCodecBufferInfo {
     uint32_t flags = 0;
 };
 
-typedef enum AVOutputFormat {
-    AV_OUTPUT_FORMAT_UNKNOWN = 0,
-    AV_OUTPUT_FORMAT_MPEG_4 = 1,
-    AV_OUTPUT_FORMAT_M4A = 2,
-} AVOutputFormat;
-
 struct AVBufferElement {
     std::shared_ptr<AVSharedMemory> buffer;
     std::shared_ptr<AVSharedMemory> metaData;
 };
+
 class AVCodecCallback {
 public:
     virtual ~AVCodecCallback() = default;

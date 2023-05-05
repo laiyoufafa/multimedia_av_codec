@@ -104,20 +104,20 @@ enum AVSeekMode : uint8_t {
  */
 enum VideoRotation : uint32_t {
     /**
-    * Video without rotation
-    */
+     * Video without rotation
+     */
     VIDEO_ROTATION_0 = 0,
     /**
-    * Video rotated 90 degrees
-    */
+     * Video rotated 90 degrees
+     */
     VIDEO_ROTATION_90 = 90,
     /**
-    * Video rotated 180 degrees
-    */
+     * Video rotated 180 degrees
+     */
     VIDEO_ROTATION_180 = 180,
     /**
-    * Video rotated 270 degrees
-    */
+     * Video rotated 270 degrees
+     */
     VIDEO_ROTATION_270 = 270,
 };
 
@@ -136,6 +136,53 @@ enum StateChangeReason {
      * audio/video state change by system
      */
     BACKGROUND = 2,
+};
+
+/**
+ * @brief Enumerates the output format.
+ *
+ * @since 10
+ * @version 4.0
+ */
+enum OutputFormat : uint32_t{
+    /**
+     * output format unknown
+    */
+    OUTPUT_FORMAT_UNKNOWN = 0,
+    /**
+     * output format mp4
+    */
+    OUTPUT_FORMAT_MPEG_4 = 1,
+    /**
+     * output format m4a
+    */
+    OUTPUT_FORMAT_M4A = 2,
+};
+
+/**
+ * @brief Description information of a sample associated a media track.
+ *
+ * @since 10
+ * @version 4.0
+ */
+struct TrackSampleInfo {
+    /**
+     * @brief the id of track that this sample belongs to.
+     */
+    uint32_t trackIndex;
+    /**
+     * @brief the presentation timestamp in microseconds.
+     */
+    int64_t timeUs;
+    /**
+     * @brief the size in bytes.
+     */
+    uint32_t size;
+    /**
+     * @brief the flags associated with the sample, this
+     * maybe be a combination of multiple {@link AVCodecBufferFlag}.
+     */
+    uint32_t flags;
 };
 } // namespace Media
 } // namespace OHOS

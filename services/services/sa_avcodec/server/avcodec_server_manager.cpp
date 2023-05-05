@@ -26,13 +26,13 @@
 #include "codec_service_stub.h"
 #endif
 #ifdef SUPPORT_CODECLIST
-#include "avcodeclist_service_stub.h"
+#include "codeclist_service_stub.h"
 #endif
 #ifdef SUPPORT_DEMUXER
 #include "demuxer_service_stub.h"
 #endif
 #ifdef SUPPORT_MUXER
-#include "avmuxer_stub.h"
+#include "muxer_service_stub.h"
 #endif
 #ifdef SUPPORT_SOURCE
 #include "source_service_stub.h"
@@ -99,10 +99,10 @@ int32_t AVCodecServerManager::Dump(int32_t fd, const std::vector<std::u16string>
 #endif
 
 #ifdef SUPPORT_MUXER
-    dumpString += "------------------AVMuxerServer------------------\n";
+    dumpString += "------------------MuxerServer------------------\n";
     if (WriteInfo(fd, dumpString, dumperTbl_[StubType::MUXER],
         argSets.find(u"muxer") != argSets.end()) != OHOS::NO_ERROR) {
-        AVCODEC_LOGW("Failed to write AVMuxerServer information");
+        AVCODEC_LOGW("Failed to write MuxerServer information");
         return OHOS::INVALID_OPERATION;
     }
 #endif
@@ -192,7 +192,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateCodecListStubObject()
             "Please release the applied resources.", codecListStubMap_.size());
         return nullptr;
     }
-    sptr<AVCodecListServiceStub> stub = AVCodecListServiceStub::Create();
+    sptr<CodecListServiceStub> stub = CodecListServiceStub::Create();
     if (stub == nullptr) {
         AVCODEC_LOGE("failed to create AVCodecListServiceStub");
         return nullptr;
@@ -284,19 +284,19 @@ sptr<IRemoteObject> AVCodecServerManager::CreateMuxerStubObject()
             "Please release the applied resources.", muxerStubMap_.size());
         return nullptr;
     }
-    sptr<AVMuxerStub> stub = AVMuxerStub::Create();
-    if (stub == nullptr) {
-        AVCODEC_LOGE("failed to create AVMuxerStub");
+    sptr<MuxerServiceStub> muxerStub = MuxerServiceStub::Create();
+    if (muxerStub == nullptr) {
+        AVCODEC_LOGE("Create MuxerServiceStub failed");
         return nullptr;
     }
-    sptr<IRemoteObject> object = stub->AsObject();
+    sptr<IRemoteObject> object = muxerStub->AsObject();
     if (object != nullptr) {
         pid_t pid = IPCSkeleton::GetCallingPid();
         muxerStubMap_[object] = pid;
 
         Dumper dumper;
-        dumper.entry_ = [stub](int32_t fd) -> int32_t {
-            return stub->DumpInfo(fd);
+        dumper.entry_ = [muxer = muxerStub](int32_t fd) -> int32_t {
+            return muxer->DumpInfo(fd);
         };
         dumper.pid_ = pid;
         dumper.uid_ = IPCSkeleton::GetCallingUid();
@@ -304,7 +304,7 @@ sptr<IRemoteObject> AVCodecServerManager::CreateMuxerStubObject()
         dumperTbl_[StubType::MUXER].emplace_back(dumper);
         AVCODEC_LOGD("The number of muxer services(%{public}zu).", muxerStubMap_.size());
         if (Dump(-1, std::vector<std::u16string>()) != OHOS::NO_ERROR) {
-            AVCODEC_LOGW("failed to call InstanceDump");
+            AVCODEC_LOGW("Failed to call InstanceDump");
         }
     }
     return object;
@@ -378,7 +378,8 @@ void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> 
         case MUXER: {
             auto it = find_if(muxerStubMap_.begin(), muxerStubMap_.end(), compare_func);
             if (it != muxerStubMap_.end()) {
-                AVCODEC_LOGD("destroy muxer stub services(%{public}zu) pid(%{public}d).", muxerStubMap_.size(), pid);
+                AVCODEC_LOGD("destroy muxer stub services(%{public}zu) pid(%{public}d).",
+                    muxerStubMap_.size(), pid);
                 (void)muxerStubMap_.erase(it);
                 return;
             }

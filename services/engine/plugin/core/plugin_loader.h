@@ -16,7 +16,7 @@
 #ifndef PLUGIN_CORE_PLUGIN_LOADER_H
 #define PLUGIN_CORE_PLUGIN_LOADER_H
 
-// #include "plugin_base.h"
+#include "plugin_base.h"
 #include "plugin_definition.h"
 
 namespace OHOS {

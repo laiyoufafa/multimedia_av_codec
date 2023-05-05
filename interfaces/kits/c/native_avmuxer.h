@@ -74,15 +74,16 @@ OH_AVErrCode OH_AVMuxer_SetRotation(OH_AVMuxer *muxer, int32_t rotation);
  * Note: This interface can only be called before OH_AVMuxer_Start.
  * @syscap SystemCapability.Multimedia.Media.AVMuxer
  * @param muxer Pointer to an OH_AVMuxer instance
- * @param trackIndex The uint32_t handle pointer used to get the track index for this newly added track,
- * and it should be used in the OH_AVMuxer_WriteSampleBuffer. The track index is greater than or equal to 0.
+ * @param trackIndex The int32_t handle pointer used to get the track index for this newly added track,
+ * and it should be used in the OH_AVMuxer_WriteSampleBuffer. The track index is greater than or equal to 0,
+ * others is error index.
  * @param trackFormat OH_AVFormat handle pointer contain track format
  * @return Returns AV_ERR_OK if the execution is successful,
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 10
  * @version 1.0
  */
-OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, uint32_t *trackIndex, OH_AVFormat *trackFormat);
+OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, int32_t *trackIndex, OH_AVFormat *trackFormat);
 
 /**
  * @brief Start the muxer. 

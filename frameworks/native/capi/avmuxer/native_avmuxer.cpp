@@ -17,6 +17,7 @@
 #include "native_avmagic.h"
 #include "avmuxer.h"
 #include "avcodec_log.h"
+#include "avcodec_errors.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "NativeAVMuxer"};
@@ -34,11 +35,10 @@ struct AVMuxerObject : public OH_AVMuxer {
 
 struct OH_AVMuxer *OH_AVMuxer_Create(int32_t fd, OH_AVOutputFormat format) {
     CHECK_AND_RETURN_RET_LOG(fd >= 0, nullptr, "fd %{public}d is error!", fd);
-    // std::shared_ptr<AVMuxer> avmuxer = AVMuxerFactory::CreateAVMuxer(fd, static_cast<AVOutputFormat>(format));
-    // CHECK_AND_RETURN_RET_LOG(avmuxer != nullptr, nullptr, "create muxer failed!");
-    // struct AVMuxerObject *object = new(std::nothrow) AVMuxerObject(avmuxer);
-    // return object;
-    return nullptr;
+    std::shared_ptr<AVMuxer> avmuxer = AVMuxerFactory::CreateAVMuxer(fd, static_cast<OutputFormat>(format));
+    CHECK_AND_RETURN_RET_LOG(avmuxer != nullptr, nullptr, "create muxer failed!");
+    struct AVMuxerObject *object = new(std::nothrow) AVMuxerObject(avmuxer);
+    return object;
 }
 
 OH_AVErrCode OH_AVMuxer_SetLocation(OH_AVMuxer *muxer, float latitude, float longitude) {
@@ -61,23 +61,18 @@ OH_AVErrCode OH_AVMuxer_SetRotation(OH_AVMuxer *muxer, int32_t rotation) {
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
-    if (rotation != VIDEO_ROTATION_0 && rotation != VIDEO_ROTATION_90 &&
-        rotation != VIDEO_ROTATION_180 &&rotation != VIDEO_ROTATION_270) {
-        CHECK_AND_RETURN_RET_LOG(false, AV_ERR_INVALID_VAL, "rotation is invalid value!");
-    }
-
     int32_t ret = object->muxer_->SetRotation(rotation);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ SetRotation failed!");
 
     return AV_ERR_OK;    
 }
 
-OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, uint32_t *trackIndex, OH_AVFormat *trackFormat) {
+OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, int32_t *trackIndex, OH_AVFormat *trackFormat) {
     CHECK_AND_RETURN_RET_LOG(muxer != nullptr, AV_ERR_INVALID_VAL, "input muxer is nullptr!");
     CHECK_AND_RETURN_RET_LOG(muxer->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
     CHECK_AND_RETURN_RET_LOG(trackIndex != nullptr, AV_ERR_INVALID_VAL, "input track index is nullptr!");
     CHECK_AND_RETURN_RET_LOG(trackFormat != nullptr, AV_ERR_INVALID_VAL, "input track format is nullptr!");
-    CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_AVMUXER, AV_ERR_INVALID_VAL, "magic error!");
+    CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
     
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
@@ -107,11 +102,14 @@ OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
-    AVCodecBufferInfo innerInfo;
-    innerInfo.presentationTimeUs = info.pts;
-    innerInfo.offset = info.offset;
-    innerInfo.size = info.size; 
-    int32_t ret = object->muxer_->WriteSampleBuffer(trackIndex, sampleBuffer, innerInfo);
+    
+    TrackSampleInfo sampleInfo;
+    sampleInfo.trackIndex = trackIndex;
+    sampleInfo.timeUs = info.pts;
+    sampleInfo.size = info.size;
+    sampleInfo.flags = info.flags;
+    
+    int32_t ret = object->muxer_->WriteSampleBuffer(sampleBuffer, sampleInfo);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ WriteSampleBuffer failed!");
 
     return AV_ERR_OK;   

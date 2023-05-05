@@ -26,7 +26,6 @@ namespace Media {
 std::shared_ptr<AVCodecList> AVCodecListFactory::CreateAVCodecList()
 {
     std::shared_ptr<AVCodecListImpl> impl = std::make_shared<AVCodecListImpl>();
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecListImpl");
 
     int32_t ret = impl->Init();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecListImpl");
@@ -36,7 +35,7 @@ std::shared_ptr<AVCodecList> AVCodecListFactory::CreateAVCodecList()
 
 int32_t AVCodecListImpl::Init()
 {
-    codecListService_ = AVCodecServiceFactory::GetInstance().CreateAVCodecListService();
+    codecListService_ = AVCodecServiceFactory::GetInstance().CreateCodecListService();
     CHECK_AND_RETURN_RET_LOG(codecListService_ != nullptr, AVCS_ERR_UNKNOWN, "failed to create AVCodecList service");
     return AVCS_ERR_OK;
 }
@@ -49,7 +48,7 @@ AVCodecListImpl::AVCodecListImpl()
 AVCodecListImpl::~AVCodecListImpl()
 {
     if (codecListService_ != nullptr) {
-        (void)AVCodecServiceFactory::GetInstance().DestroyAVCodecListService(codecListService_);
+        (void)AVCodecServiceFactory::GetInstance().DestroyCodecListService(codecListService_);
         codecListService_ = nullptr;
     }
     AVCODEC_LOGD("AVCodecListImpl:0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));

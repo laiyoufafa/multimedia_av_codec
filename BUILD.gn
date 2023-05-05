@@ -11,12 +11,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//build/config/ohos/rules.gni")
+import("//build/config/ohos/config.gni")
 import("//build/ohos.gni")
 
 group("av_codec_packages") {
   public_deps = [
     "interfaces/inner_api/native:av_codec_client",
-    "services:av_codec_service",
+    "services/services:av_codec_service",
   ]
 }

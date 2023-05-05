@@ -25,13 +25,12 @@ namespace OHOS {
 namespace Media {
 std::shared_ptr<CodecClient> CodecClient::Create(const sptr<IStandardCodecService> &ipcProxy)
 {
-    CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "ipcProxy is nullptr..");
+    CHECK_AND_RETURN_RET_LOG(ipcProxy != nullptr, nullptr, "Ipc proxy is nullptr.");
 
     std::shared_ptr<CodecClient> codec = std::make_shared<CodecClient>(ipcProxy);
-    CHECK_AND_RETURN_RET_LOG(codec != nullptr, nullptr, "failed to new CodecClient..");
 
     int32_t ret = codec->CreateListenerObject();
-    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to create listener object..");
+    CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Codec client create failed");
 
     return codec;
 }
@@ -45,8 +44,11 @@ CodecClient::CodecClient(const sptr<IStandardCodecService> &ipcProxy)
 CodecClient::~CodecClient()
 {
     std::lock_guard<std::mutex> lock(mutex_);
+
     if (codecProxy_ != nullptr) {
         (void)codecProxy_->DestroyStub();
+    } else {
+        AVCODEC_LOGD("Codec proxy is nullptr");
     }
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances destroy", FAKE_POINTER(this));
 }
@@ -56,20 +58,24 @@ void CodecClient::AVCodecServerDied()
     std::lock_guard<std::mutex> lock(mutex_);
     codecProxy_ = nullptr;
     listenerStub_ = nullptr;
+
     if (callback_ != nullptr) {
         callback_->OnError(AVCODEC_ERROR_INTERNAL, AVCS_ERR_SERVICE_DIED);
+    } else {
+        AVCODEC_LOGD("Callback is callback");
     }
 }
 
 int32_t CodecClient::CreateListenerObject()
 {
     std::lock_guard<std::mutex> lock(mutex_);
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
+    
     listenerStub_ = new(std::nothrow) CodecListenerStub();
-    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to new CodecListenerStub object");
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec listener stub create failed");
 
     sptr<IRemoteObject> object = listenerStub_->AsObject();
-    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "listener object is nullptr..");
+    CHECK_AND_RETURN_RET_LOG(object != nullptr, AVCS_ERR_NO_MEMORY, "Listener object is nullptr.");
 
     AVCODEC_LOGD("SetListenerObject");
     return codecProxy_->SetListenerObject(object);
@@ -78,7 +84,7 @@ int32_t CodecClient::CreateListenerObject()
 int32_t CodecClient::Init(AVCodecType type, bool isMimeType, const std::string &name)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Init");
     return codecProxy_->Init(type, isMimeType, name);
@@ -87,7 +93,7 @@ int32_t CodecClient::Init(AVCodecType type, bool isMimeType, const std::string &
 int32_t CodecClient::Configure(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Configure");
     return codecProxy_->Configure(format);
@@ -96,7 +102,7 @@ int32_t CodecClient::Configure(const Format &format)
 int32_t CodecClient::Start()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Start");
     return codecProxy_->Start();
@@ -105,7 +111,7 @@ int32_t CodecClient::Start()
 int32_t CodecClient::Stop()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Stop");
     return codecProxy_->Stop();
@@ -114,7 +120,7 @@ int32_t CodecClient::Stop()
 int32_t CodecClient::Flush()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Flush");
     return codecProxy_->Flush();
@@ -123,7 +129,7 @@ int32_t CodecClient::Flush()
 int32_t CodecClient::NotifyEos()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("NotifyEos");
     return codecProxy_->NotifyEos();
@@ -132,7 +138,7 @@ int32_t CodecClient::NotifyEos()
 int32_t CodecClient::Reset()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Reset");
     return codecProxy_->Reset();
@@ -141,7 +147,7 @@ int32_t CodecClient::Reset()
 int32_t CodecClient::Release()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("Release");
     int32_t ret = codecProxy_->Release();
@@ -153,7 +159,7 @@ int32_t CodecClient::Release()
 sptr<OHOS::Surface> CodecClient::CreateInputSurface()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "Codec service does not exist.");
 
     AVCODEC_LOGD("CreateInputSurface");
     return codecProxy_->CreateInputSurface();
@@ -162,7 +168,7 @@ sptr<OHOS::Surface> CodecClient::CreateInputSurface()
 int32_t CodecClient::SetOutputSurface(sptr<Surface> surface)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("SetOutputSurface");
     return codecProxy_->SetOutputSurface(surface);
@@ -171,7 +177,7 @@ int32_t CodecClient::SetOutputSurface(sptr<Surface> surface)
 std::shared_ptr<AVSharedMemory> CodecClient::GetInputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "Codec service does not exist.");
 
     AVCODEC_LOGD("GetInputBuffer");
     return codecProxy_->GetInputBuffer(index);
@@ -180,7 +186,7 @@ std::shared_ptr<AVSharedMemory> CodecClient::GetInputBuffer(uint32_t index)
 int32_t CodecClient::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("QueueInputBuffer");
     return codecProxy_->QueueInputBuffer(index, info, flag);
@@ -189,7 +195,7 @@ int32_t CodecClient::QueueInputBuffer(uint32_t index, AVCodecBufferInfo info, AV
 std::shared_ptr<AVSharedMemory> CodecClient::GetOutputBuffer(uint32_t index)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, nullptr, "Codec service does not exist.");
 
     AVCODEC_LOGD("GetOutputBuffer");
     return codecProxy_->GetOutputBuffer(index);
@@ -198,7 +204,7 @@ std::shared_ptr<AVSharedMemory> CodecClient::GetOutputBuffer(uint32_t index)
 int32_t CodecClient::GetOutputFormat(Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("GetOutputFormat");
     return codecProxy_->GetOutputFormat(format);
@@ -207,7 +213,7 @@ int32_t CodecClient::GetOutputFormat(Format &format)
 int32_t CodecClient::ReleaseOutputBuffer(uint32_t index, bool render)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("ReleaseOutputBuffer");
     return codecProxy_->ReleaseOutputBuffer(index, render);
@@ -216,7 +222,7 @@ int32_t CodecClient::ReleaseOutputBuffer(uint32_t index, bool render)
 int32_t CodecClient::SetParameter(const Format &format)
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "codec service does not exist.");
+    CHECK_AND_RETURN_RET_LOG(codecProxy_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec service does not exist.");
 
     AVCODEC_LOGD("SetParameter");
     return codecProxy_->SetParameter(format);
@@ -224,8 +230,8 @@ int32_t CodecClient::SetParameter(const Format &format)
 
 int32_t CodecClient::SetCallback(const std::shared_ptr<AVCodecCallback> &callback)
 {
-    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "input param callback is nullptr.");
-    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "listenerStub_ is nullptr.");
+    CHECK_AND_RETURN_RET_LOG(callback != nullptr, AVCS_ERR_NO_MEMORY, "Callback is nullptr.");
+    CHECK_AND_RETURN_RET_LOG(listenerStub_ != nullptr, AVCS_ERR_NO_MEMORY, "Listener stub is nullptr.");
 
     callback_ = callback;
     AVCODEC_LOGD("SetCallback");

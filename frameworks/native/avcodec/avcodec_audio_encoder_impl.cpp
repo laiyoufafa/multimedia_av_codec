@@ -27,7 +27,6 @@ namespace Media {
 std::shared_ptr<AVCodecAudioEncoder> AudioEncoderFactory::CreateByMime(const std::string &mime)
 {
     std::shared_ptr<AVCodecAudioEncoderImpl> impl = std::make_shared<AVCodecAudioEncoderImpl>();
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecAudioEncoderImpl");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_AUDIO_ENCODER, true, mime);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecAudioEncoderImpl");
@@ -38,7 +37,6 @@ std::shared_ptr<AVCodecAudioEncoder> AudioEncoderFactory::CreateByMime(const std
 std::shared_ptr<AVCodecAudioEncoder> AudioEncoderFactory::CreateByName(const std::string &name)
 {
     std::shared_ptr<AVCodecAudioEncoderImpl> impl = std::make_shared<AVCodecAudioEncoderImpl>();
-    CHECK_AND_RETURN_RET_LOG(impl != nullptr, nullptr, "failed to new AVCodecAudioEncoderImpl");
 
     int32_t ret = impl->Init(AVCODEC_TYPE_AUDIO_ENCODER, false, name);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "failed to init AVCodecAudioEncoderImpl");

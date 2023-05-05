@@ -72,7 +72,7 @@ int CodecListenerStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
             return AVCS_ERR_OK;
         }
         default: {
-            AVCODEC_LOGE("default case, need check CodecListenerStub");
+            AVCODEC_LOGE("Default case, please check codec listener stub");
             return IPCObjectStub::OnRemoteRequest(code, data, reply, option);
         }
     }
