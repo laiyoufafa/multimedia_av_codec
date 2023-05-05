@@ -151,8 +151,8 @@ HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Configure_01, TestSize.Level1)
 
 HWTEST_F(AudioCodeDecoderUnitTest, audioDecoder_Configure_02, TestSize.Level1)
 { 
-    format_.PutIntValue("channel-count", 2);
-    format_.PutIntValue("simplerate", 8000);
+    format_.PutIntValue("channel_count", 2);
+    format_.PutIntValue("sample_rate", 8000);
     format_.PutIntValue("bitrate", 128000);
 
     EXPECT_EQ(AVCodecServiceErrCode::AVCS_ERR_OK, adec_->Configure(format_));
