@@ -23,7 +23,6 @@ declare_args() {
 }
 
 av_codec_root_dir = "//foundation/multimedia/av_codec"
-AV_CODEC_ROOT_DIR = "//foundation/multimedia/av_codec"
 av_codec_defines = []
 
 if (multimedia_av_codec_support_capi) {

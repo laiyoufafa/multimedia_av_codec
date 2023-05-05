@@ -279,7 +279,7 @@ ohos_shared_library("native_av_codec_avmuxer") {
 ohos_shared_library("native_av_codec_avdemuxer") {
   install_enable = true
   sources = [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avdemuxer/native_avdemuxer.cpp",
+    "$av_codec_root_dir/frameworks/native/capi/avdemuxer/native_avdemuxer.cpp",
   ]
 
   public_configs = [ ":av_codec_capi_config" ]
@@ -304,7 +304,7 @@ ohos_shared_library("native_av_codec_avdemuxer") {
 ohos_shared_library("native_av_codec_avsource") {
   install_enable = true
   sources = [
-    "$AV_CODEC_ROOT_DIR/frameworks/native/capi/avsource/native_avsource.cpp",
+    "$av_codec_root_dir/frameworks/native/capi/avsource/native_avsource.cpp",
   ]
 
   public_configs = [ ":av_codec_capi_config" ]

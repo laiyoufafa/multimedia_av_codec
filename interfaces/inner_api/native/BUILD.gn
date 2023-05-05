@@ -257,16 +257,16 @@ ohos_shared_library("av_codec_client") {
   }
   if (multimedia_av_codec_support_demuxer) {
     sources += [
-     "$AV_CODEC_ROOT_DIR/frameworks/native/avdemuxer/avdemuxer_impl.cpp",
-     "$AV_CODEC_ROOT_DIR/services/services/demuxer/client/demuxer_client.cpp",
-     "$AV_CODEC_ROOT_DIR/services/services/demuxer/ipc/demuxer_service_proxy.cpp",
+     "$av_codec_root_dir/frameworks/native/avdemuxer/avdemuxer_impl.cpp",
+     "$av_codec_root_dir/services/services/demuxer/client/demuxer_client.cpp",
+     "$av_codec_root_dir/services/services/demuxer/ipc/demuxer_service_proxy.cpp",
     ]
   }
   if (multimedia_av_codec_support_source) {
     sources += [
-     "$AV_CODEC_ROOT_DIR/frameworks/native/avsource/avsource_impl.cpp",
-     "$AV_CODEC_ROOT_DIR/services/services/source/client/source_client.cpp",
-     "$AV_CODEC_ROOT_DIR/services/services/source/ipc/source_service_proxy.cpp",
+     "$av_codec_root_dir/frameworks/native/avsource/avsource_impl.cpp",
+     "$av_codec_root_dir/services/services/source/client/source_client.cpp",
+     "$av_codec_root_dir/services/services/source/ipc/source_service_proxy.cpp",
     ]
   }
  if (multimedia_av_codec_support_muxer) {
