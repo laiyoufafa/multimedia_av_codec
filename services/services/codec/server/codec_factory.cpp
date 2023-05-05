@@ -21,6 +21,8 @@
 #include "avcodec_log.h"
 #include "audio_ffmpeg_adapter.h"
 #include "fcodec.h"
+#include "codeclist_core.h"
+#include "format.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecFactory"};
@@ -44,11 +46,16 @@ CodecFactory::~CodecFactory()
 
 std::shared_ptr<CodecBase> CodecFactory::CreateCodecByMime(bool isEncoder, const std::string &mime)
 {
-    std::shared_ptr<CodecBase> codec = nullptr;
-    if(mime == VIDEOMIMETYPE){
-        codec = std::make_shared<Codec::FCodec>(isEncoder, mime);
+    std::shared_ptr<CodecListCore> codecListCore = std::make_shared<CodecListCore>();
+    std::string codecname;
+    Format format;
+    format.PutStringValue("codec_mime", mime);
+    if(isEncoder){
+        codecname = codecListCore->FindEncoder(format);
+    } else {
+        codecname = codecListCore->FindDecoder(format);
     }
-    AVCODEC_LOGD("CreateCodecByMime is not support");
+    std::shared_ptr<CodecBase> codec = CreateCodecByName(codecname);
     return codec;
 }
 

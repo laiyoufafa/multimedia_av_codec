@@ -12,19 +12,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef AVCODECLISTBASE_H
-#define AVCODECLISTBASE_H
 
-#include <string>
+#ifndef CODECLIST_BUILDER_H
+#define CODECLIST_BUILDER_H
+
 #include "avcodec_info.h"
+#include "codeclistbase.h"
 
 namespace OHOS {
 namespace Media {
-class CodecListBase {
+
+class VideoCodecList : public CodecListBase{
 public:
-    virtual ~CodecListBase() = default;
-    virtual int32_t GetCapabilityList(std::vector<CapabilityData>& caps) = 0;
+    ~VideoCodecList() override = default;
+    int32_t GetCapabilityList(std::vector<CapabilityData>& caps) override;
 };
+
+class AudioCodecList : public CodecListBase{
+public:
+    ~AudioCodecList() override = default;
+    int32_t GetCapabilityList(std::vector<CapabilityData>& caps) override;
+};
+
+
 } // namespace Media
 } // namespace OHOS
-#endif // CODECLISTBASE_H
+#endif // CODECLIST_BUILDER_H

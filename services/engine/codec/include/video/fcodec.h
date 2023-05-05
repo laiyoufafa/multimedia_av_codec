@@ -8,6 +8,7 @@
 #include "share_memory.h"
 #include "surface_memory.h"
 #include "task_thread.h"
+#include "avcodec_info.h"
 #include <any>
 #include <atomic>
 #include <list>
@@ -21,6 +22,7 @@ namespace Media {
 namespace Codec {
 class FCodec : public CodecBase {
 public:
+    explicit FCodec() = default;
     explicit FCodec(const std::string &name);
     explicit FCodec(bool isEncoder, const std::string &mime);
     ~FCodec() override;
@@ -41,6 +43,7 @@ public:
     int32_t RenderOutputBuffer(size_t index) override;
     int32_t Pause() override;
     int32_t Resume() override;
+    int32_t getCodecCapability(std::vector<CapabilityData> &capaArray);
 
     struct AVBuffer {
     public:

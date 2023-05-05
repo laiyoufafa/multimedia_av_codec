@@ -25,8 +25,8 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 namespace OHOS {
 namespace Media {
 
-const std::string CHANNEL_COUNT_KEY{"channel-count"};
-const std::string SAMPLE_RATE_KEY{"simplerate"};
+const std::string CHANNEL_COUNT_KEY{"channel_count"};
+const std::string SAMPLE_RATE_KEY{"sample_rate"};
 const std::string BIT_RATE_KEY{"bitrate"};
 
 AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string_view &name) : state_(CodecState::RELEASED), name_(name) {}
@@ -34,7 +34,9 @@ AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string_view &name) : state_(Co
 AudioFFMpegAdapter::~AudioFFMpegAdapter()
 {
     callback_ = nullptr;
-    audioCodec->release();
+    if (audioCodec) {
+        audioCodec->release();
+    }
     state_ = CodecState::RELEASED;
     audioCodec = nullptr;
 }
