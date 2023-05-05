@@ -74,10 +74,10 @@ void ADecDemo::RunCase() {
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     OH_AVFormat *format = OH_AVFormat_Create();
-    OH_AVFormat_SetIntValue(format, "channel-count", CHANNEL_COUNT);
-    OH_AVFormat_SetIntValue(format, "sample-rate", SAMPLE_RATE);
+    OH_AVFormat_SetIntValue(format, "channel_count", CHANNEL_COUNT);
+    OH_AVFormat_SetIntValue(format, "sample_rate", SAMPLE_RATE);
     OH_AVFormat_SetIntValue(format, "bits_per_coded-rate", BITS_PER_CODED_RATE);
-    OH_AVFormat_SetLongValue(format, "bits-rate", BITS_RATE);
+    OH_AVFormat_SetLongValue(format, "bitrate", BITS_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
