@@ -1,17 +1,10 @@
 #include "audio_ffmpeg_encoder_plugin.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
 #include <iostream>
 
 namespace OHOS {
 namespace Media {
-
-const std::string CHANNEL_COUNT_KEY{"channel-count"};
-const std::string SAMPLE_RATE_KEY{"sample-rate"};
-const std::string BITS_RATE_KEY{"bit-rate"};
-const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
-const std::string SAMPLE_FORMAT_KEY{"sample-format"};
-const std::string CHANNEL_LAYOUT_KEY{"channel-layout"};
-
 AudioFfmpegEncoderPlugin::AudioFfmpegEncoderPlugin() {}
 
 AudioFfmpegEncoderPlugin::~AudioFfmpegEncoderPlugin() {
@@ -204,25 +197,20 @@ int32_t AudioFfmpegEncoderPlugin::AllocateContext(const std::string &name) {
 
 int32_t AudioFfmpegEncoderPlugin::InitContext(const Format &format) {
     /**
-     * todo: 
-     *      1. input pcm sample_format should be checked, if not supported, return error
-     *      2. target sample format shoule be checked, if not supported, should return error
+     * 1. input pcm sample_format should be checked, if not supported, return error
+     * 2. target sample format shoule be checked, if not supported, should return error
     */
-    format.GetIntValue(CHANNEL_COUNT_KEY, avCodecContext_->channels);
-    format.GetIntValue(SAMPLE_RATE_KEY, avCodecContext_->sample_rate);
-    format.GetLongValue(BITS_RATE_KEY, avCodecContext_->bit_rate);
-    format.GetIntValue(BITS_PER_CODED_SAMPLE_KEY, avCodecContext_->bits_per_coded_sample);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, avCodecContext_->channels);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, avCodecContext_->sample_rate);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, avCodecContext_->bit_rate);
+
     int64_t layout;
-    format.GetLongValue(CHANNEL_LAYOUT_KEY, layout);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT, layout);
     avCodecContext_->channel_layout = layout; // layout
+
     int32_t sampleFormat;
-    format.GetIntValue(SAMPLE_FORMAT_KEY, sampleFormat); // for aac is AV_SMAPLE_FORMAT_FLTP
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT, sampleFormat); // for aac is AV_SMAPLE_FORMAT_FLTP
     avCodecContext_->sample_fmt = (AVSampleFormat)sampleFormat;
-    avCodecContext_->request_sample_fmt = avCodecContext_->sample_fmt;
-    avCodecContext_->workaround_bugs =
-        static_cast<uint32_t>(avCodecContext_->workaround_bugs) | static_cast<uint32_t>(FF_BUG_AUTODETECT);
-    avCodecContext_->err_recognition = 1;
-    avCodecContext_->profile = FF_PROFILE_AAC_LOW;
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 

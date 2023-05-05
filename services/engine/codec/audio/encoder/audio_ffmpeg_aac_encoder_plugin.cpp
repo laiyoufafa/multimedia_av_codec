@@ -1,5 +1,6 @@
 #include "audio_ffmpeg_aac_encoder_plugin.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
 #include <iostream>
 namespace OHOS {
 namespace Media {
@@ -84,33 +85,35 @@ static bool CheckChannelLayout(const std::shared_ptr<AVCodec> &codec, const uint
 
 bool AudioFFMpegAacEncoderPlugin::CheckFormat(const Format &format) const
 {
-    // todo: 统一用定义好的key
-    if (!format.ContainKey("sample-format") || !format.ContainKey("channel-layout") ||
-        !format.ContainKey("sample-rate")) {
+    if (!format.ContainKey(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT) ||
+        !format.ContainKey(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT) ||
+        !format.ContainKey(MediaDescriptionKey::MD_KEY_SAMPLE_RATE)) {
         std::cout << "parameter missing" << std::endl;
         return false;
     }
 
     auto avCodec = basePlugin->GetAVCodec();
     int sampleFormat;
-    format.GetIntValue("sample-format", sampleFormat);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT, sampleFormat);
     if (!CheckSampleFormat(avCodec, (AVSampleFormat)sampleFormat)) {
         std::cout << "sample format is not supported" << std::endl;
         return false;
     }
+
     int sampleRate;
-    format.GetIntValue("sample-rate", sampleRate);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, sampleRate);
     if (!CheckSampleRate(avCodec, sampleRate)) {
         std::cout << "sample rate is not supported" << std::endl;
         return false;
     }
 
     int64_t channelLayout;
-    format.GetLongValue("channel-layout", channelLayout);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT, channelLayout);
     if (!CheckChannelLayout(avCodec, channelLayout)) {
         std::cout << "channel layout is not supported" << std::endl;
         return false;
     }
+
     return true;
 }
 
