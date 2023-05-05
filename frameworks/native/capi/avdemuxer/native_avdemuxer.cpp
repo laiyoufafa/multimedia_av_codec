@@ -100,11 +100,14 @@ OH_AVErrCode OH_AVDemuxer_CopyNextSample(OH_AVDemuxer *demuxer, uint32_t *trackI
     CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, AV_ERR_INVALID_VAL, "New DemuxerObject failed when copy sample!")
 
     struct AVCodecBufferInfo bufferInfoInner;
-    int32_t ret = demuxerObj->demuxer_->CopyNextSample(*trackIndex, buffer, bufferInfoInner);
+    // enum AVCodecBufferFlag bufferFlag = static_cast<enum AVCodecBufferFlag>(attr.flags);
+    enum AVCodecBufferFlag *flag=nullptr;
+    *flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
+    int32_t ret = demuxerObj->demuxer_->CopyNextSample(*trackIndex, buffer, bufferInfoInner,*flag);
     bufferInfo->pts = bufferInfoInner.presentationTimeUs;
     bufferInfo->size = bufferInfoInner.size;
     bufferInfo->offset = bufferInfoInner.offset;
-    bufferInfo->flags = bufferInfoInner.flags;
+    bufferInfo->flags =static_cast<uint32_t>(*flag);
     CHECK_AND_RETURN_RET_LOG(ret == AV_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer_ CopyNextSample failed!");
 
     return AV_ERR_OK;

@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef PLUGIN_COMMON_TYPE_CAST_EXT_H
-#define PLUGIN_COMMON_TYPE_CAST_EXT_H
+#ifndef TYPE_CAST_EXT_H
+#define TYPE_CAST_EXT_H
 
 #include <cstring>
 #include <memory>
@@ -57,4 +57,4 @@ inline std::shared_ptr<T> ReinterpretPointerCast(const std::shared_ptr<U>& ptr) 
 } // Media
 } // OHOS
 
-#endif // PLUGIN_COMMON_TYPE_CAST_EXT_H
+#endif // TYPE_CAST_EXT_H

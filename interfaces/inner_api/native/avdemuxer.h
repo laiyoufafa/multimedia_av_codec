@@ -62,7 +62,7 @@ public:
      * @since 4.0
      * @version 4.0
      */
-    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) = 0;
+    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo, AVCodecBufferFlag &flag) = 0;
 
     /**
      * @brief All selected tracks seek near to the requested time according to the seek mode.

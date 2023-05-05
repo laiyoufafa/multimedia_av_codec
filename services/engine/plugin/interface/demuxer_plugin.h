@@ -27,7 +27,7 @@ struct DemuxerPlugin : public PluginBase {
     explicit DemuxerPlugin() : PluginBase("Demuxer") {}
 
     virtual int32_t Create(uintptr_t sourceAddr) = 0;
-    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo) = 0;
+    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) = 0;
     virtual int32_t SelectSourceTrackByID(uint32_t index) = 0;
     virtual int32_t UnselectSourceTrackByID(uint32_t index) = 0;
     virtual int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) = 0;

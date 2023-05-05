@@ -122,18 +122,19 @@ int64_t FFmpegDemuxerPlugin::GetTotalStreamFrames(int streamIndex)
 }
 
 
-int32_t FFmpegDemuxerPlugin::ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* avStream)
+AVCodecBufferFlag FFmpegDemuxerPlugin::ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* avStream)
 {
     AVCODEC_LOGD("FFmpegDemuxerPlugin::ConvertFlagsFromFFmpeg is called");
-    int32_t flags;
+    enum AVCodecBufferFlag flags=AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
     if(pkt->flags==0x0001){ 
         if(abs((int)(avStream->duration-pkt->pts))<=(pkt->duration)){
-            flags = AVCODEC_BUFFER_FLAGS_SYNC_FRAME | AVCODEC_BUFFER_FLAGS_EOS;
+            // flags = AVCODEC_BUFFER_FLAGS_SYNC_FRAME | AVCODEC_BUFFER_FLAGS_EOS;
+            flags =  AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_EOS;
         }else{
-            flags = AVCODEC_BUFFER_FLAGS_SYNC_FRAME;
+            flags = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_SYNC_FRAME;
         }
     } else {
-        flags = AVCODEC_BUFFER_FLAGS_NONE;
+        flags = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
     }
 
     return flags;
@@ -316,7 +317,7 @@ void FFmpegDemuxerPlugin::ConvertAvcOrHevcToAnnexb(AVPacket& pkt)
     (void)av_bsf_receive_packet(avbsfContext_.get(), &pkt);
 }
 
-int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo)
+int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag)
 { 
     AVCODEC_LOGD("FFmpegDemuxerPlugin::CopyNextSample is on call");
 
@@ -337,7 +338,7 @@ int32_t FFmpegDemuxerPlugin::CopyNextSample(uint32_t &trackIndex, uint8_t* buffe
             sampleIndex_[pkt->stream_index]++;
         }
         bufferInfo.presentationTimeUs = AvTime2Ms(ConvertTimeFromFFmpeg(pkt->pts, avStream->time_base));
-        bufferInfo.flags = ConvertFlagsFromFFmpeg(pkt, avStream);
+        flag = ConvertFlagsFromFFmpeg(pkt, avStream);
         if (avStream->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             frameSize = pkt->size;
         } else if (avStream->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {

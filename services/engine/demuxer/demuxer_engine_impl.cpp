@@ -75,11 +75,11 @@ int32_t DemuxerEngineImpl::UnselectSourceTrackByID(uint32_t trackIndex)
     return demuxer_->UnselectSourceTrackByID(trackIndex);
 }
 
-int32_t DemuxerEngineImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo)
+int32_t DemuxerEngineImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag)
 {
     AVCodecTrace trace("DemuxerEngineImpl::CopyNextSample");
     AVCODEC_LOGI("CopyNextSample");
-    return demuxer_->CopyNextSample(trackIndex, buffer, bufferInfo);
+    return demuxer_->CopyNextSample(trackIndex, buffer, bufferInfo,flag);
 }
 
 int32_t DemuxerEngineImpl::SeekToTime(int64_t mSeconds, AVSeekMode mode)

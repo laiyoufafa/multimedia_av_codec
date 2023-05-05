@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCS_ERRORS_H
-#define AVCS_ERRORS_H
+#ifndef AVCODEC_ERRORS_H
+#define AVCODEC_ERRORS_H
 
 #include "errors.h"
 #include "native_averrors.h"
@@ -95,4 +95,4 @@ __attribute__((visibility("default"))) OH_AVErrCode AVCSErrorToOHAVErrCode(AVCod
 
 } // namespace Media
 } // namespace OHOS
-#endif // AVCS_ERRORS_H
+#endif // AVCODEC_ERRORS_H

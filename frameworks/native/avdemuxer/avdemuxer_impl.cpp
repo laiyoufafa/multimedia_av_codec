@@ -102,7 +102,7 @@ int32_t AVDemuxerImpl::UnselectSourceTrackByID(uint32_t trackIndex)
     return demuxerClient_->UnselectSourceTrackByID(trackIndex);
 }
 
-int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo)
+int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag)
 {
     AVCodecTrace trace("AVDemuxer::CopyNextSample");
 
@@ -124,7 +124,7 @@ int32_t AVDemuxerImpl::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVC
     int32_t ret = memory->Init();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_NO_MEMORY, "Copy sample failed by demuxerService!");
 
-    ret = demuxerClient_->CopyNextSample(trackIndex, memory->GetBase(), bufferInfo);
+    ret = demuxerClient_->CopyNextSample(trackIndex, memory->GetBase(), bufferInfo,flag);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "Copy sample failed by demuxerService!");
     
     errno_t rc = memcpy_s(buffer, memory->GetSize(), memory->GetBase(), memory->GetSize());

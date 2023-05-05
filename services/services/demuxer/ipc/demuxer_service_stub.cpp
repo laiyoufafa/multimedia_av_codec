@@ -112,10 +112,10 @@ int32_t DemuxerServiceStub::UnselectSourceTrackByID(uint32_t index)
     return demuxerServer_->UnselectSourceTrackByID(index);
 }
 
-int32_t DemuxerServiceStub::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo)
+int32_t DemuxerServiceStub::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag)
 {
     CHECK_AND_RETURN_RET_LOG(demuxerServer_ != nullptr, AVCS_ERR_NO_MEMORY, "demuxer service is nullptr");
-    return demuxerServer_->CopyNextSample(trackIndex, buffer, bufferInfo);
+    return demuxerServer_->CopyNextSample(trackIndex, buffer, bufferInfo,flag);
 }
 
 int32_t DemuxerServiceStub::SeekToTime(int64_t mSeconds, const AVSeekMode mode)
@@ -164,15 +164,17 @@ int32_t DemuxerServiceStub::UnselectSourceTrackByID(MessageParcel &data, Message
 int32_t DemuxerServiceStub::CopyNextSample(MessageParcel &data, MessageParcel &reply)
 {
     AVCodecBufferInfo info;
+    AVCodecBufferFlag flag;
     info.presentationTimeUs = data.ReadInt64();
     info.size = data.ReadInt32();
     info.offset = data.ReadInt32();
-    info.flags = data.ReadInt32();
+    
+    flag = static_cast<enum AVCodecBufferFlag>(data.ReadUint32());
     uint8_t *buffer = NULL;
     uint32_t trackIndex = data.ReadUint32();
 
     // TODO: 添加LOG描述
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(CopyNextSample(trackIndex, buffer, info)), AVCS_ERR_UNKNOWN, "");   
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(CopyNextSample(trackIndex, buffer, info,flag)), AVCS_ERR_UNKNOWN, "");   
     return AVCS_ERR_OK;
 }
 

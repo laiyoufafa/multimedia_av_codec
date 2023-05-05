@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef SOURCEBASE_H
-#define SOURCEBASE_H
+#ifndef AVSOURCEBASE_H
+#define AVSOURCEBASE_H
 
 #include <string>
 #include "format.h"
@@ -32,4 +32,4 @@ public:
 };
 } // namespace Media
 } // namespace OHOS
-#endif // SOURCEBASE_H
+#endif // AVSOURCEBASE_H

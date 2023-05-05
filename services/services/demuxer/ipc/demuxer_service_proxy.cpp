@@ -89,7 +89,7 @@ int32_t DemuxerServiceProxy::UnselectSourceTrackByID(uint32_t trackIndex)
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call UnselectSourceTrackByID, error: %{public}d", error);
     return reply.ReadInt32();
 }
-int32_t DemuxerServiceProxy::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo)
+int32_t DemuxerServiceProxy::CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -100,7 +100,7 @@ int32_t DemuxerServiceProxy::CopyNextSample(uint32_t &trackIndex, uint8_t *buffe
     data.WriteInt64(bufferInfo.presentationTimeUs);
     data.WriteInt32(bufferInfo.size);
     data.WriteInt32(bufferInfo.offset);
-    data.WriteInt32(bufferInfo.flags);
+    data.WriteUint32(static_cast<uint32_t>(flag));
 
     data.WriteUint32(trackIndex);
 

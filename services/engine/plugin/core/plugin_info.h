@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef PLUGIN_CORE_PLUGIN_INFO_H
-#define PLUGIN_CORE_PLUGIN_INFO_H
+#ifndef PLUGIN_INFO_H
+#define PLUGIN_INFO_H
 
 #include "plugin_definition.h"
 #include "format.h"
@@ -76,4 +76,4 @@ struct PluginInfo {
 } // namespace Plugin
 } // namespace Media
 } // namespace OHOS
-#endif // PLUGIN_CORE_PLUGIN_INFO_H
+#endif // PLUGIN_INFO_H

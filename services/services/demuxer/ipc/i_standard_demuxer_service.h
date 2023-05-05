@@ -29,7 +29,7 @@ public:
     virtual int32_t Init(uint64_t sourceAddr) = 0;
     virtual int32_t SelectSourceTrackByID(uint32_t trackIndex) = 0;
     virtual int32_t UnselectSourceTrackByID(uint32_t trackIndex) = 0;
-    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo) = 0;
+    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) = 0;
     virtual int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) = 0;
 
     virtual int32_t DestroyStub() = 0;

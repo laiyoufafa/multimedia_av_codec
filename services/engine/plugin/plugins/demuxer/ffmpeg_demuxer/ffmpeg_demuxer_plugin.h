@@ -47,7 +47,7 @@ public:
     ~FFmpegDemuxerPlugin();
     
     int32_t Create(uintptr_t sourceAddr) override;
-    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t* buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) override;
     int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
     int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
     int32_t SeekToTime(int64_t mSeconds, AVSeekMode mode) override;
@@ -55,7 +55,7 @@ public:
 
 private:
     bool IsInSelectedTrack(uint32_t trackIndex);
-    int32_t ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* avStream);
+    AVCodecBufferFlag ConvertFlagsFromFFmpeg(AVPacket* pkt,  AVStream* avStream);
     int64_t GetTotalStreamFrames(int streamIndex);
     int32_t SetBitStreamFormat();
     void ConvertAvcOrHevcToAnnexb(AVPacket& pkt);

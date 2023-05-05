@@ -56,8 +56,7 @@ struct AVCodecBufferInfo {
     int32_t size = 0;
     /* The start-offset of the data in the buffer */
     int32_t offset = 0;
-    /* The flags this Buffer has, which is also a combination of multiple {@link OH_AVCodecBufferFlags}. */
-    uint32_t flags = 0;
+
 };
 
 struct AVBufferElement {

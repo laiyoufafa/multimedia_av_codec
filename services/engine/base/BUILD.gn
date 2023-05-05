@@ -19,12 +19,12 @@ ohos_static_library("av_codec_codec_base"){
 
     deps=[
         "//third_party/ffmpeg:libohosffmpeg",
-        "//foundation/multimedia/av_codec/services/engine/common:av_codec_engine_common",
+        "$av_codec_root_dir/services/engine/common:av_codec_engine_common",
     ]
 
     public_deps= [
-        "//foundation/multimedia/av_codec/services/utils:av_codec_format",
-        "//foundation/multimedia/av_codec/services/dfx:av_codec_service_dfx",
+        "$av_codec_root_dir/services/utils:av_codec_format",
+        "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
         ]
     
     external_deps = [
