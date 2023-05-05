@@ -102,9 +102,9 @@ int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format)
 #define SUPPORT_SAMPLE_RATE 9
     int sample_rate_pick[SUPPORT_SAMPLE_RATE] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
 
-    format.GetIntValue("channel-count", channels);
-    format.GetIntValue("sample-rate", sample_rate);
-    format.GetLongValue("bits-rate", bit_rate);
+    format.GetIntValue("channel_count", channels);
+    format.GetIntValue("sample_rate", sample_rate);
+    format.GetLongValue("bitrate", bit_rate);
     if (channels < 1 || channels > 2) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }

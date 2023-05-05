@@ -54,9 +54,9 @@ int32_t AudioFFMpegFlacDecoderPlugin::init(const Format &format)
 {
     int channels, sample_rate, bits_per_coded_rate;
     int64_t bit_rate;
-    format.GetIntValue("channel-count", channels);
-    format.GetIntValue("sample-rate", sample_rate);
-    format.GetLongValue("bits-rate", bit_rate);
+    format.GetIntValue("channel_count", channels);
+    format.GetIntValue("sample_rate", sample_rate);
+    format.GetLongValue("bitrate", bit_rate);
     format.GetIntValue("bits_per_coded-rate", bits_per_coded_rate);
     if (!isTrueSampleRate(sample_rate)) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
