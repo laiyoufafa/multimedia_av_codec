@@ -22,6 +22,7 @@ ohos_executable("av_codec_demo") {
     "$av_codec_root_dir/services/services/factory",
     "$av_codec_root_dir/services/engine/plugin/core",
     "$av_codec_root_dir/services/engine/plugin/interface",
+    "$av_codec_root_dir/services/engine/source/hst_releated",
     "$av_codec_root_dir/services/dfx/include",
     "$av_codec_root_dir/services/utils/include",
     "./av_codec_audio",
