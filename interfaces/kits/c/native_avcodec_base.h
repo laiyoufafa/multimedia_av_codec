@@ -216,6 +216,55 @@ extern const char *OH_MD_KEY_ROTATION;
 /* Key of the codec specific data. value type is uint8_t*. */
 extern const char *OH_MD_KEY_CODEC_CONFIG;
 
+/* Key for track index, value type is uint32_t */
+extern const char *OH_MD_KEY_TRACK_INDEX;
+/* Key for track sample count, value type is uint64_t */
+extern const char *OH_MD_KEY_TRACK_SAMPLE_COUNT;
+/* Key for bit stream format, see @OH_VideoBitStreamFormat, OH_VideoBitStreamFormat */
+extern const char *OH_MD_KEY_BIT_STREAM_FORMAT;
+
+/* source format Key for title, value type is string */
+extern const char *OH_MD_KEY_TITLE;
+/* source format Key for artist, value type is string */
+extern const char *OH_MD_KEY_ARTIST;
+/* source format Key for album, value type is string */
+extern const char *OH_MD_KEY_ALBUM;
+/* source format Key for album_artist, value type is string */
+extern const char *OH_MD_KEY_ALBUM_ARTIST;
+/* source format Key for date, value type is string */
+extern const char *OH_MD_KEY_DATE;
+/* source format Key for comment, value type is string */
+extern const char *OH_MD_KEY_COMMENT;
+/* source format Key for genre, value type is string */
+extern const char *OH_MD_KEY_GENRE;
+/* source format Key for copyright, value type is string */
+extern const char *OH_MD_KEY_COPYRIGHT;
+/* source format Key for language, value type is string */
+extern const char *OH_MD_KEY_LANGUAGE;
+/* source format Key for description, value type is string */
+extern const char *OH_MD_KEY_DESCRIPTION;
+/* source format Key for lyrics, value type is string */
+extern const char *OH_MD_KEY_LYRICS;
+/* source format Key for duration, value type is int64_t */
+extern const char *OH_MD_KEY_DURATION;
+/* source format Key for start_time, value type is string */
+extern const char *OH_MD_KEY_START_TIME;
+/* source format Key for type, value type is string */
+extern const char *OH_MD_KEY_TYPE;
+
+/**
+ * @brief Format of video bitStream
+ * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @since 10
+ * @version 4.0
+ */
+typedef enum OH_VideoBitStreamFormat {
+    UNKNOWN = 0,
+    AVCC,
+    HVCC,
+    ANNEXB
+} OH_VideoBitStreamFormat;
+
 /**
  * @brief Media type.
  * @syscap SystemCapability.Multimedia.Media.CodecBase
@@ -250,6 +299,21 @@ typedef enum OH_AVCProfile {
 typedef enum OH_AACProfile {
     AAC_PROFILE_LC = 0,
 } OH_AACProfile;
+
+/**
+ * @brief Seek Mode
+ * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @since 10
+ * @version 4.0
+ */
+typedef enum OH_AVSeekMode {
+    /* seek to sync sample after the time */
+    SEEK_MODE_NEXT_SYNC = 0,
+    /* seek to sync sample before the time */
+    SEEK_MODE_PREVIOUS_SYNC,
+    /* seek to sync sample closest to time */
+    SEEK_MODE_CLOSEST_SYNC,
+} OH_AVSeekMode;
 
 #ifdef __cplusplus
 }

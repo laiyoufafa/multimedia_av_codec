@@ -16,36 +16,35 @@
 #ifndef I_STANDARD_DEMUXER_SERVICE_H
 #define I_STANDARD_DEMUXER_SERVICE_H
 
-
+#include "avcodec_common.h"
 #include "iremote_proxy.h"
-#include "i_demuxer_service.h"
 
 namespace OHOS {
 namespace Media {
-class IAVDemuxerService : public IRemoteBroker {
+class IStandardDemuxerService : public IRemoteBroker {
 public:
-    virtual ~IAVDemuxerService() = default;
+    virtual ~IStandardDemuxerService() = default;
 
     // 业务
-    virtual int32_t Init(uint64_t attr) = 0;
-    virtual int32_t AddSourceTrackByID(uint32_t index) = 0;
-    virtual int32_t RemoveSourceTrackByID(uint32_t index) = 0;
-    virtual int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) = 0;
-    virtual int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) = 0;
+    virtual int32_t Init(uint64_t sourceAddr) = 0;
+    virtual int32_t SelectSourceTrackByID(uint32_t trackIndex) = 0;
+    virtual int32_t UnselectSourceTrackByID(uint32_t trackIndex) = 0;
+    virtual int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) = 0;
+    virtual int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) = 0;
 
     virtual int32_t DestroyStub() = 0;
 
     enum DemuxerServiceMsg {
         INIT,
-        ADD_SOURCE_TRACK_BY_ID,
-        REMOVE_SOURCE_TRACK_BY_ID,
-        COPY_CURRENT_SAMPLE_TO_BUF,
-        SEEK_TO_TIME_STAMP,
+        SELECT_SOURCE_TRACK_BY_ID,
+        UNSELECT_SOURCE_TRACK_BY_ID,
+        COPY_NEXT_SAMPLE,
+        SEEK_TO_TIME,
 
         DESTROY_STUB,
     };
 
-    DECLARE_INTERFACE_DESCRIPTOR(u"IAVDemuxerService");
+    DECLARE_INTERFACE_DESCRIPTOR(u"IStandardDemuxerService");
 };
 
 }  // namespace Media

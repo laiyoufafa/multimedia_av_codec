@@ -156,6 +156,7 @@ int32_t CodecServer::NotifyEos()
         status_ = END_OF_STREAM;
         AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
         // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
+        AVCODEC_LOGI("EOS state");
     }
     return ret;
 }

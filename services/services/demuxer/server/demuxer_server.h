@@ -15,30 +15,29 @@
 #ifndef DEMUXER_SERVER_H
 #define DEMUXER_SERVER_H
 
-#include <mutex>
 #include "i_demuxer_service.h"
-// #include "i_demuxer_engine.h"
 #include "nocopyable.h"
+#include "i_demuxer_engine.h"
 
 namespace OHOS {
 namespace Media {
-class AVDemuxerServer : public IAVDemuxer, public NoCopyable {
+class DemuxerServer : public std::enable_shared_from_this<DemuxerServer>, public IDemuxerService, public NoCopyable {
 public:
-    static std::shared_ptr<IAVDemuxer> Create();
-    AVDemuxerServer();
-    ~AVDemuxerServer();
+    static std::shared_ptr<IDemuxerService> Create();
+    DemuxerServer();
+    ~DemuxerServer();
 
     // 业务
-    int32_t Init(uint64_t attr) override;
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
+    int32_t Init(uintptr_t sourceAddr) override;
+    int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) override;
+    int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) override;
 
 private:
-    int32_t InitServer();
-    std::mutex mutex_;
-    // std::shared_ptr<IDemuxerEngine> demuxerEngine_ = nullptr;
+    std::shared_ptr<IDemuxerEngine> demuxerEngine_ = nullptr;
+    int32_t appUid_ = 0;
+    int32_t appPid_ = 0;
     // IDemuxerEngine curState_ = DEMUXER_IDEL;
     // uint32_t trackNum_ = 0;
 

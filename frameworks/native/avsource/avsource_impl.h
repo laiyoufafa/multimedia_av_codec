@@ -18,37 +18,43 @@
 
 #include "avsource.h"
 #include "nocopyable.h"
-#include "i_avsource_service.h"
+#include "i_source_service.h"
+// #include "source.h"
 
 namespace OHOS {
 namespace Media{
 class AVSourceImpl : public AVSource, public NoCopyable {
 public:
     AVSourceImpl();
-    ~AVSourceImpl();
+    ~AVSourceImpl() override;
 
-    uint32_t GetTrackCount() override;
-    std::shared_ptr<SourceTrack> LoadSourceTrackByID(uint32_t trackId) override;
-    int32_t Destroy() override;
-    uint64_t GetSourceAttr() override;
-    int32_t SetParameter(const Format &param, uint32_t trackId) override;
-    std::shared_ptr<Format> GetTrackFormat(Format &param, uint32_t trackId) override;
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    std::shared_ptr<AVSourceTrack> GetSourceTrackByID(uint32_t trackIndex) override;
+    uintptr_t GetSourceAddr() override;
+    int32_t GetSourceFormat(Format &format) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex);
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex);
     int32_t Init(const std::string &uri);
 
+    std::string sourceUri;
+
 private:
-    std::shared_ptr<IAVSourceService> sourceService_ = nullptr;
+    std::shared_ptr<ISourceService> sourceClient_ = nullptr;
+    std::vector<std::shared_ptr<AVSourceTrack>> tracks_ {};
+    int32_t trackCount_ = -1;
+    bool TrackIndexIsValid(uint32_t trackIndex);
 };
 
 class AVSourceTrackImpl : public AVSourceTrack, public NoCopyable {
 public:
-    AVSourceTrackImpl(AVSource* source, uint32_t trackId);
+    AVSourceTrackImpl(AVSourceImpl *source, uint32_t trackIndex);
     ~AVSourceTrackImpl();
 
-    int32_t SetParameter(const Format &param) override;
-    std::shared_ptr<Format> GetTrackFormat(Format &param) override;
+    int32_t SetTrackFormat(const Format &format) override;
+    int32_t GetTrackFormat(Format &format) override;
 private:
-    uint32_t trackId_;
-    std::shared_ptr<AVSourceImpl> sourceImpl_;
+    uint32_t trackIndex_;
+    AVSourceImpl* sourceImpl_;
 };
 } // namespace Media
 } // namespace OHOS

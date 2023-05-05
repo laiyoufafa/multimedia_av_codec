@@ -14,7 +14,7 @@
 import("//build/test.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-AV_CODE_ROOT_DIR = "//foundation/multimedia/av_codec"
+AV_CODE_ROOT_DIR = "$av_codec_root_dir"
 module_output_path = "av_codec"
 
 av_codec_unittest_include_dirs = [

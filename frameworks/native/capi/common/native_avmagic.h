@@ -31,6 +31,9 @@ enum AVMagic {
     AVCODEC_MAGIC_AUDIO_DECODER = AV_MAGIC('A', 'D', 'E', 'C'),
     AVCODEC_MAGIC_AUDIO_ENCODER = AV_MAGIC('A', 'E', 'N', 'C'),
     AVCODEC_MAGIC_AVMUXER = AV_MAGIC('M', 'U', 'X', 'R'),
+    AVCODEC_MAGIC_AVDEMUXER = AV_MAGIC('D', 'M', 'U', 'X'),
+    AVCODEC_MAGIC_AVSOURCE = AV_MAGIC('S', 'O', 'U', 'C'),
+    AVCODEC_MAGIC_AVSOURCETRACK = AV_MAGIC('T', 'R', 'A', 'C'),
     AVCODEC_MAGIC_FORMAT = AV_MAGIC('F', 'R', 'M', 'T'),
     AVCODEC_MAGIC_SHARED_MEMORY = AV_MAGIC('S', 'M', 'E', 'M'),
 };
@@ -78,5 +81,20 @@ struct OH_AVCapability : public OHOS::RefBase {
 struct OH_AVMuxer : public AVObjectMagic {
     explicit OH_AVMuxer(enum AVMagic m) : AVObjectMagic(m) {}
     virtual ~OH_AVMuxer() = default;
+};
+
+struct OH_AVDemuxer : public AVObjectMagic {
+    explicit OH_AVDemuxer(enum AVMagic m) : AVObjectMagic(m) {}
+    virtual ~OH_AVDemuxer() = default;
+};
+
+struct OH_AVSource : public AVObjectMagic {
+    explicit OH_AVSource(enum AVMagic m) : AVObjectMagic(m) {}
+    virtual ~OH_AVSource() = default;
+};
+
+struct OH_AVSourceTrack : public AVObjectMagic {
+    explicit OH_AVSourceTrack(enum AVMagic m) : AVObjectMagic(m) {}
+    virtual ~OH_AVSourceTrack() = default;
 };
 #endif // NATIVE_AVMAGIC_H

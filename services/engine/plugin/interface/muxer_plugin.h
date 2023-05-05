@@ -33,6 +33,10 @@ struct MuxerPlugin : public PluginBase {
     virtual Status Start() = 0;
     virtual Status WriteSampleBuffer(uint8_t *sampleBuffer, const TrackSampleInfo &info) = 0;
     virtual Status Stop() = 0;
+    Status SetCallback(Callback* cb) {
+        (void)cb;
+        return Status::ERROR_UNIMPLEMENTED;
+    };
 };
 
 /// Muxer plugin api major number.

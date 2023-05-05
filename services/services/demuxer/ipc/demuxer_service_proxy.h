@@ -19,22 +19,22 @@
 
 namespace OHOS {
 namespace Media {
-class AVDemuxerProxy : public IRemoteProxy<IAVDemuxerService>, public NoCopyable {
+class DemuxerServiceProxy : public IRemoteProxy<IStandardDemuxerService>, public NoCopyable {
 public:
-    explicit AVDemuxerProxy(const sptr<IRemoteObject> &impl);
-    virtual ~AVDemuxerProxy();
+    explicit DemuxerServiceProxy(const sptr<IRemoteObject> &impl);
+    virtual ~DemuxerServiceProxy();
 
     // 业务
-    int32_t Init(uint64_t attr) override;
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const SeekMode mode) override;
+    int32_t Init(uint64_t sourceAddr) override;
+    int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) override;
+    int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) override;
 
     int32_t DestroyStub() override;
 
 private:
-    static inline BrokerDelegator<AVDemuxerProxy> delegator_;
+    static inline BrokerDelegator<DemuxerServiceProxy> delegator_;
 };
 
 }  // namespace Media

@@ -20,23 +20,23 @@
 
 namespace OHOS {
 namespace Media {
-class AVDemuxerClient : public IAVDemuxer, public NoCopyable {
+class DemuxerClient : public IDemuxerService, public NoCopyable {
 public:
-    static std::shared_ptr<AVDemuxerClient> Create(const sptr<IAVDemuxerService> &ipcProxy);
-    explicit AVDemuxerClient(const sptr<IAVDemuxerService> &ipcProxy);
-    ~AVDemuxerClient();
+    static std::shared_ptr<DemuxerClient> Create(const sptr<IStandardDemuxerService> &ipcProxy);
+    explicit DemuxerClient(const sptr<IStandardDemuxerService> &ipcProxy);
+    ~DemuxerClient();
 
     // 业务
-    int32_t Init(uint64_t attr) override;
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
+    int32_t Init(uintptr_t sourceAddr) override;
+    int32_t SelectSourceTrackByID(uint32_t index) override;
+    int32_t UnselectSourceTrackByID(uint32_t index) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) override;
+    int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) override;
     
     void AVCodecServerDied();
 private:
     std::mutex mutex_;
-    sptr<IAVDemuxerService> demuxerProxy_ = nullptr;
+    sptr<IStandardDemuxerService> demuxerProxy_ = nullptr;
 };
 
 }  // namespace Media

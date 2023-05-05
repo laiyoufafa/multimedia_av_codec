@@ -21,42 +21,41 @@
 #include "demuxer_server.h"
 #include "iremote_stub.h"
 #include "avcodec_common.h"
-#include "i_demuxer_service.h"
 
 namespace OHOS {
 namespace Media {
-class AVDemuxerStub : public IRemoteStub<IAVDemuxerService>, public NoCopyable {
+class DemuxerServiceStub : public IRemoteStub<IStandardDemuxerService>, public NoCopyable {
 public:
-    static sptr<AVDemuxerStub> Create();
-    virtual ~AVDemuxerStub();
+    static sptr<DemuxerServiceStub> Create();
+    virtual ~DemuxerServiceStub();
     int OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply, MessageOption &option) override;
-    using DemuxerStubFunc = int32_t(AVDemuxerStub::*)(MessageParcel &data, MessageParcel &reply);
+    using DemuxerStubFunc = int32_t(DemuxerServiceStub::*)(MessageParcel &data, MessageParcel &reply);
 
     // 业务
-    int32_t Init(uint64_t attr) override;
-    int32_t AddSourceTrackByID(uint32_t index) override;
-    int32_t RemoveSourceTrackByID(uint32_t index) override;
-    int32_t CopyCurrentSampleToBuf(AVBufferElement *buffer, AVCodecBufferInfo *bufferInfo) override;
-    int32_t SeekToTimeStamp(int64_t mSeconds, const AVSeekMode mode) override;
+    int32_t Init(uint64_t sourceAddr) override;
+    int32_t SelectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t UnselectSourceTrackByID(uint32_t trackIndex) override;
+    int32_t CopyNextSample(uint32_t &trackIndex, uint8_t *buffer, AVCodecBufferInfo &bufferInfo,AVCodecBufferFlag &flag) override;
+    int32_t SeekToTime(int64_t mSeconds, const AVSeekMode mode) override;
 
     int32_t DumpInfo(int32_t fd);
     int32_t DestroyStub() override;
 private:
-    AVDemuxerStub();
+    DemuxerServiceStub();
     int32_t InitStub();
 
     // 业务
     int32_t Init(MessageParcel &data, MessageParcel &reply);
-    int32_t AddSourceTrackByID(MessageParcel &data, MessageParcel &reply);
-    int32_t RemoveSourceTrackByID(MessageParcel &data, MessageParcel &reply);
-    int32_t CopyCurrentSampleToBuf(MessageParcel &data, MessageParcel &reply);
-    int32_t SeekToTimeStamp(MessageParcel &data, MessageParcel &reply);
+    int32_t SelectSourceTrackByID(MessageParcel &data, MessageParcel &reply);
+    int32_t UnselectSourceTrackByID(MessageParcel &data, MessageParcel &reply);
+    int32_t CopyNextSample(MessageParcel &data, MessageParcel &reply);
+    int32_t SeekToTime(MessageParcel &data, MessageParcel &reply);
 
     int32_t GetDumpInfo(std::string& dumpInfo);
     int32_t DestroyStub(MessageParcel &data, MessageParcel &reply);
 
     std::mutex mutex_;
-    std::shared_ptr<IAVDemuxer> demuxerServer_ = nullptr;
+    std::shared_ptr<IDemuxerService> demuxerServer_ = nullptr;
     std::map<uint32_t, DemuxerStubFunc> demuxerFuncs_;
 };
 }  // namespace Media

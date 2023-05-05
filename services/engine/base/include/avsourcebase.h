@@ -15,25 +15,20 @@
 #ifndef AVSOURCEBASE_H
 #define AVSOURCEBASE_H
 
-#include <memory>
-#include <cstdint>
 #include <string>
-#include "avcodec_common.h"
-#include "libavformat/avformat.h"
+#include "format.h"
 
 namespace OHOS {
 namespace Media {
-class AVSourceBase {
+class SourceBase {
 public:
-    static std::shared_ptr<AVSourceBase> Create(const std::string& uri);
-    virtual int32_t GetTrackCount() = 0;
-    virtual int32_t Destroy() = 0;
-    virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
-    virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
-    virtual size_t GetSourceAttr() = 0;
-
-private:
-    std::shared_ptr<AVFormatContext> formatContext_;
+    virtual ~SourceBase() = default;
+    virtual int32_t Create(std::string& uri) = 0;
+    virtual int32_t GetTrackCount(uint32_t &trackCount) = 0;
+    virtual int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) = 0;
+    virtual int32_t GetSourceFormat(Format &format)  = 0;
+    virtual int32_t GetTrackFormat(Format &format, uint32_t trackIndex) = 0;
+    virtual uintptr_t GetSourceAddr() = 0;
 };
 } // namespace Media
 } // namespace OHOS
