@@ -18,6 +18,7 @@
 
 #include <mutex>
 #include "avcodec_info.h"
+
 namespace OHOS {
 namespace Media {
 class __attribute__((visibility("default"))) CodecAbilitySingleton : public NoCopyable {
