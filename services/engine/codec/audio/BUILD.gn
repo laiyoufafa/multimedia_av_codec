@@ -5,7 +5,7 @@ ohos_static_library("av_codec_audio_ffmpeg_codec"){
     sanitize = {
       cfi = true
       cfi_cross_dso = true
-      debug = false
+      debug = true
     }
 
     include_dirs=[
