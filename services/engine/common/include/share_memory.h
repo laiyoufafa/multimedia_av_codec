@@ -29,7 +29,7 @@ class ShareMemory : public AVSharedMemory {
 public:
     ~ShareMemory() override;
 
-    ShareMemory(size_t capacity, const std::string_view &name, uint32_t flags, size_t align = 1);
+    ShareMemory(size_t capacity, const std::string_view &name, uint32_t flags=AVSharedMemory::FLAGS_READ_WRITE, size_t align = 1);
 
     size_t Write(const uint8_t *in, size_t writeSize, size_t position = INVALID_POSITION);
 
@@ -37,7 +37,7 @@ public:
 
     int32_t GetShareMemoryFd();
     void Reset();
-    size_t GetCapacity() const noexcept;
+    size_t GetUsedSize() const;
 
     const uint8_t *GetReadOnlyData(size_t position = 0);
 
@@ -54,10 +54,10 @@ private:
 
     /// Allocated memory size.
     size_t capacity_;
-    size_t size_;
-    uint32_t flags_;
-    size_t offset;
+    size_t size_{0};
     std::string_view name_;
+    uint32_t flags_;
+    size_t offset{0};
     int32_t fd_;
     uint8_t *base_;
 };

@@ -20,6 +20,9 @@
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "audio_ffmpeg_adapter.h"
+#include "fcodec.h"
+#include "codeclist_core.h"
+#include "format.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecFactory"};
@@ -27,6 +30,9 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecFacto
 
 namespace OHOS {
 namespace Media {
+
+const std::string VIDEOMIMETYPE = "video/avc";
+const std::string VIDEOCODECNAME = "video_decoder.avc";
 
 CodecFactory &CodecFactory::Instance()
 {
@@ -40,16 +46,27 @@ CodecFactory::~CodecFactory()
 
 std::shared_ptr<CodecBase> CodecFactory::CreateCodecByMime(bool isEncoder, const std::string &mime)
 {
-    (void)isEncoder;
-    (void)mime;
-    AVCODEC_LOGD("CreateCodecByMime is not support");
-    return nullptr;
+    std::shared_ptr<CodecListCore> codecListCore = std::make_shared<CodecListCore>();
+    std::string codecname;
+    Format format;
+    format.PutStringValue("codec_mime", mime);
+    if(isEncoder){
+        codecname = codecListCore->FindEncoder(format);
+    } else {
+        codecname = codecListCore->FindDecoder(format);
+    }
+    std::shared_ptr<CodecBase> codec = CreateCodecByName(codecname);
+    return codec;
 }
 
 std::shared_ptr<CodecBase> CodecFactory::CreateCodecByName(const std::string &name)
 {
     std::shared_ptr<CodecBase> codec = nullptr;
-    codec = std::make_shared<AudioFFMpegAdapter>(name);
+    if(name == VIDEOCODECNAME){
+        codec = std::make_shared<Codec::FCodec>(name);
+    } else {
+        codec = std::make_shared<AudioFFMpegAdapter>(name);
+    }
     AVCODEC_LOGD("Create %{public}s", name.c_str());
     return codec;
 }

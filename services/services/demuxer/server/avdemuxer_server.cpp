@@ -24,7 +24,6 @@ namespace {
 std::shared_ptr<IAVDemuxer> AVDemuxerServer::Create()
 {
     std::shared_ptr<AVDemuxerServer> demuxerServer = std::make_shared<AVDemuxerServer>();
-    CHECK_AND_RETURN_RET_LOG(demuxerServer != nullptr, nullptr, "Demuxer Service does not exist");
     int32_t ret = demuxerServer->InitServer();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, nullptr, "Failed to init demuxer server");
     return demuxerServer;

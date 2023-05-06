@@ -27,7 +27,7 @@
 #endif
 
 #ifdef SUPPORT_DEMUXER
-#include "i_avdemuxer.h"
+#include "i_demuxer_service.h"
 #endif
 
 #ifdef SUPPORT_MUXER
@@ -94,8 +94,8 @@ public:
     virtual int32_t DestroyCodecService(std::shared_ptr<ICodecService> codec) = 0;
 #endif
 #ifdef SUPPORT_DEMUXER
-    virtual std::shared_ptr<IAVDemuxer> CreateDemuxerService() = 0;
-    virtual int32_t DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxer) = 0;
+    virtual std::shared_ptr<IDemuxerService> CreateDemuxerService() = 0;
+    virtual int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) = 0;
 #endif
 
 #ifdef SUPPORT_MUXER

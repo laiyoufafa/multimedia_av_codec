@@ -31,7 +31,9 @@ AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string_view &name) : state_(Co
 AudioFFMpegAdapter::~AudioFFMpegAdapter()
 {
     callback_ = nullptr;
-    audioCodec->release();
+    if (audioCodec) {
+        audioCodec->release();
+    }
     state_ = CodecState::RELEASED;
     audioCodec = nullptr;
 }
@@ -489,11 +491,11 @@ int32_t AudioFFMpegAdapter::doRelease()
 std::string_view AudioFFMpegAdapter::stateToString(CodecState state)
 {
     std::map<CodecState, std::string_view> stateStrMap = {
-        {CodecState::RELEASED, " RELEASED"}, {CodecState::INITLIZED, " INITLIZED"},
-        {CodecState::FLUSHED, " FLUSHED"}, {CodecState::RUNNING, " RUNNING"},
+        {CodecState::RELEASED, " RELEASED"},     {CodecState::INITLIZED, " INITLIZED"},
+        {CodecState::FLUSHED, " FLUSHED"},       {CodecState::RUNNING, " RUNNING"},
         {CodecState::INITLIZING, " INITLIZING"}, {CodecState::STARTING, " STARTING"},
-        {CodecState::STOPPING, " STOPPING"}, {CodecState::FLUSHING, " FLUSHING"},
-        {CodecState::RESUMING, " RESUMING"}, {CodecState::RRELEASING, " RRELEASING"},
+        {CodecState::STOPPING, " STOPPING"},     {CodecState::FLUSHING, " FLUSHING"},
+        {CodecState::RESUMING, " RESUMING"},     {CodecState::RRELEASING, " RRELEASING"},
     };
     return stateStrMap[state];
 }

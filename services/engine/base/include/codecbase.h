@@ -37,8 +37,8 @@ public:
     virtual int32_t Flush() = 0;
     virtual int32_t Reset() = 0;
     virtual int32_t Release() = 0;
-    virtual int32_t SetParameter(const Format &format) = 0;
-    virtual int32_t GetOutputFormat(Format &format) = 0;
+    virtual int32_t SetParameter(const Format& format) = 0;
+    virtual int32_t GetOutputFormat(Format& format) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
     virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo &info, AVCodecBufferFlag &flag) = 0;
     virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;

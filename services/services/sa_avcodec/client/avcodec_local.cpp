@@ -15,7 +15,7 @@
 
 #include "avcodec_local.h"
 #include "avcodec_errors.h"
-#include "av_log.h"
+#include "avcodec_log.h"
 #include "demuxer_server.h"
 
 namespace OHOS {

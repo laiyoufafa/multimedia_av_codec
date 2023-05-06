@@ -27,8 +27,12 @@ group("av_codec_unit_test") {
   deps = []
   if (multimedia_av_codec_support_test) {
     deps += [
-      "unittest:av_muxer_unit_test",
-      "unittest:format_unit_test",
+      "unittest/avmuxer_test:avmuxer_capi_unit_test",
+      "unittest/avmuxer_test:avmuxer_native_unit_test",
+      "unittest/format_test:avformat_capi_unit_test",
+      "unittest/format_test:avformat_native_unit_test",
+      "unittest:av_video_unit_test",
+      "unittest:av_audio_unit_test",
     ]
   }
 }
