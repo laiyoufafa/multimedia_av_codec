@@ -80,6 +80,11 @@ AudioCodecWorker::~AudioCodecWorker()
 bool AudioCodecWorker::PushInputData(const uint32_t &index)
 {
     AVCODEC_LOGD("Worker PushInputData enter");
+
+    if (!isRunning_) {
+        return true;
+    }
+
     if (!callback_) {
         AVCODEC_LOGE("push input buffer failed in worker, callback is nullptr, please check the callback.");
         dispose();
@@ -95,6 +100,7 @@ bool AudioCodecWorker::PushInputData(const uint32_t &index)
         std::unique_lock lock(stateMutex_);
         inBufIndexQue_.push(index);
     }
+
     isProduceInput = true;
     inputCondition_.notify_all();
     outputCondition_.notify_all();
@@ -282,7 +288,7 @@ void AudioCodecWorker::consumerOutputBuffer()
         SleepFor(DEFAULT_TRY_DECODE_TIME);
         return;
     }
-    while (!inBufIndexQue_.empty()) {
+    while (!inBufIndexQue_.empty() && isRunning_) {
         uint32_t index;
         if (outputBuffer_->RequestAvialbaleIndex(&index)) {
             uint32_t inputIndex = inBufIndexQue_.front();
@@ -354,6 +360,9 @@ bool AudioCodecWorker::begin()
     AVCODEC_LOGD("Worker begin enter");
     isRunning = true;
     isProduceInput = true;
+
+    inputBuffer_->SetRunning();
+    outputBuffer_->SetRunning();
 
     if (inputTask_) {
         inputTask_->Start();
