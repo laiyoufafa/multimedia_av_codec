@@ -39,7 +39,7 @@ std::map<std::string, uint32_t> g_supportedMuxer = {{"mp4", OUTPUT_FORMAT_MPEG_4
 bool IsMuxerSupported(const char *name)
 {
     auto it = g_supportedMuxer.find(name);
-    if (it != g_supportedMuxer.end()) { 
+    if (it != g_supportedMuxer.end()) {
         return true;
     }
     return false;
@@ -53,7 +53,7 @@ int32_t Sniff(const std::string& pluginName, uint32_t outputFormat)
     auto plugin = g_pluginOutputFmt[pluginName];
     int32_t confidence = 0;
     auto it = g_supportedMuxer.find(plugin->name);
-    if (it != g_supportedMuxer.end() && it->second == outputFormat) { 
+    if (it != g_supportedMuxer.end() && it->second == outputFormat) {
         confidence = 60;
     }
     
@@ -180,7 +180,7 @@ Status FFmpegMuxerPlugin::SetCodecParameterOfTrack(AVStream *stream, const Media
     CHECK_AND_RETURN_RET_LOG(trackDesc.GetStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, mimeType),
         Status::ERROR_MISMATCHED_TYPE, "get mimeType failed!"); // mime
     AVCODEC_LOGD("mimeType is %{public}s", mimeType.c_str());
-    CHECK_AND_RETURN_RET_LOG(Mime2CodecId(mimeType, codeID), Status::ERROR_INVALID_DATA, 
+    CHECK_AND_RETURN_RET_LOG(Mime2CodecId(mimeType, codeID), Status::ERROR_INVALID_DATA,
         "this mimeType do not support! mimeType:%{public}s", mimeType.c_str());
 
     AVCodecParameters *par = stream->codecpar;
@@ -204,8 +204,11 @@ Status FFmpegMuxerPlugin::SetCodecParameterOfTrack(AVStream *stream, const Media
         AVCODEC_LOGD("mimeType %{public}s is unsupported", mimeType.c_str());
     }
     
-    trackDesc.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, par->bit_rate); // bit rate
-    if (trackDesc.GetBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, &extraData, extraDataSize)) { // codec config
+    if (trackDesc.ContainKey(MediaDescriptionKey::MD_KEY_BITRATE)) {
+        trackDesc.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, par->bit_rate); // bit rate
+    }
+    if (trackDesc.ContainKey(MediaDescriptionKey::MD_KEY_CODEC_CONFIG) &&
+        trackDesc.GetBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, &extraData, extraDataSize)) { // codec config
         par->extradata = static_cast<uint8_t *>(av_mallocz(extraDataSize + AV_INPUT_BUFFER_PADDING_SIZE));
         CHECK_AND_RETURN_RET_LOG(par->extradata != nullptr, Status::ERROR_NO_MEMORY, "codec config malloc failed!");
         par->extradata_size = static_cast<int32_t>(extraDataSize);

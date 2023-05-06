@@ -43,6 +43,7 @@ private:
     int32_t StartThread(std::string name);
     int32_t StopThread() noexcept;
     void ThreadProcessor();
+    void DumpMediaDescription(int32_t fd, const MediaDescription &trackDesc);
     bool CanAddTrack(std::string &mimeType);
     bool CheckKeys(std::string &mimeType, const MediaDescription &trackDesc);
     std::string ConvertStateToString(int32_t state);
@@ -67,6 +68,7 @@ private:
     std::atomic<State> state_ = UNINITIALIZED;
     std::shared_ptr<Plugin::Muxer> muxer_ = nullptr;
     std::map<int32_t, std::string> tracks_;
+    std::map<int32_t, MediaDescription> mediaDescMap_;
     BlockQueue<std::shared_ptr<BlockBuffer>> que_;
     std::string threadName_;
     std::mutex mutex_;

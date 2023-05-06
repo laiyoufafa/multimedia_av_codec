@@ -49,7 +49,7 @@ int AVMuxerEngineDemo::DoWriteSampleBuffer(uint8_t *sampleBuffer, TrackSampleInf
         std::cout<<"AVMuxerEngineDemo::DoWriteSampleBuffer memcpy_s failed!"<<std::endl;
     }
 
-    if (avmuxer_ != nullptr && 
+    if (avmuxer_ != nullptr &&
         avmuxer_->WriteSampleBuffer(sharedSampleBuffer, info) == AVCS_ERR_OK) {
             return 0;
     }

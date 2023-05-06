@@ -35,7 +35,7 @@ namespace Media {
 
 int AVMuxerDemo::DoWriteSampleBuffer(uint8_t *sampleBuffer, TrackSampleInfo &info)
 {
-    if (avmuxer_ != nullptr && 
+    if (avmuxer_ != nullptr &&
         avmuxer_->WriteSampleBuffer(sampleBuffer, info) == AVCS_ERR_OK) {
             return 0;
     }

@@ -54,9 +54,9 @@ typedef enum OH_AVCodecBufferFlags {
  * @version 1.0
  */
 typedef enum OH_AVOutputFormat {
-    AV_OUTPUT_FORMAT_UNKNOWN = 0,
-    AV_OUTPUT_FORMAT_MPEG_4 = 1,
-    AV_OUTPUT_FORMAT_M4A = 2,
+    AV_OUTPUT_FORMAT_DEFAULT = 0,
+    AV_OUTPUT_FORMAT_MPEG_4 = 2,
+    AV_OUTPUT_FORMAT_M4A = 6,
 } OH_AVOutputFormat;
 
 /**
