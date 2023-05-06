@@ -2,6 +2,11 @@ import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
 ohos_static_library("av_codec_video_ffmpeg_codec"){
+    sanitize = {
+        cfi = true
+        cfi_cross_dso = true
+        debug = false
+    }
     include_dirs=[
         "//foundation/graphic/graphic_2d/frameworks/surface/include",
         "//commonlibrary/c_utils/base/include",

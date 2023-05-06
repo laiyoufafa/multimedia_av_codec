@@ -127,6 +127,13 @@ int32_t CodecServiceProxy::Init(AVCodecType type, bool isMimeType, const std::st
 
 int32_t CodecServiceProxy::Configure(const Format &format)
 {
+    if (inputBufferCache_ == nullptr) {
+        inputBufferCache_ = std::make_unique<CodecBufferCache>();
+    }
+
+    if (outputBufferCache_ == nullptr) {
+        outputBufferCache_ = std::make_unique<CodecBufferCache>();
+    }
     MessageParcel data;
     MessageParcel reply;
     MessageOption option;

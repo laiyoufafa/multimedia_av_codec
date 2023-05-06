@@ -2,10 +2,34 @@ import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
 ohos_static_library("av_codec_audio_ffmpeg_codec"){
+    cflags = [
+        "-std=c++17",
+        "-fno-rtti",
+        "-fno-exceptions",
+        "-Wall",
+        "-fno-common",
+        "-fstack-protector-strong",
+        "-Wshadow",
+        "-FPIC",
+        "-FS",
+        "-O2",
+        "-D_FORTIFY_SOURCE=2",
+        "-fvisibility=hidden",
+        "-Wformat=2",
+        "-Wfloat-equal",
+        "-Wdate-time",
+        "-Werror",
+        "-Wno-deprecated-declarations",
+        "-Wextra",
+        "-Wimplicit-fallthrough",
+        "-Wsign-compare",
+        "-Wunused-parameter",
+    ]
+
     sanitize = {
-      cfi = true
-      cfi_cross_dso = true
-      debug = false
+        cfi = true
+        cfi_cross_dso = true
+        debug = false
     }
 
     include_dirs=[

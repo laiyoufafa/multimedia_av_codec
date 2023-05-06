@@ -78,12 +78,9 @@ int32_t CodecServer::Init(AVCodecType type, bool isMimeType, const std::string &
         codecBase_ = CodecFactory::Instance().CreateCodecByName(name);
     }
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "CodecBase is nullptr");
-    
     std::shared_ptr<AVCodecCallback> callback = std::make_shared<CodecBaseCallback>(shared_from_this());
-
     int32_t ret = codecBase_->SetCallback(callback);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AVCS_ERR_INVALID_OPERATION, "CodecBase SetCallback failed");
-
     status_ = INITIALIZED;
     AVCODEC_LOGI("Codec server in %{public}s status", GetStatusDescription(status_).data());
     // BehaviorEventWrite(GetStatusDescription(status_), "AVCodec");
@@ -176,10 +173,12 @@ int32_t CodecServer::Reset()
 int32_t CodecServer::Release()
 {
     std::lock_guard<std::mutex> lock(mutex_);
+    // AVCodecTrace trace("CodecServer::Release");
     std::unique_ptr<std::thread> thread = std::make_unique<std::thread>(&CodecServer::ExitProcessor, this);
     if (thread != nullptr && thread->joinable()) {
         thread->join();
     }
+    // ResetTrace();
     return AVCS_ERR_OK;
 }
 

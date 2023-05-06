@@ -196,6 +196,13 @@ int32_t CodecServiceStub::Init(AVCodecType type, bool isMimeType, const std::str
 
 int32_t CodecServiceStub::Configure(const Format &format)
 {
+    if (inputBufferCache_ == nullptr) {
+        inputBufferCache_ = std::make_unique<CodecBufferCache>();
+    }
+
+    if (outputBufferCache_ == nullptr) {
+        outputBufferCache_ = std::make_unique<CodecBufferCache>();
+    }
     CHECK_AND_RETURN_RET_LOG(codecServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Codec server is nullptr");
     return codecServer_->Configure(format);
 }
