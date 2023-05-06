@@ -42,13 +42,10 @@ void ACodecUnitTest::SetUp(void)
 
     defaultFormat_ = AVCodecMockFactory::CreateFormat();
     ASSERT_NE(nullptr, defaultFormat_);
-    (void)defaultFormat_->PutIntValue("channel_count", 2); // 2 common channel count
-    (void)defaultFormat_->PutIntValue("sample_rate", 44100); // 44100 common sample rate
-    // (void)defaultFormat_->PutIntValue("audio_sample_format", 1); // 1 AudioStandard::SAMPLE_S16LE
-    (void)defaultFormat_->PutLongValue("bitrate", 128000); // ..97496
-    // (void)defaultFormat_->PutIntValue("bits_per_coded-rate", 4); // ..
-    // (void)defaultFormat_->PutIntValue("bits_per_coded_sample", 4); // ..
-    
+    (void)defaultFormat_->PutIntValue("channel_count", 2);
+    (void)defaultFormat_->PutIntValue("sample_rate", 44100);
+    (void)defaultFormat_->PutLongValue("bitrate", 97496);
+    (void)defaultFormat_->PutIntValue("aac-type", 1);
 
     testInfo_ = ::testing::UnitTest::GetInstance()->current_test_info();
     string prefix = "/data/test/media/";
@@ -104,11 +101,10 @@ void ACodecUnitTest::TearDown(void)
 HWTEST_F(ACodecUnitTest, audio_codec_Configure_0100, TestSize.Level0)
 {
     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_Configure_0100");
-    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3")); // avenc_aac
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac")); // avenc_aac
     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
     //EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ReleaseDec());
-    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_Configure_0100 Done");
 }
 
 /**
@@ -121,7 +117,7 @@ HWTEST_F(ACodecUnitTest, audio_codec_0100, TestSize.Level0)
 {
     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_0100");
     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
     ASSERT_TRUE(defaultFormat_->PutIntValue("profile", 0)); // 0 AAC_PROFILE_LC
     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
@@ -133,250 +129,249 @@ HWTEST_F(ACodecUnitTest, audio_codec_0100, TestSize.Level0)
     sleep(3); // start run 10s
     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopDec());
     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopEnc());
-    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_0100  Done");
 }
 
-// /**
-//  * @tc.name: audio_decodec_flush_0100
-//  * @tc.desc: audio decodec flush
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_decodec_flush_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_decodec_flush_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(3); // start run 2s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->FlushDec());
-//     sleep(7); // start run 7s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopEnc());
-// }
+/**
+ * @tc.name: audio_decodec_flush_0100
+ * @tc.desc: audio decodec flush
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_decodec_flush_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_decodec_flush_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(3); // start run 2s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->FlushDec());
+    sleep(7); // start run 7s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopEnc());
+}
 
-// /**
-//  * @tc.name: audio_encodec_flush_0100
-//  * @tc.desc: audio encodec flush
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_encodec_flush_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_encodec_flush_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(3); // start run 2s
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->FlushEnc());
-//     sleep(7); // start run 7s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopEnc());
-// }
+/**
+ * @tc.name: audio_encodec_flush_0100
+ * @tc.desc: audio encodec flush
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_encodec_flush_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_encodec_flush_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(3); // start run 2s
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->FlushEnc());
+    sleep(7); // start run 7s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StopEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_reset_0100
-//  * @tc.desc: audio reset at end of stream
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_reset_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_reset_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(10); // start run 10s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
-// }
+/**
+ * @tc.name: audio_codec_reset_0100
+ * @tc.desc: audio reset at end of stream
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_reset_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_reset_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(10); // start run 10s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_reset_0200
-//  * @tc.desc: audio reset at running state
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_reset_0200, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_reset_0200");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(2); // start run 10s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
-// }
+/**
+ * @tc.name: audio_codec_reset_0200
+ * @tc.desc: audio reset at running state
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_reset_0200, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_reset_0200");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(2); // start run 10s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_abnormal_0100
-//  * @tc.desc: audio abnormal function switch
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_abnormal_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_abnormal_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
-//     EXPECT_NE(AVCS_ERR_OK, audioCodec_->StopDec());
-//     // EXPECT_NE(AVCS_ERR_OK, audioCodec_->StopEnc());
-//     EXPECT_NE(AVCS_ERR_OK, audioCodec_->FlushDec());
-//     // EXPECT_NE(AVCS_ERR_OK, audioCodec_->FlushEnc());
-// }
+/**
+ * @tc.name: audio_codec_abnormal_0100
+ * @tc.desc: audio abnormal function switch
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_abnormal_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_abnormal_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
+    EXPECT_NE(AVCS_ERR_OK, audioCodec_->StopDec());
+    // EXPECT_NE(AVCS_ERR_OK, audioCodec_->StopEnc());
+    // EXPECT_NE(AVCS_ERR_OK, audioCodec_->FlushDec());
+    // EXPECT_NE(AVCS_ERR_OK, audioCodec_->FlushEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_SetParameter_0100
-//  * @tc.desc: audio codec SetParameter
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_SetParameter_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_SetParameter_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(2); // start run 2s
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->SetParameterDec(defaultFormat_));
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->SetParameterEnc(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
-// }
+/**
+ * @tc.name: audio_codec_SetParameter_0100
+ * @tc.desc: audio codec SetParameter
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_SetParameter_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_SetParameter_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(2); // start run 2s
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->SetParameterDec(defaultFormat_));
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->SetParameterEnc(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_GetOutputMediaDescription_0100
-//  * @tc.desc: audio codec GetOutputMediaDescription
-//  * @tc.type: FUNC
-//  * @tc.require: issueI5OWXY issueI5OXCD
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_GetOutputMediaDescription_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_GetOutputMediaDescription_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
-//     sleep(2); // start run 2s
-//     EXPECT_NE(nullptr, audioCodec_->GetOutputMediaDescriptionDec());
-//     // EXPECT_NE(nullptr, audioCodec_->GetOutputMediaDescriptionEnc());
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
-// }
+/**
+ * @tc.name: audio_codec_GetOutputMediaDescription_0100
+ * @tc.desc: audio codec GetOutputMediaDescription
+ * @tc.type: FUNC
+ * @tc.require: issueI5OWXY issueI5OXCD
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_GetOutputMediaDescription_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_GetOutputMediaDescription_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mp4a-latm", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->StartEnc());
+    sleep(2); // start run 2s
+    EXPECT_NE(nullptr, audioCodec_->GetOutputMediaDescriptionDec());
+    // EXPECT_NE(nullptr, audioCodec_->GetOutputMediaDescriptionEnc());
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->ResetEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_format_vorbis_0100
-//  * @tc.desc: test audio codec format vorbis
-//  * @tc.type: FUNC
-//  * @tc.require:
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_format_vorbis_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_vorbis_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/vorbis", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-// }
+/**
+ * @tc.name: audio_codec_format_vorbis_0100
+ * @tc.desc: test audio codec format vorbis
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_format_vorbis_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_vorbis_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/vorbis", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_format_flac_0100
-//  * @tc.desc: test audio codec format flac
-//  * @tc.type: FUNC
-//  * @tc.require:
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_format_flac_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_flac_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/flac", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-// }
+/**
+ * @tc.name: audio_codec_format_flac_0100
+ * @tc.desc: test audio codec format flac
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_format_flac_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_flac_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/flac", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_format_mp3_0100
-//  * @tc.desc: test audio codec format flac
-//  * @tc.type: FUNC
-//  * @tc.require:
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_format_mp3_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_mp3_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/mpeg", "audio/mp4a-latm"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-// }
+/**
+ * @tc.name: audio_codec_format_mp3_0100
+ * @tc.desc: test audio codec format flac
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_format_mp3_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_mp3_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/mpeg", "audio/mp4a-latm"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_format_opus_0100
-//  * @tc.desc: test audio codec format opus
-//  * @tc.type: FUNC
-//  * @tc.require:
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_format_opus_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_opus_0100");
-//     // ASSERT_TRUE(CreateAudioCodecByMime("audio/opus", "audio/opus"));
-//     ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.MP3.FFMPEGMp3", "OH.Media.Codec.MP3.FFMPEGMp3"));
-//     ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
-//     // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
-//     EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
-//     // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
-// }
+/**
+ * @tc.name: audio_codec_format_opus_0100
+ * @tc.desc: test audio codec format opus
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_format_opus_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_opus_0100");
+    // ASSERT_TRUE(CreateAudioCodecByMime("audio/opus", "audio/opus"));
+    ASSERT_TRUE(CreateAudioCodecByName("OH.Media.Codec.AAC.FFMPEGAac", "OH.Media.Codec.AAC.FFMPEGAac"));
+    ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureDec(defaultFormat_));
+    // ASSERT_EQ(AVCS_ERR_OK, audioCodec_->ConfigureEnc(defaultFormat_));
+    EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareDec());
+    // EXPECT_EQ(AVCS_ERR_OK, audioCodec_->PrepareEnc());
+}
 
-// /**
-//  * @tc.name: audio_codec_format_none_0100
-//  * @tc.desc: test audio codec format none
-//  * @tc.type: FUNC
-//  * @tc.require:
-//  */
-// HWTEST_F(ACodecUnitTest, audio_codec_format_none_0100, TestSize.Level0)
-// {
-//     AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_none_0100");
-//     CreateAudioCodecByMime("", "");
-//     ASSERT_NE(AVCS_ERR_OK, audioCodec_->ReleaseDec());
-//     // ASSERT_NE(AVCS_ERR_OK, audioCodec_->ReleaseEnc());
-// }
+/**
+ * @tc.name: audio_codec_format_none_0100
+ * @tc.desc: test audio codec format none
+ * @tc.type: FUNC
+ * @tc.require:
+ */
+HWTEST_F(ACodecUnitTest, audio_codec_format_none_0100, TestSize.Level0)
+{
+    AVCODEC_LOGI("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~audio_codec_format_none_0100");
+    CreateAudioCodecByMime("", "");
+    ASSERT_NE(AVCS_ERR_OK, audioCodec_->ReleaseDec());
+    // ASSERT_NE(AVCS_ERR_OK, audioCodec_->ReleaseEnc());
+}

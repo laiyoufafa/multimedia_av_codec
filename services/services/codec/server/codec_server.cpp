@@ -121,7 +121,8 @@ int32_t CodecServer::Start()
 int32_t CodecServer::Stop()
 {
     std::lock_guard<std::mutex> lock(mutex_);
-    CHECK_AND_RETURN_RET_LOG(status_ == RUNNING, AVCS_ERR_INVALID_STATE, "In invalid state");
+    CHECK_AND_RETURN_RET_LOG(status_ == RUNNING || status_ == END_OF_STREAM ||
+        status_ == FLUSHED, AVCS_ERR_INVALID_STATE, "In invalid state");
     CHECK_AND_RETURN_RET_LOG(codecBase_ != nullptr, AVCS_ERR_NO_MEMORY, "Codecbase is nullptr");
     int32_t ret = codecBase_->Stop();
     status_ = (ret == AVCS_ERR_OK ? CONFIGURED : ERROR);

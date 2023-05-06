@@ -34,7 +34,7 @@ ADecCallbackTest::~ADecCallbackTest()
 
 void ADecCallbackTest::OnError(int32_t errorCode)
 {
-    cout << "DEC Error errorCode=" << errorCode << endl;
+    cout << "DEC Error errorCode = " << errorCode << endl;
     if (acodecSignal_ == nullptr) {
         return;
     }
@@ -194,11 +194,11 @@ int32_t ACodecMock::StartDec()
         testFile_ = std::make_unique<std::ifstream>();
         UNITTEST_CHECK_AND_RETURN_RET_LOG(testFile_ != nullptr, AVCS_ERR_OK, "Fatal: No memory");
         // testFile_->open("/system/bin/ut/res_codec/AAC_48000_32_1.aac", std::ios::in | std::ios::binary);
-        testFile_->open("/data/test/media/audio.mp3", std::ios::in | std::ios::binary);
+        testFile_->open("/data/test/media/audio.aac", std::ios::in | std::ios::binary);
         if(!testFile_->is_open()){
-            AVCODEC_LOGI("open audio.mp3 fail");
+            AVCODEC_LOGI("open audio fail");
         } else {
-            AVCODEC_LOGI("open audio.mp3 success");
+            AVCODEC_LOGI("open audio success");
         }
     }
     if (inputLoopDec_ == nullptr) {
