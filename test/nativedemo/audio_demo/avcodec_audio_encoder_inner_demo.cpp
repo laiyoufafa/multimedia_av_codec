@@ -14,33 +14,34 @@
  */
 
 #include "avcodec_audio_encoder_inner_demo.h"
+#include "avcodec_errors.h"
+#include "demo_log.h"
+#include "media_description.h"
+#include "securec.h"
 #include <iostream>
 #include <unistd.h>
-#include "securec.h"
-#include "demo_log.h"
-#include "avcodec_errors.h"
 
 using namespace OHOS;
 using namespace OHOS::Media;
 using namespace OHOS::Media::InnerAudioDemo;
 using namespace std;
 namespace {
-    constexpr uint32_t CHANNEL_COUNT = 2;
-    constexpr uint32_t SAMPLE_RATE = 44100;
-    constexpr uint32_t BITS_RATE = 169000;
-    constexpr uint32_t BITS_PER_CODED_RATE = 4;
-    constexpr uint32_t FRAME_DURATION_US = 33000;
-    constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
-}
+constexpr uint32_t CHANNEL_COUNT = 2;
+constexpr uint32_t SAMPLE_RATE = 44100;
+constexpr uint32_t BITS_RATE = 169000;
+constexpr uint32_t BITS_PER_CODED_RATE = 4;
+constexpr uint32_t FRAME_DURATION_US = 33000;
+constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
+} // namespace
 
 void ADecInnerDemo::RunCase()
 {
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     Format format;
-    format.PutIntValue("channel_count", CHANNEL_COUNT);
-    format.PutIntValue("sample_rate", SAMPLE_RATE);
-    format.PutLongValue("bitrate", BITS_RATE);
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, CHANNEL_COUNT);
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, SAMPLE_RATE);
+    format.PutLongValue(MediaDescriptionKey::MD_KEY_BITRATE, BITS_RATE);
     format.PutIntValue("bits_per_coded-rate", BITS_PER_CODED_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
@@ -59,7 +60,8 @@ int32_t ADecInnerDemo::CreateDec()
 
     cb_ = make_unique<ADecDemoCallback>(signal_);
     DEMO_CHECK_AND_RETURN_RET_LOG(cb_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
-    DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_->SetCallback(cb_) == AVCS_ERR_OK, AVCS_ERR_UNKNOWN, "Fatal: SetCallback fail");
+    DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_->SetCallback(cb_) == AVCS_ERR_OK, AVCS_ERR_UNKNOWN,
+                                  "Fatal: SetCallback fail");
 
     return AVCS_ERR_OK;
 }
@@ -68,7 +70,6 @@ int32_t ADecInnerDemo::Configure(const Format &format)
 {
     return audioDec_->Configure(format);
 }
-
 
 int32_t ADecInnerDemo::Start()
 {
@@ -135,7 +136,7 @@ void ADecInnerDemo::InputFunc()
         }
 
         unique_lock<mutex> lock(signal_->inMutex_);
-        signal_->inCond_.wait(lock, [this](){ return signal_->inQueue_.size() > 0; });
+        signal_->inCond_.wait(lock, [this]() { return signal_->inQueue_.size() > 0; });
 
         if (!isRunning_.load()) {
             break;
@@ -151,7 +152,7 @@ void ADecInnerDemo::InputFunc()
         DEMO_CHECK_AND_BREAK_LOG(fileBuffer != nullptr, "Fatal: malloc fail");
 
         (void)testFile_->read(fileBuffer, bufferSize);
-        
+
         DEMO_CHECK_AND_BREAK_LOG(buffer != nullptr, "Fatal: GetInputBuffer fail");
         if (memcpy_s(buffer->GetBase(), buffer->GetSize(), fileBuffer, bufferSize) != EOK) {
             free(fileBuffer);
@@ -197,7 +198,7 @@ void ADecInnerDemo::OutputFunc()
         }
 
         unique_lock<mutex> lock(signal_->outMutex_);
-        signal_->outCond_.wait(lock, [this](){ return signal_->outQueue_.size() > 0; });
+        signal_->outCond_.wait(lock, [this]() { return signal_->outQueue_.size() > 0; });
 
         if (!isRunning_.load()) {
             break;
@@ -213,10 +214,7 @@ void ADecInnerDemo::OutputFunc()
     }
 }
 
-ADecDemoCallback::ADecDemoCallback(shared_ptr<ADecSignal> signal)
-    : signal_(signal)
-{
-}
+ADecDemoCallback::ADecDemoCallback(shared_ptr<ADecSignal> signal) : signal_(signal) {}
 
 void ADecDemoCallback::OnError(AVCodecErrorType errorType, int32_t errorCode)
 {
