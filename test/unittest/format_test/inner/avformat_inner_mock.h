@@ -13,18 +13,18 @@
  * limitations under the License.
  */
 
-#ifndef AVFORMAT_NATIVE_MOCK_H
-#define AVFORMAT_NATIVE_MOCK_H
+#ifndef AVFORMAT_INNER_MOCK_H
+#define AVFORMAT_INNER_MOCK_H
 
 #include "avformat_mock.h"
 #include "format.h"
 
 namespace OHOS {
 namespace Media {
-class AVFormatNativeMock : public FormatMock {
+class AVFormatInnerMock : public FormatMock {
 public:
-    explicit AVFormatNativeMock(const Format &format) : format_(format) {}
-    AVFormatNativeMock() = default;
+    explicit AVFormatInnerMock(const Format &format) : format_(format) {}
+    AVFormatInnerMock() = default;
     bool PutIntValue(const std::string_view &key, int32_t value) override;
     bool GetIntValue(const std::string_view &key, int32_t &value) override;
     bool PutStringValue(const std::string_view &key, const std::string_view &value) override;

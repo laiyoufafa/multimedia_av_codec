@@ -47,12 +47,12 @@ void FormatUnitTest::TearDown(void)
 }
 
 /**
- * @tc.name: Format_Value_0100
+ * @tc.name: Format_Value_001
  * @tc.desc: format put and get value
  * @tc.type: FUNC
  * @tc.require: issueI5OX06 issueI5P8N0
  */
-HWTEST_F(FormatUnitTest, Format_Value_0100, TestSize.Level0)
+HWTEST_F(FormatUnitTest, Format_Value_001, TestSize.Level0)
 {
     const std::string_view intKey = "IntKey";
     const std::string_view longKey = "LongKey";
@@ -98,12 +98,12 @@ HWTEST_F(FormatUnitTest, Format_Value_0100, TestSize.Level0)
 }
 
 /**
- * @tc.name: Format_Buffer_0100
+ * @tc.name: Format_Buffer_001
  * @tc.desc: format put and get buffer
  * @tc.type: FUNC
  * @tc.require: issueI5OWXY issueI5OXCD
  */
-HWTEST_F(FormatUnitTest, Format_Buffer_0100, TestSize.Level0)
+HWTEST_F(FormatUnitTest, Format_Buffer_001, TestSize.Level0)
 {
     constexpr size_t size = 3;
     const std::string_view key = "BufferKey";

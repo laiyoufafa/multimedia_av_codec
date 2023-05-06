@@ -13,12 +13,12 @@
  * limitations under the License.
  */
 
-#include "avmuxer_native_mock.h"
+#include "avmuxer_inner_mock.h"
 
 namespace OHOS {
 namespace Media {
 
-int32_t MuxerNativeMock::Destroy()
+int32_t MuxerInnerMock::Destroy()
 {
     if (muxer_ != nullptr) {
         muxer_ = nullptr;
@@ -27,7 +27,7 @@ int32_t MuxerNativeMock::Destroy()
     return AV_ERR_UNKNOWN;
 }
 
-int32_t MuxerNativeMock::Start()
+int32_t MuxerInnerMock::Start()
 {
     if (muxer_ != nullptr) {
         return muxer_->Start();
@@ -35,7 +35,7 @@ int32_t MuxerNativeMock::Start()
     return AV_ERR_UNKNOWN;
 }
 
-int32_t MuxerNativeMock::Stop()
+int32_t MuxerInnerMock::Stop()
 {
     if (muxer_ != nullptr) {
         return muxer_->Stop();
@@ -43,16 +43,16 @@ int32_t MuxerNativeMock::Stop()
     return AV_ERR_UNKNOWN;
 }
 
-int32_t MuxerNativeMock::AddTrack(int32_t &trackIndex, std::shared_ptr<FormatMock> &trackFormat)
+int32_t MuxerInnerMock::AddTrack(int32_t &trackIndex, std::shared_ptr<FormatMock> &trackFormat)
 {
     if (muxer_ != nullptr) {
-        auto formatMock = std::static_pointer_cast<AVFormatNativeMock>(trackFormat);
+        auto formatMock = std::static_pointer_cast<AVFormatInnerMock>(trackFormat);
         return muxer_->AddTrack(trackIndex, static_cast<MediaDescription>(formatMock->GetFormat()));
     }
     return AV_ERR_UNKNOWN;
 }
                          
-int32_t MuxerNativeMock::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, const AVCodecBufferAttrMock &info)
+int32_t MuxerInnerMock::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuffer, const AVCodecBufferAttrMock &info)
 {
     if (muxer_ != nullptr) {
         TrackSampleInfo sampleInfo;
@@ -65,7 +65,7 @@ int32_t MuxerNativeMock::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleB
     return AV_ERR_UNKNOWN;
 }
 
-int32_t MuxerNativeMock::SetLocation(float latitude, float longitude)
+int32_t MuxerInnerMock::SetLocation(float latitude, float longitude)
 {
     if (muxer_ != nullptr) {
         return muxer_->SetLocation(latitude, longitude);
@@ -73,7 +73,7 @@ int32_t MuxerNativeMock::SetLocation(float latitude, float longitude)
     return AV_ERR_UNKNOWN;
 }
 
-int32_t MuxerNativeMock::SetRotation(int32_t rotation)
+int32_t MuxerInnerMock::SetRotation(int32_t rotation)
 {
     if (muxer_ != nullptr) {
         return muxer_->SetRotation(rotation);

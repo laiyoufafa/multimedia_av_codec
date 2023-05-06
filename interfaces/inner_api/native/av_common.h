@@ -146,17 +146,17 @@ enum StateChangeReason {
  */
 enum OutputFormat : uint32_t{
     /**
-     * output format unknown
+     * output format default mp4
     */
-    OUTPUT_FORMAT_UNKNOWN = 0,
+    OUTPUT_FORMAT_DEFAULT = 0,
     /**
      * output format mp4
     */
-    OUTPUT_FORMAT_MPEG_4 = 1,
+    OUTPUT_FORMAT_MPEG_4 = 2,
     /**
      * output format m4a
     */
-    OUTPUT_FORMAT_M4A = 2,
+    OUTPUT_FORMAT_M4A = 6,
 };
 
 /**
