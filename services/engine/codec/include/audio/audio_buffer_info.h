@@ -17,8 +17,7 @@
 #define AV_CODEC_BUFFER_INFO_H
 
 #include "avcodec_common.h"
-#include "share_memory.h"
-
+#include "avsharedmemorybase.h"
 #include <atomic>
 #include <memory>
 #include <vector>
@@ -38,13 +37,13 @@ public:
 
     ~AudioBufferInfo();
 
-    std::shared_ptr<ShareMemory> GetBuffer() const noexcept;
+    std::shared_ptr<AVSharedMemoryBase> GetBuffer() const noexcept;
 
-    std::shared_ptr<ShareMemory> GetMetadata() const noexcept;
+    std::shared_ptr<AVSharedMemoryBase> GetMetadata() const noexcept;
 
     bool IsHasMetaData() const noexcept;
 
-    bool Reset();
+    bool ResetBuffer();
 
     bool SetBufferOwned();
 
@@ -62,15 +61,29 @@ public:
 
     AVCodecBufferFlag GetFlag() const noexcept;
 
+    size_t WriteBuffer(const uint8_t *in, size_t writeSize);
+
+    size_t WriteMetadata(const uint8_t *in, size_t writeSize);
+
+    size_t ReadBuffer(uint8_t *out, size_t readSize);
+
+    size_t ReadMetadata(uint8_t *out, size_t readSize);
+
+private:
+    size_t Write(const uint8_t *in, size_t writeSize, const size_t &bufferSize);
+
+    size_t Read(uint8_t *out, size_t readSize, const size_t &useSize);
+
 private:
     bool isHasMeta_;
     bool isEos_;
     std::atomic<BufferStatus> status_;
     uint32_t bufferSize_;
+    uint32_t bufferUseSize_;
     uint32_t metaSize_;
     std::string_view name_;
-    std::shared_ptr<ShareMemory> buffer_;
-    std::shared_ptr<ShareMemory> metadata_;
+    std::shared_ptr<AVSharedMemoryBase> buffer_;
+    std::shared_ptr<AVSharedMemoryBase> metadata_;
     AVCodecBufferInfo info_;
     AVCodecBufferFlag flag_;
 };

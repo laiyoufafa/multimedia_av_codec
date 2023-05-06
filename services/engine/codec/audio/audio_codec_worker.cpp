@@ -19,12 +19,12 @@
 #include "avcodec_log.h"
 #include "utils.h"
 
-namespace OHOS {
-namespace Media {
-
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioCodecWorker"};
 }
+
+namespace OHOS {
+namespace Media {
 
 constexpr short DEFAULT_TRY_DECODE_TIME{10};
 constexpr int timeoutMs{1000};
@@ -258,9 +258,11 @@ void AudioCodecWorker::produceInputBuffer()
         isProduceInput = false;
         uint32_t index;
         if (inputBuffer_->RequestAvialbaleIndex(&index)) {
+            AVCODEC_LOGD("produceInputBuffer request success.");
             auto inputBuffer = GetInputBufferInfo(index);
             callback_->OnInputBufferAvailable(index);
         } else {
+            AVCODEC_LOGD("produceInputBuffer request failed.");
             SleepFor(DEFAULT_TRY_DECODE_TIME);
             isProduceInput = true;
         }

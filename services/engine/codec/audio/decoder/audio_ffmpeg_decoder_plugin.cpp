@@ -66,7 +66,7 @@ int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferIn
     auto attr = inputBuffer->GetBufferAttr();
     if (!inputBuffer->CheckIsEos()) {
         auto memory = inputBuffer->GetBuffer();
-        const uint8_t *ptr = memory->GetReadOnlyData();
+        const uint8_t *ptr = memory->GetBase();
         avPacket_->size = attr.size;
         avPacket_->data = const_cast<uint8_t *>(ptr);
         avPacket_->pts = attr.presentationTimeUs;
@@ -167,10 +167,10 @@ int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferIn
     if (av_sample_fmt_is_planar(avCodecContext_->sample_fmt)) {
         size_t planarSize = outputSize / channels;
         for (int32_t idx = 0; idx < channels; idx++) {
-            ioInfoMem->Write(cachedFrame_->extended_data[idx], planarSize);
+            outBuffer->WriteBuffer(cachedFrame_->extended_data[idx], planarSize);
         }
     } else {
-        ioInfoMem->Write(cachedFrame_->data[0], outputSize);
+        outBuffer->WriteBuffer(cachedFrame_->data[0], outputSize);
     }
     auto attr = outBuffer->GetBufferAttr();
     attr.presentationTimeUs = static_cast<uint64_t>(cachedFrame_->pts);
