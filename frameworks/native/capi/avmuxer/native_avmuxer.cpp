@@ -64,7 +64,7 @@ OH_AVErrCode OH_AVMuxer_SetRotation(OH_AVMuxer *muxer, int32_t rotation) {
     int32_t ret = object->muxer_->SetRotation(rotation);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ SetRotation failed!");
 
-    return AV_ERR_OK;    
+    return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, int32_t *trackIndex, OH_AVFormat *trackFormat) {
@@ -73,7 +73,7 @@ OH_AVErrCode OH_AVMuxer_AddTrack(OH_AVMuxer *muxer, int32_t *trackIndex, OH_AVFo
     CHECK_AND_RETURN_RET_LOG(trackIndex != nullptr, AV_ERR_INVALID_VAL, "input track index is nullptr!");
     CHECK_AND_RETURN_RET_LOG(trackFormat != nullptr, AV_ERR_INVALID_VAL, "input track format is nullptr!");
     CHECK_AND_RETURN_RET_LOG(trackFormat->magic_ == AVMagic::AVCODEC_MAGIC_FORMAT, AV_ERR_INVALID_VAL, "magic error!");
-    
+
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
 
@@ -93,7 +93,7 @@ OH_AVErrCode OH_AVMuxer_Start(OH_AVMuxer *muxer) {
     int32_t ret = object->muxer_->Start();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ Start failed!");
 
-    return AV_ERR_OK;   
+    return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex, uint8_t *sampleBuffer, OH_AVCodecBufferAttr info) {
@@ -102,17 +102,17 @@ OH_AVErrCode OH_AVMuxer_WriteSampleBuffer(OH_AVMuxer *muxer, uint32_t trackIndex
 
     struct AVMuxerObject *object = reinterpret_cast<AVMuxerObject *>(muxer);
     CHECK_AND_RETURN_RET_LOG(object->muxer_ != nullptr, AV_ERR_INVALID_VAL, "muxer_ is nullptr!");
-    
+
     TrackSampleInfo sampleInfo;
     sampleInfo.trackIndex = trackIndex;
     sampleInfo.timeUs = info.pts;
     sampleInfo.size = info.size;
     sampleInfo.flags = info.flags;
-    
+
     int32_t ret = object->muxer_->WriteSampleBuffer(sampleBuffer, sampleInfo);
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ WriteSampleBuffer failed!");
 
-    return AV_ERR_OK;   
+    return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_AVMuxer_Stop(OH_AVMuxer *muxer) {
@@ -125,7 +125,7 @@ OH_AVErrCode OH_AVMuxer_Stop(OH_AVMuxer *muxer) {
     int32_t ret = object->muxer_->Stop();
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "muxer_ Stop failed!");
 
-    return AV_ERR_OK;  
+    return AV_ERR_OK;
 }
 
 OH_AVErrCode OH_AVMuxer_Destroy(OH_AVMuxer *muxer) {

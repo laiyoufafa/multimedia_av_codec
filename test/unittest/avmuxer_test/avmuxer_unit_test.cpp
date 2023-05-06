@@ -279,14 +279,14 @@ HWTEST_F(AVMuxerUnitTest, Muxer_AddTrack_004, TestSize.Level0)
 {
     int trackId = -1;
     int ret = 0;
-    const std::vector<std::string_view> testMp4MimeTypeList = 
+    const std::vector<std::string_view> testMp4MimeTypeList =
     {
-        CodecMimeType::AUDIO_MPEG, 
+        CodecMimeType::AUDIO_MPEG,
         // CodecMimeType::AUDIO_FLAC,
         // CodecMimeType::AUDIO_RAW,
         CodecMimeType::AUDIO_AAC,
         // CodecMimeType::AUDIO_VORBIS,
-        // CodecMimeType::AUDIO_OPUS, 
+        // CodecMimeType::AUDIO_OPUS,
         // CodecMimeType::AUDIO_AMR_NB,
         // CodecMimeType::AUDIO_AMR_WB,
         CodecMimeType::VIDEO_AVC,
@@ -296,7 +296,7 @@ HWTEST_F(AVMuxerUnitTest, Muxer_AddTrack_004, TestSize.Level0)
         CodecMimeType::IMAGE_BMP,
     };
 
-    const std::vector<std::string_view> testM4aMimeTypeList = 
+    const std::vector<std::string_view> testM4aMimeTypeList =
     {
         CodecMimeType::AUDIO_AAC,
         CodecMimeType::VIDEO_AVC,
