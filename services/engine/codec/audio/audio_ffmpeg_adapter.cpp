@@ -17,6 +17,7 @@
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "media_description.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFFMpegDecoderAdapter"};
@@ -24,10 +25,6 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 
 namespace OHOS {
 namespace Media {
-
-const std::string CHANNEL_COUNT_KEY{"channel_count"};
-const std::string SAMPLE_RATE_KEY{"sample_rate"};
-const std::string BIT_RATE_KEY{"bitrate"};
 
 AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string_view &name) : state_(CodecState::RELEASED), name_(name) {}
 
@@ -54,17 +51,17 @@ int32_t AudioFFMpegAdapter::Configure(const Format &format)
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("Configure enter");
 
-    if (!format.ContainKey(CHANNEL_COUNT_KEY)) {
+    if (!format.ContainKey(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT)) {
         AVCODEC_LOGE("Configure failed, missing channel count key in format.");
         return AVCodecServiceErrCode::AVCS_ERR_CONFIGURE_MISMATCH_CHANNEL_COUNT;
     }
 
-    if (!format.ContainKey(SAMPLE_RATE_KEY)) {
+    if (!format.ContainKey(MediaDescriptionKey::MD_KEY_SAMPLE_RATE)) {
         AVCODEC_LOGE("Configure failed,missing sample rate key in format.");
         return AVCodecServiceErrCode::AVCS_ERR_MISMATCH_SAMPLE_RATE;
     }
 
-    if (!format.ContainKey(BIT_RATE_KEY)) {
+    if (!format.ContainKey(MediaDescriptionKey::MD_KEY_BITRATE)) {
         AVCODEC_LOGE("adapter configure error,missing bits rate key in format.");
         return AVCodecServiceErrCode::AVCS_ERR_MISMATCH_BIT_RATE;
     }
@@ -494,11 +491,11 @@ int32_t AudioFFMpegAdapter::doRelease()
 std::string_view AudioFFMpegAdapter::stateToString(CodecState state)
 {
     std::map<CodecState, std::string_view> stateStrMap = {
-        {CodecState::RELEASED, " RELEASED"}, {CodecState::INITLIZED, " INITLIZED"},
-        {CodecState::FLUSHED, " FLUSHED"}, {CodecState::RUNNING, " RUNNING"},
+        {CodecState::RELEASED, " RELEASED"},     {CodecState::INITLIZED, " INITLIZED"},
+        {CodecState::FLUSHED, " FLUSHED"},       {CodecState::RUNNING, " RUNNING"},
         {CodecState::INITLIZING, " INITLIZING"}, {CodecState::STARTING, " STARTING"},
-        {CodecState::STOPPING, " STOPPING"}, {CodecState::FLUSHING, " FLUSHING"},
-        {CodecState::RESUMING, " RESUMING"}, {CodecState::RRELEASING, " RRELEASING"},
+        {CodecState::STOPPING, " STOPPING"},     {CodecState::FLUSHING, " FLUSHING"},
+        {CodecState::RESUMING, " RESUMING"},     {CodecState::RRELEASING, " RRELEASING"},
     };
     return stateStrMap[state];
 }
