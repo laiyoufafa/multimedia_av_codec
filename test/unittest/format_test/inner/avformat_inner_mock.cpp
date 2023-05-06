@@ -13,32 +13,32 @@
  * limitations under the License.
  */
 
-#include "avformat_native_mock.h"
+#include "avformat_inner_mock.h"
 #include "securec.h"
 
 namespace OHOS {
 namespace Media {
-bool AVFormatNativeMock::PutIntValue(const std::string_view &key, int32_t value)
+bool AVFormatInnerMock::PutIntValue(const std::string_view &key, int32_t value)
 {
     return format_.PutIntValue(key, value);
 }
 
-bool AVFormatNativeMock::GetIntValue(const std::string_view &key, int32_t &value)
+bool AVFormatInnerMock::GetIntValue(const std::string_view &key, int32_t &value)
 {
     return format_.GetIntValue(key, value);
 }
 
-bool AVFormatNativeMock::PutStringValue(const std::string_view &key, const std::string_view &value)
+bool AVFormatInnerMock::PutStringValue(const std::string_view &key, const std::string_view &value)
 {
     return format_.PutStringValue(key, value);
 }
 
-bool AVFormatNativeMock::GetStringValue(const std::string_view &key, std::string &value)
+bool AVFormatInnerMock::GetStringValue(const std::string_view &key, std::string &value)
 {
     return format_.GetStringValue(key, value);
 }
 
-void AVFormatNativeMock::Destroy()
+void AVFormatInnerMock::Destroy()
 {
     if (dumpInfo_ != nullptr) {
         free(dumpInfo_);
@@ -47,52 +47,52 @@ void AVFormatNativeMock::Destroy()
     return;
 }
 
-Format &AVFormatNativeMock::GetFormat()
+Format &AVFormatInnerMock::GetFormat()
 {
     return format_;
 }
 
-bool AVFormatNativeMock::PutLongValue(const std::string_view &key, int64_t value)
+bool AVFormatInnerMock::PutLongValue(const std::string_view &key, int64_t value)
 {
     return format_.PutLongValue(key, value);
 }
 
-bool AVFormatNativeMock::GetLongValue(const std::string_view &key, int64_t &value)
+bool AVFormatInnerMock::GetLongValue(const std::string_view &key, int64_t &value)
 {
     return format_.GetLongValue(key, value);
 }
 
-bool AVFormatNativeMock::PutFloatValue(const std::string_view &key, float value)
+bool AVFormatInnerMock::PutFloatValue(const std::string_view &key, float value)
 {
     return format_.PutFloatValue(key, value);
 }
 
-bool AVFormatNativeMock::GetFloatValue(const std::string_view &key, float &value)
+bool AVFormatInnerMock::GetFloatValue(const std::string_view &key, float &value)
 {
     return format_.GetFloatValue(key, value);
 }
 
-bool AVFormatNativeMock::PutDoubleValue(const std::string_view &key, double value)
+bool AVFormatInnerMock::PutDoubleValue(const std::string_view &key, double value)
 {
     return format_.PutDoubleValue(key, value);
 }
 
-bool AVFormatNativeMock::GetDoubleValue(const std::string_view &key, double &value)
+bool AVFormatInnerMock::GetDoubleValue(const std::string_view &key, double &value)
 {
     return format_.GetDoubleValue(key, value);
 }
 
-bool AVFormatNativeMock::GetBuffer(const std::string_view &key, uint8_t **addr, size_t &size)
+bool AVFormatInnerMock::GetBuffer(const std::string_view &key, uint8_t **addr, size_t &size)
 {
     return format_.GetBuffer(key, addr, size);
 }
 
-bool AVFormatNativeMock::PutBuffer(const std::string_view &key, const uint8_t *addr, size_t size)
+bool AVFormatInnerMock::PutBuffer(const std::string_view &key, const uint8_t *addr, size_t size)
 {
     return format_.PutBuffer(key, addr, size);
 }
 
-const char *AVFormatNativeMock::DumpInfo()
+const char *AVFormatInnerMock::DumpInfo()
 {
     if (dumpInfo_ != nullptr) {
         free(dumpInfo_);

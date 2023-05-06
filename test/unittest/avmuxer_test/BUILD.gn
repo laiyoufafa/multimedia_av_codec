@@ -70,27 +70,27 @@ ohos_unittest("avmuxer_capi_unit_test") {
 }
 
 #################################################################################################################muxer
-ohos_unittest("avmuxer_native_unit_test") {
+ohos_unittest("avmuxer_inner_unit_test") {
   module_out_path = module_output_path
   include_dirs = [
     "./",
-    "./muxer_test",
+    "./inner",
     "$av_codec_root_dir/interfaces/inner_api/native",
     "$av_codec_root_dir/interfaces/kits/c",
     "$av_codec_root_dir/test/unittest/format_test",
-    "$av_codec_root_dir/test/unittest/format_test/native",
+    "$av_codec_root_dir/test/unittest/format_test/inner",
   ]
 
   cflags = avmuxer_unittest_cflags
 
   if (multimedia_av_codec_support_muxer) {
     sources = [
-      "$av_codec_root_dir/test/unittest/format_test/native/avformat_native_mock.cpp",
-      "$av_codec_root_dir/test/unittest/format_test/native/avformat_native_mock_factory.cpp",
+      "$av_codec_root_dir/test/unittest/format_test/inner/avformat_inner_mock.cpp",
+      "$av_codec_root_dir/test/unittest/format_test/inner/avformat_inner_mock_factory.cpp",
       "./avmuxer_sample.cpp",
       "./avmuxer_unit_test.cpp",
-      "./native/avmuxer_native_mock.cpp",
-      "./native/avmuxer_native_mock_factory.cpp",
+      "./inner/avmuxer_inner_mock.cpp",
+      "./inner/avmuxer_inner_mock_factory.cpp",
     ]
   }
   external_deps = [ "av_codec:av_codec_client" ]

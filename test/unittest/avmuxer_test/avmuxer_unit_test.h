@@ -36,7 +36,8 @@ protected:
     std::shared_ptr<AVMuxerSample> avmuxer_ {nullptr};
     int32_t fd_ {-1};
     std::shared_ptr<std::ifstream> avDataFile_ {nullptr};
-    uint8_t buffer_[3] = {'a', 'a', 'a'};
+    std::shared_ptr<std::ifstream> vDataFile_ {nullptr};
+    uint8_t buffer_[10] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
 };
 } // namespace Media
 } // namespace OHOS

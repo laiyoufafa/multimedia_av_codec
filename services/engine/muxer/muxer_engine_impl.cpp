@@ -66,6 +66,7 @@ std::shared_ptr<IMuxerEngine> IMuxerEngineFactory::CreateMuxerEngine(int32_t app
 MuxerEngineImpl::MuxerEngineImpl(int32_t appUid, int32_t appPid, int32_t fd, OutputFormat format)
     : appUid_(appUid), appPid_(appPid), fd_(fd), format_(format), que_("muxer_write_queue")
 {
+    format_ = (format_ == OUTPUT_FORMAT_DEFAULT) ? OUTPUT_FORMAT_MPEG_4 : format_;
     AVCodecTrace trace("MuxerEngine::Create");
     AVCODEC_LOGI("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
     muxer_ = Plugin::MuxerFactory::Instance().CreatePlugin(fd_, format_);

@@ -13,20 +13,20 @@
  * limitations under the License.
  */
 
-#ifndef MUXER_NATIVE_MOCK_H
-#define MUXER_NATIVE_MOCK_H
+#ifndef MUXER_INNER_MOCK_H
+#define MUXER_INNER_MOCK_H
 
 #include "avmuxer_mock.h"
-#include "avformat_native_mock.h"
+#include "avformat_inner_mock.h"
 #include "avcodec_common.h"
 #include "avmuxer.h"
 
 namespace OHOS {
 namespace Media {
-class MuxerNativeMock : public AVMuxerMock {
+class MuxerInnerMock : public AVMuxerMock {
 public:
-    explicit MuxerNativeMock(std::shared_ptr<AVMuxer> muxer) : muxer_(muxer) {}
-    ~MuxerNativeMock() = default;
+    explicit MuxerInnerMock(std::shared_ptr<AVMuxer> muxer) : muxer_(muxer) {}
+    ~MuxerInnerMock() = default;
     int32_t Destroy() override;
     int32_t Start() override;
     int32_t Stop() override;

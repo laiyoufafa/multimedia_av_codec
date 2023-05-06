@@ -13,14 +13,18 @@
  * limitations under the License.
  */
 
-#include "avformat_mock.h"
-#include "avformat_native_mock.h"
+#include "avmuxer_mock.h"
+#include "avmuxer_inner_mock.h"
 
 namespace OHOS {
 namespace Media {
-std::shared_ptr<FormatMock> FormatMockFactory::CreateFormat()
+std::shared_ptr<AVMuxerMock> AVMuxerMockFactory::CreateMuxer(int32_t fd, const OutputFormat &format)
 {
-    return std::make_shared<AVFormatNativeMock>();
+    auto muxer = AVMuxerFactory::CreateAVMuxer(fd, format);
+    if (muxer != nullptr) {
+        return std::make_shared<MuxerInnerMock>(muxer);
+    }
+    return nullptr;
 }
 }  // namespace Media
 }  // namespace OHOS
