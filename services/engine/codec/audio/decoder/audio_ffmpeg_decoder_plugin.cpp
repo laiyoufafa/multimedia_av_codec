@@ -25,9 +25,9 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 namespace OHOS {
 namespace Media {
 
-const std::string CHANNEL_COUNT_KEY{"channel-count"};
-const std::string SAMPLE_RATE_KEY{"sample-rate"};
-const std::string BITS_RATE_KEY{"bits-rate"};
+const std::string CHANNEL_COUNT_KEY{"channel_count"};
+const std::string SAMPLE_RATE_KEY{"sample_rate"};
+const std::string BITS_RATE_KEY{"bitrate"};
 const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
 
 AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin() {}

@@ -21,6 +21,7 @@
 namespace OHOS {
 namespace Media {
 class CodecListBase {
+public:
     virtual ~CodecListBase() = default;
     virtual int32_t GetCapabilityList(std::vector<CapabilityData>& caps) = 0;
 };

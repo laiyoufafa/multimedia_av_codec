@@ -38,9 +38,9 @@ void ADecInnerDemo::RunCase()
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     Format format;
-    format.PutIntValue("channel-count", CHANNEL_COUNT);
-    format.PutIntValue("sample-rate", SAMPLE_RATE);
-    format.PutLongValue("bits-rate", BITS_RATE);
+    format.PutIntValue("channel_count", CHANNEL_COUNT);
+    format.PutIntValue("sample_rate", SAMPLE_RATE);
+    format.PutLongValue("bitrate", BITS_RATE);
     format.PutIntValue("bits_per_coded-rate", BITS_PER_CODED_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 

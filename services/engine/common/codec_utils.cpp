@@ -7,27 +7,11 @@ static const uint32_t VIDEO_ALIGN_SIZE = 16; // 16字节对齐
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FCodec"};
 std::map<VideoPixelFormat, AVPixelFormat> g_pixelFormatMap = {
-    {VideoPixelFormat::YUV410P, AV_PIX_FMT_YUV410P},
-    {VideoPixelFormat::YUV411P, AV_PIX_FMT_YUV411P},
     {VideoPixelFormat::YUV420P, AV_PIX_FMT_YUV420P},
     {VideoPixelFormat::NV12, AV_PIX_FMT_NV12},
     {VideoPixelFormat::NV21, AV_PIX_FMT_NV21},
-    {VideoPixelFormat::YUYV422, AV_PIX_FMT_YUYV422},
-    {VideoPixelFormat::YUV422P, AV_PIX_FMT_YUV422P},
-    {VideoPixelFormat::YUV444P, AV_PIX_FMT_YUV444P},
     {VideoPixelFormat::RGBA, AV_PIX_FMT_RGBA},
-    {VideoPixelFormat::ARGB, AV_PIX_FMT_ARGB},
-    {VideoPixelFormat::ABGR, AV_PIX_FMT_ABGR},
     {VideoPixelFormat::BGRA, AV_PIX_FMT_BGRA},
-    {VideoPixelFormat::RGB24, AV_PIX_FMT_RGB24},
-    {VideoPixelFormat::BGR24, AV_PIX_FMT_BGR24},
-    {VideoPixelFormat::PAL8, AV_PIX_FMT_PAL8},
-    {VideoPixelFormat::GRAY8, AV_PIX_FMT_GRAY8},
-    {VideoPixelFormat::MONOWHITE, AV_PIX_FMT_MONOWHITE},
-    {VideoPixelFormat::MONOBLACK, AV_PIX_FMT_MONOBLACK},
-    {VideoPixelFormat::YUVJ420P, AV_PIX_FMT_YUVJ420P},
-    {VideoPixelFormat::YUVJ422P, AV_PIX_FMT_YUVJ422P},
-    {VideoPixelFormat::YUVJ444P, AV_PIX_FMT_YUVJ444P},
 };
 }
 
@@ -169,16 +153,12 @@ AVPixelFormat ConvertPixelFormatToFFmpeg(VideoPixelFormat pixelFormat)
 
 bool IsYuvFormat(AVPixelFormat format)
 {
-    return (format == AV_PIX_FMT_YUV420P || format == AV_PIX_FMT_NV12 || format == AV_PIX_FMT_NV21 ||
-            format == AV_PIX_FMT_YUYV422 || format == AV_PIX_FMT_YUV422P || format == AV_PIX_FMT_YUV444P ||
-            format == AV_PIX_FMT_YUV410P || format == AV_PIX_FMT_YUV411P || format == AV_PIX_FMT_YUVJ420P ||
-            format == AV_PIX_FMT_YUVJ422P || format == AV_PIX_FMT_YUVJ444P);
+    return (format == AV_PIX_FMT_YUV420P || format == AV_PIX_FMT_NV12 || format == AV_PIX_FMT_NV21);
 }
 
 bool IsRgbFormat(AVPixelFormat format)
 {
-    return (format == AV_PIX_FMT_ABGR || format == AV_PIX_FMT_ARGB || format == AV_PIX_FMT_RGBA ||
-            format == AV_PIX_FMT_BGRA || format == AV_PIX_FMT_RGB24 || format == AV_PIX_FMT_BGR24);
+    return (format == AV_PIX_FMT_RGBA || format == AV_PIX_FMT_BGRA);
 }
 
 // #if defined(VIDEO_SUPPORT)
