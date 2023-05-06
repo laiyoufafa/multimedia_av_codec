@@ -46,6 +46,8 @@ public:
 
     void ReleaseAll();
 
+    void SetRunning();
+
 private:
     void initBuffers();
     std::shared_ptr<AudioBufferInfo> createNewBuffer();

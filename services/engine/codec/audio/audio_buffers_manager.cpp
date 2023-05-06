@@ -80,12 +80,15 @@ bool AudioBuffersManager::RequestNewBuffer(uint32_t *index, std::shared_ptr<Audi
 
 bool AudioBuffersManager::RequestAvialbaleIndex(uint32_t *index)
 {
-    isRunning_ = true;
     while (inBufIndexQue_.empty() && isRunning_) {
         AVCODEC_LOGD("Request empty %{public}s buffer", name_.data());
         std::unique_lock aLock(avilableMuxt_);
         avilableCondition_.wait_for(aLock, std::chrono::milliseconds(500),
                                     [this] { return !inBufIndexQue_.empty() || !isRunning_; });
+    }
+
+    if (!isRunning_) {
+        return false;
     }
 
     std::unique_lock lock(stateMutex_);
@@ -105,6 +108,11 @@ void AudioBuffersManager::ReleaseAll()
     AVCODEC_LOGI("step out release all %{public}s buffer.", name_.data());
     isRunning_ = false;
     avilableCondition_.notify_all();
+}
+
+void AudioBuffersManager::SetRunning()
+{
+    isRunning_ = true;
 }
 
 bool AudioBuffersManager::RelaseBuffer(const uint32_t &index)
