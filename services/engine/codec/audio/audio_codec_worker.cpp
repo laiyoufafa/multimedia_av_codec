@@ -81,7 +81,7 @@ bool AudioCodecWorker::PushInputData(const uint32_t &index)
 {
     AVCODEC_LOGD("Worker PushInputData enter");
 
-    if (!isRunning_) {
+    if (!isRunning) {
         return true;
     }
 
@@ -288,7 +288,7 @@ void AudioCodecWorker::consumerOutputBuffer()
         SleepFor(DEFAULT_TRY_DECODE_TIME);
         return;
     }
-    while (!inBufIndexQue_.empty() && isRunning_) {
+    while (!inBufIndexQue_.empty() && isRunning) {
         uint32_t index;
         if (outputBuffer_->RequestAvialbaleIndex(&index)) {
             uint32_t inputIndex = inBufIndexQue_.front();
