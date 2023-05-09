@@ -37,7 +37,8 @@ public:
 
 class __attribute__((visibility("default"))) IMuxerEngineFactory {
 public:
-    static std::shared_ptr<IMuxerEngine> CreateMuxerEngine(int32_t appUid, int32_t appPid, int32_t fd, OutputFormat format);
+    static std::shared_ptr<IMuxerEngine> CreateMuxerEngine(
+        int32_t appUid, int32_t appPid, int32_t fd, OutputFormat format);
 private:
     IMuxerEngineFactory() = default;
     ~IMuxerEngineFactory() = default;
