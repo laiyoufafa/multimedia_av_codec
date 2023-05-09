@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_AUDIO_ENCODER_INNER_DEMO_H
-#define AVCODEC_AUDIO_ENCODER_INNER_DEMO_H
+#ifndef AVCODEC_AUDIO_DECODER_INNER_DEMO_H
+#define AVCODEC_AUDIO_DECODER_INNER_DEMO_H
 
 #include <atomic>
 #include <fstream>
@@ -83,4 +83,4 @@ private:
 } // InnerAudioDemo
 } // namespace AV_Codec
 } // namespace OHOS
-#endif // AVCODEC_AUDIO_ENCODER_INNER_DEMO_H
+#endif // AVCODEC_AUDIO_DECODER_INNER_DEMO_H

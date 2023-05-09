@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "avcodec_audio_encoder_inner_demo.h"
+#include "avcodec_audio_decoder_inner_demo.h"
 #include "avcodec_errors.h"
 #include "avcodec_common.h"
 #include "demo_log.h"
