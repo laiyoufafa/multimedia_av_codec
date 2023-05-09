@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,8 @@ namespace Media {
 namespace Plugin {
 class PluginLoader {
 public:
+    PluginLoader(void* handler, std::string name); // NOLINT: void*
+
     PluginLoader(const PluginLoader &) = delete;
 
     PluginLoader operator=(const PluginLoader &) = delete;
@@ -37,8 +39,6 @@ public:
     UnregisterFunc FetchUnregisterFunction();
 
 private:
-    PluginLoader(void* handler, std::string name); // NOLINT: void*
-
     static void* LoadPluginFile(const std::string &path);
 
     static std::shared_ptr<PluginLoader> CheckSymbol(void* handler, const std::string &name); // NOLINT: void*

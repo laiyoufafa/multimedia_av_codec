@@ -14,7 +14,7 @@
       "subsystem": "multimedia",
       "syscap": [
         "SystemCapability.Multimedia.Avcodec.Core",
-        "SystemCapability.Multimedia.Avcodec.AudioMuxer",
+        "SystemCapability.Multimedia.Media.Muxer",
         "SystemCapability.Multimedia.Avcodec.AudioDemuxer",
         "SystemCapability.Multimedia.Avcodec.AudioEncoder",
         "SystemCapability.Multimedia.Avcodec.AudioDecoder",

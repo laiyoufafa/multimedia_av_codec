@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -47,6 +47,7 @@ bool IsMuxerSupported(const char *name)
 
 int32_t Sniff(const std::string& pluginName, uint32_t outputFormat)
 {
+    constexpr int32_t ffmpegConfidence = 60;
     if (pluginName.empty()) {
         return 0;
     }
@@ -54,7 +55,7 @@ int32_t Sniff(const std::string& pluginName, uint32_t outputFormat)
     int32_t confidence = 0;
     auto it = g_supportedMuxer.find(plugin->name);
     if (it != g_supportedMuxer.end() && it->second == outputFormat) {
-        confidence = 60;
+        confidence = ffmpegConfidence;
     }
     
     return confidence;
@@ -171,6 +172,7 @@ Status FFmpegMuxerPlugin::SetRotation(int32_t rotation)
 
 Status FFmpegMuxerPlugin::SetCodecParameterOfTrack(AVStream *stream, const MediaDescription &trackDesc)
 {
+    constexpr int32_t mimeTypeLen = 5;
     bool ret = false;
     uint8_t *extraData = nullptr;
     size_t extraDataSize = 0;
@@ -185,14 +187,14 @@ Status FFmpegMuxerPlugin::SetCodecParameterOfTrack(AVStream *stream, const Media
 
     AVCodecParameters *par = stream->codecpar;
     par->codec_id = codeID;
-    if (!mimeType.compare(0, 5, "audio")) {
+    if (!mimeType.compare(0, mimeTypeLen, "audio")) {
         par->codec_type = AVMEDIA_TYPE_AUDIO; // type
         ret = trackDesc.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, par->sample_rate); // sample rate
         CHECK_AND_RETURN_RET_LOG(ret, Status::ERROR_MISMATCHED_TYPE, "get audio sample_rate failed!");
         ret = trackDesc.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, par->channels); // channels
         CHECK_AND_RETURN_RET_LOG(ret, Status::ERROR_MISMATCHED_TYPE, "get audio channels failed!");
-    } else if(!mimeType.compare(0, 5, "video") || !mimeType.compare(0, 5, "image")) {
-        if (!mimeType.compare(0, 5, "image")) { // pic
+    } else if (!mimeType.compare(0, mimeTypeLen, "video") || !mimeType.compare(0, mimeTypeLen, "image")) {
+        if (!mimeType.compare(0, mimeTypeLen, "image")) { // pic
             stream->disposition = AV_DISPOSITION_ATTACHED_PIC;
         }
         par->codec_type = AVMEDIA_TYPE_VIDEO; // type
@@ -200,7 +202,7 @@ Status FFmpegMuxerPlugin::SetCodecParameterOfTrack(AVStream *stream, const Media
         CHECK_AND_RETURN_RET_LOG(ret, Status::ERROR_MISMATCHED_TYPE, "get video width failed!");
         ret = trackDesc.GetIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, par->height); // height
         CHECK_AND_RETURN_RET_LOG(ret, Status::ERROR_MISMATCHED_TYPE, "get video height failed!");
-    } else{
+    } else {
         AVCODEC_LOGD("mimeType %{public}s is unsupported", mimeType.c_str());
     }
     
@@ -274,8 +276,10 @@ Status FFmpegMuxerPlugin::Stop()
 
 Status FFmpegMuxerPlugin::WriteSampleBuffer(uint8_t *sampleBuffer, const TrackSampleInfo &info)
 {
-    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, Status::ERROR_NULL_POINTER, "av_write_frame sampleBuffer is null!");
-    CHECK_AND_RETURN_RET_LOG(info.trackIndex < formatContext_->nb_streams, Status::ERROR_INVALID_PARAMETER, "track index is invalid!");
+    CHECK_AND_RETURN_RET_LOG(sampleBuffer != nullptr, Status::ERROR_NULL_POINTER,
+        "av_write_frame sampleBuffer is null!");
+    CHECK_AND_RETURN_RET_LOG(info.trackIndex < formatContext_->nb_streams,
+        Status::ERROR_INVALID_PARAMETER, "track index is invalid!");
     (void)memset_s(cachePacket_.get(), sizeof(AVPacket), 0, sizeof(AVPacket));
     cachePacket_->data = sampleBuffer;
     cachePacket_->size = info.size;
@@ -403,7 +407,8 @@ int64_t FFmpegMuxerPlugin::IoSeek(void *opaque, int64_t offset, int whence)
     return newPos;
 }
 
-int32_t FFmpegMuxerPlugin::IoOpen(AVFormatContext *s, AVIOContext **pb, const char *url, int flags, AVDictionary **options)
+int32_t FFmpegMuxerPlugin::IoOpen(AVFormatContext *s, AVIOContext **pb,
+                                  const char *url, int flags, AVDictionary **options)
 {
     AVCODEC_LOGD("IoOpen flags %{public}d", flags);
     *pb = InitAvIoCtx(static_cast<IOContext*>(s->pb->opaque)->fd_, 0);
