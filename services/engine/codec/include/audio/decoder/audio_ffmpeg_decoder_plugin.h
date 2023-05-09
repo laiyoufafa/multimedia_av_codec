@@ -33,17 +33,20 @@ namespace Media {
 
 class AudioFfmpegDecoderPlugin : public NoCopyable {
 private:
-    int64_t preBufferGroupPts_{0};
-    int64_t curBufferGroupPts_{0};
-    int32_t bufferNum_{1};
-    int32_t bufferIndex_{1};
-    int64_t bufferGroupPtsDistance{0};
-    std::shared_ptr<AVCodec> avCodec_{};
-    std::shared_ptr<AVCodecContext> avCodecContext_{};
-    std::shared_ptr<AVFrame> cachedFrame_{};
-    std::shared_ptr<AVPacket> avPacket_{};
-    mutable std::mutex avMutext_{};
-    std::mutex parameterMutex_{};
+    bool hasExtra_;
+    int32_t maxInputSize_;
+    int32_t bufferNum_;
+    int32_t bufferIndex_;
+    int64_t preBufferGroupPts_;
+    int64_t curBufferGroupPts_;
+    int64_t bufferGroupPtsDistance;
+
+    std::shared_ptr<AVCodec> avCodec_;
+    std::shared_ptr<AVCodecContext> avCodecContext_;
+    std::shared_ptr<AVFrame> cachedFrame_;
+    std::shared_ptr<AVPacket> avPacket_;
+    std::mutex avMutext_;
+    std::mutex parameterMutex_;
     Format format_;
 
 public:
@@ -76,6 +79,10 @@ public:
     std::shared_ptr<AVFrame> GetCodecCacheFrame() const noexcept;
 
     int32_t CloseCtxLocked();
+
+    int32_t GetMaxInputSize() const noexcept;
+
+    bool hasExtraData() const noexcept;
 
 private:
     int32_t SendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer);

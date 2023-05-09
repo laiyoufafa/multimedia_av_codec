@@ -86,7 +86,11 @@ int32_t AudioFFMpegAacDecoderPlugin::flush()
 
 uint32_t AudioFFMpegAacDecoderPlugin::getInputBufferSize() const
 {
-    return 8192;
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > 8192) {
+        maxSize = 8192;
+    }
+    return maxSize;
 }
 
 uint32_t AudioFFMpegAacDecoderPlugin::getOutputBufferSize() const
