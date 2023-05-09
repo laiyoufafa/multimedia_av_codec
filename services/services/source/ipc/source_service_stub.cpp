@@ -18,12 +18,13 @@
 #include "avcodec_server_manager.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "avcodec_dfx.h"
 #include "avsharedmemory_ipc.h"
 #include "avcodec_parcel.h"
 #include "avcodec_xcollie.h"
 
 namespace {
-    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceServiceStub"};
+    constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "SourceAVServiceStub"};
 }
 
 namespace OHOS {
@@ -51,14 +52,14 @@ SourceServiceStub::~SourceServiceStub()
 int32_t SourceServiceStub::InitStub()
 {
     sourceServer_ = SourceServer::Create();
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create muxer server");
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "Failed to create source server");
 
     sourceFuncs_[INIT] = &SourceServiceStub::Init;
     sourceFuncs_[GET_TRACK_COUNT] = &SourceServiceStub::GetTrackCount;
-    sourceFuncs_[DESTROY] = &SourceServiceStub::Destroy;
-    sourceFuncs_[SET_PARAMETER] = &SourceServiceStub::SetParameter;
+    sourceFuncs_[SET_TRACK_FORMAT] = &SourceServiceStub::SetTrackFormat;
     sourceFuncs_[GET_TRACK_FORMAT] = &SourceServiceStub::GetTrackFormat;
-    sourceFuncs_[GET_SOURCE_ATTR] = &SourceServiceStub::GetSourceAttr;
+    sourceFuncs_[GET_SOURCE_FORMAT] = &SourceServiceStub::GetSourceFormat;
+    sourceFuncs_[GET_SOURCE_ADDR] = &SourceServiceStub::GetSourceAddr;
     sourceFuncs_[DESTROY_STUB] = &SourceServiceStub::DestroyStub;
     return AVCS_ERR_OK;
 }
@@ -91,44 +92,44 @@ int SourceServiceStub::OnRemoteRequest(uint32_t code, MessageParcel &data, Messa
 int32_t SourceServiceStub::DestroyStub()
 {
     sourceServer_ = nullptr;
-    AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::MUXER, AsObject());
+    AVCodecServerManager::GetInstance().DestroyStubObject(AVCodecServerManager::SOURCE, AsObject());
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::Init(const std::string &uri)
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
     return sourceServer_->Init(uri);
 }
 
-int32_t SourceServiceStub::GetTrackCount()
+int32_t SourceServiceStub::GetTrackCount(uint32_t &trackCount)
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
-    return sourceServer_->GetTrackCount();
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
+    return sourceServer_->GetTrackCount(trackCount);
 }
 
-int32_t SourceServiceStub::Destroy()
+int32_t SourceServiceStub::SetTrackFormat(const Format &format, uint32_t trackIndex)
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
-    return sourceServer_->Destroy();
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
+    return sourceServer_->SetTrackFormat(format, trackIndex);
 }
 
-int32_t SourceServiceStub::SetParameter(const Format &param, uint32_t trackId)
+int32_t SourceServiceStub::GetTrackFormat(Format &format, uint32_t trackIndex)
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
-    return sourceServer_->SetParameter(param, trackId);
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
+    return sourceServer_->GetTrackFormat(format, trackIndex);
 }
 
-int32_t SourceServiceStub::GetTrackFormat(Format &format, uint32_t trackId)
+int32_t SourceServiceStub::GetSourceFormat(Format &format)
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
-    return sourceServer_->GetTrackFormat(format, trackId);
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
+    return sourceServer_->GetSourceFormat(format);
 }
 
-uint64_t SourceServiceStub::GetSourceAttr()
+uint64_t SourceServiceStub::GetSourceAddr()
 {
-    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, nullptr, "source server is nullptr");
-    return sourceServer_->GetSourceAttr();
+    CHECK_AND_RETURN_RET_LOG(sourceServer_ != nullptr, AVCS_ERR_NO_MEMORY, "source server is nullptr");
+    return sourceServer_->GetSourceAddr();
 }
 
 int32_t SourceServiceStub::DumpInfo(int32_t fd)
@@ -142,87 +143,95 @@ int32_t SourceServiceStub::DumpInfo(int32_t fd)
     return AVCS_ERR_OK;
 }
 
+int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+{
+    (void)data;
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "Reply DestroyStub failed!");
+    return AVCS_ERR_OK;
+}
+
 int32_t SourceServiceStub::Init(MessageParcel &data, MessageParcel &reply)
 {
     std::string uri = data.ReadString();
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Init(uri)), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackCount(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackCount()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    uint32_t trackIndex = data.ReadUint32();
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackCount(trackIndex)), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServiceStub::Destroy(MessageParcel &data, MessageParcel &reply)
-{
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(Destroy()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
-    return AVCS_ERR_OK;
-}
-
-int32_t SourceServiceStub::SetParameter(MessageParcel &data, MessageParcel &reply)
+int32_t SourceServiceStub::SetTrackFormat(MessageParcel &data, MessageParcel &reply)
 {
     Format param;
     (void)AVCodecParcel::Unmarshalling(data, param);
-    uint32_t trackId = data.ReadUint32();
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetParameter(param, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    uint32_t trackIndex = data.ReadUint32();
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(SetTrackFormat(param, trackIndex)), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetTrackFormat(MessageParcel &data, MessageParcel &reply)
 {
-    uint32_t trackId = data.ReadUint32();
+    uint32_t trackIndex = data.ReadUint32();
     Format format;
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackFormat(format, trackId)), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetTrackFormat(format, trackIndex)), AVCS_ERR_UNKNOWN, "");
     AVCodecParcel::Marshalling(reply, format);
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServiceStub::GetSourceAttr(MessageParcel &data, MessageParcel &reply)
+int32_t SourceServiceStub::GetSourceFormat(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET_LOG(reply.WriteUint64(GetSourceAttr()), AVCS_ERR_UNKNOWN, "WriteUint64 failed!");
+    (void)data;
+
+    Format format;
+    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(GetSourceFormat(format)), AVCS_ERR_UNKNOWN, "");
+    AVCodecParcel::Marshalling(reply, format);
     return AVCS_ERR_OK;
 }
 
-int32_t SourceServiceStub::DestroyStub(MessageParcel &data, MessageParcel &reply)
+int32_t SourceServiceStub::GetSourceAddr(MessageParcel &data, MessageParcel &reply)
 {
-    CHECK_AND_RETURN_RET_LOG(reply.WriteInt32(DestroyStub()), AVCS_ERR_UNKNOWN, "WriteInt32 failed!");
+    (void)data;
+    
+    CHECK_AND_RETURN_RET_LOG(reply.WriteUint64(GetSourceAddr()), AVCS_ERR_UNKNOWN, "");
     return AVCS_ERR_OK;
 }
 
 int32_t SourceServiceStub::GetDumpInfo(std::string& dumpInfo)
 {
-    dumpInfo += "Input_Url: " + "" + "\n";
+    // dumpInfo += "Input_Url: " + "" + "\n";
+    (void)dumpInfo; 
+    // dumpInfo += "Source_Info\n";
+    // dumpInfo += "\tTitle: " + "" + "\n";
+    // dumpInfo += "\tArtist: " + "" + "\n";
+    // dumpInfo += "\tAlbum: " + "" + "\n";
+    // dumpInfo += "\tAlbum_Artist: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tComment: " + "" + "\n";
+    // dumpInfo += "\tGenre: " + "" + "\n";
+    // dumpInfo += "\tCopyright: " + "" + "\n";
+    // dumpInfo += "\tLanguage: " + "" + "\n";
+    // dumpInfo += "\tDescription: " + "" + "\n";
+    // dumpInfo += "\tLyrics: " + "" + "\n";
+    // dumpInfo += "\tDuration: " + "" + "\n";
+    // dumpInfo += "\tType: " + "" + "\n";
 
-    dumpInfo += "Source_Info\n";
-    dumpInfo += "\tTitle: " + "" + "\n";
-    dumpInfo += "\tArtist: " + "" + "\n";
-    dumpInfo += "\tAlbum: " + "" + "\n";
-    dumpInfo += "\tAlbum_Artist: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tComment: " + "" + "\n";
-    dumpInfo += "\tGenre: " + "" + "\n";
-    dumpInfo += "\tCopyright: " + "" + "\n";
-    dumpInfo += "\tLanguage: " + "" + "\n";
-    dumpInfo += "\tDescription: " + "" + "\n";
-    dumpInfo += "\tLyrics: " + "" + "\n";
-    dumpInfo += "\tDuration: " + "" + "\n";
-    dumpInfo += "\tType: " + "" + "\n";
-
-    dumpInfo += "Video_TrackInfo" + "" + "\n";    
-    dumpInfo += "\t: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
-    dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "Video_TrackInfo" + "" + "\n";    
+    // dumpInfo += "\t: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
+    // dumpInfo += "\tDate: " + "" + "\n";
 
 
     return AVCS_ERR_OK;

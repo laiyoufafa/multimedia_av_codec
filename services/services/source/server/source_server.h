@@ -16,31 +16,30 @@
 #ifndef SOURCE_SERVER_H
 #define SOURCE_SERVER_H
 
-#include <mutex>
 #include "i_source_service.h"
 #include "nocopyable.h"
+#include "i_source_engine.h"
 
 namespace OHOS {
 namespace Media {
-class SourceServer : public ISourceService, public NoCopyable {
+class SourceServer : public std::enable_shared_from_this<SourceServer>, public ISourceService, public NoCopyable {
 public:
     static std::shared_ptr<ISourceService> Create();
     SourceServer();
     ~SourceServer();
 
     int32_t Init(const std::string &uri) override;
-    int32_t GetTrackCount() override;
-    int32_t Destroy() override;
-    int32_t SetParameter(const Format &param, uint32_t trackId) override;
-    int32_t GetTrackFormat(Format &format, uint32_t trackId) override;
-    uint64_t GetSourceAttr() override;
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex) override;
+    int32_t GetSourceFormat(Format &format) override;
+    uint64_t GetSourceAddr() override;
 
 private:
-    int32_t InitServer();
-    std::mutex mutex_;
-    // std::shared_ptr<IAVMuxerEngine> avmuxerEngine_ = nullptr;
-    // uint32_t trackNum_ = 0;
+    std::shared_ptr<ISourceEngine> sourceEngine_ = nullptr;
+    int32_t appUid_ = 0;
+    int32_t appPid_ = 0;
 };
 }  // namespace Media
 }  // namespace OHOS
-#endif
+#endif // SOURCE_SERVER_H

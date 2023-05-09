@@ -16,12 +16,11 @@
 #define AVCODEC_CLIENT_H
 
 #include "i_avcodec_service.h"
-#include "i_standard_avcodec_service.h"
 #include "avcodec_death_recipient.h"
 #include "avcodec_listener_stub.h"
-
+#include "i_standard_avcodec_service.h"
 #ifdef SUPPORT_DEMUXER
-#include "avdemuxer_client.h"
+#include "demuxer_client.h"
 #endif
 
 #ifdef SUPPORT_MUXER
@@ -50,8 +49,8 @@ public:
     ~AVCodecClient();
 
 #ifdef SUPPORT_DEMUXER
-    std::shared_ptr<IAVDemuxer> CreateDemuxerService() override;
-    int32_t DestroyDemuxerService(std::shared_ptr<IAVDemuxer> demuxerClient) override;
+    std::shared_ptr<IDemuxerService> CreateDemuxerService() override;
+    int32_t DestroyDemuxerService(std::shared_ptr<IDemuxerService> demuxer) override;
 #endif
 
 #ifdef SUPPORT_MUXER
@@ -71,7 +70,7 @@ public:
 
 #ifdef SUPPORT_SOURCE
     std::shared_ptr<ISourceService> CreateSourceService() override;
-    int32_t DestroySourceService(std::shared_ptr<ISourceService> sourceClient) override;
+    int32_t DestroySourceService(std::shared_ptr<ISourceService> source) override;
 #endif
 
 
@@ -86,7 +85,7 @@ private:
     sptr<AVCodecDeathRecipient> deathRecipient_ = nullptr;
 
 #ifdef SUPPORT_DEMUXER
-    std::list<std::shared_ptr<IAVDemuxer>> demuxerClientList_;
+    std::list<std::shared_ptr<IDemuxerService>> demuxerClientList_;
 #endif
 #ifdef SUPPORT_MUXER
     std::list<std::shared_ptr<IMuxerService>> muxerClientList_;

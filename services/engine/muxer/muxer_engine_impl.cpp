@@ -66,6 +66,7 @@ std::shared_ptr<IMuxerEngine> IMuxerEngineFactory::CreateMuxerEngine(int32_t app
 MuxerEngineImpl::MuxerEngineImpl(int32_t appUid, int32_t appPid, int32_t fd, OutputFormat format)
     : appUid_(appUid), appPid_(appPid), fd_(fd), format_(format), que_("muxer_write_queue")
 {
+    format_ = (format_ == OUTPUT_FORMAT_DEFAULT) ? OUTPUT_FORMAT_MPEG_4 : format_;
     AVCodecTrace trace("MuxerEngine::Create");
     AVCODEC_LOGI("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
     muxer_ = Plugin::MuxerFactory::Instance().CreatePlugin(fd_, format_);
@@ -153,6 +154,7 @@ int32_t MuxerEngineImpl::AddTrack(int32_t &trackIndex, const MediaDescription &t
         "The track index is greater than or equal to 0, less than 99");
     trackIndex = trackId;
     tracks_[trackIndex] = mimeType;
+    mediaDescMap_.emplace(trackIndex, MediaDescription(trackDesc));
 
     return AVCS_ERR_OK;
 }
@@ -171,6 +173,7 @@ int32_t MuxerEngineImpl::Start()
     CHECK_AND_RETURN_RET_LOG(ret == Plugin::Status::NO_ERROR, TranslatePluginStatus(ret), "Start failed");
     state_ = STARTED;
     StartThread("muxer_write_loop");
+
     return AVCS_ERR_OK;
 }
 
@@ -198,6 +201,10 @@ int32_t MuxerEngineImpl::Stop()
     AVCodecTrace trace("MuxerEngine::Stop");
     AVCODEC_LOGI("Stop");
     std::unique_lock<std::mutex> lock(mutex_);
+    if (state_ == STOPPED) {
+        AVCODEC_LOGW("current state is STOPPED!");
+        return AVCS_ERR_OK;
+    }
     CHECK_AND_RETURN_RET_LOG(state_ == STARTED, AVCS_ERR_INVALID_OPERATION,
         "The state is not STARTED. The current state is %{public}s", ConvertStateToString(state_).c_str());
     state_ = STOPPED;
@@ -209,13 +216,72 @@ int32_t MuxerEngineImpl::Stop()
 
 int32_t MuxerEngineImpl::DumpInfo(int32_t fd)
 {
+    AVCODEC_LOGI("DumpInfo fd:%{public}d", fd);
     std::string dumpString;
     dumpString += "In MuxerEngine::DumpInfo\n";
     dumpString += "Current MuxerEngine state is: " + ConvertStateToString(state_) + "\n";
     dumpString += "Current MuxerEngine output format is: " + std::to_string(format_) + "\n";
-    write(fd, dumpString.c_str(), dumpString.size());
+    dumpString += "\nCurrent MuxerEngine media description is:\n";
+    if (fd < 0) {
+        AVCODEC_LOGI("%{public}s", dumpString.c_str());
+    } else {
+        write(fd, dumpString.c_str(), dumpString.size());
+    }
+
+    for (auto it = mediaDescMap_.begin(); it != mediaDescMap_.end(); ++it) {
+        dumpString = "Track id: " + std::to_string(it->first) + "\n";
+        if (fd < 0) {
+            AVCODEC_LOGI("%{public}s", dumpString.c_str());
+        } else {
+            write(fd, dumpString.c_str(), dumpString.size());
+        }
+        DumpMediaDescription(fd, it->second);
+    }
 
     return AVCS_ERR_OK;
+}
+
+void MuxerEngineImpl::DumpMediaDescription(int32_t fd, const MediaDescription &trackDesc)
+{
+    std::string dumpString;
+    auto dataMap = trackDesc.GetFormatMap();
+    for (auto it = dataMap.begin(); it != dataMap.end(); ++it) {
+        switch (it->second.type) {
+            case FORMAT_TYPE_INT32:
+                dumpString = it->first + ": " + std::to_string(it->second.val.int32Val) + "\n";
+                break;
+            case FORMAT_TYPE_INT64:
+                dumpString = it->first + ": " + std::to_string(it->second.val.int64Val) + "\n";
+                break;
+            case FORMAT_TYPE_FLOAT:
+                dumpString = it->first + ": " + std::to_string(it->second.val.floatVal) + "\n";
+                break;
+            case FORMAT_TYPE_DOUBLE:
+                dumpString = it->first + ": " + std::to_string(it->second.val.doubleVal) + "\n";
+                break;
+            case FORMAT_TYPE_STRING:
+                dumpString = it->first + ": " + it->second.stringVal + "\n";
+                break;
+            case FORMAT_TYPE_ADDR:
+                dumpString = it->first + " size:" + std::to_string(it->second.size) + " buffer:\n";
+                if (fd < 0) {
+                    AVCODEC_LOGI("%{public}s", dumpString.c_str());
+                } else {
+                    write(fd, dumpString.c_str(), dumpString.size());
+                    write(fd, it->second.addr, it->second.size);
+                }
+                dumpString = "\n";
+                break;
+            default:
+                AVCODEC_LOGE("DumpMediaDescription fail to Marshalling Key: %{public}s", it->first.c_str());
+                continue;
+        }
+        if (fd < 0) {
+            AVCODEC_LOGI("%{public}s", dumpString.c_str());
+        } else {
+            write(fd, dumpString.c_str(), dumpString.size());
+        }
+    }
 }
 
 int32_t MuxerEngineImpl::StartThread(std::string name)

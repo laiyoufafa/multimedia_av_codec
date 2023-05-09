@@ -17,6 +17,7 @@
 #define AV_CODEC_ENGIN_BFFERS_H
 
 #include "audio_buffer_info.h"
+#include "nocopyable.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -27,7 +28,7 @@
 namespace OHOS {
 namespace Media {
 
-class AudioBuffersManager {
+class AudioBuffersManager : public NoCopyable {
 public:
     AudioBuffersManager(const uint32_t &bufferSize, const std::string_view &name, const uint32_t &metaSize = 0,
                         size_t align = 1);
@@ -45,6 +46,8 @@ public:
     bool RequestAvialbaleIndex(uint32_t *index);
 
     void ReleaseAll();
+
+    void SetRunning();
 
 private:
     void initBuffers();

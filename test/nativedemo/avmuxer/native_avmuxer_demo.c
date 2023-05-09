@@ -60,7 +60,7 @@ extern VideoTrackParam g_pngCoverPar;
 extern VideoTrackParam g_bmpCoverPar;
 
 static struct MuxerParam g_muxerParam  = {
-    .outputFormat = AV_OUTPUT_FORMAT_UNKNOWN,
+    .outputFormat = AV_OUTPUT_FORMAT_DEFAULT,
     .outputFormatType = "",
     .runMode = NORMAL,
     .runModeType = "",
@@ -503,7 +503,7 @@ void NativeSelectCover()
 
 void NativeSelectMode()
 {
-    if (g_muxerParam.outputFormat != AV_OUTPUT_FORMAT_UNKNOWN) {
+    if (g_muxerParam.outputFormat != AV_OUTPUT_FORMAT_DEFAULT) {
         return;
     }
     

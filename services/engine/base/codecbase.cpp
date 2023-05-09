@@ -55,20 +55,5 @@ int32_t CodecBase::SignalRequestIDRFrame()
     return 0;
 }
 
-std::shared_ptr<CodecBase> CodecBase::Create(const std::string &name)
-{
-    AVCODEC_LOGW("Create is not supported");
-    (void)name;
-    return nullptr;
-}
-
-std::shared_ptr<CodecBase> CodecBase::Create(bool isEncoder, const std::string &mime)
-{
-    AVCODEC_LOGW("Create is not supported");
-    (void)isEncoder;
-    (void)mime;
-    return nullptr;
-}
-
 } // namespace Media
 } // namespace OHOS

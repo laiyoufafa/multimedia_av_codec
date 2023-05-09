@@ -88,26 +88,12 @@ struct Location {
  * @brief Enumerates the seek mode.
  */
 enum AVSeekMode : uint8_t {
-    /**
-     * @brief this mode is used to seek to a key frame that is located right or before at
-     * the given timestamp.
-     */
-    AV_SEEK_PREV_SYNC = 0,
-    /**
-     * @brief this mode is used to seek to a key frame that is located right or after at
-     * the given timestamp.
-     */
-    AV_SEEK_NEXT_SYNC = 1,
-    /**
-     * @brief this mode is used to seek to a key frame that is located right or closest at
-     * the given timestamp.
-     */
-    AV_SEEK_CLOSEST_SYNC = 2,
-    /**
-     * @brief this mode is used to seek to a frame that is located right or closest at
-     * the given timestamp.
-     */
-    AV_SEEK_CLOSEST = 3,
+    /* seek to sync sample after the time */
+    SEEK_MODE_NEXT_SYNC = 0,
+    /* seek to sync sample before the time */
+    SEEK_MODE_PREVIOUS_SYNC,
+    /* seek to sync sample closest to time */
+    SEEK_MODE_CLOSEST_SYNC,
 };
 
 /**
@@ -160,17 +146,17 @@ enum StateChangeReason {
  */
 enum OutputFormat : uint32_t{
     /**
-     * output format unknown
+     * output format default mp4
     */
-    OUTPUT_FORMAT_UNKNOWN = 0,
+    OUTPUT_FORMAT_DEFAULT = 0,
     /**
      * output format mp4
     */
-    OUTPUT_FORMAT_MPEG_4 = 1,
+    OUTPUT_FORMAT_MPEG_4 = 2,
     /**
      * output format m4a
     */
-    OUTPUT_FORMAT_M4A = 2,
+    OUTPUT_FORMAT_M4A = 6,
 };
 
 /**

@@ -102,7 +102,7 @@ void AVMuxerFFmpegDemo::DoRunMuxer()
     }
 
     ffmpegMuxer_->SetLocation(10, 10);
-    ffmpegMuxer_->SetRotation(90); 
+    ffmpegMuxer_->SetRotation(90);
 
     AddAudioTrack(audioParams_);
     AddVideoTrack(videoParams_);

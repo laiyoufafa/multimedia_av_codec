@@ -64,7 +64,7 @@ int32_t MuxerCapiMock::WriteSampleBuffer(uint32_t trackIndex, uint8_t *sampleBuf
         bufferAttr.offset = info.offset;
         bufferAttr.flags = info.flags;
         // bufferAttr.trackId = info.trackId;
-        return OH_AVMuxer_WriteSampleBuffer(muxer_,trackIndex, sampleBuffer, bufferAttr);
+        return OH_AVMuxer_WriteSampleBuffer(muxer_, trackIndex, sampleBuffer, bufferAttr);
     }
     return AV_ERR_UNKNOWN;
 }

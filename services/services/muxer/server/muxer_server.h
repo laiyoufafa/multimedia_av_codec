@@ -22,7 +22,7 @@
 #include "nocopyable.h"
 
 namespace OHOS {
-namespace Media {   
+namespace Media {
 class MuxerServer : public IMuxerService, public NoCopyable {
 public:
     static std::shared_ptr<IMuxerService> Create();

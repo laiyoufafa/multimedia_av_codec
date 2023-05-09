@@ -15,6 +15,7 @@
 
 #include "audio_ffmpeg_vorbis_decoder_plugin.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
 #include "securec.h"
 
 namespace OHOS {
@@ -49,8 +50,9 @@ std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext
         return nullptr;
     }
     encodeContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
-    format.GetIntValue("channel_count", encodeContext->channels); // todo: 统一KEY定义
-    format.GetIntValue("sample_rate", encodeContext->sample_rate);
+
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, encodeContext->channels); // todo: 统一KEY定义
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, encodeContext->sample_rate);
 
     int ret = avcodec_open2(encodeContext.get(), encodec, nullptr);
     if (ret != 0) {

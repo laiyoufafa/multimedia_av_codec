@@ -137,6 +137,11 @@ public:
      */
     static constexpr std::string_view MD_KEY_SAMPLE_FORMAT = "sample_format";
 
+    /**
+     * Key for the number of bits used to encode each sample, value type is uint32_t
+     */
+    static constexpr std::string_view MD_BITS_PER_CODED_SAMPLE_KEY = "bits_per_coded_sample";
+
 private:
     MediaDescriptionKey() = delete;
     ~MediaDescriptionKey() = delete;

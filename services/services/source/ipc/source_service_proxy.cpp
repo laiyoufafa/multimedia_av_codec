@@ -65,7 +65,7 @@ int32_t SourceServiceProxy::Init(const std::string &uri)
     return reply.ReadInt32();
 }
 
-int32_t SourceServiceProxy::GetTrackCount()
+int32_t SourceServiceProxy::GetTrackCount(uint32_t &trackCount)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -74,12 +74,13 @@ int32_t SourceServiceProxy::GetTrackCount()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
+    data.WriteUint32(trackCount);
     int error = Remote()->SendRequest(GET_TRACK_COUNT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetTrackCount, error: %{public}d", error);
     return reply.ReadInt32();
 }
 
-int32_t SourceServiceProxy::Destroy()
+int32_t SourceServiceProxy::SetTrackFormat(const Format &format, uint32_t trackIndex)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -88,12 +89,14 @@ int32_t SourceServiceProxy::Destroy()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(DESTROY, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call Destroy, error: %{public}d", error);
+    AVCodecParcel::Marshalling(data, format);
+    data.WriteUint32(trackIndex);
+    int error = Remote()->SendRequest(SET_TRACK_FORMAT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SetTrackFormat, error: %{public}d", error);
     return reply.ReadInt32();
 }
 
-int32_t SourceServiceProxy::SetParameter(const Format &param, uint32_t trackId)
+int32_t SourceServiceProxy::GetTrackFormat(Format &format, uint32_t trackIndex)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -102,31 +105,15 @@ int32_t SourceServiceProxy::SetParameter(const Format &param, uint32_t trackId)
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    AVCodecParcel::Marshalling(data, param);
-    data.WriteUint32(trackId);
-    int error = Remote()->SendRequest(SET_PARAMETER, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call SetParameter, error: %{public}d", error);
-    return reply.ReadInt32();
-}
-
-int32_t SourceServiceProxy::GetTrackFormat(Format &format, uint32_t trackId)
-{
-    MessageParcel data;
-    MessageParcel reply;
-    MessageOption option;
-
-    bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
-    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
-
-    data.WriteUint32(trackId);
-    int error = Remote()->SendRequest(GET_SOURCE_ATTR, data, reply, option);
+    data.WriteUint32(trackIndex);
+    int error = Remote()->SendRequest(GET_TRACK_FORMAT, data, reply, option);
     CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetTrackFormat, error: %{public}d", error);
 
     AVCodecParcel::Unmarshalling(reply, format);
     return reply.ReadInt32();
 }
 
-uint64_t SourceServiceProxy::GetSourceAttr()
+int32_t SourceServiceProxy::GetSourceFormat(Format &format)
 {
     MessageParcel data;
     MessageParcel reply;
@@ -135,8 +122,24 @@ uint64_t SourceServiceProxy::GetSourceAttr()
     bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
     CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
 
-    int error = Remote()->SendRequest(DESTROY_STUB, data, reply, option);
-    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetSourceAttr, error: %{public}d", error);
+    int error = Remote()->SendRequest(GET_SOURCE_FORMAT, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetTrackFormat, error: %{public}d", error);
+
+    AVCodecParcel::Unmarshalling(reply, format);
+    return reply.ReadInt32();
+}
+
+uint64_t SourceServiceProxy::GetSourceAddr()
+{
+    MessageParcel data;
+    MessageParcel reply;
+    MessageOption option;
+
+    bool token = data.WriteInterfaceToken(SourceServiceProxy::GetDescriptor());
+    CHECK_AND_RETURN_RET_LOG(token, AVCS_ERR_INVALID_OPERATION, "Failed to write descriptor!");
+
+    int error = Remote()->SendRequest(GET_SOURCE_ADDR, data, reply, option);
+    CHECK_AND_RETURN_RET_LOG(error == AVCS_ERR_OK, error, "Failed to call GetSourceAddr, error: %{public}d", error);
     return reply.ReadUint64();
 }
 }  // namespace Media

@@ -17,6 +17,7 @@
 #include "avcodec_dfx.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "media_description.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFfmpegDecoderPlugin"};
@@ -25,9 +26,6 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 namespace OHOS {
 namespace Media {
 
-const std::string CHANNEL_COUNT_KEY{"channel_count"};
-const std::string SAMPLE_RATE_KEY{"sample_rate"};
-const std::string BITS_RATE_KEY{"bitrate"};
 const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
 
 AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin() {}
@@ -68,7 +66,7 @@ int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferIn
     auto attr = inputBuffer->GetBufferAttr();
     if (!inputBuffer->CheckIsEos()) {
         auto memory = inputBuffer->GetBuffer();
-        const uint8_t *ptr = memory->GetReadOnlyData();
+        const uint8_t *ptr = memory->GetBase();
         avPacket_->size = attr.size;
         avPacket_->data = const_cast<uint8_t *>(ptr);
         avPacket_->pts = attr.presentationTimeUs;
@@ -169,10 +167,10 @@ int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferIn
     if (av_sample_fmt_is_planar(avCodecContext_->sample_fmt)) {
         size_t planarSize = outputSize / channels;
         for (int32_t idx = 0; idx < channels; idx++) {
-            ioInfoMem->Write(cachedFrame_->extended_data[idx], planarSize);
+            outBuffer->WriteBuffer(cachedFrame_->extended_data[idx], planarSize);
         }
     } else {
-        ioInfoMem->Write(cachedFrame_->data[0], outputSize);
+        outBuffer->WriteBuffer(cachedFrame_->data[0], outputSize);
     }
     auto attr = outBuffer->GetBufferAttr();
     attr.presentationTimeUs = static_cast<uint64_t>(cachedFrame_->pts);
@@ -234,9 +232,9 @@ int32_t AudioFfmpegDecoderPlugin::AllocateContext(const std::string &name)
 
 int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format)
 {
-    format.GetIntValue(CHANNEL_COUNT_KEY, avCodecContext_->channels);
-    format.GetIntValue(SAMPLE_RATE_KEY, avCodecContext_->sample_rate);
-    format.GetLongValue(BITS_RATE_KEY, avCodecContext_->bit_rate);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, avCodecContext_->channels);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, avCodecContext_->sample_rate);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, avCodecContext_->bit_rate);
     format.GetIntValue(BITS_PER_CODED_SAMPLE_KEY, avCodecContext_->bits_per_coded_sample);
     avCodecContext_->sample_fmt = AV_SAMPLE_FMT_S16;
     avCodecContext_->request_sample_fmt = avCodecContext_->sample_fmt;

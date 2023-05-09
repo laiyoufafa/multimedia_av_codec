@@ -18,6 +18,6 @@ group("av_codec_engine_package") {
   deps = [
     "plugin:av_codec_plugin",
     "codec:av_codec_engine_codec"
-  #"avcodeclist:av_codec_engine_avcodeclist",
+
     ]
 }

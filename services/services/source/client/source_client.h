@@ -27,12 +27,12 @@ public:
     explicit SourceClient(const sptr<IStandardSourceService> &ipcProxy);
     ~SourceClient();
 
-    virtual int32_t Init(const std::string &uri) = 0;
-    virtual int32_t GetTrackCount() = 0;
-    virtual int32_t Destroy() = 0;
-    virtual int32_t SetParameter(const Format &param, uint32_t trackId) = 0;
-    virtual int32_t GetTrackFormat(Format &format, uint32_t trackId) = 0;
-    virtual uint64_t GetSourceAttr() = 0;
+    int32_t Init(const std::string &uri) override;
+    int32_t GetTrackCount(uint32_t &trackCount) override;
+    int32_t SetTrackFormat(const Format &format, uint32_t trackIndex) override;
+    int32_t GetSourceFormat(Format &format) override;
+    int32_t GetTrackFormat(Format &format, uint32_t trackIndex) override;
+    uint64_t GetSourceAddr() override;
 
     void AVCodecServerDied();
 private:

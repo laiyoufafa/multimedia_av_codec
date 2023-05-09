@@ -56,6 +56,7 @@ std::shared_ptr<CodecBase> CodecFactory::CreateCodecByMime(bool isEncoder, const
         codecname = codecListCore->FindDecoder(format);
     }
     std::shared_ptr<CodecBase> codec = CreateCodecByName(codecname);
+    AVCODEC_LOGD("CreateCodecByMime is successful");
     return codec;
 }
 

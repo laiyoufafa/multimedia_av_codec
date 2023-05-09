@@ -17,12 +17,21 @@
 #define AVCODEC_AUDIO_DECODER_DEMO_H
 
 #include "native_avcodec_audiodecoder.h"
+#include "nocopyable.h"
 #include <atomic>
 #include <fstream>
 #include <queue>
 #include <string>
 #include <thread>
-#include "nocopyable.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#ifdef __cplusplus
+}
+#endif
 
 namespace OHOS {
 namespace Media {
@@ -37,12 +46,12 @@ public:
     std::queue<uint32_t> outQueue_;
     std::queue<OH_AVMemory *> inBufferQueue_;
     std::queue<OH_AVMemory *> outBufferQueue_;
-    std::queue<OH_AVCodecBufferAttr *> attrQueue_;
+    std::queue<OH_AVCodecBufferAttr> attrQueue_;
 };
 
 class ADecDemo : public NoCopyable {
 public:
-    ADecDemo() = default;
+    ADecDemo();
     virtual ~ADecDemo();
     void RunCase();
 
@@ -67,8 +76,12 @@ private:
     bool isFirstFrame_ = true;
     int64_t timeStamp_ = 0;
     uint32_t frameCount_ = 0;
+
+    AVFormatContext *fmpt_ctx;
+    AVFrame *frame;
+    AVPacket pkt;
 };
-} // AudioDemo
-} // namespace AV_Codec
+} // namespace AudioDemo
+} // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_AUDIO_DECODER_DEMO_H

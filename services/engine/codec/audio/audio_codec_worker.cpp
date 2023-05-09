@@ -19,12 +19,12 @@
 #include "avcodec_log.h"
 #include "utils.h"
 
-namespace OHOS {
-namespace Media {
-
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioCodecWorker"};
 }
+
+namespace OHOS {
+namespace Media {
 
 constexpr short DEFAULT_TRY_DECODE_TIME{10};
 constexpr int timeoutMs{1000};
@@ -79,6 +79,11 @@ AudioCodecWorker::~AudioCodecWorker()
 bool AudioCodecWorker::PushInputData(const uint32_t &index)
 {
     AVCODEC_LOGD("Worker PushInputData enter");
+
+    if (!isRunning) {
+        return true;
+    }
+
     if (!callback_) {
         AVCODEC_LOGE("push input buffer failed in worker, callback is nullptr, please check the callback.");
         dispose();
@@ -94,6 +99,7 @@ bool AudioCodecWorker::PushInputData(const uint32_t &index)
         std::unique_lock lock(stateMutex_);
         inBufIndexQue_.push(index);
     }
+
     isProduceInput = true;
     inputCondition_.notify_all();
     outputCondition_.notify_all();
@@ -257,9 +263,11 @@ void AudioCodecWorker::produceInputBuffer()
         isProduceInput = false;
         uint32_t index;
         if (inputBuffer_->RequestAvialbaleIndex(&index)) {
+            AVCODEC_LOGD("produceInputBuffer request success.");
             auto inputBuffer = GetInputBufferInfo(index);
             callback_->OnInputBufferAvailable(index);
         } else {
+            AVCODEC_LOGD("produceInputBuffer request failed.");
             SleepFor(DEFAULT_TRY_DECODE_TIME);
             isProduceInput = true;
         }
@@ -279,7 +287,7 @@ void AudioCodecWorker::consumerOutputBuffer()
         SleepFor(DEFAULT_TRY_DECODE_TIME);
         return;
     }
-    while (!inBufIndexQue_.empty()) {
+    while (!inBufIndexQue_.empty() && isRunning) {
         uint32_t index;
         if (outputBuffer_->RequestAvialbaleIndex(&index)) {
             uint32_t inputIndex = inBufIndexQue_.front();
@@ -339,11 +347,11 @@ void AudioCodecWorker::dispose()
         inBufIndexQue_.pop();
     }
 
-    inputBuffer_->ReleaseAll();
-    outputBuffer_->ReleaseAll();
-
     inputCondition_.notify_all();
     outputCondition_.notify_all();
+
+    inputBuffer_->ReleaseAll();
+    outputBuffer_->ReleaseAll();
 }
 
 bool AudioCodecWorker::begin()
@@ -351,6 +359,9 @@ bool AudioCodecWorker::begin()
     AVCODEC_LOGD("Worker begin enter");
     isRunning = true;
     isProduceInput = true;
+
+    inputBuffer_->SetRunning();
+    outputBuffer_->SetRunning();
 
     if (inputTask_) {
         inputTask_->Start();

@@ -16,6 +16,7 @@
 #include "audio_ffmpeg_mp3_decoder_plugin.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
+#include "media_description.h"
 
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFFMpegMp3DecoderPlugin"};
@@ -106,10 +107,9 @@ int32_t AudioFFMpegMp3DecoderPlugin::checkinit(const Format &format)
 {
 #define SUPPORT_SAMPLE_RATE 9
     int sample_rate_pick[SUPPORT_SAMPLE_RATE] = {8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000};
-
-    format.GetIntValue("channel_count", channels);
-    format.GetIntValue("sample_rate", sample_rate);
-    format.GetLongValue("bitrate", bit_rate);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, channels);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, sample_rate);
+    format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, bit_rate);
     if (channels < 1 || channels > 2) {
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }

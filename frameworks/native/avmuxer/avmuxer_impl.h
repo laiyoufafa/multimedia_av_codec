@@ -36,7 +36,7 @@ public:
 private:
     std::shared_ptr<IMuxerService> muxerService_ = nullptr;
     int32_t fd_ = -1;
-    OutputFormat format_ = OUTPUT_FORMAT_UNKNOWN;
+    OutputFormat format_ = OUTPUT_FORMAT_DEFAULT;
 };
 } // namespace Media
 } // namespace OHOS

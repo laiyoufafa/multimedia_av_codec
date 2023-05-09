@@ -2,6 +2,30 @@ import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
 ohos_static_library("av_codec_audio_ffmpeg_codec"){
+    cflags = [
+        "-std=c++17",
+        "-fno-rtti",
+        "-fno-exceptions",
+        "-Wall",
+        "-fno-common",
+        "-fstack-protector-strong",
+        "-Wshadow",
+        "-FPIC",
+        "-FS",
+        "-O2",
+        "-D_FORTIFY_SOURCE=2",
+        "-fvisibility=hidden",
+        "-Wformat=2",
+        "-Wfloat-equal",
+        "-Wdate-time",
+        "-Werror",
+        "-Wno-deprecated-declarations",
+        "-Wextra",
+        "-Wimplicit-fallthrough",
+        "-Wsign-compare",
+        "-Wunused-parameter",
+    ]
+
     sanitize = {
       cfi = true
       cfi_cross_dso = true
@@ -42,15 +66,15 @@ ohos_static_library("av_codec_audio_ffmpeg_codec"){
 
     deps=[
         "//third_party/ffmpeg:libohosffmpeg",
-        "//foundation/multimedia/av_codec/services/engine/common:av_codec_engine_common",
-        "//foundation/multimedia/av_codec/services/engine/base:av_codec_codec_base",
+        "$av_codec_root_dir/services/engine/common:av_codec_engine_common",
+        "$av_codec_root_dir/services/engine/base:av_codec_codec_base",
     ]
 
     public_deps= [
         "//commonlibrary/c_utils/base:utils",
-        "//foundation/multimedia/av_codec/services/utils:av_codec_service_utils",
-        "//foundation/multimedia/av_codec/services/utils:av_codec_format",
-        "//foundation/multimedia/av_codec/services/dfx:av_codec_service_dfx",
+        "$av_codec_root_dir/services/utils:av_codec_service_utils",
+        "$av_codec_root_dir/services/utils:av_codec_format",
+        "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
         "//third_party/bounds_checking_function:libsec_static"
         ]
     
