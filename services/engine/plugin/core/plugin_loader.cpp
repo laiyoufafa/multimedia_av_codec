@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2023 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -76,7 +76,7 @@ std::shared_ptr<PluginLoader> PluginLoader::CheckSymbol(void* handler, const std
         registerFunc = (RegisterFunc)(::dlsym(handler, registerFuncName.c_str()));
         unregisterFunc = (UnregisterFunc)(::dlsym(handler, unregisterFuncName.c_str()));
         if (registerFunc && unregisterFunc) {
-            std::shared_ptr<PluginLoader> loader(new PluginLoader(handler, name));
+            std::shared_ptr<PluginLoader> loader = std::make_shared<PluginLoader>(handler, name);
             loader->registerFunc_ = registerFunc;
             loader->unregisterFunc_ = unregisterFunc;
             return loader;

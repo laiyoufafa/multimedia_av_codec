@@ -97,7 +97,7 @@ OH_AVErrCode OH_AVDemuxer_CopyNextSample(OH_AVDemuxer *demuxer, uint32_t *trackI
     CHECK_AND_RETURN_RET_LOG(bufferInfo != nullptr, AV_ERR_INVALID_VAL, "Copy sample failed because input attr is nullptr!");
 
     struct DemuxerObject *demuxerObj = reinterpret_cast<DemuxerObject *>(demuxer);
-    CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, AV_ERR_INVALID_VAL, "New DemuxerObject failed when copy sample!")
+    CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, AV_ERR_INVALID_VAL, "New DemuxerObject failed when copy sample!");
 
     struct AVCodecBufferInfo bufferInfoInner;
     // enum AVCodecBufferFlag bufferFlag = static_cast<enum AVCodecBufferFlag>(attr.flags);
@@ -121,7 +121,7 @@ OH_AVErrCode OH_AVDemuxer_SeekToTime(OH_AVDemuxer *demuxer, int64_t mSeconds, OH
     CHECK_AND_RETURN_RET_LOG(mSeconds >= 0, AV_ERR_INVALID_VAL, "Seek failed because input mSeconds is negative!");
 
     struct DemuxerObject *demuxerObj = reinterpret_cast<DemuxerObject *>(demuxer);
-    CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, AV_ERR_INVALID_VAL, "New DemuxerObject failed when seek!")
+    CHECK_AND_RETURN_RET_LOG(demuxerObj->demuxer_ != nullptr, AV_ERR_INVALID_VAL, "New DemuxerObject failed when seek!");
 
     int32_t ret = demuxerObj->demuxer_->SeekToTime(mSeconds, static_cast<AVSeekMode>(mode));
     CHECK_AND_RETURN_RET_LOG(ret == AVCS_ERR_OK, AV_ERR_OPERATE_NOT_PERMIT, "demuxer_ SeekToTime failed!");

@@ -18,5 +18,5 @@ group("av_codec_engine_codec") {
   deps = [
     "audio:av_codec_audio_ffmpeg_codec",
     "video:av_codec_video_ffmpeg_codec",
-    ]
+  ]
 }

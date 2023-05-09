@@ -352,7 +352,8 @@ void AVCodecServerManager::DestroyStubObject(StubType type, sptr<IRemoteObject> 
     pid_t pid = IPCSkeleton::GetCallingPid();
     DestroyDumper(type, object);
     
-    auto compare_func = [object](std::pair<sptr<IRemoteObject>, pid_t> objectPair) -> bool { return objectPair.first == object; };
+    auto compare_func = [object](std::pair<sptr<IRemoteObject>, pid_t> objectPair) ->
+        bool { return objectPair.first == object; };
     switch (type) {
         case CODEC: {
             auto it = find_if(codecStubMap_.begin(), codecStubMap_.end(), compare_func);
