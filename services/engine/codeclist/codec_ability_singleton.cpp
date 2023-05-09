@@ -14,9 +14,9 @@
  */
 
 #include "codec_ability_singleton.h"
+#include "codeclist_xml_parser.h"
 #include "avcodec_log.h"
 #include "avcodec_errors.h"
-#include "codeclist_builder.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "CodecAbilitySingleton"};
@@ -25,32 +25,47 @@ namespace {
 namespace OHOS {
 namespace Media {
 
-std::vector<std::shared_ptr<CodecListBase>> GetCodecLists(){
-    std::vector<std::shared_ptr<CodecListBase>> codecLists;
-    std::shared_ptr<CodecListBase> vcodecBuilder = std::make_shared<VideoCodecList>();
-    codecLists.emplace_back(vcodecBuilder);
-    std::shared_ptr<CodecListBase> acodecBuilder = std::make_shared<AudioCodecList>();
-    codecLists.emplace_back(acodecBuilder);
-    return codecLists;
-}
-
 CodecAbilitySingleton& CodecAbilitySingleton::GetInstance()
 {
+    AVCODEC_LOGE("CodecAbilitySingleton entered: start getting ins");
     static CodecAbilitySingleton instance;
+    bool ret = instance.ParseCodecXml();
+    if(!ret){
+        AVCODEC_LOGE("Parse codec xml failed");
+    }
     return instance;
+}
+
+bool CodecAbilitySingleton::ParseCodecXml()
+{
+    AVCODEC_LOGE("start parsing xml");
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (isParsered_) {
+        AVCODEC_LOGE("Parse codec xml done");
+        return true;
+    }
+    CodeclistXmlParser xmlParser;
+    bool ret = xmlParser.LoadConfiguration();
+    if (!ret) {
+        this->isParsered_ = false;
+        AVCODEC_LOGE("AVCodecList LoadConfiguration failed");
+        return false;
+    }
+    ret = xmlParser.Parse();
+    if (!ret) {
+        isParsered_ = false;
+        AVCODEC_LOGE("AVCodecList Parse failed.");
+        return false;
+    }
+    std::vector<CapabilityData> data = xmlParser.GetCapabilityDataArray();
+    capabilityDataArray_.insert(capabilityDataArray_.end(), data.begin(), data.end());
+    isParsered_ = true;
+    AVCODEC_LOGE("Parse codec xml successful, num = %{public}d", capabilityDataArray_.size());
+    return true;
 }
 
 CodecAbilitySingleton::CodecAbilitySingleton()
 {
-    std::vector<std::shared_ptr<CodecListBase>> codecLists = GetCodecLists();
-    auto iter = codecLists.begin();
-    while (iter != codecLists.end()) {
-        std::vector<CapabilityData> capaArray;
-        int32_t ret = (*iter)->GetCapabilityList(capaArray);
-        if(ret == AVCS_ERR_OK) {
-            RegisterCapabilityArray(capaArray);
-        }
-    }
     AVCODEC_LOGD("0x%{public}06" PRIXPTR " Instances create", FAKE_POINTER(this));
 }
 

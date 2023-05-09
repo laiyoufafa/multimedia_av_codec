@@ -49,6 +49,7 @@ enum MediaType : int32_t {
  * @version 3.1
  */
 enum VideoPixelFormat {
+    YUV420P = 0,
     /**
      * yuv 420 planar.
      */
@@ -69,6 +70,7 @@ enum VideoPixelFormat {
      * RGBA.
      */
     RGBA = 5,
+    BGRA = 6,
 };
 
 /**
