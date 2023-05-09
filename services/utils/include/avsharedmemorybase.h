@@ -76,17 +76,44 @@ public:
         return fd_;
     }
 
+    /**
+     * @brief Get the memory's name.
+     * @return the memory's name.
+     */
     std::string GetName() const
     {
         return name_;
     }
 
+    /**
+     * @brief Write data to the AVSharedMemory.
+     * @param in Input memory's virtual address.
+     * @param writeSize The input memory's size, bytes.
+     * @param realWriteSize The real memory's size write to AVSharedMemory, bytes.
+     * @param position Write start position.
+     * @return AVCS_ERR_OK if success, otherwise the errcode.
+     */
     int32_t Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position = INVALID_POSITION);
 
+    /**
+     * @brief Read data form the AVSharedMemory.
+     * @param out Output memory's virtual address.
+     * @param readSize The output memory's size, bytes.
+     * @param realReadSize The real memory's size read from AVSharedMemory, bytes.
+     * @param position Read start position.
+     * @return AVCS_ERR_OK if success, otherwise the errcode.
+     */
     int32_t Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position = INVALID_POSITION);
 
+    /**
+     * @brief Get the used memory's size.
+     * @return the used memory's size.
+     */
     int32_t GetUsedSize() const;
 
+    /**
+     * @brief Set the used memory's size to 0.
+     */
     void ClearUsedSize();
 
 
