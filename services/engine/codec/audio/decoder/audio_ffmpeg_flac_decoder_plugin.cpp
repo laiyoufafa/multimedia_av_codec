@@ -107,7 +107,11 @@ int32_t AudioFFMpegFlacDecoderPlugin::flush()
 
 uint32_t AudioFFMpegFlacDecoderPlugin::getInputBufferSize() const
 {
-    return 65536;
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > 65536) {
+        maxSize = 65536;
+    }
+    return maxSize;
 }
 
 uint32_t AudioFFMpegFlacDecoderPlugin::getOutputBufferSize() const

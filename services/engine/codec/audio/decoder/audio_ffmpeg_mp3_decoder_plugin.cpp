@@ -83,8 +83,12 @@ int32_t AudioFFMpegMp3DecoderPlugin::flush()
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
 {
-    uint32_t size = int(bit_rate / BITRATE_RATIO);
-    return size;
+    auto size = int(bit_rate / BITRATE_RATIO);
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > size) {
+        maxSize = size;
+    }
+    return maxSize;
 }
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const

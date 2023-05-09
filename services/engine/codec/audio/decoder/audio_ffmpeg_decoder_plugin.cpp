@@ -28,7 +28,20 @@ namespace Media {
 
 const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
 
-AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin() {}
+AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin()
+    : hasExtra_(false),
+      maxInputSize_(-1),
+      bufferNum_(1),
+      bufferIndex_(1),
+      preBufferGroupPts_(0),
+      curBufferGroupPts_(0),
+      bufferGroupPtsDistance(0),
+      avCodec_(nullptr),
+      avCodecContext_(nullptr),
+      cachedFrame_(nullptr),
+      avPacket_(nullptr)
+{
+}
 
 AudioFfmpegDecoderPlugin::~AudioFfmpegDecoderPlugin()
 {
@@ -55,6 +68,16 @@ std::string AVStrError(int errnum)
     char errbuf[AV_ERROR_MAX_STRING_SIZE] = {0};
     av_strerror(errnum, errbuf, AV_ERROR_MAX_STRING_SIZE);
     return std::string(errbuf);
+}
+
+int32_t AudioFfmpegDecoderPlugin::GetMaxInputSize() const noexcept
+{
+    return maxInputSize_;
+}
+
+bool AudioFfmpegDecoderPlugin::hasExtraData() const noexcept
+{
+    return hasExtra_;
 }
 
 int32_t AudioFfmpegDecoderPlugin::SendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer)
@@ -236,6 +259,14 @@ int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format)
     format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, avCodecContext_->sample_rate);
     format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, avCodecContext_->bit_rate);
     format.GetIntValue(BITS_PER_CODED_SAMPLE_KEY, avCodecContext_->bits_per_coded_sample);
+    format.GetIntValue(MediaDescriptionKey::MD_KEY_MAX_INPUT_SIZE, maxInputSize_);
+
+    size_t extraSize;
+    if (format.GetBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, &avCodecContext_->extradata, extraSize)) {
+        avCodecContext_->extradata_size = extraSize;
+        hasExtra_ = true;
+    }
+
     avCodecContext_->sample_fmt = AV_SAMPLE_FMT_S16;
     avCodecContext_->request_sample_fmt = avCodecContext_->sample_fmt;
     avCodecContext_->workaround_bugs =
