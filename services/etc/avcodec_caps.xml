@@ -97,7 +97,7 @@
     </AudioCodecs>
     <VideoCodecs>
             <VideoDecoder>
-                <Item codecName="avdec_h264"/>
+                <Item codecName="video_decoder.avc"/>
                 <Item codecType="VIDEO_DECODER"/>
                 <Item mimeType="video/avc"/>
                 <Item isVendor="false"/>
