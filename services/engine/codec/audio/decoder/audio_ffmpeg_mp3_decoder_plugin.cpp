@@ -26,7 +26,12 @@ namespace Media {
 #define BITRATE_RATIO 150
 #define SAMPLERATE_RATIO 31
 #define BITRATE_MAX 320000
-AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
+AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>())
+{
+    channels = 0;
+    sample_rate = 0;
+    bit_rate = 0;
+}
 
 AudioFFMpegMp3DecoderPlugin::~AudioFFMpegMp3DecoderPlugin()
 {
