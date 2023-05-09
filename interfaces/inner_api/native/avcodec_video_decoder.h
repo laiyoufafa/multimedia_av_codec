@@ -46,7 +46,6 @@ public:
      * @return Returns {@link AVCS_ERR_OK} if success; returns an error code otherwise.
      * @since 3.1
      * @version 3.1
-     * @deprecated since 4.0
      */
     virtual int32_t Prepare() = 0;
 

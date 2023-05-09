@@ -108,7 +108,6 @@ OH_AVErrCode OH_VideoDecoder_Configure(OH_AVCodec *codec, OH_AVFormat *format);
  * otherwise returns a specific error code, refer to {@link OH_AVErrCode}
  * @since 9
  * @version 1.0
- * @deprecated since 10
  */
 OH_AVErrCode OH_VideoDecoder_Prepare(OH_AVCodec *codec);
 

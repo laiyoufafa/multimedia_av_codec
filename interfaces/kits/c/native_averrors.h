@@ -21,8 +21,8 @@ extern "C" {
 
 /**
  * @brief AV error code
- * @syscap SystemCapability.Multimedia.Media.AVCodec
- * @since 10
+ * @syscap SystemCapability.Multimedia.Media.Core
+ * @since 9
  * @version 1.0
  */
 typedef enum OH_AVErrCode {

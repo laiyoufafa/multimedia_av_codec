@@ -19,7 +19,6 @@
 #include <string>
 #include "av_common.h"
 #include "format.h"
-#include "avsharedmemory.h"
 
 namespace OHOS {
 namespace Media {
@@ -56,11 +55,6 @@ struct AVCodecBufferInfo {
     int32_t size = 0;
     /* The start-offset of the data in the buffer */
     int32_t offset = 0;
-};
-
-struct AVBufferElement {
-    std::shared_ptr<AVSharedMemory> buffer;
-    std::shared_ptr<AVSharedMemory> metaData;
 };
 
 class AVCodecCallback {

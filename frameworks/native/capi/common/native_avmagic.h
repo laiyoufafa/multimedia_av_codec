@@ -60,13 +60,6 @@ struct OH_AVMemory : public AVObjectMagic {
     const std::shared_ptr<OHOS::Media::AVSharedMemory> memory_;
 };
 
-struct OH_AVBufferElement : public OHOS::RefBase {
-    explicit OH_AVBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
-    ~OH_AVBufferElement() override;
-    bool IsEqualBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
-    const std::shared_ptr<OHOS::Media::AVBufferElement> bufferElement_;
-};
-
 struct OH_AVCodec : public AVObjectMagic {
     explicit OH_AVCodec(enum AVMagic m) : AVObjectMagic(m) {}
     virtual ~OH_AVCodec() = default;
