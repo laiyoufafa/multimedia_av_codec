@@ -60,14 +60,14 @@ std::shared_ptr<AVSharedMemory> AVSharedMemoryBase::CreateFromRemote(
 }
 
 AVSharedMemoryBase::AVSharedMemoryBase(int32_t size, uint32_t flags, const std::string &name)
-    : base_(nullptr), size_(size), flags_(flags), name_(name), fd_(-1)
+    : base_(nullptr), capacity_(size), flags_(flags), name_(name), fd_(-1), size_(0)
 {
     AVCODEC_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), name_.c_str());
 }
 
 AVSharedMemoryBase::AVSharedMemoryBase(int32_t fd, int32_t size, uint32_t flags, const std::string &name)
-    : base_(nullptr), size_(size), flags_(flags), name_(name), fd_(dup(fd))
+    : base_(nullptr), capacity_(size), flags_(flags), name_(name), fd_(dup(fd)), size_(0)
 {
     AVCODEC_LOGD("enter ctor, instance: 0x%{public}06" PRIXPTR ", name = %{public}s",
                FAKE_POINTER(this), name_.c_str());
@@ -85,20 +85,20 @@ int32_t AVSharedMemoryBase::Init()
     ON_SCOPE_EXIT(0) {
         AVCODEC_LOGE("create avsharedmemory failed, name = %{public}s, size = %{public}d, "
                    "flags = 0x%{public}x, fd = %{public}d",
-                   name_.c_str(), size_, flags_, fd_);
+                   name_.c_str(), capacity_, flags_, fd_);
         Close();
     };
 
-    CHECK_AND_RETURN_RET_LOG(size_ > 0, AVCS_ERR_INVALID_VAL, "size is invalid, size = %{public}d", size_);
+    CHECK_AND_RETURN_RET_LOG(capacity_ > 0, AVCS_ERR_INVALID_VAL, "size is invalid, size = %{public}d", capacity_);
 
     bool isRemote = false;
     if (fd_ > 0) {
         int size = AshmemGetSize(fd_);
-        CHECK_AND_RETURN_RET_LOG(size == size_, AVCS_ERR_INVALID_VAL, "size not equal size_, size = %{public}d, "
-                                "size_ = %{public}d", size, size_);
+        CHECK_AND_RETURN_RET_LOG(size == capacity_, AVCS_ERR_INVALID_VAL, "size not equal capacity_, size = %{public}d, "
+                                "capacity_ = %{public}d", size, capacity_);
         isRemote = true;
     } else {
-        fd_ = AshmemCreate(name_.c_str(), static_cast<size_t>(size_));
+        fd_ = AshmemCreate(name_.c_str(), static_cast<size_t>(capacity_));
         CHECK_AND_RETURN_RET_LOG(fd_ > 0, AVCS_ERR_INVALID_VAL, "fd is invalid, fd = %{public}d", fd_);
     }
 
@@ -119,7 +119,7 @@ int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
     int result = AshmemSetProt(fd_, static_cast<int>(prot));
     CHECK_AND_RETURN_RET_LOG(result >= 0, AVCS_ERR_INVALID_OPERATION, "AshmemSetProt failed, result = %{public}d", result);
 
-    void *addr = ::mmap(nullptr, static_cast<size_t>(size_), static_cast<int>(prot), MAP_SHARED, fd_, 0);
+    void *addr = ::mmap(nullptr, static_cast<size_t>(capacity_), static_cast<int>(prot), MAP_SHARED, fd_, 0);
     CHECK_AND_RETURN_RET_LOG(addr != MAP_FAILED, AVCS_ERR_INVALID_OPERATION, "mmap failed, please check params");
 
     base_ = reinterpret_cast<uint8_t*>(addr);
@@ -129,16 +129,72 @@ int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
 void AVSharedMemoryBase::Close() noexcept
 {
     if (base_ != nullptr) {
-        (void)::munmap(base_, static_cast<size_t>(size_));
+        (void)::munmap(base_, static_cast<size_t>(capacity_));
         base_ = nullptr;
-        size_ = 0;
+        capacity_ = 0;
         flags_ = 0;
+        size_ = 0;
     }
 
     if (fd_ > 0) {
         (void)::close(fd_);
         fd_ = -1;
     }
+}
+
+int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position = INVALID_POSITION)
+{
+    CHECK_AND_RETURN_RET_LOG(in != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(writeSize > 0, AVCS_ERR_INVALID_VAL, "Input writeSize:%{public}d is invalid", writeSize);
+    int32_t start = 0;
+    if (position == INVALID_POSITION) {
+        start = size_;
+    } else {
+        start = std::min(position, capacity_);
+    }
+    int32_t unusedSize = capacity_ - start;
+    int32_t length = std::min(writeSize, unusedSize);
+    AVCODEC_LOGD("write data,length:%{public}d, start:%{public}d, name:%{public}s", length, start, name_.c_str());
+    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, AVCS_ERR_INVALID_OPERATION, "Write out of bounds, length:%{public}d, "
+                            "start:%{public}d, capacity_:%{public}d", length, start, capacity_);
+    uint8_t *dstPtr = base_ + start;
+    CHECK_AND_RETURN_RET_LOG(dstPtr != nullptr, AVCS_ERR_INVALID_OPERATION, "Inner dstPtr is nullptr");
+    auto error = memcpy_s(dstPtr, unusedSize, in, length);
+    CHECK_AND_RETURN_RET_LOG(error != EOK, AVCS_ERR_INVALID_OPERATION, "Inner memcpy_s failed,name:%{public}s", name_.c_str());
+    size_ = start + length;
+    realWriteSize = length;
+    return AVCS_ERR_OK;
+}
+
+int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position = INVALID_POSITION)
+{
+    CHECK_AND_RETURN_RET_LOG(out != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(readSize > 0, AVCS_ERR_INVALID_VAL, "Input readSize:%{public}d is invalid", readSize);
+    int32_t start = 0;
+    int32_t maxLength = size_;
+    if (position != INVALID_POSITION) {
+        start = std::min(position, size_);
+        maxLength = size_ - start;
+    }
+    int32_t length = std::min(readSize, maxLength);
+    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, AVCS_ERR_INVALID_OPERATION, "Read out of bounds, length:%{public}d, "
+                            "start:%{public}d, capacity_:%{public}d", length, start, capacity_);
+    uint8_t *srcPtr = base_ + start;
+    CHECK_AND_RETURN_RET_LOG(srcPtr != nullptr, AVCS_ERR_INVALID_OPERATION, "Inner srcPtr is nullptr");
+    auto error = memcpy_s(out, maxLength, srcPtr, length);
+    CHECK_AND_RETURN_RET_LOG(error != EOK, AVCS_ERR_INVALID_OPERATION, "Inner memcpy_s failed,name:%{public}s", name_.c_str());
+    realReadSize = length;
+    return AVCS_ERR_OK;
+}
+
+void AVSharedMemoryBase::ClearUsedSize()
+{
+    size_ = 0;
+}
+
+int32_t AVSharedMemoryBase::GetUsedSize() const
+{
+    return size_;
 }
 } // namespace Media
 } // namespace OHOS

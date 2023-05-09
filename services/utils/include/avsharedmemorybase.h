@@ -22,6 +22,8 @@
 
 namespace OHOS {
 namespace Media {
+constexpr int32_t INVALID_POSITION = -1;
+
 class __attribute__((visibility("default"))) AVSharedMemoryBase
     : public AVSharedMemory, public NoCopyable {
 public:
@@ -81,6 +83,15 @@ public:
         return name_;
     }
 
+    int32_t Write(const uint8_t *in, int32_t writeSize, int32_t position = INVALID_POSITION);
+
+    int32_t Read(uint8_t *out, int32_t readSize, int32_t position = INVALID_POSITION);
+
+    int32_t GetUsedSize() const;
+
+    void ClearUsedSize();
+
+
     /**
      * @brief Get the memory's virtual address
      * @return the memory's virtual address if the memory is valid, otherwise nullptr.
@@ -96,7 +107,7 @@ public:
      */
     virtual int32_t GetSize() const override
     {
-        return (base_ != nullptr) ? size_ : -1;
+        return (base_ != nullptr) ? capacity_ : -1;
     }
 
     /**
@@ -120,6 +131,7 @@ private:
     uint32_t flags_;
     std::string name_;
     int32_t fd_;
+    int32_t capacity_;
 };
 } // namespace Media
 } // namespace OHOS
