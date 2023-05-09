@@ -18,6 +18,7 @@
 
 #include "avcodec_common.h"
 #include "avsharedmemorybase.h"
+#include "nocopyable.h"
 #include <atomic>
 #include <memory>
 #include <vector>
@@ -30,7 +31,7 @@ enum class BufferStatus {
     OWNE_BY_CLIENT,
 };
 
-class AudioBufferInfo {
+class AudioBufferInfo : public NoCopyable {
 public:
     AudioBufferInfo(const uint32_t &bufferSize, const std::string_view &name, const uint32_t &metaSize = 0,
                     size_t align = 1);

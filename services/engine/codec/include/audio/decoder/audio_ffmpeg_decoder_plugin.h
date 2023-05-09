@@ -17,6 +17,7 @@
 #define AUDIO_FFMPEG_DECODER_PLUGIN
 
 #include "audio_ffmpeg_base_codec.h"
+#include "nocopyable.h"
 #include <mutex>
 
 #ifdef __cplusplus
@@ -30,7 +31,7 @@ extern "C" {
 namespace OHOS {
 namespace Media {
 
-class AudioFfmpegDecoderPlugin {
+class AudioFfmpegDecoderPlugin : public NoCopyable {
 private:
     int64_t preBufferGroupPts_{0};
     int64_t curBufferGroupPts_{0};
