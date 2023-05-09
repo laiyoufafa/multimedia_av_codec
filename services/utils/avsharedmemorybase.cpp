@@ -20,6 +20,7 @@
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 #include "scope_guard.h"
+#include "securec.h"
 
 namespace {
     constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AVSharedMemoryBase"};
@@ -142,7 +143,7 @@ void AVSharedMemoryBase::Close() noexcept
     }
 }
 
-int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position = INVALID_POSITION)
+int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position)
 {
     CHECK_AND_RETURN_RET_LOG(in != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
     CHECK_AND_RETURN_RET_LOG(writeSize > 0, AVCS_ERR_INVALID_VAL, "Input writeSize:%{public}d is invalid", writeSize);
@@ -166,7 +167,7 @@ int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t 
     return AVCS_ERR_OK;
 }
 
-int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position = INVALID_POSITION)
+int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position)
 {
     CHECK_AND_RETURN_RET_LOG(out != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
     CHECK_AND_RETURN_RET_LOG(readSize > 0, AVCS_ERR_INVALID_VAL, "Input readSize:%{public}d is invalid", readSize);

@@ -650,7 +650,7 @@ int32_t FCodec::ReleaseBuffers(bool isFlush)
     return AVCS_ERR_OK;
 }
 
-std::shared_ptr<AVSharedMemory> FCodec::GetInputBuffer(size_t index)
+std::shared_ptr<AVSharedMemoryBase> FCodec::GetInputBuffer(size_t index)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
     CHECK_AND_RETURN_RET_LOG(IsActive(), nullptr, "Get input buffer failed: not in Running or Flushed state");
@@ -663,7 +663,7 @@ std::shared_ptr<AVSharedMemory> FCodec::GetInputBuffer(size_t index)
     return avBuffers[index]->memory_;
 }
 
-std::shared_ptr<AVSharedMemory> FCodec::GetOutputBuffer(size_t index)
+std::shared_ptr<AVSharedMemoryBase> FCodec::GetOutputBuffer(size_t index)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
     CHECK_AND_RETURN_RET_LOG((IsActive() || state_ == State::EOS), nullptr, "Get output buffer failed: not in Running/Flushed/EOS state");

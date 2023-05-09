@@ -22,8 +22,6 @@
 
 namespace OHOS {
 namespace Media {
-constexpr int32_t INVALID_POSITION = -1;
-
 class __attribute__((visibility("default"))) AVSharedMemoryBase
     : public AVSharedMemory, public NoCopyable {
 public:
@@ -83,9 +81,9 @@ public:
         return name_;
     }
 
-    int32_t Write(const uint8_t *in, int32_t writeSize, int32_t position = INVALID_POSITION);
+    int32_t Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position = INVALID_POSITION);
 
-    int32_t Read(uint8_t *out, int32_t readSize, int32_t position = INVALID_POSITION);
+    int32_t Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position = INVALID_POSITION);
 
     int32_t GetUsedSize() const;
 
@@ -127,11 +125,12 @@ private:
     void Close() noexcept;
 
     uint8_t *base_;
-    int32_t size_;
+    int32_t capacity_;
     uint32_t flags_;
     std::string name_;
     int32_t fd_;
-    int32_t capacity_;
+    int32_t size_;
+    static constexpr int32_t INVALID_POSITION = -1;
 };
 } // namespace Media
 } // namespace OHOS
