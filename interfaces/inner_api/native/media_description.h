@@ -127,6 +127,21 @@ public:
     */
     static constexpr std::string_view MD_KEY_CODEC_CONFIG = "codec_config";
 
+    /**
+     * Key for audio channel layout, value type is int64_t
+     */
+    static constexpr std::string_view MD_KEY_CHANNEL_LAYOUT = "channel_layout";
+
+    /**
+     * Key for audio sample format, value type is uint32_t
+     */
+    static constexpr std::string_view MD_KEY_SAMPLE_FORMAT = "sample_format";
+
+    /**
+     * Key for the number of bits used to encode each sample, value type is uint32_t
+     */
+    static constexpr std::string_view MD_BITS_PER_CODED_SAMPLE_KEY = "bits_per_coded_sample";
+
 private:
     MediaDescriptionKey() = delete;
     ~MediaDescriptionKey() = delete;

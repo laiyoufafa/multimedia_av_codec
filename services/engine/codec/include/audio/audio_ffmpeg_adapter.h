@@ -19,6 +19,7 @@
 #include "audio_codec_worker.h"
 #include "audio_ffmpeg_base_codec.h"
 #include "codecbase.h"
+#include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
@@ -37,7 +38,7 @@ enum class CodecState {
     RRELEASING, // {ANY EXCEPT RELEASED} -> RELEASED
 };
 
-class AudioFFMpegAdapter : public CodecBase {
+class AudioFFMpegAdapter : public CodecBase, public NoCopyable {
 private:
     std::atomic<CodecState> state_;
     std::string_view name_;

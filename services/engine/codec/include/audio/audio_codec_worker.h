@@ -20,6 +20,7 @@
 #include "audio_ffmpeg_base_codec.h"
 #include "avcodec_common.h"
 #include "avcodec_errors.h"
+#include "nocopyable.h"
 #include "task_thread.h"
 
 #include <condition_variable>
@@ -29,7 +30,7 @@
 namespace OHOS {
 namespace Media {
 
-class AudioCodecWorker {
+class AudioCodecWorker : public NoCopyable {
 public:
     AudioCodecWorker(const std::shared_ptr<IAudioFFMpegBaseCodec> &codec,
                      const std::shared_ptr<AVCodecCallback> &callback);

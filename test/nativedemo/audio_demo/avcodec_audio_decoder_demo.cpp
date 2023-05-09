@@ -16,6 +16,8 @@
 #include "avcodec_audio_decoder_demo.h"
 #include "avcodec_common.h"
 #include "avcodec_errors.h"
+#include "media_description.h"
+#include "native_avformat.h"
 #include "demo_log.h"
 #include "native_avcodec_base.h"
 #include "securec.h"
@@ -32,9 +34,8 @@ constexpr uint32_t SAMPLE_RATE = 44100;
 constexpr uint32_t BITS_RATE = 169000;
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
 constexpr uint32_t FRAME_DURATION_US = 33000;
-constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
-constexpr string_view inputFilePath = "/data/test441_2_noid3.mp3";
-// constexpr string_view outputFilePath = "/data/audio_test.pcm";
+constexpr string_view inputFilePath = "/data/audioIn.mp3";
+constexpr string_view outputFilePath = "/data/audioOut.pcm";
 } // namespace
 
 static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData)
@@ -73,7 +74,12 @@ static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemo
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
     signal_->outBufferQueue_.push(data);
-    signal_->attrQueue_.push(attr);
+	if (attr) {
+        cout << "OnOutputBufferAvailable received, index:" << index << ", attr->size:" << attr->size << endl;
+        signal_->attrQueue_.push(*attr);
+	} else {
+	    cout << "OnOutputBufferAvailable error, attr is nullptr!" << endl;
+	}
     signal_->outCond_.notify_all();
 }
 
@@ -82,14 +88,17 @@ void ADecDemo::RunCase()
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     OH_AVFormat *format = OH_AVFormat_Create();
-    OH_AVFormat_SetIntValue(format, OH_MD_KEY_AUD_CHANNEL_COUNT, CHANNEL_COUNT);
-    OH_AVFormat_SetIntValue(format, OH_MD_KEY_AUD_SAMPLE_RATE, SAMPLE_RATE);
-    OH_AVFormat_SetIntValue(format, "bits_per_coded-rate", BITS_PER_CODED_RATE);
-    OH_AVFormat_SetLongValue(format, OH_MD_KEY_BITRATE, BITS_RATE);
+    OH_AVFormat_SetIntValue(format, MediaDescriptionKey::MD_KEY_CHANNEL_COUNT.data(), CHANNEL_COUNT);
+    OH_AVFormat_SetIntValue(format, MediaDescriptionKey::MD_KEY_SAMPLE_RATE.data(), SAMPLE_RATE);
+    OH_AVFormat_SetIntValue(format, MediaDescriptionKey::MD_BITS_PER_CODED_SAMPLE_KEY.data(), BITS_PER_CODED_RATE);
+    OH_AVFormat_SetLongValue(format, MediaDescriptionKey::MD_KEY_BITRATE.data(), BITS_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
-    sleep(3); // start run 3s
+
+    while (isRunning_.load()) {
+        sleep(1); // sleep 1s
+    }
 
     DEMO_CHECK_AND_RETURN_LOG(Stop() == AVCS_ERR_OK, "Fatal: Stop fail");
     std::cout << "end stop!\n";
@@ -98,9 +107,10 @@ void ADecDemo::RunCase()
 
 ADecDemo::ADecDemo()
 {
-    if (avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL) < 0) {
-        std::cout << "open file failed"
-                  << "\n";
+    int32_t ret = 0;
+	ret = avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL);
+    if (ret < 0) {
+        std::cout << "open file failed" << ret << "\n";
         exit(1);
     }
     if (avformat_find_stream_info(fmpt_ctx, NULL) < 0) {
@@ -116,7 +126,6 @@ ADecDemo::ADecDemo()
 
 ADecDemo::~ADecDemo()
 {
-    OH_AudioDecoder_Destroy(audioDec_);
     if (signal_) {
         delete signal_;
         signal_ = nullptr;
@@ -147,10 +156,6 @@ int32_t ADecDemo::Configure(OH_AVFormat *format)
 int32_t ADecDemo::Start()
 {
     isRunning_.store(true);
-
-    testFile_ = std::make_unique<std::ifstream>();
-    DEMO_CHECK_AND_RETURN_RET_LOG(testFile_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
-    testFile_->open("/data/media/audio.mp3", std::ios::in | std::ios::binary);
 
     inputLoop_ = make_unique<thread>(&ADecDemo::InputFunc, this);
     DEMO_CHECK_AND_RETURN_RET_LOG(inputLoop_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
@@ -252,10 +257,6 @@ void ADecDemo::InputFunc()
         signal_->inBufferQueue_.pop();
 
         frameCount_++;
-        if (frameCount_ == DEFAULT_FRAME_COUNT) {
-            cout << "Finish decode, exit" << endl;
-            break;
-        }
 
         if (ret != AVCS_ERR_OK) {
             cout << "Fatal error, exit" << endl;
@@ -266,8 +267,15 @@ void ADecDemo::InputFunc()
 
 void ADecDemo::OutputFunc()
 {
+    std::ofstream  pcmFile;
+    pcmFile.open(outputFilePath.data(), std::ios::out | std::ios::binary);
+    if (!pcmFile.is_open()) {
+        std::cout<<"open " << outputFilePath << " failed!"<<std::endl;
+    }
+
     while (true) {
         if (!isRunning_.load()) {
+            cout << "stop, exit" << endl;
             break;
         }
 
@@ -275,20 +283,29 @@ void ADecDemo::OutputFunc()
         signal_->outCond_.wait(lock, [this]() { return (signal_->outQueue_.size() > 0 || !isRunning_.load()); });
 
         if (!isRunning_.load()) {
+            cout << "wait to stop, exit" << endl;
             break;
         }
 
         uint32_t index = signal_->outQueue_.front();
-        if (OH_AudioDecoder_FreeOutputData(audioDec_, index) != AV_ERR_OK) {
-            cout << "Fatal: ReleaseOutputBuffer fail" << endl;
-            break;
+        OH_AVCodecBufferAttr attr = signal_->attrQueue_.front();
+        OH_AVMemory *data = signal_->outBufferQueue_.front();
+        if (data != nullptr) {
+            cout << "OutputFunc write file,buffer index" << index  << ", data size = :" << attr.size << endl;
+            pcmFile.write(reinterpret_cast<char *>(OH_AVMemory_GetAddr(data)), attr.size);
         }
-        OH_AVCodecBufferAttr *attr = signal_->attrQueue_.front();
-        if (attr->flags == AVCODEC_BUFFER_FLAGS_EOS) {
+
+        if (attr.flags == AVCODEC_BUFFER_FLAGS_EOS) {
+            cout << "decode eos" << endl;
             isRunning_.store(false);
         }
         signal_->outBufferQueue_.pop();
         signal_->attrQueue_.pop();
         signal_->outQueue_.pop();
+        if (OH_AudioDecoder_FreeOutputData(audioDec_, index) != AV_ERR_OK) {
+            cout << "Fatal: FreeOutputData fail" << endl;
+            break;
+        }
     }
+    pcmFile.close();
 }

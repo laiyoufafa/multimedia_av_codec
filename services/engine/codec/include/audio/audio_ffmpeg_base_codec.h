@@ -19,12 +19,13 @@
 #include "audio_buffer_info.h"
 #include "av_codec_base_factory.h"
 #include "format.h"
+#include "nocopyable.h"
 #include <string_view>
 
 namespace OHOS {
 namespace Media {
 
-class IAudioFFMpegBaseCodec : public AVCodecBaseFactory<IAudioFFMpegBaseCodec, std::string_view> {
+class IAudioFFMpegBaseCodec : public AVCodecBaseFactory<IAudioFFMpegBaseCodec, std::string_view>, public NoCopyable {
 private:
 public:
     IAudioFFMpegBaseCodec() = default;

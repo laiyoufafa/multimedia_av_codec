@@ -52,8 +52,7 @@ AudioCodecWorker::AudioCodecWorker(const std::shared_ptr<IAudioFFMpegBaseCodec> 
 
 AudioCodecWorker::~AudioCodecWorker()
 {
-    AVCODEC_LOGI("release all data of codec worker in destructor.");
-
+    AVCODEC_LOGD("release all data of codec worker in destructor.");
     dispose();
 
     if (inputTask_) {
