@@ -21,22 +21,17 @@ group("plugin_demuxer_ffmpeg") {
 # standard
 import("//build/ohos.gni")
 ohos_shared_library("av_codec_plugin_FFmpegDemuxer") {
-  sources = [
-    "ffmpeg_demuxer_plugin.cpp",
-  ]
+  sources = [ "ffmpeg_demuxer_plugin.cpp" ]
 
-  include_dirs = [ 
-    "//third_party/ffmpeg",
-  ]
+  include_dirs = [ "//third_party/ffmpeg" ]
 
-  public_configs = [
-    "$av_codec_root_dir/services/engine/plugin:plugin_presets",
-  ]
+  public_configs =
+      [ "$av_codec_root_dir/services/engine/plugin:plugin_presets" ]
 
   public_deps = [
-    "//third_party/bounds_checking_function:libsec_static",
     "$av_codec_root_dir/services/utils:av_codec_format",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits:libhilog",
+    "//third_party/bounds_checking_function:libsec_static",
     "//third_party/ffmpeg:libohosffmpeg",
   ]
 
