@@ -21,8 +21,9 @@ public:
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
 
-    const static std::string identify() {
-        return "OH.Media.Codec.AAC.FFMPEGAacEn";
+    const static std::string identify()
+    {
+        return AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY;
     }
 
 private:

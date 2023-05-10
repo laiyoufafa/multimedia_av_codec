@@ -18,6 +18,7 @@
 
 #include "audio_ffmpeg_base_codec.h"
 #include "audio_ffmpeg_decoder_plugin.h"
+#include "avcodec_audio_codec_key.h"
 
 namespace OHOS {
 namespace Media {
@@ -39,7 +40,7 @@ public:
 
     const static std::string_view identify()
     {
-        return "OH.Media.Codec.VORBIS.FFMPEGVorbis";
+        return AVCodecAudioCodecKey::AUDIO_DECODER_VORBIS_NAME_KEY;
     }
 
 private:

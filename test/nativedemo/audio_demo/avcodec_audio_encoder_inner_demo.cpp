@@ -14,6 +14,7 @@
  */
 
 #include "avcodec_audio_encoder_inner_demo.h"
+#include "avcodec_audio_codec_key.h"
 #include "avcodec_errors.h"
 #include "demo_log.h"
 #include "media_description.h"
@@ -53,7 +54,7 @@ void ADecInnerDemo::RunCase()
 
 int32_t ADecInnerDemo::CreateDec()
 {
-    audioDec_ = AudioDecoderFactory::CreateByName("OH.Media.Codec.MP3.FFMPEGMp3");
+    audioDec_ = AudioDecoderFactory::CreateByName((AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY).data());
     DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
     signal_ = make_shared<ADecSignal>();

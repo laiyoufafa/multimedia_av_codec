@@ -18,25 +18,12 @@
 
 #include "audio_codec_worker.h"
 #include "audio_ffmpeg_base_codec.h"
+#include "avcodec_common.h"
 #include "codecbase.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
-
-enum class CodecState {
-    RELEASED,
-    INITLIZED,
-    FLUSHED,
-    RUNNING,
-
-    INITLIZING, // RELEASED -> INITLIZED
-    STARTING,   // INITLIZED -> RUNNING
-    STOPPING,   // RUNNING -> INITLIZED
-    FLUSHING,   // RUNNING -> FLUSHED
-    RESUMING,   // FLUSHED -> RUNNING
-    RRELEASING, // {ANY EXCEPT RELEASED} -> RELEASED
-};
 
 class AudioFFMpegAdapter : public CodecBase, public NoCopyable {
 private:

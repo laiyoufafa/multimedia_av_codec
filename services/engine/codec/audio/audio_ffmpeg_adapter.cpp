@@ -494,7 +494,7 @@ int32_t AudioFFMpegAdapter::doRelease()
         return AVCodecServiceErrCode::AVCS_ERR_OK;
     }
     if (audioCodec != nullptr) {
-       audioCodec->release();
+        audioCodec->release();
     }
     if (worker_ != nullptr) {
         worker_->Release();

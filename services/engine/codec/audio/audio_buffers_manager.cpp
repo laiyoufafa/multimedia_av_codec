@@ -130,7 +130,7 @@ bool AudioBuffersManager::RelaseBuffer(const uint32_t &index)
 std::shared_ptr<AudioBufferInfo> AudioBuffersManager::createNewBuffer()
 {
     std::shared_ptr<AudioBufferInfo> buffer = std::make_shared<AudioBufferInfo>(bufferSize_, name_, metaSize_, align_);
-    bufferInfo_.push_back(buffer);
+    bufferInfo_.emplace_back(buffer);
     return buffer;
 }
 

@@ -16,6 +16,7 @@
 #ifndef AV_CODEC_BUFFER_INFO_H
 #define AV_CODEC_BUFFER_INFO_H
 
+#include "audio_common_info.h"
 #include "avcodec_common.h"
 #include "avsharedmemorybase.h"
 #include "nocopyable.h"
@@ -25,11 +26,6 @@
 
 namespace OHOS {
 namespace Media {
-
-enum class BufferStatus {
-    IDEL,
-    OWNE_BY_CLIENT,
-};
 
 class AudioBufferInfo : public NoCopyable {
 public:

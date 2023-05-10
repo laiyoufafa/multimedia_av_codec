@@ -20,79 +20,54 @@
                 <Item codecType="AUDIO_DECODER"/>
                 <Item mimeType="audio/mpeg"/>
                 <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
+                <Item bitrate="1-320000"/>
                 <Item channels="1-2"/>
-                <Item mpegVersion="1"/>
                 <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
-                <Item bitDepth="S16LE"/>
             </AudioDecoder>
             <AudioDecoder>
                 <Item codecName="avdec_aac"/>
                 <Item codecType="AUDIO_DECODER"/>
                 <Item mimeType="audio/mp4a-latm"/>
                 <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
-                <Item channels="1-2"/>
-                <Item mpegVersion="4"/>
-                <Item bitDepth="S16LE"/>
+                <Item bitrate="8000-960000"/>
+                <Item channels="1-8"/>
                 <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
-                <Item streamFormat="adts"/>
-                <Item profiles="AAC_LC"/>
-                <Item layout="non-interleaved"/>
             </AudioDecoder>
             <AudioDecoder>
                 <Item codecName="avdec_vorbis" />
                 <Item codecType="AUDIO_DECODER" />
                 <Item mimeType="audio/vorbis" />
                 <Item isVendor="false" />
-                <Item bitrate="1-384000"/>
-                <Item channels="1-7"/>
-                <Item bitDepth="S16LE"/>
-                <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000,176400,192000"/>
+                <Item bitrate="32000-500000"/>
+                <Item channels="1-8"/>
+                <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000"/>
             </AudioDecoder>
             <AudioDecoder>
                 <Item codecName="avdec_flac"/>
                 <Item codecType="AUDIO_DECODER"/>
                 <Item mimeType="audio/flac"/>
                 <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
-                <Item channels="1-2"/>
-                <Item framed="true"/>
-                <Item bitDepth="S16LE"/>
-                <Item layout="interleaved,non-interleaved"/>
+                <Item bitrate="1-2100000"/>
+                <Item channels="1-8"/>
                 <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
-            </AudioDecoder>
-            <AudioDecoder>
-                <Item codecName="avdec_opus"/>
-                <Item codecType="AUDIO_DECODER"/>
-                <Item mimeType="audio/opus"/>
-                <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
-                <Item channels="1-2"/>
-                <Item bitDepth="S16LE"/>
-                <Item sampleRate="48000"/>
             </AudioDecoder>
             <AudioEncoder>
                 <Item codecName="avenc_aac"/>
                 <Item codecType="AUDIO_ENCODER"/>
                 <Item mimeType="audio/mp4a-latm"/>
                 <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
-                <Item channels="1-2"/>
-                <Item bitDepth="S32LE"/>
-                <Item mpegVersion="4"/>
-                <Item sampleRate="8000,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
-                <Item streamFormat="raw"/>
+                <Item bitrate="8000-448000"/>
+                <Item channels="1-8"/>
+                <Item sampleRate="7350,8000,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
             </AudioEncoder>
-            <AudioEncoder>
-                <Item codecName="avenc_opus"/>
+             <AudioEncoder>
+                <Item codecName="avenc_flac"/>
                 <Item codecType="AUDIO_ENCODER"/>
-                <Item mimeType="audio/opus"/>
+                <Item mimeType="audio/flac"/>
                 <Item isVendor="false"/>
-                <Item bitrate="1-384000"/>
-                <Item channels="1-2"/>
-                <Item bitDepth="S16LE"/>
-                <Item sampleRate="48000"/>
+                <Item bitrate="1-21000000"/>
+                <Item channels="1-8"/>
+                <Item sampleRate="8000,11025,12000,16000,22050,24000,32000,44100,48000,64000,88200,96000"/>
             </AudioEncoder>
     </AudioCodecs>
     <VideoCodecs>
