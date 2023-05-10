@@ -110,7 +110,8 @@ ohos_unittest("vcodec_native_unit_test") {
     "//foundation/window/window_manager/wm:libwm",
   ]
 
-  resource_config_file = "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
+  resource_config_file =
+      "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################
@@ -148,7 +149,8 @@ ohos_unittest("acodec_native_unit_test") {
     "//foundation/window/window_manager/wm:libwm",
   ]
 
-  resource_config_file = "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
+  resource_config_file =
+      "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################
@@ -178,7 +180,8 @@ ohos_unittest("avcodec_list_native_unit_test") {
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
   ]
 
-  resource_config_file = "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
+  resource_config_file =
+      "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################
@@ -239,14 +242,17 @@ ohos_unittest("vcodec_capi_unit_test") {
     "//foundation/graphic/graphic_2d/frameworks/surface:surface",
     "//foundation/graphic/graphic_2d/rosen/modules/render_service_client:librender_service_client",
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
+
     # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codecbase",
     "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
-    "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
+
     # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_venc",
     "//foundation/window/window_manager/wm:libwm",
   ]
 
-  resource_config_file = "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
+  resource_config_file =
+      "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################
@@ -275,16 +281,17 @@ ohos_unittest("acodec_capi_unit_test") {
   deps = [
     "//foundation/graphic/graphic_2d/rosen/modules/render_service_client:librender_service_client",
     "//foundation/multimedia/av_codec/interfaces/inner_api/native:av_codec_client",
+
     # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_adec",
     "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codec",
+
     # "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_codecbase",
     "//foundation/multimedia/av_codec/interfaces/kits/c:native_av_codec_core",
-
- 
     "//foundation/window/window_manager/wm:libwm",
   ]
 
-  resource_config_file = "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
+  resource_config_file =
+      "//foundation/multimedia/av_codec/test/unittest/resources/ohos_test.xml"
 }
 
 ##################################################################################################################

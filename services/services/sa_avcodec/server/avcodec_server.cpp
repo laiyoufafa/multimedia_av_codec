@@ -64,34 +64,34 @@ sptr<IRemoteObject> AVCodecServer::GetSubSystemAbility(IStandardAVCodecService::
     
     switch (subSystemId) {
 #ifdef SUPPORT_CODECLIST
-    case AVCodecSystemAbility::AVCODEC_CODECLIST: {
-        return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
-    }
+        case AVCodecSystemAbility::AVCODEC_CODECLIST: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODECLIST);
+        }
 #endif
 #ifdef SUPPORT_CODEC
-    case AVCodecSystemAbility::AVCODEC_CODEC: {
-        return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
-    }
+        case AVCodecSystemAbility::AVCODEC_CODEC: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::CODEC);
+        }
 #endif
 #ifdef SUPPORT_MUXER
-    case AVCodecSystemAbility::AVCODEC_MUXER: {
-        return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::MUXER);
-    }
+        case AVCodecSystemAbility::AVCODEC_MUXER: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::MUXER);
+        }
 #endif
 #ifdef SUPPORT_DEMUXER
-    case AVCodecSystemAbility::AVCODEC_DEMUXER: {
-        return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
-    }
+        case AVCodecSystemAbility::AVCODEC_DEMUXER: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::DEMUXER);
+        }
 #endif
 #ifdef SUPPORT_SOURCE
-    case AVCodecSystemAbility::AVCODEC_SOURCE: {
-        return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::SOURCE);
-    }
+        case AVCodecSystemAbility::AVCODEC_SOURCE: {
+            return AVCodecServerManager::GetInstance().CreateStubObject(AVCodecServerManager::SOURCE);
+        }
 #endif
-    default: {
-        AVCODEC_LOGE("subSystemId is invalid");
-        return nullptr;
-    }
+        default: {
+            AVCODEC_LOGE("subSystemId is invalid");
+            return nullptr;
+        }
     }
 }
 

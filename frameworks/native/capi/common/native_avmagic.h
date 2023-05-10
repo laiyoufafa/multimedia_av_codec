@@ -25,7 +25,7 @@
 
 #define AV_MAGIC(a, b, c, d) (((a) << 24) + ((b) << 16) + ((c) << 8) + ((d) << 0))
 
-enum AVMagic {
+enum class AVMagic {
     AVCODEC_MAGIC_VIDEO_DECODER = AV_MAGIC('V', 'D', 'E', 'C'),
     AVCODEC_MAGIC_VIDEO_ENCODER = AV_MAGIC('V', 'E', 'N', 'C'),
     AVCODEC_MAGIC_AUDIO_DECODER = AV_MAGIC('A', 'D', 'E', 'C'),
@@ -58,13 +58,6 @@ struct OH_AVMemory : public AVObjectMagic {
     ~OH_AVMemory() override;
     bool IsEqualMemory(const std::shared_ptr<OHOS::Media::AVSharedMemory> &mem);
     const std::shared_ptr<OHOS::Media::AVSharedMemory> memory_;
-};
-
-struct OH_AVBufferElement : public OHOS::RefBase {
-    explicit OH_AVBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
-    ~OH_AVBufferElement() override;
-    bool IsEqualBufferElement(const std::shared_ptr<OHOS::Media::AVBufferElement> &bufferElement);
-    const std::shared_ptr<OHOS::Media::AVBufferElement> bufferElement_;
 };
 
 struct OH_AVCodec : public AVObjectMagic {

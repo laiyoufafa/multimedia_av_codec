@@ -24,6 +24,7 @@
 #include "avcodec_audio_decoder_demo.h"
 #include "avcodec_audio_encoder_demo.h"
 #include "videodec_ffmpeg_demo.h"
+#include "codeclist_demo.h"
 
 using namespace OHOS;
 using namespace OHOS::Media;
@@ -200,6 +201,18 @@ static int RunVideoInnerDecoder()
     return 0;
 }
 
+static int RunCodecList()
+{
+    auto codecList = std::make_unique<CodecListDemo>();
+    if (codecList == nullptr) {
+        cout << "codec list is null" << endl;
+        return 0;
+    }
+    codecList->RunCase();
+    cout << "codec list end" << endl;
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     constexpr int minRequiredArgCount = 2;
@@ -220,6 +233,7 @@ int main(int argc, char *argv[])
     cout << "9:ffmpeg_muxer" << endl;
     cout << "10:engine_muxer" << endl;
     cout << "11:Video Inner Decoder" << endl;
+    cout << "12:codeclist" << endl;
 
     string mode;
     (void)getline(cin, mode);
@@ -258,6 +272,8 @@ int main(int argc, char *argv[])
         RunEngineMuxer();
     } else if (mode == "11") {
         RunVideoInnerDecoder();
+    } else if (mode == "12") {
+        RunCodecList();
     }  else {
         cout << "no that selection" << endl;
     }

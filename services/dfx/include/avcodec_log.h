@@ -12,20 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef AVCODEC_LOG_H
+#define AVCODEC_LOG_H
 
 #include <hilog/log.h>
 #include <cinttypes>
 
-#ifndef AVCODEC_LOG_H
-#define AVCODEC_LOG_H
-
 namespace OHOS {
 namespace Media {
-
 #undef LOG_DOMAIN
 #define LOG_DOMAIN 0xD002BAC
-
-#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 
 #define AVCODEC_LOG(func, fmt, args...)                  \
     do {                                                 \
@@ -44,7 +40,7 @@ namespace Media {
             AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
             return ret;                                 \
         }                                               \
-    } while (0);
+    } while (0)
        
 #define CHECK_AND_RETURN_LOG(cond, fmt, ...)            \
     do {                                                \
@@ -52,7 +48,7 @@ namespace Media {
             AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
             return;                                     \
         }                                               \
-    } while (0);       
+    } while (0)
 
 #define CHECK_AND_BREAK_LOG(cond, fmt, ...)             \
     if (1) {                                            \
@@ -60,7 +56,7 @@ namespace Media {
             AVCODEC_LOGE(fmt, ##__VA_ARGS__);           \
             break;                                      \
         }                                               \
-    } else void (0)       
+    } else void (0)
 
 #define CHECK_AND_CONTINUE_LOG(cond, fmt, ...)          \
     if (1) {                                            \
@@ -72,7 +68,6 @@ namespace Media {
 
 #define POINTER_MASK 0x00FFFFFF
 #define FAKE_POINTER(addr) (POINTER_MASK & reinterpret_cast<uintptr_t>(addr))
-
 } // namespace Media
 } // namespace OHOS
 #endif // AVCODEC_LOG_H

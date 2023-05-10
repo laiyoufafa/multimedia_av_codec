@@ -1,12 +1,12 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-ohos_static_library("av_codec_engine_common"){
-    sanitize = {
-      cfi = true
-      cfi_cross_dso = true
-      debug = false
-    }
+ohos_static_library("av_codec_engine_common") {
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
     include_dirs=[
         "//base/hiviewdfx/hisysevent/interfaces/native/innerkits/hisysevent/include",
@@ -25,8 +25,23 @@ ohos_static_library("av_codec_engine_common"){
         "//third_party/ffmpeg",
     ]
 
+  sources = [
+    "$av_codec_root_dir/services/engine/common/codec_utils.cpp",
+    "$av_codec_root_dir/services/engine/common/share_memory.cpp",
+    "$av_codec_root_dir/services/engine/common/surface_memory.cpp",
+  ]
 
+  public_deps = [
+    "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
+    "$av_codec_root_dir/services/utils:av_codec_service_utils",
+    "//commonlibrary/c_utils/base:utils",
+    "//foundation/graphic/graphic_2d:libsurface",
+    "//foundation/graphic/graphic_2d/utils:sync_fence",
+    "//third_party/bounds_checking_function:libsec_static",
+    "//third_party/ffmpeg:libohosffmpeg",
+  ]
 
+<<<<<<< HEAD
     sources=[
         "$av_codec_root_dir/services/engine/common/surface_memory.cpp",
         "$av_codec_root_dir/services/engine/common/codec_utils.cpp",
@@ -51,3 +66,12 @@ ohos_static_library("av_codec_engine_common"){
         "hiviewdfx_hilog_native:libhilog"
     ]
 }
+=======
+  external_deps = [
+    "c_utils:utils",
+    "hisysevent_native:libhisysevent",
+    "hitrace_native:hitrace_meter",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+}
+>>>>>>> develop_test

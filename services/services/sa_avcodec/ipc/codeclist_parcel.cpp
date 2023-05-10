@@ -53,6 +53,7 @@ bool CodecListParcel::Marshalling(MessageParcel &parcel, CapabilityData &capabil
     (void)parcel.WriteInt32(capabilityData.blockSize.height);
     (void)parcel.WriteInt32Vector(capabilityData.sampleRate);
     (void)parcel.WriteInt32Vector(capabilityData.pixFormat);
+    (void)parcel.WriteInt32Vector(capabilityData.bitDepth);
     (void)parcel.WriteInt32Vector(capabilityData.profiles);
     (void)parcel.WriteInt32Vector(capabilityData.bitrateMode);
     (void)Marshalling(parcel, capabilityData.measuredFrameRate);
@@ -115,6 +116,7 @@ bool CodecListParcel::Unmarshalling(MessageParcel &parcel, CapabilityData &capab
     capabilityData.blockSize.height = parcel.ReadInt32();
     parcel.ReadInt32Vector(&capabilityData.sampleRate);
     parcel.ReadInt32Vector(&capabilityData.pixFormat);
+    parcel.ReadInt32Vector(&capabilityData.bitDepth);
     parcel.ReadInt32Vector(&capabilityData.profiles);
     parcel.ReadInt32Vector(&capabilityData.bitrateMode);
     Unmarshalling(parcel, capabilityData.measuredFrameRate);

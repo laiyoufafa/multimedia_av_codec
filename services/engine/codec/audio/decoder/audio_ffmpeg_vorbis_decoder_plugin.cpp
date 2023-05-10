@@ -95,13 +95,16 @@ int32_t AudioFFMpegVorbisDecoderPlugin::init(const Format &format)
         // std::cout << "init 1 OH error:" << ret << "\n";
         return ret;
     }
-    auto codecCtx = basePlugin->GetCodecContext();
-    ret = AssignExtradata(codecCtx, format);
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
         // std::cout << "init 2 OH error:" << ret << "\n";
         return ret;
     }
+    auto codecCtx = basePlugin->GetCodecContext();
+    if (!basePlugin->hasExtraData()) {
+        ret = AssignExtradata(codecCtx, format);
+    }
+
     return basePlugin->OpenContext();
 }
 
@@ -132,6 +135,10 @@ int32_t AudioFFMpegVorbisDecoderPlugin::flush()
 
 uint32_t AudioFFMpegVorbisDecoderPlugin::getInputBufferSize() const
 {
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > 8192) {
+        maxSize = 8192;
+    }
     return 8192;
 }
 

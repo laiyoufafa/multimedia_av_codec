@@ -49,7 +49,7 @@ typedef enum OH_AVCodecBufferFlags {
 
 /**
  * @brief Enumerates the muxer ouputfile format
- * 
+ *
  * @since 10
  * @version 1.0
  */
@@ -254,7 +254,7 @@ extern const char *OH_MD_KEY_TYPE;
 
 /**
  * @brief Format of video bitStream
- * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @syscap SystemCapability.Multimedia.Media.CodecBase
  * @since 10
  * @version 4.0
  */
@@ -302,7 +302,7 @@ typedef enum OH_AACProfile {
 
 /**
  * @brief Seek Mode
- * @syscap SystemCapability.Multimedia.AVCodec.CodecBase
+ * @syscap SystemCapability.Multimedia.Media.CodecBase
  * @since 10
  * @version 4.0
  */

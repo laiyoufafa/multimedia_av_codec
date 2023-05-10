@@ -340,9 +340,21 @@ int32_t AudioFFMpegAdapter::ReleaseOutputBuffer(size_t index)
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }
 
-    bool isEos = worker_->GetOutputBufferInfo(index)->CheckIsEos();
+    auto outBufferInfo = worker_->GetOutputBufferInfo(index);
+    if (outBufferInfo == nullptr) {
+        AVCODEC_LOGE("index=%{public}d error", index);
+        callback_->OnError(AVCodecErrorType::AVCODEC_ERROR_INTERNAL, AVCodecServiceErrCode::AVCS_ERR_NO_MEMORY);
+        return AVCodecServiceErrCode::AVCS_ERR_NO_MEMORY;
+    }
+    bool isEos = outBufferInfo->CheckIsEos();
 
-    bool result = worker_->GetOutputBuffer()->RelaseBuffer(index);
+    auto outBuffer = worker_->GetOutputBuffer();
+    if (outBuffer == nullptr) {
+        AVCODEC_LOGE("index=%{public}d error", index);
+        callback_->OnError(AVCodecErrorType::AVCODEC_ERROR_INTERNAL, AVCodecServiceErrCode::AVCS_ERR_NO_MEMORY);
+        return AVCodecServiceErrCode::AVCS_ERR_NO_MEMORY;
+    }
+    bool result = outBuffer->RelaseBuffer(index);
 
     if (!result) {
         AVCODEC_LOGE("RelaseBuffer failed");
@@ -481,8 +493,12 @@ int32_t AudioFFMpegAdapter::doRelease()
                      stateToString(state_).data());
         return AVCodecServiceErrCode::AVCS_ERR_OK;
     }
-    audioCodec->release();
-    worker_->Release();
+    if (audioCodec != nullptr) {
+       audioCodec->release();
+    }
+    if (worker_ != nullptr) {
+        worker_->Release();
+    }
     AVCODEC_LOGI("adapter doRelease, state from %{public}s to RELEASED", stateToString(state_).data());
     state_ = CodecState::RELEASED;
     return AVCodecServiceErrCode::AVCS_ERR_OK;

@@ -24,7 +24,7 @@ const string CODEC_NAME = "video_decoder.avc";
 // const string VIDEOMIMETYPE = "video/avc";
 constexpr uint32_t DEFAULT_WIDTH = 480;
 constexpr uint32_t DEFAULT_HEIGHT = 272;
-const uint32_t YUV420P = 3; 
+const uint32_t YUV420P_ = 3; 
 constexpr uint32_t DEFAULT_FRAME_RATE = 30;
 const uint32_t FLAG_IS_ASNY = 1;
 } // namespace
@@ -142,7 +142,7 @@ int32_t FCodecUnitTest::ProceFunc(void)
 {   
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
 
@@ -167,7 +167,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_02, TestSize.Level1)
 {
     format_.PutIntValue("width", 0);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -177,7 +177,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_03, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", 0);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -197,7 +197,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_05, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", 0);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -207,7 +207,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_06, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -217,7 +217,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_07, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", 0);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -227,7 +227,7 @@ HWTEST_F(FCodecUnitTest, fcodec_Configure_08, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->Configure(format_));
@@ -243,7 +243,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_02, TestSize.Level1)
 {
     format_.PutIntValue("width", 0);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -253,7 +253,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_03, TestSize.Level2)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", 0);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -273,7 +273,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_05, TestSize.Level4)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", 0);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -283,7 +283,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_06, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -293,7 +293,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_07, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", 0);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -303,7 +303,7 @@ HWTEST_F(FCodecUnitTest, fcodec_SetParameter_08, TestSize.Level1)
 {
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->SetParameter(format_));
@@ -411,7 +411,7 @@ HWTEST_F(FCodecUnitTest, fcodec_GetOutputFormat_01, TestSize.Level1)
     //case1 传参异常
     format_.PutIntValue("width", 0);
     format_.PutIntValue("height", 0);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->GetOutputFormat(format_));
@@ -440,7 +440,7 @@ HWTEST_F(FCodecUnitTest, fcodec_GetOutputFormat_01, TestSize.Level1)
 
     format_.PutIntValue("width", DEFAULT_WIDTH);
     format_.PutIntValue("height", DEFAULT_HEIGHT);
-    format_.PutIntValue("pix_fmt", YUV420P);
+    format_.PutIntValue("pix_fmt", YUV420P_);
     format_.PutIntValue("frame_rate", DEFAULT_FRAME_RATE);
     format_.PutIntValue("flag_is_async", FLAG_IS_ASNY);
     EXPECT_EQ(AVCS_ERR_OK, vdec_->GetOutputFormat(format_));

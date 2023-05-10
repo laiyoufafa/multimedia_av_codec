@@ -118,7 +118,8 @@ int32_t AVSharedMemoryBase::MapMemory(bool isRemote)
     }
 
     int result = AshmemSetProt(fd_, static_cast<int>(prot));
-    CHECK_AND_RETURN_RET_LOG(result >= 0, AVCS_ERR_INVALID_OPERATION, "AshmemSetProt failed, result = %{public}d", result);
+    CHECK_AND_RETURN_RET_LOG(result >= 0, AVCS_ERR_INVALID_OPERATION,
+        "AshmemSetProt failed, result = %{public}d", result);
 
     void *addr = ::mmap(nullptr, static_cast<size_t>(capacity_), static_cast<int>(prot), MAP_SHARED, fd_, 0);
     CHECK_AND_RETURN_RET_LOG(addr != MAP_FAILED, AVCS_ERR_INVALID_OPERATION, "mmap failed, please check params");

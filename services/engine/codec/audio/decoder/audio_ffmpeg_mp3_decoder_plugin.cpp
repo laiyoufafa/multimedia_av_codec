@@ -27,7 +27,12 @@ namespace Media {
 #define BITRATE_RATIO 150
 #define SAMPLERATE_RATIO 31
 #define BITRATE_MAX 320000
-AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>()) {}
+AudioFFMpegMp3DecoderPlugin::AudioFFMpegMp3DecoderPlugin() : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>())
+{
+    channels = 0;
+    sample_rate = 0;
+    bit_rate = 0;
+}
 
 AudioFFMpegMp3DecoderPlugin::~AudioFFMpegMp3DecoderPlugin()
 {
@@ -83,8 +88,12 @@ int32_t AudioFFMpegMp3DecoderPlugin::flush()
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getInputBufferSize() const
 {
-    uint32_t size = int(bit_rate / BITRATE_RATIO);
-    return size;
+    auto size = int(bit_rate / BITRATE_RATIO);
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > size) {
+        maxSize = size;
+    }
+    return maxSize;
 }
 
 uint32_t AudioFFMpegMp3DecoderPlugin::getOutputBufferSize() const

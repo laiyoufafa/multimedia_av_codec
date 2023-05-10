@@ -1,35 +1,35 @@
 import("//build/ohos.gni")
 import("//foundation/multimedia/av_codec/config.gni")
 
-ohos_static_library("av_codec_codec_base"){
-    cflags = [
-        "-std=c++17",
-        "-fno-rtti",
-        "-fno-exceptions",
-        "-Wall",
-        "-fno-common",
-        "-fstack-protector-strong",
-        "-Wshadow",
-        "-FPIC",
-        "-FS",
-        "-O2",
-        "-D_FORTIFY_SOURCE=2",
-        "-fvisibility=hidden",
-        "-Wformat=2",
-        "-Wfloat-equal",
-        "-Wdate-time",
-        "-Werror",
-        "-Wno-deprecated-declarations",
-        "-Wextra",
-        "-Wimplicit-fallthrough",
-        "-Wsign-compare",
-        "-Wunused-parameter",
-    ]
-    sanitize = {
-      cfi = true
-      cfi_cross_dso = true
-      debug = false
-    }
+ohos_static_library("av_codec_codec_base") {
+  cflags = [
+    "-std=c++17",
+    "-fno-rtti",
+    "-fno-exceptions",
+    "-Wall",
+    "-fno-common",
+    "-fstack-protector-strong",
+    "-Wshadow",
+    "-FPIC",
+    "-FS",
+    "-O2",
+    "-D_FORTIFY_SOURCE=2",
+    "-fvisibility=hidden",
+    "-Wformat=2",
+    "-Wfloat-equal",
+    "-Wdate-time",
+    "-Werror",
+    "-Wno-deprecated-declarations",
+    "-Wextra",
+    "-Wimplicit-fallthrough",
+    "-Wsign-compare",
+    "-Wunused-parameter",
+  ]
+  sanitize = {
+    cfi = true
+    cfi_cross_dso = true
+    debug = false
+  }
 
     include_dirs=[
         "//foundation/graphic/graphic_2d/frameworks/surface/include",
@@ -43,27 +43,25 @@ ohos_static_library("av_codec_codec_base"){
         "//third_party/ffmpeg",
     ]
 
-    sources=[
-        "$av_codec_root_dir/services/engine/base/codecbase.cpp"
-    ]
+  sources = [ "$av_codec_root_dir/services/engine/base/codecbase.cpp" ]
 
-    deps=[
-        "//third_party/ffmpeg:libohosffmpeg",
-        "$av_codec_root_dir/services/engine/common:av_codec_engine_common",
-    ]
+  deps = [
+    "$av_codec_root_dir/services/engine/common:av_codec_engine_common",
+    "//third_party/ffmpeg:libohosffmpeg",
+  ]
 
-    public_deps= [
-        "$av_codec_root_dir/services/utils:av_codec_format",
-        "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
-        ]
-    
-    external_deps = [
-        "hisysevent_native:libhisysevent",
-        "hitrace_native:hitrace_meter",
-        "hiviewdfx_hilog_native:libhilog",
-        "graphic_standard:surface" 
-    ]
+  public_deps = [
+    "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
+    "$av_codec_root_dir/services/utils:av_codec_format",
+  ]
 
-    subsystem_name = "multimedia"
-    part_name = "av_codec"
+  external_deps = [
+    "graphic_standard:surface",
+    "hisysevent_native:libhisysevent",
+    "hitrace_native:hitrace_meter",
+    "hiviewdfx_hilog_native:libhilog",
+  ]
+
+  subsystem_name = "multimedia"
+  part_name = "av_codec"
 }

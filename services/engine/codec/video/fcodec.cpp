@@ -974,42 +974,4 @@ int32_t FCodec::Resume() {
     return AVCS_ERR_OK;
 }
 
-int32_t FCodec::getCodecCapability(std::vector<CapabilityData> &capaArray) {
-    for (size_t i = 0; i < numSupportCodec; ++i) {
-        CapabilityData capsData;
-        capsData.codecName = SupportCodec[i].codecName;
-        capsData.mimeType = SupportCodec[i].mimeType;
-        capsData.codecType = SupportCodec[i].isEncoder? AVCODEC_TYPE_VIDEO_ENCODER:AVCODEC_TYPE_VIDEO_DECODER;
-        capsData.isVendor = false;
-        capsData.maxInstance = 16; //??? TODO
-        capsData.alignment.width = 1;
-        capsData.alignment.height = 1;
-        capsData.width.minVal = 32;
-        capsData.width.maxVal = VIDEO_MAX_SIZE;
-        capsData.height.minVal = 32;
-        capsData.height.maxVal = VIDEO_MAX_SIZE;
-        capsData.frameRate.minVal = 1;
-        capsData.frameRate.maxVal = 60;
-        if (SupportCodec[i].isEncoder) {
-            capsData.bitrate.minVal = 0;
-            capsData.bitrate.maxVal = 0; 
-            capsData.complexity.minVal = 0;
-            capsData.complexity.maxVal = 0;
-            capsData.encodeQuality.minVal = 0;
-            capsData.encodeQuality.maxVal = 0;
-            capsData.blockPerFrame.minVal = 0;
-            capsData.blockPerFrame.maxVal = 0;
-            capsData.blockPerSecond.minVal = 0;
-            capsData.blockPerSecond.maxVal = 0;
-            capsData.blockSize.width = 0;
-            capsData.blockSize.height = 0;
-        }
-        for(int32_t i=0; i<static_cast<int32_t>(VideoPixelFormat::BGRA);++i) {
-            capsData.pixFormat.emplace_back(i);
-        }
-        capaArray.emplace_back(capsData);
-    }
-    return AVCS_ERR_OK;
-}
-
 }}} // namespace OHOS::Media::Codec
