@@ -41,32 +41,6 @@ ohos_static_library("av_codec_engine_common") {
     "//third_party/ffmpeg:libohosffmpeg",
   ]
 
-<<<<<<< HEAD
-    sources=[
-        "$av_codec_root_dir/services/engine/common/surface_memory.cpp",
-        "$av_codec_root_dir/services/engine/common/codec_utils.cpp",
-    ]
-
-
-    public_deps= [
-        "//commonlibrary/c_utils/base:utils",
-        "$av_codec_root_dir/services/utils:av_codec_service_utils",
-        "$av_codec_root_dir/services/dfx:av_codec_service_dfx",
-        "//third_party/bounds_checking_function:libsec_static",
-        "//foundation/graphic/graphic_2d:libsurface",
-        "//foundation/graphic/graphic_2d/utils:sync_fence",
-        "//third_party/ffmpeg:libohosffmpeg",
-        ]
-
-
-    external_deps = [
-        "c_utils:utils",
-        "hisysevent_native:libhisysevent",
-        "hitrace_native:hitrace_meter",
-        "hiviewdfx_hilog_native:libhilog"
-    ]
-}
-=======
   external_deps = [
     "c_utils:utils",
     "hisysevent_native:libhisysevent",
@@ -74,4 +48,3 @@ ohos_static_library("av_codec_engine_common") {
     "hiviewdfx_hilog_native:libhilog",
   ]
 }
->>>>>>> develop_test
