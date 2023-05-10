@@ -11,7 +11,6 @@ extern "C" {
 #include "libavcodec/avcodec.h"
 }
 
-// #if 0
 using namespace OHOS;
 using namespace OHOS::Media;
 using namespace OHOS::Media::Codec;
@@ -25,18 +24,10 @@ const string CODEC_NAME = "video_decoder.avc";
 
 const int32_t VIDEO_INBUF_SIZE = 10240;
 const int32_t VIDEO_REFILL_THRESH = 4096;
-constexpr uint32_t DEFAULT_WIDTH = 480;
-constexpr uint32_t DEFAULT_HEIGHT = 272;
-const bool SURFACE_OUTPUT = false;
-//const bool SURFACE_OUTPUT = true;
-// constexpr uint32_t YUV_BUFFER_SIZE = 3110400;
-//const uint32_t YUV420P = 3; // yuv420p
-//const uint32_t YUV420P = 9; // RGBA
 constexpr uint32_t DEFAULT_FRAME_RATE = 30;
 constexpr uint32_t SAMPLE_DURATION_US = 23000;
 constexpr int64_t NANOS_IN_SECOND = 1000000000L;
 constexpr int64_t NANOS_IN_MICRO = 1000L;
-constexpr int64_t IN_BUFFER_CNT = 8;
 } // namespace
 
 class BufferCallback : public AVCodecCallback {
@@ -90,11 +81,13 @@ int64_t VDecFfmpegSample::GetSystemTimeUs()
     return nanoTime / NANOS_IN_MICRO;
 }
 
-void VDecFfmpegSample::RunVideoDec(sptr<Surface> surface, std::string codeName, FILE *inFp, FILE *outFp)
+void VDecFfmpegSample::RunVideoDec(FILE *inFp, FILE *outFp, int32_t width, int32_t height, sptr<Surface> surface, std::string codeName)
 {
-    if (SURFACE_OUTPUT && surface == nullptr) {
-        return;
-    }
+    inFile_ = inFp;
+    dumpFd_ = outFp;
+    width_ = width;
+    height_ = height;
+    surface_ = surface;
 
     int err = CreateVideoDecoder(codeName);
     if (err != AVCS_ERR_OK) {
@@ -116,7 +109,10 @@ void VDecFfmpegSample::RunVideoDec(sptr<Surface> surface, std::string codeName, 
         return;
     }
     AVCODEC_LOGI("[RunVideoDec]: Success to configure video decoder");
-    if (SURFACE_OUTPUT) {
+
+    GetoutputformatVideoDecoder();
+
+    if (surface_) {
         err = vdec_->SetOutputSurface(surface);
         if (err != AVCS_ERR_OK) {
             AVCODEC_LOGE("[RunVideoDec]: Failed to set output surface");
@@ -126,17 +122,6 @@ void VDecFfmpegSample::RunVideoDec(sptr<Surface> surface, std::string codeName, 
         AVCODEC_LOGI("[RunVideoDec]: Success to set output surface");
     }
     
-    if(inFp == nullptr){
-        AVCODEC_LOGE("[RunVideoDec]:  inFp is nullptr");
-        return;
-    }
-    inFile_ = inFp;
-
-    if(outFp == nullptr){
-        AVCODEC_LOGE("[RunVideoDec]:  outFp is nullptr");
-    }
-    dumpFd_ = outFp;
-
     if (Start() == AVCS_ERR_OK) {
         AVCODEC_LOGI("[RunVideoDec]: Success to start");
     }
@@ -146,7 +131,9 @@ void VDecFfmpegSample::RunVideoDec(sptr<Surface> surface, std::string codeName, 
         AVCODEC_LOGI("[RunVideoDec]:  Success to Setparameter");
     }
     
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    GetoutputformatVideoDecoder();
+
+    std::this_thread::sleep_for(std::chrono::seconds(5));
 
     if (Stop() != AVCS_ERR_OK) {
         AVCODEC_LOGE("[RunVideoDec]: stop codec failed");
@@ -273,9 +260,9 @@ void VDecFfmpegSample::BasicTest4(){
 int32_t VDecFfmpegSample::CreateVideoDecoder(string codeName)
 {
     if (!codeName.empty()) {
-        vdec_ = std::make_shared<FCodec>(codeName.c_str());// 当传入codecname，调用byname创建
+        vdec_ = std::make_shared<FCodec>(codeName);// 当传入codecname，调用byname创建
     } else {
-        vdec_ = std::make_shared<FCodec>(false, MIME_TYPE.c_str()); // codecname为空，调用bymine创建
+        vdec_ = std::make_shared<FCodec>(false, MIME_TYPE); // codecname为空，调用bymine创建
     }
     return vdec_ == nullptr ? AVCS_ERR_UNKNOWN : AVCS_ERR_OK;
 }
@@ -294,12 +281,11 @@ int32_t VDecFfmpegSample::SetVideoDecoderCallback()
 int32_t VDecFfmpegSample::ConfigureVideoDecoder()
 {
     Format format;
-    format.PutIntValue("width", DEFAULT_WIDTH);
-    format.PutIntValue("height", DEFAULT_HEIGHT);
-    format.PutIntValue("input_buffer_cnt", IN_BUFFER_CNT);
-    format.PutIntValue("surface_pixformat", static_cast<int32_t>(VideoPixelFormat::BGRA));
-    format.PutIntValue("surface_rotation", static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_90));
-    format.PutIntValue("surface_scale_type", static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_TO_WINDOW));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, width_);
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, height_);
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_PIXEL_FORMAT, static_cast<int32_t>(VideoPixelFormat::BGRA));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_ROTATION_ANGLE, static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_90));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_SCALE_TYPE, static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_TO_WINDOW));
     
 
     // 配置config信息
@@ -313,10 +299,9 @@ int32_t VDecFfmpegSample::ConfigureVideoDecoder()
 int32_t VDecFfmpegSample::SetparameterVideoDecoder()
 {
     Format format;
-    format.PutIntValue("bitrate", static_cast<int64_t>(DEFAULT_FRAME_RATE));
-    format.PutIntValue("surface_rotation", static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_180));
-    format.PutIntValue("surface_pixformat", static_cast<int32_t>(VideoPixelFormat::RGBA));
-    format.PutIntValue("surface_scale_type", static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_CROP));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_ROTATION_ANGLE, static_cast<int32_t>(GraphicTransformType::GRAPHIC_ROTATE_180));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_PIXEL_FORMAT, static_cast<int32_t>(VideoPixelFormat::RGBA));
+    format.PutIntValue(MediaDescriptionKey::MD_KEY_SCALE_TYPE, static_cast<int32_t>(ScalingMode::SCALING_MODE_SCALE_CROP));
 
     // 配置config信息
     if (vdec_->SetParameter(format) != AVCS_ERR_OK) {
@@ -333,12 +318,8 @@ int32_t VDecFfmpegSample::GetoutputformatVideoDecoder()
         AVCODEC_LOGE("[GetoutputformatVideoDecoder]: GetOutputFormat");
         return AVCS_ERR_UNKNOWN;
     }
-    int32_t val32 = 0;
-    if (format.GetValueType(std::string_view("height")) == FORMAT_TYPE_INT32) {
-        if (format.GetIntValue("height", val32) && val32 >= 0) {
-            AVCODEC_LOGI("[GetoutputformatVideoDecoder]: GetOutput height %{public}d", val32);
-        }
-    }
+
+    AVCODEC_LOGI("[GetoutputformatVideoDecoder]: %{public}s", format.Stringify().c_str());
     return AVCS_ERR_OK;
 }
 
@@ -364,7 +345,7 @@ int32_t VDecFfmpegSample::Start()
     AVCODEC_LOGI("[Start]: Success to Create Extractor");
 	
     isRunning_.store(true);
-    if (SURFACE_OUTPUT) {
+    if (surface_) {
         outputLoop_ = make_unique<thread>(&VDecFfmpegSample::OutputSurfaceFunc, this);
     }else {
         outputLoop_ = make_unique<thread>(&VDecFfmpegSample::OutputBufferFunc, this);
@@ -501,7 +482,6 @@ void VDecFfmpegSample::CloseExtract()
 void VDecFfmpegSample::InputFunc()
 {
     uint32_t intervalUs = 1000 / DEFAULT_FRAME_RATE;
-    bool pending = false;
     AVCODEC_LOGI("[InputFunc]: Start input func");
     while (true) {
         if (!isRunning_.load()) {
@@ -517,7 +497,7 @@ void VDecFfmpegSample::InputFunc()
         index = signal_->inIdxQueue_.front();
         auto ret = inBufferMap_.find(index);
         if (ret == inBufferMap_.end()) {
-            std::shared_ptr<AVSharedMemory> buffer = vdec_->GetInputBuffer(index);
+            std::shared_ptr<AVSharedMemoryBase> buffer = vdec_->GetInputBuffer(index);
             if (buffer != nullptr) {
                 inBufferMap_.insert(std::make_pair(index, buffer));
 
@@ -525,35 +505,30 @@ void VDecFfmpegSample::InputFunc()
                 continue;
             }
         }
-        std::shared_ptr<AVSharedMemory> buffer = inBufferMap_[index];
-        if (buffer == nullptr) {
+        std::shared_ptr<AVSharedMemoryBase> buffer = inBufferMap_[index];
+        lock.unlock();
+
+        
+        if (ExtractFrame() != AVCS_ERR_OK && !file_end_) {
+            //AVCODEC_LOGE("[InputFunc]: failed to ExtractFrame, index: %{public}d", index);
             continue;
         }
-
-        if (!pending) {
-            if (ExtractFrame() != AVCS_ERR_OK && !file_end_) {
-                AVCODEC_LOGE("[InputFunc]: failed to ExtractFrame, index: %{public}d", index);
-                continue;
-            }
-        }
-        //AVCODEC_LOGI("[InputFunc]: success to extract packet");
-        uint8_t *ptr = buffer->GetBase();
-        int32_t size = buffer->GetSize();
-        uint32_t flags = buffer->GetFlags();
-
-        if(ptr != nullptr && size > pkt_->size && flags == AVSharedMemory::FLAGS_READ_WRITE){
-            if (memcpy_s(ptr, pkt_->size, pkt_->data, pkt_->size) != EOK) {
-                AVCODEC_LOGE("Failed to memcpy");
-            }
-
-        }
-
-        AVCODEC_LOGE("ptr:%{public}d, size:%{public}d, pkt size: %{public}d:,flags:%{public}d", ptr==nullptr, size, pkt_->size, flags);
         
 
         AVCodecBufferInfo info;
         AVCodecBufferFlag flag;
         if (!file_end_) { // 正常帧数据
+            uint8_t *ptr = buffer->GetBase();
+            int32_t size = buffer->GetSize();
+            CHECK_AND_RETURN_LOG((ptr != nullptr && size > pkt_->size && pkt_->size > 0),
+                             "input buffer is invalid");
+           
+            if (memcpy_s(ptr, pkt_->size, pkt_->data, pkt_->size) != EOK) {
+                AVCODEC_LOGE("Failed to memcpy");
+            }
+
+            //AVCODEC_LOGE("ptr:%{public}d, size:%{public}d, pkt size: %{public}d", ptr==nullptr, size, pkt_->size);
+
             info.presentationTimeUs = timeStamp_;
             info.size = pkt_->size;
             info.offset = 0;
@@ -567,27 +542,25 @@ void VDecFfmpegSample::InputFunc()
         }
 
         if (vdec_->QueueInputBuffer(index, info, flag) != AVCS_ERR_OK) {
-            pending = true;
             //AVCODEC_LOGE("[InputFunc]: failed to queue input buffer, index: " << index);
             continue;
-        } else {
-            //AVCODEC_LOGI("[InputFunc]: success to queue input buffer, index: " << index << ", size: " << pkt_->size);
-            pending = false;
-        }
-        signal_->inIdxQueue_.pop();
-        file_num_read_++;
+        } 
 
         if (file_end_) {
-            AVCODEC_LOGI("[InputFunc]: video decoder end!");
             break; // 结束时候跳出循环
         }
+
+        lock.lock();
+        signal_->inIdxQueue_.pop();
+        lock.unlock();
+        file_num_read_++;
+
         usleep(intervalUs);
     }
 }
 
 void VDecFfmpegSample::OutputSurfaceFunc()
 {
-    // uint8_t *scaleData = (uint8_t *)malloc(sizeof(uint8_t) * DEFAULT_WIDTH * DEFAULT_HEIGHT * 1.5);
     AVCODEC_LOGI("[OutputSurfaceFunc]: Start output func");
     while (true) {
         if (!isRunning_.load()) {
@@ -613,7 +586,7 @@ void VDecFfmpegSample::OutputSurfaceFunc()
         }
 
         
-        std::shared_ptr<AVSharedMemory> buffer = vdec_->GetOutputBuffer(index);
+        std::shared_ptr<AVSharedMemory> buffer = static_pointer_cast<AVSharedMemory>(vdec_->GetOutputBuffer(index));
         if (buffer == nullptr) {
             AVCODEC_LOGE("[OutputSurfaceFunc]: failed get output bufferEle, index: %{public}d", index);
             continue;
@@ -638,7 +611,10 @@ void VDecFfmpegSample::OutputSurfaceFunc()
         signal_->outIdxQueue_.pop();
         signal_->infoQueue_.pop();
         signal_->flagQueue_.pop();
-        AVCODEC_LOGI("[OutputSurfaceFunc] write frame cnt: %{public}d", file_num_write_);
+
+        if (file_num_write_ % 50 == 0) {
+            AVCODEC_LOGI("[OutputBufferFunc] write frame cnt: %{public}d", file_num_write_);
+        }
         file_num_write_++;
     }
     
@@ -665,6 +641,7 @@ void VDecFfmpegSample::OutputBufferFunc()
         index = signal_->outIdxQueue_.front();
         info = signal_->infoQueue_.front();
         flag = signal_->flagQueue_.front();
+        lock.unlock();
 
         if (flag == AVCODEC_BUFFER_FLAG_EOS) {
             AVCODEC_LOGI("[OutputBufferFunc]: End of decoder, frame cnt: %{public}d", file_num_write_);
@@ -673,7 +650,7 @@ void VDecFfmpegSample::OutputBufferFunc()
         // int size = info.size;
         auto it = outBufferMap_.find(index);
         if (it == outBufferMap_.end()) {
-            std::shared_ptr<AVSharedMemory> buffer = vdec_->GetOutputBuffer(index);
+            std::shared_ptr<AVSharedMemoryBase> buffer = vdec_->GetOutputBuffer(index);
             if (buffer != nullptr) {
                 outBufferMap_.insert(std::make_pair(index, buffer));
                 // AVCODEC_LOGI("[OutputBufferFunc]: success get output bufferEle, index: " << index);
@@ -682,12 +659,7 @@ void VDecFfmpegSample::OutputBufferFunc()
                 continue;
             }
         }
-        std::shared_ptr<AVSharedMemory> buffer = outBufferMap_[index];
-        if (buffer == nullptr) {
-            // AVCODEC_LOGE("[OutputBufferFunc]: failed to get output buffer, index: " << index);
-            continue;
-        }
-        // AVCODEC_LOGI("[OutputBufferFunc]: Success to get output buffer, index: " << index);
+        std::shared_ptr<AVSharedMemoryBase> buffer = outBufferMap_[index];
 
         if (dumpFd_ != nullptr) {
             uint8_t *ptr = buffer->GetBase();
@@ -707,15 +679,17 @@ void VDecFfmpegSample::OutputBufferFunc()
         }
         // AVCODEC_LOGI("[OutputBufferFunc]: ReleaseOutputBuffer success");
         
+        lock.lock();
         signal_->outIdxQueue_.pop();
         signal_->infoQueue_.pop();
         signal_->flagQueue_.pop();
+        lock.unlock();
+
         if (file_num_write_ % 50 == 0) {
             AVCODEC_LOGI("[OutputBufferFunc] write frame cnt: %{public}d, size: %{public}d", file_num_write_, buffer->GetSize());
         }
         file_num_write_++;
     }
-    // free(scaleData);
 }
 
 bool VDecFfmpegSample::IsRender()
@@ -754,7 +728,7 @@ int32_t VDecFfmpegSample::FlushStart()
     AVCODEC_LOGI("[FlushStart]: Success to Create Extractor");
     
     isRunning_.store(true);
-    if (SURFACE_OUTPUT) {
+    if (surface_) {
         outputLoop_ = make_unique<thread>(&VDecFfmpegSample::OutputSurfaceFunc, this);
     }else {
         outputLoop_ = make_unique<thread>(&VDecFfmpegSample::OutputBufferFunc, this);
@@ -863,7 +837,7 @@ void VDecFfmpegSample::ResetBuffer()
         file_num_write_ = 0;
     }
 
-    if (!SURFACE_OUTPUT) {
+    if (!surface_) {
         unique_lock<mutex> lock(signal_->inMutex_);
         std::queue<int32_t> empty;
         swap(empty, signal_->inIdxQueue_);
@@ -968,4 +942,3 @@ int32_t VDecFfmpegSample::SetParameter(Format format)
 {
     return vdec_->SetParameter(format);
 }
-// #endif

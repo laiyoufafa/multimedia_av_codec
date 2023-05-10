@@ -75,11 +75,11 @@ public:
 
     int32_t GetOutputFormat(Format &format) override;
 
-    std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) override;
+    std::shared_ptr<AVSharedMemoryBase> GetInputBuffer(size_t index) override;
 
     int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo &info, AVCodecBufferFlag &flag) override;
 
-    std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) override;
+    std::shared_ptr<AVSharedMemoryBase> GetOutputBuffer(size_t index) override;
 
     int32_t ReleaseOutputBuffer(size_t index) override;
 

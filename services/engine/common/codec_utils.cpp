@@ -3,7 +3,6 @@
 
 namespace OHOS { namespace Media { namespace Codec {
 
-static const uint32_t VIDEO_ALIGN_SIZE = 16; // 16字节对齐
 namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FCodec"};
 std::map<VideoPixelFormat, AVPixelFormat> g_pixelFormatMap = {
@@ -22,11 +21,10 @@ int32_t ConvertVideoFrame(std::shared_ptr<Scale> scale, std::shared_ptr<AVFrame>
         scale = std::make_shared<Scale>();
         ScalePara scalePara{static_cast<int32_t>(frame->width),
                             static_cast<int32_t>(frame->height),
-                            static_cast<AVPixelFormat>(frame->format), // src fmt
+                            static_cast<AVPixelFormat>(frame->format),
                             static_cast<int32_t>(frame->width),
                             static_cast<int32_t>(frame->height),
-                            dstPixFmt, // dst fmt
-                            VIDEO_ALIGN_SIZE};
+                            dstPixFmt};
         CHECK_AND_RETURN_RET_LOG(scale->Init(scalePara, dstData, dstLineSize) == AVCS_ERR_OK, AVCS_ERR_UNKNOWN,
                                  "Scale init error");
     }
@@ -52,7 +50,7 @@ int32_t WriteRgbDataStride(const std::shared_ptr<SurfaceMemory> &frameBuffer, ui
     return AVCS_ERR_OK;
 }
 
-int32_t WriteYuvData(const std::shared_ptr<ShareMemory> &frameBuffer, uint8_t **scaleData, int32_t *scaleLineSize,
+int32_t WriteYuvData(const std::shared_ptr<AVSharedMemoryBase> &frameBuffer, uint8_t **scaleData, int32_t *scaleLineSize,
                                VideoPixelFormat pixFmt, int32_t height, int32_t width)
 {
     size_t ySize = static_cast<size_t>(scaleLineSize[0] * height);      // yuv420: 411 nv21
@@ -66,7 +64,6 @@ int32_t WriteYuvData(const std::shared_ptr<ShareMemory> &frameBuffer, uint8_t **
     CHECK_AND_RETURN_RET_LOG(frameBuffer->GetSize() >= frameSize, AVCS_ERR_NO_MEMORY,
                              "output buffer size is not enough: real[%{public}zu], need[%{public}zu]",
                              frameBuffer->GetSize(), frameSize);
-
     if (pixFmt == VideoPixelFormat::YUV420P) {
         frameBuffer->Write(scaleData[0], ySize);
         frameBuffer->Write(scaleData[1], uvSize);

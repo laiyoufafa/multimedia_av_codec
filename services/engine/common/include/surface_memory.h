@@ -25,7 +25,6 @@ namespace OHOS {
 namespace Media {
 
 namespace {
-    constexpr size_t INVALID_POSITION = -1;
     constexpr uint64_t USAGE = BUFFER_USAGE_CPU_READ | BUFFER_USAGE_CPU_WRITE | BUFFER_USAGE_MEM_DMA;
     constexpr int32_t  SURFACE_STRIDE_ALIGN = 8;
     constexpr int32_t TIMEOUT=0;
@@ -44,7 +43,7 @@ public:
     
     size_t Write(const uint8_t *in, size_t writeSize, size_t position = INVALID_POSITION);
     size_t Read(uint8_t *out, size_t readSize, size_t position = INVALID_POSITION);
-    void Reset();
+    void ClearUsedSize();
     void AllocSurfaceBuffer();
     void ReleaseSurfaceBuffer();
     sptr<SurfaceBuffer> GetSurfaceBuffer();
@@ -67,6 +66,7 @@ private:
     static sptr<Surface> surface_;
     static BufferRequestConfig requestConfig_;
     static ScalingMode scalingMode_;
+    static constexpr size_t INVALID_POSITION = -1;
 };
 
 } // namespace OHOS

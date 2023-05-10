@@ -16,7 +16,7 @@
 #define CODECBASE_H
 
 #include "avcodec_common.h"
-#include "avsharedmemory.h"
+#include "avsharedmemorybase.h"
 #include "surface.h"
 #include <string>
 
@@ -37,9 +37,9 @@ public:
     virtual int32_t Release() = 0;
     virtual int32_t SetParameter(const Format& format) = 0;
     virtual int32_t GetOutputFormat(Format& format) = 0;
-    virtual std::shared_ptr<AVSharedMemory> GetInputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemoryBase> GetInputBuffer(size_t index) = 0;
     virtual int32_t QueueInputBuffer(size_t index, const AVCodecBufferInfo &info, AVCodecBufferFlag &flag) = 0;
-    virtual std::shared_ptr<AVSharedMemory> GetOutputBuffer(size_t index) = 0;
+    virtual std::shared_ptr<AVSharedMemoryBase> GetOutputBuffer(size_t index) = 0;
     virtual int32_t ReleaseOutputBuffer(size_t index) = 0;
 
     virtual int32_t NotifyEos();

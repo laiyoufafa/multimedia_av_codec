@@ -229,7 +229,7 @@ int32_t AudioFFMpegAdapter::GetOutputFormat(Format &format)
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-std::shared_ptr<AVSharedMemory> AudioFFMpegAdapter::GetInputBuffer(size_t index)
+std::shared_ptr<AVSharedMemoryBase> AudioFFMpegAdapter::GetInputBuffer(size_t index)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("adapter GetInputBuffer enter");
@@ -295,7 +295,7 @@ int32_t AudioFFMpegAdapter::QueueInputBuffer(size_t index, const AVCodecBufferIn
     return AVCodecServiceErrCode::AVCS_ERR_OK;
 }
 
-std::shared_ptr<AVSharedMemory> AudioFFMpegAdapter::GetOutputBuffer(size_t index)
+std::shared_ptr<AVSharedMemoryBase> AudioFFMpegAdapter::GetOutputBuffer(size_t index)
 {
     AVCodecTrace trace(std::string(__FUNCTION__));
     AVCODEC_LOGD("adapter GetOutputBuffer enter");

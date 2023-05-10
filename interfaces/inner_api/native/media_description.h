@@ -46,12 +46,17 @@ public:
     static constexpr std::string_view MD_KEY_CODEC_MIME = "codec_mime";
 
     /**
+     * Key for codec name, value type is string
+     */
+    static constexpr std::string_view MD_KEY_CODEC_NAME = "codec_name";
+
+    /**
      * Key for duration, value type is int64_t
      */
     static constexpr std::string_view MD_KEY_DURATION = "duration";
 
     /**
-     * Key for bitrate, value type is uint32_t
+     * Key for bitrate, value type is int64_t
      */
     static constexpr std::string_view MD_KEY_BITRATE = "bitrate";
 
@@ -61,12 +66,22 @@ public:
     static constexpr std::string_view MD_KEY_MAX_INPUT_SIZE = "max_input_size";
 
     /**
-     * Key for video width, value type is uint32_t
+     * Key for max input buffer count, value type is int32_t
+     */
+    static constexpr std::string_view MD_KEY_MAX_INPUT_BUFFER_COUNT = "max_input_buffer_count";
+
+    /**
+     * Key for max output buffer count, value type is int32_t
+     */
+    static constexpr std::string_view MD_KEY_MAX_OUTPUT_BUFFER_COUNT = "max_output_buffer_count";
+
+    /**
+     * Key for video width, value type is int32_t
      */
     static constexpr std::string_view MD_KEY_WIDTH = "width";
 
     /**
-     * Key for video height, value type is uint32_t
+     * Key for video height, value type is int32_t
      */
     static constexpr std::string_view MD_KEY_HEIGHT = "height";
 
@@ -74,6 +89,17 @@ public:
      * Key for video pixelformat, value type is int32_t, see {link @MediaPixelFormat}
      */
     static constexpr std::string_view MD_KEY_PIXEL_FORMAT = "pixel_format";
+
+    /**
+     * Key for video scale type, value type is int32_t
+     */
+    static constexpr std::string_view MD_KEY_SCALE_TYPE = "scale_type";
+
+    /**
+     * Key for video rotation angle, value type is int32_t
+     */
+    static constexpr std::string_view MD_KEY_ROTATION_ANGLE = "rotation_angle";
+
 
     /**
      * Key for video frame rate, value type is double.
