@@ -31,7 +31,7 @@ sptr<Surface> surface = nullptr;
 FILE *inFp = nullptr;
 FILE *outFp = nullptr;
 
-bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& outFd, uint32_t& outErrCode, std::string& out)
+bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& outFd, int32_t& width, int32_t& height, uint32_t& outErrCode, std::string& out)
 {
     int32_t inFd = inJsFp.fd;
     int64_t inOffset = inJsFp.offset;
@@ -89,7 +89,7 @@ bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& out
         out = "vdec is null";
         return false;
     }
-    vdec->RunVideoDec(surface, "", inFp, outFp);
+    vdec->RunVideoDec(inFp, outFp, width, height, surface);
 
     g_surfaceId = surfaceID;
     out = g_surfaceId + "," + std::to_string(inFd) + "," + std::to_string(outFd);

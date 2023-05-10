@@ -37,7 +37,7 @@ class VDecFfmpegSample : public NoCopyable {
 public:
     VDecFfmpegSample() = default;
     ~VDecFfmpegSample();
-    void RunVideoDec(sptr<Surface> surface, std::string codeName, FILE *inFp, FILE *outFp);
+    void RunVideoDec(FILE *inFp, FILE *outFp, int32_t width, int32_t height, sptr<Surface> surface=nullptr, std::string codeName="");
 
 private:
     int64_t GetSystemTimeUs();
@@ -76,8 +76,8 @@ private:
     FILE *dumpFd_{nullptr};
     std::unique_ptr<std::thread> inputLoop_{nullptr};
     std::unique_ptr<std::thread> outputLoop_{nullptr};
-    std::unordered_map<uint32_t, std::shared_ptr<AVSharedMemory>> inBufferMap_;
-    std::unordered_map<uint32_t, std::shared_ptr<AVSharedMemory>> outBufferMap_;
+    std::unordered_map<uint32_t, std::shared_ptr<AVSharedMemoryBase>> inBufferMap_;
+    std::unordered_map<uint32_t, std::shared_ptr<AVSharedMemoryBase>> outBufferMap_;
     std::shared_ptr<CodecBase> vdec_;
     VDecSignal *signal_;
     std::shared_ptr<AVCodecCallback> cb_;
@@ -96,6 +96,9 @@ private:
     int32_t file_num_read_{0};
     int32_t file_num_write_{0};
     bool restart_{false};
+    int32_t width_;
+    int32_t height_;
+    sptr<Surface> surface_{nullptr};
 };
 }} }    // namespace OHOS::Media
 #endif // VIDEODEC_NDK_SAMPLE_H

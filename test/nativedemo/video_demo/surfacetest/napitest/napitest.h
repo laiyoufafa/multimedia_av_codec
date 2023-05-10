@@ -28,19 +28,15 @@ namespace {
 constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "FCodec"};
 }
 
-using NUMBER_TYPE_1 = int32_t;
-using NUMBER_TYPE_2 = int64_t;
-using NUMBER_TYPE_3 = int64_t;
-
 namespace napitest {
 class AVFileDescriptor {
 public:
-    NUMBER_TYPE_1 fd;
-    NUMBER_TYPE_2 offset;
-    NUMBER_TYPE_3 length;
+    int32_t fd;
+    int64_t offset;
+    int64_t length;
 };
 
-bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& outFd, uint32_t& outErrCode, std::string& out);
+bool setSurfaceID(std::string& surfaceID, AVFileDescriptor& inJsFp, int32_t& outFd, int32_t& width, int32_t& height, uint32_t& outErrCode, std::string& out);
 bool getSurfaceID(uint32_t& outErrCode, std::string& out);
 }
 #endif // IMPL_NAPITEST_H

@@ -143,10 +143,10 @@ void AVSharedMemoryBase::Close() noexcept
     }
 }
 
-int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t &realWriteSize, int32_t position)
+int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t position)
 {
-    CHECK_AND_RETURN_RET_LOG(in != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
-    CHECK_AND_RETURN_RET_LOG(writeSize > 0, AVCS_ERR_INVALID_VAL, "Input writeSize:%{public}d is invalid", writeSize);
+    CHECK_AND_RETURN_RET_LOG(in != nullptr, 0, "Input buffer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(writeSize > 0, 0, "Input writeSize:%{public}d is invalid", writeSize);
     int32_t start = 0;
     if (position == INVALID_POSITION) {
         start = size_;
@@ -156,21 +156,21 @@ int32_t AVSharedMemoryBase::Write(const uint8_t *in, int32_t writeSize, int32_t 
     int32_t unusedSize = capacity_ - start;
     int32_t length = std::min(writeSize, unusedSize);
     AVCODEC_LOGD("write data,length:%{public}d, start:%{public}d, name:%{public}s", length, start, name_.c_str());
-    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, AVCS_ERR_INVALID_OPERATION, "Write out of bounds, length:%{public}d, "
+    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, 0, "Write out of bounds, length:%{public}d, "
                             "start:%{public}d, capacity_:%{public}d", length, start, capacity_);
     uint8_t *dstPtr = base_ + start;
-    CHECK_AND_RETURN_RET_LOG(dstPtr != nullptr, AVCS_ERR_INVALID_OPERATION, "Inner dstPtr is nullptr");
-    auto error = memcpy_s(dstPtr, unusedSize, in, length);
-    CHECK_AND_RETURN_RET_LOG(error != EOK, AVCS_ERR_INVALID_OPERATION, "Inner memcpy_s failed,name:%{public}s", name_.c_str());
+    CHECK_AND_RETURN_RET_LOG(dstPtr != nullptr, 0, "Inner dstPtr is nullptr");
+
+    auto error = memcpy_s(dstPtr, length, in, length);
+    CHECK_AND_RETURN_RET_LOG(error == EOK, 0, "Inner memcpy_s failed,name:%{public}s, %{public}s", name_.c_str(), strerror(error));
     size_ = start + length;
-    realWriteSize = length;
-    return AVCS_ERR_OK;
+    return length;
 }
 
-int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t &realReadSize, int32_t position)
+int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t position)
 {
-    CHECK_AND_RETURN_RET_LOG(out != nullptr, AVCS_ERR_INVALID_VAL, "Input buffer is nullptr");
-    CHECK_AND_RETURN_RET_LOG(readSize > 0, AVCS_ERR_INVALID_VAL, "Input readSize:%{public}d is invalid", readSize);
+    CHECK_AND_RETURN_RET_LOG(out != nullptr, 0, "Input buffer is nullptr");
+    CHECK_AND_RETURN_RET_LOG(readSize > 0, 0, "Input readSize:%{public}d is invalid", readSize);
     int32_t start = 0;
     int32_t maxLength = size_;
     if (position != INVALID_POSITION) {
@@ -178,14 +178,13 @@ int32_t AVSharedMemoryBase::Read(uint8_t *out, int32_t readSize, int32_t &realRe
         maxLength = size_ - start;
     }
     int32_t length = std::min(readSize, maxLength);
-    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, AVCS_ERR_INVALID_OPERATION, "Read out of bounds, length:%{public}d, "
+    CHECK_AND_RETURN_RET_LOG((length + start) <= capacity_, 0, "Read out of bounds, length:%{public}d, "
                             "start:%{public}d, capacity_:%{public}d", length, start, capacity_);
     uint8_t *srcPtr = base_ + start;
-    CHECK_AND_RETURN_RET_LOG(srcPtr != nullptr, AVCS_ERR_INVALID_OPERATION, "Inner srcPtr is nullptr");
-    auto error = memcpy_s(out, maxLength, srcPtr, length);
-    CHECK_AND_RETURN_RET_LOG(error != EOK, AVCS_ERR_INVALID_OPERATION, "Inner memcpy_s failed,name:%{public}s", name_.c_str());
-    realReadSize = length;
-    return AVCS_ERR_OK;
+    CHECK_AND_RETURN_RET_LOG(srcPtr != nullptr, 0, "Inner srcPtr is nullptr");
+    auto error = memcpy_s(out, length, srcPtr, length);
+    CHECK_AND_RETURN_RET_LOG(error == EOK, 0, "Inner memcpy_s failed,name:%{public}s, %{public}s", name_.c_str(), strerror(error));
+    return length;
 }
 
 void AVSharedMemoryBase::ClearUsedSize()

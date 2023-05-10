@@ -153,7 +153,7 @@ int32_t SurfaceMemory::GetFlushFence()
     return fence_;
 }
 
-void SurfaceMemory::Reset()
+void SurfaceMemory::ClearUsedSize()
 {
     size_ = 0;
 }

@@ -27,8 +27,8 @@ declare namespace napitest {
         length?: number;
     }
 	
-	function setSurfaceID(surfaceID: string, inJsFp: AVFileDescriptor, outFd: number, callback: AsyncCallback<string>): void;
-	function setSurfaceID(surfaceID: string, inJsFp: AVFileDescriptor, outFd: number): Promise<string>;
+	function setSurfaceID(surfaceID: string, inJsFp: AVFileDescriptor, outFd: number, width: number, height: number, callback: AsyncCallback<string>): void;
+	function setSurfaceID(surfaceID: string, inJsFp: AVFileDescriptor, outFd: number, width: number, height: number): Promise<string>;
    
 	function getSurfaceID(callback: AsyncCallback<string>): void;
 	function getSurfaceID(): Promise<string>;

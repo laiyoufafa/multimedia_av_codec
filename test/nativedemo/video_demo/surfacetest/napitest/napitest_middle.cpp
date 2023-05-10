@@ -105,7 +105,7 @@ public:
         std::shared_ptr<XNapiTool> pxt = std::make_shared<XNapiTool>(env, info);
         void *instPtr = pxt->UnWarpInstance();
         AVFileDescriptor *p = static_cast<AVFileDescriptor *>(instPtr);
-        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), NUMBER_TYPE_1, p->fd);
+        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), int32_t, p->fd);
         return nullptr;
     }
     static napi_value getvalue_offset(napi_env env, napi_callback_info info)
@@ -123,7 +123,7 @@ public:
         std::shared_ptr<XNapiTool> pxt = std::make_shared<XNapiTool>(env, info);
         void *instPtr = pxt->UnWarpInstance();
         AVFileDescriptor *p = static_cast<AVFileDescriptor *>(instPtr);
-        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), NUMBER_TYPE_2, p->offset);
+        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), int64_t, p->offset);
         return nullptr;
     }
     static napi_value getvalue_length(napi_env env, napi_callback_info info)
@@ -141,14 +141,16 @@ public:
         std::shared_ptr<XNapiTool> pxt = std::make_shared<XNapiTool>(env, info);
         void *instPtr = pxt->UnWarpInstance();
         AVFileDescriptor *p = static_cast<AVFileDescriptor *>(instPtr);
-        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), NUMBER_TYPE_3, p->length);
+        NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::ZERO), int64_t, p->length);
         return nullptr;
     }
 };
 struct setSurfaceID_value_struct {
     std::string in0;
     AVFileDescriptor in1;
-    NUMBER_TYPE_1 in2;
+    int32_t in2;
+    int32_t in3;
+    int32_t in4;
     uint32_t outErrCode = 0;
     std::string out;
 };
@@ -158,7 +160,7 @@ void setSurfaceID_execute(XNapiTool *pxt, DataPtr data)
     void *data_ptr = data;
     setSurfaceID_value_struct *vio = static_cast<setSurfaceID_value_struct *>(data_ptr);
     
-    setSurfaceID(vio->in0, vio->in1, vio->in2, vio->outErrCode, vio->out);
+    setSurfaceID(vio->in0, vio->in1, vio->in2, vio->in3, vio->in4, vio->outErrCode, vio->out);
 }
 
 void setSurfaceID_complete(XNapiTool *pxt, DataPtr data)
@@ -191,16 +193,18 @@ napi_value setSurfaceID_middle(napi_env env, napi_callback_info info)
     struct setSurfaceID_value_struct *vio = new setSurfaceID_value_struct();
         pxt->SwapJs2CUtf8(pxt->GetArgv(XNapiTool::ZERO), vio->in0);
     napi_value tnv1 = pxt->GetValueProperty(pxt->GetArgv(XNapiTool::ONE), "fd");
-    if (tnv1 != nullptr) {NUMBER_JS_2_C(tnv1, NUMBER_TYPE_1, vio->in1.fd);}
+    if (tnv1 != nullptr) {NUMBER_JS_2_C(tnv1, int32_t, vio->in1.fd);}
 napi_value tnv2 = pxt->GetValueProperty(pxt->GetArgv(XNapiTool::ONE), "offset");
-    if (tnv2 != nullptr) {NUMBER_JS_2_C(tnv2, NUMBER_TYPE_2, vio->in1.offset);}
+    if (tnv2 != nullptr) {NUMBER_JS_2_C(tnv2, int64_t, vio->in1.offset);}
 napi_value tnv3 = pxt->GetValueProperty(pxt->GetArgv(XNapiTool::ONE), "length");
-    if (tnv3 != nullptr) {NUMBER_JS_2_C(tnv3, NUMBER_TYPE_3, vio->in1.length);}
+    if (tnv3 != nullptr) {NUMBER_JS_2_C(tnv3, int64_t, vio->in1.length);}
 
-    NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::TWO), NUMBER_TYPE_1, vio->in2);
+    NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::TWO), int32_t, vio->in2);
+    NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::THREE), int32_t, vio->in3);
+    NUMBER_JS_2_C(pxt->GetArgv(XNapiTool::FOUE), int32_t, vio->in4);
 
     napi_value result = pxt->StartAsync(setSurfaceID_execute, reinterpret_cast<DataPtr>(vio), setSurfaceID_complete,
-    pxt->GetArgc() == XNapiTool::FOUE? pxt->GetArgv(XNapiTool::THREE) : nullptr);
+    pxt->GetArgc() == XNapiTool::SIX? pxt->GetArgv(XNapiTool::FIVE) : nullptr);
     if (pxt->IsFailed()) {
         result = pxt->GetError();
     }

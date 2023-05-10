@@ -149,26 +149,53 @@ static int RunAudioInnerEncoder()
 
 static int RunVideoInnerDecoder()
 {      
+    cout << "please input: filePath width height" << endl;
+    string args;
+    (void)getline(cin, args);
+
+    vector<string> res;
+    string pattern = " ";
+    
+    args += pattern;
+    size_t pos = args.find(pattern);
+    while(pos != args.npos)
+    {
+        string temp = args.substr(0, pos);
+        res.push_back(temp);
+        args = args.substr(pos+1, args.size());
+        pos = args.find(pattern);
+    }
+
+    if(res.size() != 3){
+        cout << "input args invalid" << endl;
+    }
+    
+    string inputFile = res[0].c_str();
+    pos = res[0].find(".");
+    string outputFile = res[0].substr(0, pos) + ".yuv";
+    int32_t width = stoi(res[1]);
+    int32_t height = stoi(res[2]);
+
+    cout << "inputFile:"<<inputFile<<",width:"<<width<<",height:"<<height<<endl;
+
     auto vdec = std::make_unique<VDecFfmpegSample>();
-    const char *INP_DIR = "/data/bigbuckbunny_480x272.h264";
-    const char *OUT_DIR = "/data/bigbuckbunny_480x272.yuv";
     if (vdec == nullptr) {
         cout << "vdec is null" << endl;
     }
 
-    FILE *inFp = fopen(INP_DIR, "rb");
+    FILE *inFp = fopen(inputFile.c_str(), "rb");
     if (inFp == nullptr) {
         cout << "failed to open input" << endl;
         return 0;
     }
 
-    FILE *outFp = fopen(OUT_DIR, "wb");
+    FILE *outFp = fopen(outputFile.c_str(), "wb");
     if (outFp == nullptr) {
         cout << "failed to open output" << endl;
         return 0;
     }
 
-    vdec->RunVideoDec(nullptr, "", inFp, outFp);
+    vdec->RunVideoDec(inFp, outFp, width, height);
     cout << "video decoder sample end" << endl;
     return 0;
 }
