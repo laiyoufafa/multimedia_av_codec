@@ -21,6 +21,14 @@
 #include <iostream>
 #include <unistd.h>
 
+extern "C" {
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavutil/imgutils.h"
+#include "libavutil/samplefmt.h"
+#include "libavutil/timestamp.h"
+}
+
 using namespace OHOS;
 using namespace OHOS::Media;
 using namespace OHOS::Media::InnerAudioDemo;
@@ -28,10 +36,8 @@ using namespace std;
 namespace {
 constexpr uint32_t CHANNEL_COUNT = 2;
 constexpr uint32_t SAMPLE_RATE = 44100;
-constexpr uint32_t BITS_RATE = 169000;
+constexpr uint32_t BITS_RATE = 169000; // for mp3
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
-constexpr uint32_t FRAME_DURATION_US = 33000;
-constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
 } // namespace
 
 void ADecInnerDemo::RunCase()
@@ -42,7 +48,7 @@ void ADecInnerDemo::RunCase()
     format.PutIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, CHANNEL_COUNT);
     format.PutIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, SAMPLE_RATE);
     format.PutLongValue(MediaDescriptionKey::MD_KEY_BITRATE, BITS_RATE);
-    format.PutIntValue("bits_per_coded-rate", BITS_PER_CODED_RATE);
+    format.PutIntValue("bits_per_coded_sample", BITS_PER_CODED_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
@@ -74,10 +80,6 @@ int32_t ADecInnerDemo::Configure(const Format &format)
 int32_t ADecInnerDemo::Start()
 {
     isRunning_.store(true);
-
-    testFile_ = std::make_unique<std::ifstream>();
-    DEMO_CHECK_AND_RETURN_RET_LOG(testFile_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
-    testFile_->open("/data/media/video.es", std::ios::in | std::ios::binary);
 
     inputLoop_ = make_unique<thread>(&ADecInnerDemo::InputFunc, this);
     DEMO_CHECK_AND_RETURN_RET_LOG(inputLoop_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
@@ -130,61 +132,71 @@ int32_t ADecInnerDemo::Release()
 
 void ADecInnerDemo::InputFunc()
 {
+    AVFormatContext *fmpt_ctx;
+    AVPacket pkt;
+    const char* filePath = "/data/media/audio.mp3";
+    if (avformat_open_input(&fmpt_ctx, filePath, NULL, NULL) < 0) {
+        std::cout << "open file failed"
+                  << "\n";
+        return;
+    }
+    if (avformat_find_stream_info(fmpt_ctx, NULL) < 0) {
+        std::cout << "get file stream failed"
+                  << "\n";
+        return;
+    }
+    av_init_packet(&pkt);
+    pkt.data = NULL;
+    pkt.size = 0;
+
     while (true) {
         if (!isRunning_.load()) {
             break;
         }
-
-        unique_lock<mutex> lock(signal_->inMutex_);
+        std::unique_lock<std::mutex> lock(signal_->inMutex_);
         signal_->inCond_.wait(lock, [this]() { return signal_->inQueue_.size() > 0; });
-
         if (!isRunning_.load()) {
             break;
         }
 
         uint32_t index = signal_->inQueue_.front();
-        auto buffer = audioDec_->GetInputBuffer(index);
-        DEMO_CHECK_AND_BREAK_LOG(buffer != nullptr, "Fatal: GetInputBuffer fail");
-        DEMO_CHECK_AND_BREAK_LOG(testFile_ != nullptr && testFile_->is_open(), "Fatal: open file fail");
-
-        constexpr uint32_t bufferSize = 0; // replace with the actual size
-        char *fileBuffer = static_cast<char *>(malloc(sizeof(char) * bufferSize + 1));
-        DEMO_CHECK_AND_BREAK_LOG(fileBuffer != nullptr, "Fatal: malloc fail");
-
-        (void)testFile_->read(fileBuffer, bufferSize);
-
-        DEMO_CHECK_AND_BREAK_LOG(buffer != nullptr, "Fatal: GetInputBuffer fail");
-        if (memcpy_s(buffer->GetBase(), buffer->GetSize(), fileBuffer, bufferSize) != EOK) {
-            free(fileBuffer);
+        std::shared_ptr<AVSharedMemory> buffer = audioDec_->GetInputBuffer(index);
+        if (buffer == nullptr) {
+            isRunning_.store(false);
+            std::cout << "buffer is null:" << index << "\n";
+            break;
+        }
+        int ret = av_read_frame(fmpt_ctx, &pkt);
+        if (ret < 0) {
+            AVCodecBufferInfo attr;
+            AVCodecBufferFlag flag;
+            attr.presentationTimeUs = 0;
+            attr.size = 0;
+            attr.offset = 0;
+            flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_EOS;
+            av_packet_unref(&pkt);
+            (void)audioDec_->QueueInputBuffer(index, attr, flag);
+            signal_->inQueue_.pop();
+            std::cout << "end buffer\n";
+            break;
+        }
+        if (memcpy_s(buffer->GetBase(), buffer->GetSize(), pkt.data, pkt.size) != EOK) {
             cout << "Fatal: memcpy fail" << endl;
             break;
         }
-
-        AVCodecBufferInfo info;
-        info.size = bufferSize;
-        info.offset = 0;
-        info.presentationTimeUs = timeStamp_;
-
-        int32_t ret = AVCS_ERR_OK;
-        if (isFirstFrame_) {
-            ret = audioDec_->QueueInputBuffer(index, info, AVCODEC_BUFFER_FLAG_CODEC_DATA);
-            isFirstFrame_ = false;
-        } else {
-            ret = audioDec_->QueueInputBuffer(index, info, AVCODEC_BUFFER_FLAG_NONE);
-        }
-
-        free(fileBuffer);
-        timeStamp_ += FRAME_DURATION_US;
-        signal_->inQueue_.pop();
-
+        AVCodecBufferInfo attr;
+        AVCodecBufferFlag flag;
+        attr.presentationTimeUs = pkt.pts;
+        attr.size = pkt.size;
+        attr.offset = 0;
+        flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
+        av_packet_unref(&pkt);
         frameCount_++;
-        if (frameCount_ == DEFAULT_FRAME_COUNT) {
-            cout << "Finish decode, exit" << endl;
-            break;
-        }
-
-        if (ret != AVCS_ERR_OK) {
-            cout << "Fatal error, exit" << endl;
+        auto result = audioDec_->QueueInputBuffer(index, attr, flag);
+        signal_->inQueue_.pop();
+        if (result != AVCS_ERR_OK) {
+            std::cout << "QueueInputBuffer error:\n";
+            isRunning_ = false;
             break;
         }
     }
@@ -192,6 +204,7 @@ void ADecInnerDemo::InputFunc()
 
 void ADecInnerDemo::OutputFunc()
 {
+    std::ofstream outputFile("/data/media/audio_ogg.pcm", std::ios::binary);
     while (true) {
         if (!isRunning_.load()) {
             break;
@@ -205,12 +218,21 @@ void ADecInnerDemo::OutputFunc()
         }
 
         uint32_t index = signal_->outQueue_.front();
+        auto buffer = audioDec_->GetOutputBuffer(index);
+        if (buffer == nullptr) {
+            cout << "get output buffer failed" << endl;
+            isRunning_.store(false);
+            break;
+        }
+        auto attr = signal_->sizeQueue_.front();
+        outputFile.write((char*)buffer->GetBase(), attr.size);
         if (audioDec_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
             break;
         }
 
         signal_->outQueue_.pop();
+        signal_->sizeQueue_.pop();
     }
 }
 
@@ -242,5 +264,6 @@ void ADecDemoCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
+    signal_->sizeQueue_.push(info);
     signal_->outCond_.notify_all();
 }

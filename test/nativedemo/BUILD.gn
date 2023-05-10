@@ -28,11 +28,12 @@ ohos_executable("av_codec_demo") {
     "./av_codec_audio",
     "./audio_demo",
     "./include",
-    "./video_demo",
+    "$av_codec_root_dir/test/nativedemo/video_demo",
     "$av_codec_root_dir/services/engine/codec/include/video",
     "$av_codec_root_dir/services/engine/common/include",
     "//foundation/graphic/graphic_2d/interfaces/inner_api",
     "//third_party/ffmpeg",
+    "$av_codec_root_dir/test/nativedemo/codeclist_demo",
   ]
 
   cflags = [
@@ -71,7 +72,8 @@ ohos_executable("av_codec_demo") {
     "./audio_demo/avcodec_audio_decoder_demo.cpp",
     "./audio_demo/avcodec_audio_encoder_demo.cpp",
     "./audio_demo/avcodec_audio_encoder_inner_demo.cpp",
-    "./video_demo/videodec_ffmpeg_demo.cpp",
+    "$av_codec_root_dir/test/nativedemo/video_demo/videodec_ffmpeg_demo.cpp",
+    "$av_codec_root_dir/test/nativedemo/codeclist_demo/codeclist_demo.cpp",
   ]
 
   deps = [

@@ -72,7 +72,7 @@ OH_AVErrCode OH_AVCapability_GetSupportedProfiles(OH_AVCapability *capability,
         return AV_ERR_INVALID_VAL;
     }
     
-    auto &vec = capability->capability_.profiles;
+    auto &vec = capability->capabilityData_.profiles;
     *profiles = vec.data();
     *profileNum = vec.size();
     return AV_ERR_OK;
@@ -88,14 +88,13 @@ OH_AVErrCode OH_AVCapability_GetSupportedLevelsForProfile(OH_AVCapability *capab
         return AV_ERR_INVALID_VAL;
     }
 
-    auto &profileLevelsMap = capability->capability_.profileLevelsMap;
-    auto levels = profileLevelsMap.find(profile);
-    if (levels == profileLevelsMap.end()) {
+    auto &profileLevelsMap = capability->capabilityData_.profileLevelsMap;
+    auto levelsmatch = profileLevelsMap.find(profile);
+    if (levelsmatch == profileLevelsMap.end()) {
         return AV_ERR_INVALID_VAL;
     }
-
-    *levels = levels.data();
-    *levelNum = levels.size();
+    *levels = levelsmatch->second.data();
+    *levelNum = levelsmatch->second.size();
     return AV_ERR_OK;
 }
 
@@ -105,13 +104,13 @@ bool OH_AVCapability_ValidateProfileAndLevel(OH_AVCapability *capability,
     if (capability == nullptr) {
         return false;
     }
-    auto &profileLevelsMap = capability->capability_.profileLevelsMap;
+    auto &profileLevelsMap = capability->capabilityData_.profileLevelsMap;
     auto levels = profileLevelsMap.find(profile);
     if (levels == profileLevelsMap.end()) {
         return false;
     }
  
-    return find(levels.begin(), levels.end(), level) != levels.end();
+    return find(levels->second.begin(), levels->second.end(), level) != levels->second.end();
 }
 
 OH_AVErrCode OH_AVCapability_GetEncoderBitrateRange(OH_AVCapability *capability,
@@ -122,8 +121,8 @@ OH_AVErrCode OH_AVCapability_GetEncoderBitrateRange(OH_AVCapability *capability,
         bitrateRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    bitrateRange->minVal = capability->capability_.bitrate.minVal;
-    bitrateRange->maxVal = capability->capability_.bitrate.maxVal;
+    bitrateRange->minVal = capability->capabilityData_.bitrate.minVal;
+    bitrateRange->maxVal = capability->capabilityData_.bitrate.maxVal;
     return AV_ERR_OK;
 }
 
@@ -135,8 +134,8 @@ OH_AVErrCode OH_AVCapability_GetEncoderQualityRange(OH_AVCapability *capability,
         qualityRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    qualityRange->minVal = capability->capability_.encodeQuality.minVal;
-    qualityRange->maxVal = capability->capability_.encodeQuality.maxVal;
+    qualityRange->minVal = capability->capabilityData_.encodeQuality.minVal;
+    qualityRange->maxVal = capability->capabilityData_.encodeQuality.maxVal;
     return AV_ERR_OK;
 }
 
@@ -148,8 +147,8 @@ OH_AVErrCode OH_AVCapability_GetEncoderComplexityRange(OH_AVCapability *capabili
         complexityRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    complexityRange->minVal = capability->capability_.complexity.minVal;
-    complexityRange->maxVal = capability->capability_.complexity.maxVal;
+    complexityRange->minVal = capability->capabilityData_.complexity.minVal;
+    complexityRange->maxVal = capability->capabilityData_.complexity.maxVal;
     return AV_ERR_OK;
 }
 
@@ -173,7 +172,7 @@ OH_AVErrCode OH_AVCapability_GetAudioSupportedSampleRates(OH_AVCapability *capab
         return AV_ERR_INVALID_VAL;
     }
     
-    auto &vec = capability->capability_.sampleRate;
+    auto &vec = capability->capabilityData_.sampleRate;
     *sampleRates = vec.data();
     *sampleRateNum = vec.size();
     return AV_ERR_OK;
@@ -197,8 +196,8 @@ OH_AVErrCode OH_AVCapability_GetAudioChannelsRange(OH_AVCapability *capability,
         channelsRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    channelsRange->minVal = capability->capability_.channels.minVal;
-    channelsRange->maxVal = capability->capability_.channels.maxVal;
+    channelsRange->minVal = capability->capabilityData_.channels.minVal;
+    channelsRange->maxVal = capability->capabilityData_.channels.maxVal;
     return AV_ERR_OK;
 }
 
@@ -211,7 +210,7 @@ OH_AVErrCode OH_AVCapability_GetVideoSupportedPixFormats(OH_AVCapability *capabi
         *pixFormatNum = empty.size();
         return AV_ERR_INVALID_VAL;
     }
-    auto &vec = capability->capability_.pixFormat;
+    auto &vec = capability->capabilityData_.pixFormat;
     *pixFormats = vec.data();
     *pixFormatNum = vec.size();
     return AV_ERR_OK;
@@ -224,7 +223,7 @@ OH_AVErrCode OH_AVCapability_GetVideoWidthAlignment(OH_AVCapability *capability,
         *widthAlignment = 0;
         return AV_ERR_INVALID_VAL;
     }
-    *widthAlignment = capability->capability_.alignment.width;
+    *widthAlignment = capability->capabilityData_.alignment.width;
     return AV_ERR_OK;
 }
 
@@ -235,7 +234,7 @@ OH_AVErrCode OH_AVCapability_GetVideoHeightAlignment(OH_AVCapability *capability
         *heightAlignment = 0;
         return AV_ERR_INVALID_VAL;
     }
-    *heightAlignment = capability->capability_.alignment.height;
+    *heightAlignment = capability->capabilityData_.alignment.height;
     return AV_ERR_OK;
 }
 
@@ -271,8 +270,8 @@ OH_AVErrCode OH_AVCapability_GetVideoWidthRange(OH_AVCapability *capability,
         widthRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    widthRange->minVal = capability->capability_.width.minVal;
-    widthRange->maxVal = capability->capability_.width.maxVal;
+    widthRange->minVal = capability->capabilityData_.width.minVal;
+    widthRange->maxVal = capability->capabilityData_.width.maxVal;
     return AV_ERR_OK;
 }
 
@@ -284,8 +283,8 @@ OH_AVErrCode OH_AVCapability_GetVideoHeightRange(OH_AVCapability *capability,
         heightRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    heightRange->minVal = capability->capability_.height.minVal;
-    heightRange->maxVal = capability->capability_.height.maxVal;
+    heightRange->minVal = capability->capabilityData_.height.minVal;
+    heightRange->maxVal = capability->capabilityData_.height.maxVal;
     return AV_ERR_OK;
 }
 
@@ -296,28 +295,28 @@ bool OH_AVCapability_ValidateVideoSize(OH_AVCapability *capability,
         return false;
     }
 
-    auto &alignment = capability->capability_.alignment;
-    if (blockSize.width == 0 || blockSize.height == 0 ||
+    auto &alignment = capability->capabilityData_.alignment;
+    if (width == 0 || height == 0 ||
         alignment.width == 0 || alignment.height == 0 ||
         width % alignment.width != 0 || height % alignment.height != 0) {
         return false;
     }
 
-    auto &widthRange = capability->capability_.width;
-    auto &heightRange = capability->capability_.height;
+    auto &widthRange = capability->capabilityData_.width;
+    auto &heightRange = capability->capabilityData_.height;
     if (width < widthRange.minVal || width > widthRange.maxVal ||
         height < heightRange.minVal || height > heightRange.maxVal) {
         return false;
     }
 
-    auto &blockSize = capability->capability_.blockSize;
+    auto &blockSize = capability->capabilityData_.blockSize;
     if (blockSize.width == 0 || blockSize.height == 0) {
         return false;
     }
     int blockNum = ((width + blockSize.width - 1) / blockSize.width) * 
         ((height + blockSize.height - 1) / blockSize.height);
     
-    auto &blockPerFrame = capability->capability_.blockPerFrame;
+    auto &blockPerFrame = capability->capabilityData_.blockPerFrame;
     if (blockNum < blockPerFrame.minVal || blockNum > blockPerFrame.maxVal) {
         return false;
     }
@@ -333,8 +332,8 @@ OH_AVErrCode OH_AVCapability_GetVideoFrameRateRange(OH_AVCapability *capability,
         frameRateRange->maxVal = 0;
         return AV_ERR_INVALID_VAL;
     }
-    frameRateRange->minVal = capability->capability_.frameRate.minVal;
-    frameRateRange->maxVal = capability->capability_.frameRate.maxVal;
+    frameRateRange->minVal = capability->capabilityData_.frameRate.minVal;
+    frameRateRange->maxVal = capability->capabilityData_.frameRate.maxVal;
     return AV_ERR_OK;
 }
 
@@ -351,8 +350,8 @@ OH_AVErrCode OH_AVCapability_GetVideoFrameRateRangeForSize(OH_AVCapability *capa
         return AV_ERR_INVALID_VAL;
     }
 
-    auto &blockSize = capability->capability_.blockSize;
-    auto &blockPerSecond = capability->capability_.blockPerSecond;
+    auto &blockSize = capability->capabilityData_.blockSize;
+    auto &blockPerSecond = capability->capabilityData_.blockPerSecond;
     if (blockSize.width == 0 || blockSize.height == 0 ||
         blockPerSecond.minVal <= 0 || blockPerSecond.maxVal <= 0) {
         return AV_ERR_UNKNOWN;
@@ -360,7 +359,7 @@ OH_AVErrCode OH_AVCapability_GetVideoFrameRateRangeForSize(OH_AVCapability *capa
     int blockNum = ((width + blockSize.width - 1) / blockSize.width) *
         ((height + blockSize.height - 1) / blockSize.height);
 
-    auto &fpsRange = capability->capability_.frameRate;
+    auto &fpsRange = capability->capabilityData_.frameRate;
     frameRateRange->minVal = std::max((blockPerSecond.minVal + blockNum - 1) / blockNum, fpsRange.minVal);
     frameRateRange->maxVal = std::min(blockPerSecond.maxVal / blockNum, fpsRange.maxVal);
     return AV_ERR_OK;
@@ -416,15 +415,15 @@ bool OH_AVCapability_ValidateVideoSizeAndFrameRate(OH_AVCapability *capability,
         return false;
     }
 
-    auto &alignment = capability->capability_.alignment;
-    if (blockSize.width == 0 || blockSize.height == 0 ||
+    auto &alignment = capability->capabilityData_.alignment;
+    if (width == 0 || height == 0 ||
         alignment.width == 0 || alignment.height == 0 ||
         width % alignment.width != 0 || height % alignment.height != 0) {
         return false;
     }
 
-    auto &widthRange = capability->capability_.width;
-    auto &heightRange = capability->capability_.height;
+    auto &widthRange = capability->capabilityData_.width;
+    auto &heightRange = capability->capabilityData_.height;
     auto &fpsRange = capability->capabilityData_.frameRate;
     if (width < widthRange.minVal || width > widthRange.maxVal ||
         height < heightRange.minVal || height > heightRange.maxVal ||
@@ -432,15 +431,15 @@ bool OH_AVCapability_ValidateVideoSizeAndFrameRate(OH_AVCapability *capability,
         return false;
     }
 
-    auto &blockSize = capability->capability_.blockSize;
+    auto &blockSize = capability->capabilityData_.blockSize;
     if (blockSize.width == 0 || blockSize.height == 0) {
         return false;
     }
     int blockNum = ((width + blockSize.width - 1) / blockSize.width) *
         ((height + blockSize.height - 1) / blockSize.height);
     int blockOneSecond = blockNum * frameRate;
-    auto &blockPerFrame = capability->capability_.blockPerFrame;
-    auto &blockPerSecond = capability->capability_.blockPerSecond;
+    auto &blockPerFrame = capability->capabilityData_.blockPerFrame;
+    auto &blockPerSecond = capability->capabilityData_.blockPerSecond;
     if (blockNum < blockPerFrame.minVal || blockNum > blockPerFrame.maxVal ||
         blockOneSecond < blockPerSecond.minVal || blockOneSecond > blockPerSecond.maxVal ) {
         return false;

@@ -38,6 +38,15 @@ enum AVCodecType : int32_t {
     AVCODEC_TYPE_AUDIO_DECODER,
 };
 
+enum AudioSampleFormat {
+    SAMPLE_U8 = 0,
+    SAMPLE_S16LE = 1,
+    SAMPLE_S24LE = 2,
+    SAMPLE_S32LE = 3,
+    SAMPLE_F32LE = 4,
+    INVALID_WIDTH = -1
+};
+
 /**
  * @brief Range contain min and max value
  *
@@ -128,6 +137,7 @@ struct CapabilityData {
     ImgSize blockSize;
     std::vector<int32_t> sampleRate;
     std::vector<int32_t> pixFormat;
+    std::vector<int32_t> bitDepth;
     std::vector<int32_t> profiles;
     std::vector<int32_t> bitrateMode;
     std::map<int32_t, std::vector<int32_t>> profileLevelsMap;

@@ -36,6 +36,7 @@ public:
     std::condition_variable outCond_;
     std::queue<uint32_t> inQueue_;
     std::queue<uint32_t> outQueue_;
+    std::queue<AVCodecBufferInfo> sizeQueue_;
 };
 
 class ADecDemoCallback : public AVCodecCallback, public NoCopyable {
@@ -76,8 +77,6 @@ private:
     std::shared_ptr<AVCodecAudioDecoder> audioDec_;
     std::shared_ptr<ADecSignal> signal_;
     std::shared_ptr<ADecDemoCallback> cb_;
-    bool isFirstFrame_ = true;
-    int64_t timeStamp_ = 0;
     uint32_t frameCount_ = 0;
 };
 } // InnerAudioDemo

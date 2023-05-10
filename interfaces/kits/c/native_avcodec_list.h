@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include "native_avformat.h"
 #include "native_avcodec_base.h"
-#include "native_avcapablility.h"
+#include "native_avcapability.h"
 
 #ifdef __cplusplus
 extern "C" {
