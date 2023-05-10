@@ -36,7 +36,8 @@ public:
     std::condition_variable outCond_;
     std::queue<uint32_t> inQueue_;
     std::queue<uint32_t> outQueue_;
-    std::queue<AVCodecBufferInfo> sizeQueue_;
+    std::queue<AVCodecBufferInfo> infoQueue_;
+    std::queue<AVCodecBufferFlag> flagQueue_;
 };
 
 class ADecDemoCallback : public AVCodecCallback, public NoCopyable {

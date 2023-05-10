@@ -15,6 +15,7 @@
 
 #include "avcodec_audio_encoder_inner_demo.h"
 #include "avcodec_errors.h"
+#include "avcodec_common.h"
 #include "demo_log.h"
 #include "media_description.h"
 #include "securec.h"
@@ -38,6 +39,8 @@ constexpr uint32_t CHANNEL_COUNT = 2;
 constexpr uint32_t SAMPLE_RATE = 44100;
 constexpr uint32_t BITS_RATE = 169000; // for mp3
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
+constexpr string_view inputFilePath = "/data/audioIn.mp3";
+constexpr string_view outputFilePath = "/data/audioOut.pcm";
 } // namespace
 
 void ADecInnerDemo::RunCase()
@@ -52,7 +55,9 @@ void ADecInnerDemo::RunCase()
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
-    sleep(3); // start run 3s
+    while (isRunning_.load()) {
+        sleep(1); // start run 1s
+    }
     DEMO_CHECK_AND_RETURN_LOG(Stop() == AVCS_ERR_OK, "Fatal: Stop fail");
     DEMO_CHECK_AND_RETURN_LOG(Release() == AVCS_ERR_OK, "Fatal: Release fail");
 }
@@ -134,8 +139,7 @@ void ADecInnerDemo::InputFunc()
 {
     AVFormatContext *fmpt_ctx;
     AVPacket pkt;
-    const char* filePath = "/data/media/audio.mp3";
-    if (avformat_open_input(&fmpt_ctx, filePath, NULL, NULL) < 0) {
+    if (avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL) < 0) {
         std::cout << "open file failed"
                   << "\n";
         return;
@@ -204,7 +208,7 @@ void ADecInnerDemo::InputFunc()
 
 void ADecInnerDemo::OutputFunc()
 {
-    std::ofstream outputFile("/data/media/audio_ogg.pcm", std::ios::binary);
+    std::ofstream outputFile(outputFilePath.data(), std::ios::binary);
     while (true) {
         if (!isRunning_.load()) {
             break;
@@ -224,7 +228,12 @@ void ADecInnerDemo::OutputFunc()
             isRunning_.store(false);
             break;
         }
-        auto attr = signal_->sizeQueue_.front();
+        auto attr = signal_->infoQueue_.front();
+        auto flag = signal_->flagQueue_.front();
+        if (flag == AVCODEC_BUFFER_FLAG_EOS) {
+            cout << "decode eos" << endl;
+            isRunning_.store(false);
+        }
         outputFile.write((char*)buffer->GetBase(), attr.size);
         if (audioDec_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
@@ -232,7 +241,8 @@ void ADecInnerDemo::OutputFunc()
         }
 
         signal_->outQueue_.pop();
-        signal_->sizeQueue_.pop();
+        signal_->infoQueue_.pop();
+        signal_->flagQueue_.pop();
     }
 }
 
@@ -264,6 +274,7 @@ void ADecDemoCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
-    signal_->sizeQueue_.push(info);
+    signal_->infoQueue_.push(info);
+    signal_->flagQueue_.push(flag);
     signal_->outCond_.notify_all();
 }
