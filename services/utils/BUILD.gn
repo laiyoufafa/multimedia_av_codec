@@ -56,10 +56,8 @@ ohos_shared_library("av_codec_service_utils") {
   ]
 
   sources = [
-    "avdatasrcmemory.cpp",
     "avsharedmemorybase.cpp",
-    "avsharedmemorypool.cpp",
-    "task_thread.cpp",
+    "task_thread.cpp"
   ]
 
   cflags = [

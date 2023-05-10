@@ -16,7 +16,6 @@
 #include "avsharedmemory_ipc.h"
 #include <unistd.h>
 #include "avsharedmemorybase.h"
-#include "avdatasrcmemory.h"
 #include "avcodec_errors.h"
 #include "avcodec_log.h"
 
@@ -53,23 +52,6 @@ std::shared_ptr<AVSharedMemory> ReadAVSharedMemoryFromParcel(MessageParcel &parc
     std::string name = parcel.ReadString();
 
     std::shared_ptr<AVSharedMemory> memory = AVSharedMemoryBase::CreateFromRemote(fd, size, flags, name);
-    if (memory == nullptr || memory->GetBase() == nullptr) {
-        AVCODEC_LOGE("create remote AVSharedMemoryBase failed");
-        memory = nullptr;
-    }
-
-    (void)::close(fd);
-    return memory;
-}
-
-std::shared_ptr<AVSharedMemory> ReadADataSrcMemoryFromParcel(MessageParcel &parcel)
-{
-    int32_t fd  = parcel.ReadFileDescriptor();
-    int32_t size = parcel.ReadInt32();
-    uint32_t flags = parcel.ReadUint32();
-    std::string name = parcel.ReadString();
-
-    std::shared_ptr<AVSharedMemory> memory = AVDataSrcMemory::CreateFromRemote(fd, size, flags, name);
     if (memory == nullptr || memory->GetBase() == nullptr) {
         AVCODEC_LOGE("create remote AVSharedMemoryBase failed");
         memory = nullptr;

@@ -12,6 +12,8 @@ struct Index {
   @State ratio: number = 1.0;
   @State mediaLibUtils: MediaLibraryUtils = new MediaLibraryUtils();
   @State videoName: string = 'bigbuckbunny_480x272.h264';
+  private videoWidth: number = 480;
+  private videoHeight: number = 272;
   private lastSaveTime = '';
   private saveIndex = 0;
   private VideoOutFile: any;
@@ -136,7 +138,7 @@ struct Index {
             this.prepareFile()
               .then( rlt => {
                 Logger.info(TAG, 'surfaceID is ' + this.surfaceID);
-                return napitest.setSurfaceID(this.surfaceID, this.fileDescriptor, this.outFd)
+                return napitest.setSurfaceID(this.surfaceID, this.fileDescriptor, this.outFd, this.videoWidth, this.videoHeight)
               })
               .then(surfaceID => {
                 Logger.info(TAG, 'set surfaceID is ' + surfaceID);
