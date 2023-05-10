@@ -7,6 +7,10 @@
 #include "avmuxer.h"
 #include "avcodec_info.h"
 #include "avmuxer_unit_test.h"
+#ifdef AVMUXER_UNITTEST_CAPI
+#include "native_avmuxer.h"
+#include "native_avformat.h"
+#endif
 
 using namespace testing::ext;
 using namespace OHOS::Media;
@@ -465,6 +469,30 @@ HWTEST_F(AVMuxerUnitTest, Muxer_Start_004, TestSize.Level0)
 }
 
 /**
+ * @tc.name: Muxer_Start_005
+ * @tc.desc: Muxer Start normal
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Start_005, TestSize.Level0)
+{
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+    bool isCreated = avmuxer_->CreateMuxer(-1, outputFormat);
+    ASSERT_FALSE(isCreated);
+
+    std::shared_ptr<FormatMock> videoParams = FormatMockFactory::CreateFormat();
+    videoParams->PutStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, CodecMimeType::VIDEO_MPEG4);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, 352);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, 288);
+    videoParams->PutBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, buffer_, sizeof(buffer_));
+
+    int32_t videoTrackId = -1;
+    int32_t ret = avmuxer_->AddTrack(videoTrackId, videoParams);
+    ASSERT_NE(ret, AV_ERR_OK);
+    ASSERT_LT(videoTrackId, 0);
+    ASSERT_NE(avmuxer_->Start(), 0);
+}
+
+/**
  * @tc.name: Muxer_Stop_001
  * @tc.desc: Muxer Stop() normal
  * @tc.type: FUNC
@@ -588,6 +616,30 @@ HWTEST_F(AVMuxerUnitTest, Muxer_Stop_005, TestSize.Level0)
 }
 
 /**
+ * @tc.name: Muxer_Stop_006
+ * @tc.desc: Muxer Stop() while Create failed!
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Stop_006, TestSize.Level0)
+{
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+    bool isCreated = avmuxer_->CreateMuxer(-1, outputFormat);
+    ASSERT_FALSE(isCreated);
+
+    std::shared_ptr<FormatMock> videoParams = FormatMockFactory::CreateFormat();
+    videoParams->PutStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, CodecMimeType::VIDEO_MPEG4);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, 352);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, 288);
+    videoParams->PutBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, buffer_, sizeof(buffer_));
+    int32_t videoTrackId = -1;
+    int32_t ret = avmuxer_->AddTrack(videoTrackId, videoParams);
+    ASSERT_NE(ret, AV_ERR_OK);
+    ASSERT_LT(videoTrackId, 0);
+    ASSERT_NE(avmuxer_->Start(), 0);
+    ASSERT_NE(avmuxer_->Stop(), 0);
+}
+
+/**
  * @tc.name: Muxer_writeSample_001
  * @tc.desc: Muxer Write Sample normal
  * @tc.type: FUNC
@@ -621,10 +673,40 @@ HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_001, TestSize.Level0)
 
 /**
  * @tc.name: Muxer_writeSample_002
- * @tc.desc: Muxer Write Sample without Start()
+ * @tc.desc: Muxer Write Sample while Create failed!
  * @tc.type: FUNC
  */
 HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_002, TestSize.Level0)
+{
+    int trackId = -1;
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+
+    bool isCreated = avmuxer_->CreateMuxer(-1, outputFormat);
+    ASSERT_FALSE(isCreated);
+    
+    std::shared_ptr<FormatMock> vParam = FormatMockFactory::CreateFormat();
+    vParam->PutStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, CodecMimeType::VIDEO_AVC);
+    vParam->PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, 352);
+    vParam->PutIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, 288);
+
+    int ret = avmuxer_->AddTrack(trackId, vParam);
+    ASSERT_NE(ret, 0);
+    ASSERT_LT(trackId, 0);
+    ASSERT_NE(avmuxer_->Start(), 0);
+
+    AVCodecBufferAttrMock info;
+    info.pts = 0;
+    info.size = sizeof(buffer_);
+    ret = avmuxer_->WriteSampleBuffer(trackId, (uint8_t*)buffer_, info);
+    ASSERT_NE(ret, 0);
+}
+
+/**
+ * @tc.name: Muxer_writeSample_003
+ * @tc.desc: Muxer Write Sample without Start()
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_003, TestSize.Level0)
 {
     int trackId = -1;
     std::string outputFile = TEST_FILE_PATH + std::string("Muxer_WriteSample.mp4");
@@ -651,11 +733,11 @@ HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_002, TestSize.Level0)
 }
 
 /**
- * @tc.name: Muxer_writeSample_003
+ * @tc.name: Muxer_writeSample_004
  * @tc.desc: Muxer Write Sample unexisting track
  * @tc.type: FUNC
  */
-HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_003, TestSize.Level0)
+HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_004, TestSize.Level0)
 {
     int trackId = -1;
     std::string outputFile = TEST_FILE_PATH + std::string("Muxer_WriteSample.mp4");
@@ -689,11 +771,11 @@ HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_003, TestSize.Level0)
 }
 
 /**
- * @tc.name: Muxer_writeSample_004
+ * @tc.name: Muxer_writeSample_005
  * @tc.desc: Muxer Write Sample after Stop()
  * @tc.type: FUNC
  */
-HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_004, TestSize.Level0)
+HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_005, TestSize.Level0)
 {
     int trackId = -1;
     std::string outputFile = TEST_FILE_PATH + std::string("Muxer_WriteSample.mp4");
@@ -722,8 +804,8 @@ HWTEST_F(AVMuxerUnitTest, Muxer_writeSample_004, TestSize.Level0)
 }
 
 /**
- * @tc.name: Muxer_SetLocation_001
- * @tc.desc: Muxer SetLocation after Create
+ * @tc.name: Muxer_SetLocation_SetRotation_001
+ * @tc.desc: Muxer SetLocation SetRotation after Create
  * @tc.type: FUNC
  */
 HWTEST_F(AVMuxerUnitTest, Muxer_SetLocation_SetRotation_001, TestSize.Level0)
@@ -881,6 +963,28 @@ HWTEST_F(AVMuxerUnitTest, Muxer_SetLocation_SetRotation_005, TestSize.Level0)
 }
 
 /**
+ * @tc.name: Muxer_SetLocation_SetRotation_006
+ * @tc.desc: Muxer SetLocation SetRotation while Create failed!
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_SetLocation_SetRotation_006, TestSize.Level0)
+{
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+
+    bool isCreated = avmuxer_->CreateMuxer(-1, outputFormat);
+    ASSERT_FALSE(isCreated);
+
+    int ret = avmuxer_->SetLocation(22.38, 114.05);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetLocation(-22.38, -114.05);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetRotation(90);
+    ASSERT_NE(ret, 0);
+}
+
+/**
  * @tc.name: Muxer_SetRotation_001
  * @tc.desc: Muxer SetRotation expected value
  * @tc.type: FUNC
@@ -945,3 +1049,105 @@ HWTEST_F(AVMuxerUnitTest, Muxer_SetRotation_002, TestSize.Level0)
     ret = avmuxer_->SetRotation(-360);
     EXPECT_NE(ret, 0);
 }
+
+/**
+ * @tc.name: Muxer_SetLocation_001
+ * @tc.desc: Muxer SetLocation unexpected value
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_SetLocation_001, TestSize.Level0)
+{
+    std::string outputFile = TEST_FILE_PATH + std::string("Muxer_SetLocation.mp4");
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+
+    fd_ = open(outputFile.c_str(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    bool isCreated = avmuxer_->CreateMuxer(fd_, outputFormat);
+    ASSERT_TRUE(isCreated);
+
+    int ret = avmuxer_->SetLocation(90.1, 50);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetLocation(-90.1, 50);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetLocation(50, 180.1);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetLocation(50, -180.1);
+    ASSERT_NE(ret, 0);
+
+    ret = avmuxer_->SetLocation(90, 180);
+    ASSERT_EQ(ret, 0);
+
+    ret = avmuxer_->SetLocation(-90, -180);
+    ASSERT_EQ(ret, 0);
+}
+
+#ifdef AVMUXER_UNITTEST_CAPI
+/**
+ * @tc.name: Muxer_Destroy_001
+ * @tc.desc: Muxer Destroy normal
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Destroy_001, TestSize.Level0)
+{
+    std::string outputFile = TEST_FILE_PATH + std::string("Muxer_Destro.mp4");
+    fd_ = open(outputFile.c_str(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+    bool isCreated = avmuxer_->CreateMuxer(fd_, outputFormat);
+    ASSERT_TRUE(isCreated);
+
+    std::shared_ptr<FormatMock> videoParams = FormatMockFactory::CreateFormat();
+    videoParams->PutStringValue(MediaDescriptionKey::MD_KEY_CODEC_MIME, CodecMimeType::VIDEO_MPEG4);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_WIDTH, 352);
+    videoParams->PutIntValue(MediaDescriptionKey::MD_KEY_HEIGHT, 288);
+    videoParams->PutBuffer(MediaDescriptionKey::MD_KEY_CODEC_CONFIG, buffer_, sizeof(buffer_));
+    int32_t videoTrackId = -1;
+    int32_t ret = avmuxer_->AddTrack(videoTrackId, videoParams);
+    ASSERT_EQ(ret, AV_ERR_OK);
+    ASSERT_GE(videoTrackId, 0);
+    ASSERT_EQ(avmuxer_->Start(), 0);
+    ASSERT_EQ(avmuxer_->Stop(), 0);
+    ASSERT_EQ(avmuxer_->Destroy(), 0);
+}
+
+/**
+ * @tc.name: Muxer_Destroy_002
+ * @tc.desc: Muxer Destroy normal
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Destroy_002, TestSize.Level0)
+{
+    std::string outputFile = TEST_FILE_PATH + std::string("Muxer_Destroy.mp4");
+    fd_ = open(outputFile.c_str(), O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+    OutputFormat outputFormat = OUTPUT_FORMAT_MPEG_4;
+    OH_AVMuxer *muxer = OH_AVMuxer_Create(fd_, static_cast<OH_AVOutputFormat>(outputFormat));
+    int ret = OH_AVMuxer_Destroy(muxer);
+    ASSERT_EQ(ret, 0);
+    muxer = nullptr;
+}
+
+/**
+ * @tc.name: Muxer_Destroy_003
+ * @tc.desc: Muxer Destroy nullptr
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Destroy_003, TestSize.Level0)
+{
+    int ret = OH_AVMuxer_Destroy(nullptr);
+    ASSERT_EQ(ret, AV_ERR_INVALID_VAL);
+}
+
+/**
+ * @tc.name: Muxer_Destroy_004
+ * @tc.desc: Muxer Destroy other class
+ * @tc.type: FUNC
+ */
+HWTEST_F(AVMuxerUnitTest, Muxer_Destroy_004, TestSize.Level0)
+{
+    OH_AVFormat *format = OH_AVFormat_Create();
+    int ret = OH_AVMuxer_Destroy((OH_AVMuxer *)format);
+    ASSERT_EQ(ret, AV_ERR_INVALID_VAL);
+    OH_AVFormat_Destroy(format);
+}
+#endif // AVMUXER_UNITTEST_CAPI
