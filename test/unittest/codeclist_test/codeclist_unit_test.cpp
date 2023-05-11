@@ -225,7 +225,7 @@ HWTEST_F(CodecListUnitTest, CodecList_FindAudioDecoder_005, TestSize.Level0)
     (void)format->PutStringValue(codecMimeKey_, CodecMimeType::AUDIO_OPUS);
     (void)format->PutIntValue(bitrateKey_, MAX_AUDIO_BITRATE);
     (void)format->PutIntValue(channelCountKey_, MAX_CHANNEL_COUNT);
-    (void)format->PutIntValue(sampleRateKey_, DEFAULT_SAMPLE_RATE);
+    (void)format->PutIntValue(sampleRateKey_, 48000);
     codecName = codeclist_->FindDecoder(format);
     EXPECT_EQ("avdec_opus", codecName);
 }
@@ -279,7 +279,7 @@ HWTEST_F(CodecListUnitTest, CodecList_FindAudioEncoder_002, TestSize.Level0)
     (void)format->PutStringValue(codecMimeKey_, CodecMimeType::AUDIO_OPUS);
     (void)format->PutIntValue(bitrateKey_, MAX_AUDIO_BITRATE);
     (void)format->PutIntValue(channelCountKey_, MAX_CHANNEL_COUNT);
-    (void)format->PutIntValue(sampleRateKey_, DEFAULT_SAMPLE_RATE);
+    (void)format->PutIntValue(sampleRateKey_, 48000);
     codecName = codeclist_->FindEncoder(format);
     EXPECT_EQ("avenc_opus", codecName);
 }
