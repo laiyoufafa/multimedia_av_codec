@@ -27,6 +27,7 @@ public:
     virtual ~AVMuxerDemoBase() = default;
     void RunCase();
     void RunMultiThreadCase();
+
 protected:
     virtual void DoRunMuxer() = 0;
     virtual void DoRunMultiThreadCase()= 0;
@@ -44,21 +45,23 @@ protected:
     void Reset();
     static void MulThdWriteTrackSample(AVMuxerDemoBase *muxerBase, uint32_t trackId, std::shared_ptr<std::ifstream> file);
 
+    static AudioTrackParam *audioParams_;
+    static VideoTrackParam *videoParams_;
+    static VideoTrackParam *coverParams_;
+    static std::string videoType_;
+    static std::string audioType_;
+    static std::string coverType_;
+    static std::string format_;
+    static OutputFormat outputFormat_;
+    static bool hasSetMode_;
+
     int32_t videoTrackId_ {-1};
     int32_t audioTrackId_ {-1};
     int32_t coverTrackId_ {-1};
     std::shared_ptr<std::ifstream> audioFile_ {nullptr};
     std::shared_ptr<std::ifstream> videoFile_ {nullptr};
     std::shared_ptr<std::ifstream> coverFile_ {nullptr};
-    AudioTrackParam *audioParams_ {nullptr};
-    VideoTrackParam *videoParams_ {nullptr};
-    VideoTrackParam *coverParams_ {nullptr};
-    std::string videoType_ = std::string("");
-    std::string audioType_ = std::string("");
-    std::string coverType_ = std::string("");
-    std::string format_ = std::string("");
     int32_t outFd_ {-1};
-    OutputFormat outputFormat_ {OUTPUT_FORMAT_MPEG_4};
 };
 } // Media
 } // OHOS
