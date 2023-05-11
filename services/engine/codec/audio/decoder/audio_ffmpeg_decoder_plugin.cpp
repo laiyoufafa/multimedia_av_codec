@@ -63,7 +63,7 @@ int32_t AudioFfmpegDecoderPlugin::ProcessSendData(const std::shared_ptr<AudioBuf
     return ret;
 }
 
-std::string AVStrError(int errnum)
+static std::string AVStrError(int errnum)
 {
     char errbuf[AV_ERROR_MAX_STRING_SIZE] = {0};
     av_strerror(errnum, errbuf, AV_ERROR_MAX_STRING_SIZE);

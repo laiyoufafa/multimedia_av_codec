@@ -19,6 +19,7 @@ namespace OHOS {
 namespace Media {
 class AudioFfmpegEncoderPlugin : NoCopyable {
 private:
+    int32_t maxInputSize_;
     std::shared_ptr<AVCodec> avCodec_{};
     std::shared_ptr<AVCodecContext> avCodecContext_{};
     std::shared_ptr<AVFrame> cachedFrame_{};
@@ -28,8 +29,6 @@ private:
     Format format_;
     using HeaderFunc = std::function<int32_t(std::string &header, uint32_t &headerSize, std::shared_ptr<AVCodecContext>,
                                              uint32_t dataLength)>;
-    // using HeaderFunc = std::function<int32_t(char* header, uint32_t &headerSize, std::shared_ptr<AVCodecContext>,
-    //                                          int32_t dataLength)>;
 
 public:
     AudioFfmpegEncoderPlugin();
@@ -52,8 +51,8 @@ public:
     std::shared_ptr<AVCodec> GetAVCodec() const;
 
     void RegisterHeaderFunc(HeaderFunc headerFunc);
-
     int32_t CloseCtxLocked();
+    int32_t GetMaxInputSize() const noexcept;
 
 private:
     int32_t sendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer);
