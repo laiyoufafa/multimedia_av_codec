@@ -204,14 +204,10 @@ void AEnInnerDemo::OutputFunc()
             isRunning_.store(false);
             break;
         }
-        auto attr = signal_->infoQueue_.front();
-        auto flag = signal_->flagQueue_.front();
-        if (flag == AVCODEC_BUFFER_FLAG_EOS) {
-            cout << "decode eos" << endl;
-            isRunning_.store(false);
-        }
+        auto attr = signal_->sizeQueue_.front();
         outputFile.write((char *)buffer->GetBase(), attr.size);
-        if (audioDec_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
+        cout << "output write size = " << attr.size << endl;
+        if (audioEn_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
             break;
         }

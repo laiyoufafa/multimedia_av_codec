@@ -1,5 +1,6 @@
 #ifndef AUDIO_FFMPEG_AAC_ENCODER_PLUGIN_H
 #define AUDIO_FFMPEG_AAC_ENCODER_PLUGIN_H
+
 #include "audio_ffmpeg_base_codec.h"
 #include "audio_ffmpeg_encoder_plugin.h"
 #include "avcodec_audio_codec_key.h"
@@ -24,7 +25,7 @@ public:
 
     const static std::string identify()
     {
-        return return std::string(AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY);
+        return std::string(AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY);
     }
 
 private:
