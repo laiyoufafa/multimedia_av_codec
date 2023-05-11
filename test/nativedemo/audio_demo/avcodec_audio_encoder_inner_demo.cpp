@@ -14,6 +14,8 @@
  */
 
 #include "avcodec_audio_encoder_inner_demo.h"
+#include "avcodec_audio_codec_key.h"
+#include "avcodec_common.h"
 #include "avcodec_errors.h"
 #include "demo_log.h"
 #include "media_description.h"
@@ -61,7 +63,7 @@ void AEnInnerDemo::RunCase()
 
 int32_t AEnInnerDemo::CreateDec()
 {
-    audioEn_ = AudioEncoderFactory::CreateByName("OH.Media.Codec.AAC.FFMPEGAacEn");
+    audioEn_ = AudioEncoderFactory::CreateByName((AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY).data());
     DEMO_CHECK_AND_RETURN_RET_LOG(audioEn_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
     signal_ = make_shared<AEnSignal>();
@@ -134,7 +136,7 @@ int32_t AEnInnerDemo::Release()
 
 void AEnInnerDemo::InputFunc()
 {
-    const char* filePath = "/data/media/test_fltp.pcm";
+    const char *filePath = "/data/media/test_fltp.pcm";
     int frameBytes = 2 * 1024 * 4;
     std::ifstream inputFile(filePath, std::ios::binary);
     if (!inputFile.is_open()) {
@@ -159,7 +161,7 @@ void AEnInnerDemo::InputFunc()
             std::cout << "buffer is null:" << index << "\n";
             break;
         }
-        inputFile.read((char*)buffer->GetBase(), frameBytes);
+        inputFile.read((char *)buffer->GetBase(), frameBytes);
         int readBytes = inputFile.gcount();
         AVCodecBufferInfo attr;
         AVCodecBufferFlag flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
@@ -203,7 +205,7 @@ void AEnInnerDemo::OutputFunc()
             break;
         }
         auto attr = signal_->sizeQueue_.front();
-        outputFile.write((char*)buffer->GetBase(), attr.size);
+        outputFile.write((char *)buffer->GetBase(), attr.size);
         cout << "output write size = " << attr.size << endl;
         if (audioEn_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;

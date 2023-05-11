@@ -18,36 +18,23 @@
 
 #include "audio_codec_worker.h"
 #include "audio_ffmpeg_base_codec.h"
+#include "avcodec_common.h"
 #include "codecbase.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
 
-enum class CodecState {
-    RELEASED,
-    INITLIZED,
-    FLUSHED,
-    RUNNING,
-
-    INITLIZING, // RELEASED -> INITLIZED
-    STARTING,   // INITLIZED -> RUNNING
-    STOPPING,   // RUNNING -> INITLIZED
-    FLUSHING,   // RUNNING -> FLUSHED
-    RESUMING,   // FLUSHED -> RUNNING
-    RRELEASING, // {ANY EXCEPT RELEASED} -> RELEASED
-};
-
 class AudioFFMpegAdapter : public CodecBase, public NoCopyable {
 private:
     std::atomic<CodecState> state_;
-    std::string_view name_;
+    const std::string name_;
     std::shared_ptr<AVCodecCallback> callback_;
     std::shared_ptr<IAudioFFMpegBaseCodec> audioCodec;
     std::shared_ptr<AudioCodecWorker> worker_;
 
 public:
-    explicit AudioFFMpegAdapter(const std::string_view &name);
+    explicit AudioFFMpegAdapter(const std::string &name);
 
     ~AudioFFMpegAdapter() override;
 

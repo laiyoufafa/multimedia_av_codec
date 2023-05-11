@@ -18,6 +18,7 @@
 
 #include "audio_ffmpeg_base_codec.h"
 #include "audio_ffmpeg_decoder_plugin.h"
+#include "avcodec_audio_codec_key.h"
 
 constexpr int minChannels = 1;
 constexpr int maxChannels = 8;
@@ -43,9 +44,9 @@ public:
     uint32_t getInputBufferSize() const override;
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
-    const static std::string_view identify()
+    const static std::string identify()
     {
-        return "OH.Media.Codec.FLAC.FFMPEGFlac";
+        return std::string(AVCodecAudioCodecKey::AUDIO_DECODER_FLAC_NAME_KEY);
     }
 
 private:

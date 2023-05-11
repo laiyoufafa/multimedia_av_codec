@@ -31,7 +31,6 @@ AudioBufferInfo::AudioBufferInfo(const uint32_t &bufferSize, const std::string_v
       isEos_(false),
       status_(BufferStatus::IDEL),
       bufferSize_(bufferSize),
-      bufferUseSize_(0),
       metaSize_(metaSize),
       name_(name),
       buffer_(nullptr),
@@ -128,50 +127,6 @@ AVCodecBufferFlag AudioBufferInfo::GetFlag() const noexcept
     return flag_;
 }
 
-size_t AudioBufferInfo::WriteBuffer(const uint8_t *in, size_t writeSize)
-{
-    auto length = Write(in, writeSize, bufferSize_);
-    bufferUseSize_ = length;
-    return length;
-}
-
-size_t AudioBufferInfo::WriteMetadata(const uint8_t *in, size_t writeSize)
-{
-    return Write(in, writeSize, metaSize_);
-}
-
-size_t AudioBufferInfo::ReadBuffer(uint8_t *out, size_t readSize)
-{
-    return Read(out, readSize, bufferUseSize_);
-}
-
-size_t AudioBufferInfo::ReadMetadata(uint8_t *out, size_t readSize)
-{
-    return Read(out, readSize, metaSize_);
-}
-
-size_t AudioBufferInfo::Write(const uint8_t *in, size_t writeSize, const size_t &bufferSize)
-{
-    size_t start = 0;
-    size_t length = std::min(writeSize, bufferSize);
-    AVCODEC_LOGD("write data,length:%{public}d, start:%{public}d, name:%{public}s", length, start, name_.data());
-    auto error = memcpy_s(buffer_->GetBase(), length, in, length);
-    if (error != EOK) {
-        AVCODEC_LOGE("sharedMem_ WriteToAshmem failed,error:%{public}d, name:%{public}s", error, name_.data());
-        return 0;
-    }
-    return length;
-}
-
-size_t AudioBufferInfo::Read(uint8_t *out, size_t readSize, const size_t &useSize)
-{
-    size_t length = std::min(readSize, useSize);
-    if (memcpy_s(out, length, buffer_->GetBase(), length) != EOK) {
-        return 0;
-    }
-    return length;
-}
-
 std::shared_ptr<AVSharedMemoryBase> AudioBufferInfo::GetMetadata() const noexcept
 {
     return metadata_;
@@ -186,7 +141,9 @@ bool AudioBufferInfo::ResetBuffer()
 {
     isEos_ = false;
     status_ = BufferStatus::IDEL;
-    bufferUseSize_ = 0;
+    if (buffer_) {
+        buffer_->ClearUsedSize();
+    }
     return true;
 }
 

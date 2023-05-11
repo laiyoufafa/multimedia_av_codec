@@ -34,7 +34,7 @@ namespace Media {
 class AudioFfmpegDecoderPlugin : public NoCopyable {
 private:
     bool hasExtra_;
-    int32_t maxInputSize_;
+    int64_t maxInputSize_;
     int32_t bufferNum_;
     int32_t bufferIndex_;
     int64_t preBufferGroupPts_;
@@ -80,7 +80,7 @@ public:
 
     int32_t CloseCtxLocked();
 
-    int32_t GetMaxInputSize() const noexcept;
+    int64_t GetMaxInputSize() const noexcept;
 
     bool hasExtraData() const noexcept;
 

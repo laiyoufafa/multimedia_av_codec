@@ -35,6 +35,16 @@ namespace {
 
 namespace OHOS {
 namespace Media {
+AudioTrackParam *AVMuxerDemoBase::audioParams_ = nullptr;
+VideoTrackParam *AVMuxerDemoBase::videoParams_ = nullptr;
+VideoTrackParam *AVMuxerDemoBase::coverParams_ = nullptr;
+std::string AVMuxerDemoBase::videoType_ = std::string("");
+std::string AVMuxerDemoBase::audioType_ = std::string("");
+std::string AVMuxerDemoBase::coverType_ = std::string("");
+std::string AVMuxerDemoBase::format_ = std::string("");
+OutputFormat AVMuxerDemoBase::outputFormat_ = OUTPUT_FORMAT_DEFAULT;
+bool AVMuxerDemoBase::hasSetMode_ = false;
+
 AVMuxerDemoBase::AVMuxerDemoBase()
 {
 }
@@ -52,6 +62,9 @@ std::shared_ptr<std::ifstream> OpenFile(const std::string &filePath)
 
 int AVMuxerDemoBase::SelectMode()
 {
+    if (hasSetMode_) {
+        return 0;
+    }
     // TODO:add muxer mode select
     int num;
 
@@ -145,6 +158,7 @@ int AVMuxerDemoBase::SelectMode()
         std::cout<<"do not support cover type index: "<<", set to noCover"<<num<<std::endl;
         break;
     }
+    hasSetMode_ = true;
     return 0;
 }
 

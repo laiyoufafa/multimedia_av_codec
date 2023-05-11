@@ -14,8 +14,9 @@
  */
 
 #include "avcodec_audio_encoder_demo.h"
-#include "avcodec_errors.h"
+#include "avcodec_audio_codec_key.h"
 #include "avcodec_common.h"
+#include "avcodec_errors.h"
 #include "demo_log.h"
 #include "securec.h"
 #include <iostream>
@@ -34,21 +35,24 @@ constexpr uint32_t FRAME_DURATION_US = 33000;
 constexpr uint32_t DEFAULT_FRAME_COUNT = 1;
 } // namespace
 
-static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData) {
+static void OnError(OH_AVCodec *codec, int32_t errorCode, void *userData)
+{
     (void)codec;
     (void)errorCode;
     (void)userData;
     cout << "Error received, errorCode:" << errorCode << endl;
 }
 
-static void OnOutputFormatChanged(OH_AVCodec *codec, OH_AVFormat *format, void *userData) {
+static void OnOutputFormatChanged(OH_AVCodec *codec, OH_AVFormat *format, void *userData)
+{
     (void)codec;
     (void)format;
     (void)userData;
     cout << "OnOutputFormatChanged received" << endl;
 }
 
-static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, void *userData) {
+static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, void *userData)
+{
     (void)codec;
     AEncSignal *signal_ = static_cast<AEncSignal *>(userData);
     cout << "OnInputBufferAvailable received, index:" << index << endl;
@@ -59,7 +63,8 @@ static void OnInputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemor
 }
 
 static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemory *data, OH_AVCodecBufferAttr *attr,
-                             void *userData) {
+                                    void *userData)
+{
     (void)codec;
     AEncSignal *signal_ = static_cast<AEncSignal *>(userData);
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
@@ -70,7 +75,8 @@ static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemo
     signal_->outCond_.notify_all();
 }
 
-AEncDemo::~AEncDemo() {
+AEncDemo::~AEncDemo()
+{
     OH_AudioEncoder_Destroy(audioEnc_);
     if (signal_) {
         delete signal_;
@@ -78,7 +84,8 @@ AEncDemo::~AEncDemo() {
     }
 }
 
-void AEncDemo::RunCase() {
+void AEncDemo::RunCase()
+{
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
     OH_AVFormat *format = OH_AVFormat_Create();
@@ -95,8 +102,9 @@ void AEncDemo::RunCase() {
     DEMO_CHECK_AND_RETURN_LOG(Release() == AVCS_ERR_OK, "Fatal: Release fail");
 }
 
-int32_t AEncDemo::CreateDec() {
-    audioEnc_ = OH_AudioEncoder_CreateByName("OH.Media.Codec.MP3.FFMPEGMp3");
+int32_t AEncDemo::CreateDec()
+{
+    audioEnc_ = OH_AudioEncoder_CreateByName((AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY).data());
     DEMO_CHECK_AND_RETURN_RET_LOG(audioEnc_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
     signal_ = new AEncSignal();
@@ -109,11 +117,13 @@ int32_t AEncDemo::CreateDec() {
     return AVCS_ERR_OK;
 }
 
-int32_t AEncDemo::Configure(OH_AVFormat *format) {
+int32_t AEncDemo::Configure(OH_AVFormat *format)
+{
     return OH_AudioEncoder_Configure(audioEnc_, format);
 }
 
-int32_t AEncDemo::Start() {
+int32_t AEncDemo::Start()
+{
     isRunning_.store(true);
 
     testFile_ = std::make_unique<std::ifstream>();
@@ -129,7 +139,8 @@ int32_t AEncDemo::Start() {
     return OH_AudioEncoder_Start(audioEnc_);
 }
 
-int32_t AEncDemo::Stop() {
+int32_t AEncDemo::Stop()
+{
     isRunning_.store(false);
 
     if (inputLoop_ != nullptr && inputLoop_->joinable()) {
@@ -151,19 +162,23 @@ int32_t AEncDemo::Stop() {
     return OH_AudioEncoder_Stop(audioEnc_);
 }
 
-int32_t AEncDemo::Flush() {
+int32_t AEncDemo::Flush()
+{
     return OH_AudioEncoder_Flush(audioEnc_);
 }
 
-int32_t AEncDemo::Reset() {
+int32_t AEncDemo::Reset()
+{
     return OH_AudioEncoder_Reset(audioEnc_);
 }
 
-int32_t AEncDemo::Release() {
+int32_t AEncDemo::Release()
+{
     return OH_AudioEncoder_Destroy(audioEnc_);
 }
 
-void AEncDemo::InputFunc() {
+void AEncDemo::InputFunc()
+{
     while (true) {
         if (!isRunning_.load()) {
             break;
@@ -215,7 +230,8 @@ void AEncDemo::InputFunc() {
     }
 }
 
-void AEncDemo::OutputFunc() {
+void AEncDemo::OutputFunc()
+{
     while (true) {
         if (!isRunning_.load()) {
             break;

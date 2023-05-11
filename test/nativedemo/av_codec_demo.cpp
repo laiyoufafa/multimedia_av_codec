@@ -101,6 +101,18 @@ static int RunEngineMuxer()
     return 0;
 }
 
+
+static int RunLoopEngineMuxer()
+{
+    time_t startTime = time(NULL);
+    time_t curTime = time(NULL);
+    while (difftime(curTime, startTime) < RUN_TIME) {
+        RunEngineMuxer();
+        time(&curTime);
+    }
+    return 0;
+}
+
 static int RunAudioDecoder()
 {
     auto audioEnc = std::make_unique<ADecDemo>();
@@ -233,8 +245,9 @@ int main(int argc, char *argv[])
     cout << "8:inner_muxer with multithread write" << endl;
     cout << "9:ffmpeg_muxer" << endl;
     cout << "10:engine_muxer" << endl;
-    cout << "11:Video Inner Decoder" << endl;
-    cout << "12:codeclist" << endl;
+    cout << "11:engine_muxer loop" << endl;
+    cout << "12:Video Inner Decoder" << endl;
+    cout << "13:codeclist" << endl;
 
     string mode;
     (void)getline(cin, mode);
@@ -272,8 +285,10 @@ int main(int argc, char *argv[])
     } else if (mode == "10") {
         RunEngineMuxer();
     } else if (mode == "11") {
-        RunVideoInnerDecoder();
+        RunLoopEngineMuxer();
     } else if (mode == "12") {
+        RunVideoInnerDecoder();
+    } else if (mode == "13") {
         RunCodecList();
     }  else {
         cout << "no that selection" << endl;
