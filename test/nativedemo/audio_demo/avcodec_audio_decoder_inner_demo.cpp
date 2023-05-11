@@ -13,10 +13,9 @@
  * limitations under the License.
  */
 
-#include "avcodec_audio_encoder_inner_demo.h"
-#include "avcodec_audio_codec_key.h"
-#include "avcodec_common.h"
+#include "avcodec_audio_decoder_inner_demo.h"
 #include "avcodec_errors.h"
+#include "avcodec_common.h"
 #include "demo_log.h"
 #include "media_description.h"
 #include "securec.h"
@@ -38,11 +37,13 @@ using namespace std;
 namespace {
 constexpr uint32_t CHANNEL_COUNT = 2;
 constexpr uint32_t SAMPLE_RATE = 44100;
-constexpr uint32_t BITS_RATE = 112000; // for aac encoding
+constexpr uint32_t BITS_RATE = 169000; // for mp3
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
+constexpr string_view inputFilePath = "/data/audioIn.mp3";
+constexpr string_view outputFilePath = "/data/audioOut.pcm";
 } // namespace
 
-void AEnInnerDemo::RunCase()
+void ADecInnerDemo::RunCase()
 {
     DEMO_CHECK_AND_RETURN_LOG(CreateDec() == AVCS_ERR_OK, "Fatal: CreateDec fail");
 
@@ -50,51 +51,51 @@ void AEnInnerDemo::RunCase()
     format.PutIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, CHANNEL_COUNT);
     format.PutIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, SAMPLE_RATE);
     format.PutLongValue(MediaDescriptionKey::MD_KEY_BITRATE, BITS_RATE);
-    format.PutIntValue(MediaDescriptionKey::MD_BITS_PER_CODED_SAMPLE_KEY, BITS_PER_CODED_RATE);
-    format.PutIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT, 8);
-    format.PutLongValue(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT, 3);
+    format.PutIntValue("bits_per_coded_sample", BITS_PER_CODED_RATE);
     DEMO_CHECK_AND_RETURN_LOG(Configure(format) == AVCS_ERR_OK, "Fatal: Configure fail");
 
     DEMO_CHECK_AND_RETURN_LOG(Start() == AVCS_ERR_OK, "Fatal: Start fail");
-    sleep(30); // start run 3s
+    while (isRunning_.load()) {
+        sleep(1); // start run 1s
+    }
     DEMO_CHECK_AND_RETURN_LOG(Stop() == AVCS_ERR_OK, "Fatal: Stop fail");
     DEMO_CHECK_AND_RETURN_LOG(Release() == AVCS_ERR_OK, "Fatal: Release fail");
 }
 
-int32_t AEnInnerDemo::CreateDec()
+int32_t ADecInnerDemo::CreateDec()
 {
-    audioEn_ = AudioEncoderFactory::CreateByName((AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY).data());
-    DEMO_CHECK_AND_RETURN_RET_LOG(audioEn_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
+    audioDec_ = AudioDecoderFactory::CreateByName("OH.Media.Codec.MP3.FFMPEGMp3");
+    DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
-    signal_ = make_shared<AEnSignal>();
+    signal_ = make_shared<ADecSignal>();
 
-    cb_ = make_unique<AEnDemoCallback>(signal_);
+    cb_ = make_unique<ADecDemoCallback>(signal_);
     DEMO_CHECK_AND_RETURN_RET_LOG(cb_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
-    DEMO_CHECK_AND_RETURN_RET_LOG(audioEn_->SetCallback(cb_) == AVCS_ERR_OK, AVCS_ERR_UNKNOWN,
+    DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_->SetCallback(cb_) == AVCS_ERR_OK, AVCS_ERR_UNKNOWN,
                                   "Fatal: SetCallback fail");
 
     return AVCS_ERR_OK;
 }
 
-int32_t AEnInnerDemo::Configure(const Format &format)
+int32_t ADecInnerDemo::Configure(const Format &format)
 {
-    return audioEn_->Configure(format);
+    return audioDec_->Configure(format);
 }
 
-int32_t AEnInnerDemo::Start()
+int32_t ADecInnerDemo::Start()
 {
     isRunning_.store(true);
 
-    inputLoop_ = make_unique<thread>(&AEnInnerDemo::InputFunc, this);
+    inputLoop_ = make_unique<thread>(&ADecInnerDemo::InputFunc, this);
     DEMO_CHECK_AND_RETURN_RET_LOG(inputLoop_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
 
-    outputLoop_ = make_unique<thread>(&AEnInnerDemo::OutputFunc, this);
+    outputLoop_ = make_unique<thread>(&ADecInnerDemo::OutputFunc, this);
     DEMO_CHECK_AND_RETURN_RET_LOG(outputLoop_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: No memory");
 
-    return audioEn_->Start();
+    return audioDec_->Start();
 }
 
-int32_t AEnInnerDemo::Stop()
+int32_t ADecInnerDemo::Stop()
 {
     isRunning_.store(false);
 
@@ -116,33 +117,41 @@ int32_t AEnInnerDemo::Stop()
         outputLoop_.reset();
     }
 
-    return audioEn_->Stop();
+    return audioDec_->Stop();
 }
 
-int32_t AEnInnerDemo::Flush()
+int32_t ADecInnerDemo::Flush()
 {
-    return audioEn_->Flush();
+    return audioDec_->Flush();
 }
 
-int32_t AEnInnerDemo::Reset()
+int32_t ADecInnerDemo::Reset()
 {
-    return audioEn_->Reset();
+    return audioDec_->Reset();
 }
 
-int32_t AEnInnerDemo::Release()
+int32_t ADecInnerDemo::Release()
 {
-    return audioEn_->Release();
+    return audioDec_->Release();
 }
 
-void AEnInnerDemo::InputFunc()
+void ADecInnerDemo::InputFunc()
 {
-    const char *filePath = "/data/media/test_fltp.pcm";
-    int frameBytes = 2 * 1024 * 4;
-    std::ifstream inputFile(filePath, std::ios::binary);
-    if (!inputFile.is_open()) {
-        std::cout << "open file " << filePath << " failed" << std::endl;
+    AVFormatContext *fmpt_ctx;
+    AVPacket pkt;
+    if (avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL) < 0) {
+        std::cout << "open file failed"
+                  << "\n";
         return;
     }
+    if (avformat_find_stream_info(fmpt_ctx, NULL) < 0) {
+        std::cout << "get file stream failed"
+                  << "\n";
+        return;
+    }
+    av_init_packet(&pkt);
+    pkt.data = NULL;
+    pkt.size = 0;
 
     while (true) {
         if (!isRunning_.load()) {
@@ -155,24 +164,39 @@ void AEnInnerDemo::InputFunc()
         }
 
         uint32_t index = signal_->inQueue_.front();
-        std::shared_ptr<AVSharedMemory> buffer = audioEn_->GetInputBuffer(index);
+        std::shared_ptr<AVSharedMemory> buffer = audioDec_->GetInputBuffer(index);
         if (buffer == nullptr) {
             isRunning_.store(false);
             std::cout << "buffer is null:" << index << "\n";
             break;
         }
-        inputFile.read((char *)buffer->GetBase(), frameBytes);
-        int readBytes = inputFile.gcount();
-        AVCodecBufferInfo attr;
-        AVCodecBufferFlag flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
-        if (inputFile.eof() || readBytes == 0) {
+        int ret = av_read_frame(fmpt_ctx, &pkt);
+        if (ret < 0) {
+            AVCodecBufferInfo attr;
+            AVCodecBufferFlag flag;
+            attr.presentationTimeUs = 0;
+            attr.size = 0;
+            attr.offset = 0;
             flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_EOS;
-            (void)audioEn_->QueueInputBuffer(index, attr, flag);
+            av_packet_unref(&pkt);
+            (void)audioDec_->QueueInputBuffer(index, attr, flag);
             signal_->inQueue_.pop();
             std::cout << "end buffer\n";
-            continue;
+            break;
         }
-        auto result = audioEn_->QueueInputBuffer(index, attr, flag);
+        if (memcpy_s(buffer->GetBase(), buffer->GetSize(), pkt.data, pkt.size) != EOK) {
+            cout << "Fatal: memcpy fail" << endl;
+            break;
+        }
+        AVCodecBufferInfo attr;
+        AVCodecBufferFlag flag;
+        attr.presentationTimeUs = pkt.pts;
+        attr.size = pkt.size;
+        attr.offset = 0;
+        flag = AVCodecBufferFlag::AVCODEC_BUFFER_FLAG_NONE;
+        av_packet_unref(&pkt);
+        frameCount_++;
+        auto result = audioDec_->QueueInputBuffer(index, attr, flag);
         signal_->inQueue_.pop();
         if (result != AVCS_ERR_OK) {
             std::cout << "QueueInputBuffer error:\n";
@@ -182,9 +206,9 @@ void AEnInnerDemo::InputFunc()
     }
 }
 
-void AEnInnerDemo::OutputFunc()
+void ADecInnerDemo::OutputFunc()
 {
-    std::ofstream outputFile("/data/media/encode.aac", std::ios::binary);
+    std::ofstream outputFile(outputFilePath.data(), std::ios::binary);
     while (true) {
         if (!isRunning_.load()) {
             break;
@@ -198,7 +222,7 @@ void AEnInnerDemo::OutputFunc()
         }
 
         uint32_t index = signal_->outQueue_.front();
-        auto buffer = audioEn_->GetOutputBuffer(index);
+        auto buffer = audioDec_->GetOutputBuffer(index);
         if (buffer == nullptr) {
             cout << "get output buffer failed" << endl;
             isRunning_.store(false);
@@ -210,31 +234,32 @@ void AEnInnerDemo::OutputFunc()
             cout << "decode eos" << endl;
             isRunning_.store(false);
         }
-        outputFile.write((char *)buffer->GetBase(), attr.size);
+        outputFile.write((char*)buffer->GetBase(), attr.size);
         if (audioDec_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
             break;
         }
 
         signal_->outQueue_.pop();
-        signal_->sizeQueue_.pop();
+        signal_->infoQueue_.pop();
+        signal_->flagQueue_.pop();
     }
 }
 
-AEnDemoCallback::AEnDemoCallback(shared_ptr<AEnSignal> signal) : signal_(signal) {}
+ADecDemoCallback::ADecDemoCallback(shared_ptr<ADecSignal> signal) : signal_(signal) {}
 
-void AEnDemoCallback::OnError(AVCodecErrorType errorType, int32_t errorCode)
+void ADecDemoCallback::OnError(AVCodecErrorType errorType, int32_t errorCode)
 {
     cout << "Error received, errorType:" << errorType << " errorCode:" << errorCode << endl;
 }
 
-void AEnDemoCallback::OnOutputFormatChanged(const Format &format)
+void ADecDemoCallback::OnOutputFormatChanged(const Format &format)
 {
     (void)format;
     cout << "OnOutputFormatChanged received" << endl;
 }
 
-void AEnDemoCallback::OnInputBufferAvailable(uint32_t index)
+void ADecDemoCallback::OnInputBufferAvailable(uint32_t index)
 {
     cout << "OnInputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->inMutex_);
@@ -242,14 +267,14 @@ void AEnDemoCallback::OnInputBufferAvailable(uint32_t index)
     signal_->inCond_.notify_all();
 }
 
-void AEnDemoCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
+void ADecDemoCallback::OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag)
 {
     (void)info;
     (void)flag;
     cout << "OnOutputBufferAvailable received, index:" << index << endl;
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
-    signal_->sizeQueue_.push(info);
-    cout << "**********out info size = " << info.size << endl;
+    signal_->infoQueue_.push(info);
+    signal_->flagQueue_.push(flag);
     signal_->outCond_.notify_all();
 }

@@ -14,13 +14,18 @@
  */
 
 #include "audio_ffmpeg_vorbis_decoder_plugin.h"
+#include "avcodec_dfx.h"
+#include "avcodec_log.h"
 #include "avcodec_errors.h"
 #include "media_description.h"
 #include "securec.h"
 
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFFMpegVorbisEncoderPlugin"};
+}
+
 namespace OHOS {
 namespace Media {
-
 AudioFFMpegVorbisDecoderPlugin::AudioFFMpegVorbisDecoderPlugin()
     : basePlugin(std::make_unique<AudioFfmpegDecoderPlugin>())
 {
@@ -46,7 +51,7 @@ std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext
     auto encodeContext =
         std::shared_ptr<AVCodecContext>(context, [](AVCodecContext *ptr) { avcodec_free_context(&ptr); });
     if (encodeContext == nullptr) {
-        // std::cout << "null pointer." << std::endl;
+        AVCODEC_LOGE("AVCodecContext null pointer.");
         return nullptr;
     }
     encodeContext->sample_fmt = AV_SAMPLE_FMT_FLTP;
@@ -56,7 +61,7 @@ std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext
 
     int ret = avcodec_open2(encodeContext.get(), encodec, nullptr);
     if (ret != 0) {
-        // std::cout << "open encoder failed" << std::endl;
+        AVCODEC_LOGE("avcodec_open2 failed.");
         return nullptr;
     }
     return encodeContext;
@@ -65,24 +70,22 @@ std::shared_ptr<AVCodecContext> AudioFFMpegVorbisDecoderPlugin::GenEncodeContext
 int32_t AudioFFMpegVorbisDecoderPlugin::AssignExtradata(std::shared_ptr<AVCodecContext> &context, const Format &format)
 {
     if (context == nullptr) {
-        // std::cout << " null pointer" << std::endl;
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }
     auto encodeContext = GenEncodeContext(format);
     if (encodeContext == nullptr) {
-        // std::cout << "Gen encode context failed." << std::endl;
         return AVCodecServiceErrCode::AVCS_ERR_INVALID_VAL;
     }
     context->extradata_size = encodeContext->extradata_size;
     context->extradata = static_cast<uint8_t *>(av_mallocz(encodeContext->extradata_size));
     if (context->extradata == nullptr) {
-        // std::cout << "Alloc memory failed." << std::endl;
+        AVCODEC_LOGE("Alloc memory for extradata failed.");
         return AVCodecServiceErrCode::AVCS_ERR_NO_MEMORY;
     }
     int ret =
         memcpy_s(context->extradata, context->extradata_size, encodeContext->extradata, encodeContext->extradata_size);
     if (ret != 0) {
-        // std::cout << "Copy memory failed." << std::endl;
+        AVCODEC_LOGE("Memory copy failed, error: %{public}d", ret);
         return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
     }
     return AVCodecServiceErrCode::AVCS_ERR_OK;
@@ -92,12 +95,12 @@ int32_t AudioFFMpegVorbisDecoderPlugin::init(const Format &format)
 {
     int32_t ret = basePlugin->AllocateContext("vorbis");
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        // std::cout << "init 1 OH error:" << ret << "\n";
+        AVCODEC_LOGE("AllocateContext failed, ret=%{public}d", ret);
         return ret;
     }
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        // std::cout << "init 2 OH error:" << ret << "\n";
+        AVCODEC_LOGE("InitContext failed, ret=%{public}d", ret);
         return ret;
     }
     auto codecCtx = basePlugin->GetCodecContext();
@@ -139,7 +142,7 @@ uint32_t AudioFFMpegVorbisDecoderPlugin::getInputBufferSize() const
     if (maxSize < 0 || maxSize > 8192) {
         maxSize = 8192;
     }
-    return 8192;
+    return maxSize;
 }
 
 uint32_t AudioFFMpegVorbisDecoderPlugin::getOutputBufferSize() const

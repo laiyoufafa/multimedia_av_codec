@@ -71,6 +71,7 @@ ohos_executable("av_codec_demo") {
     "$av_codec_root_dir/test/nativedemo/avmuxer/native_avmuxer_demo.c",
     "./audio_demo/avcodec_audio_decoder_demo.cpp",
     "./audio_demo/avcodec_audio_encoder_demo.cpp",
+    "./audio_demo/avcodec_audio_decoder_inner_demo.cpp",
     "./audio_demo/avcodec_audio_encoder_inner_demo.cpp",
     "$av_codec_root_dir/test/nativedemo/video_demo/videodec_ffmpeg_demo.cpp",
     "$av_codec_root_dir/test/nativedemo/codeclist_demo/codeclist_demo.cpp",

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#ifndef AVCODEC_AUDIO_ENCODER_INNER_DEMO_H
-#define AVCODEC_AUDIO_ENCODER_INNER_DEMO_H
+#ifndef AVCODEC_AUDIO_DECODER_INNER_DEMO_H
+#define AVCODEC_AUDIO_DECODER_INNER_DEMO_H
 
 #include <atomic>
 #include <fstream>
@@ -22,13 +22,13 @@
 #include <queue>
 #include <string>
 #include "avcodec_common.h"
-#include "avcodec_audio_encoder.h"
+#include "avcodec_audio_decoder.h"
 #include "nocopyable.h"
 
 namespace OHOS {
 namespace Media {
 namespace InnerAudioDemo {
-class AEnSignal {
+class ADecSignal {
 public:
     std::mutex inMutex_;
     std::mutex outMutex_;
@@ -36,13 +36,14 @@ public:
     std::condition_variable outCond_;
     std::queue<uint32_t> inQueue_;
     std::queue<uint32_t> outQueue_;
-    std::queue<AVCodecBufferInfo> sizeQueue_;
+    std::queue<AVCodecBufferInfo> infoQueue_;
+    std::queue<AVCodecBufferFlag> flagQueue_;
 };
 
-class AEnDemoCallback : public AVCodecCallback, public NoCopyable {
+class ADecDemoCallback : public AVCodecCallback, public NoCopyable {
 public:
-    explicit AEnDemoCallback(std::shared_ptr<AEnSignal> signal);
-    virtual ~AEnDemoCallback() = default;
+    explicit ADecDemoCallback(std::shared_ptr<ADecSignal> signal);
+    virtual ~ADecDemoCallback() = default;
 
     void OnError(AVCodecErrorType errorType, int32_t errorCode) override;
     void OnOutputFormatChanged(const Format &format) override;
@@ -50,13 +51,13 @@ public:
     void OnOutputBufferAvailable(uint32_t index, AVCodecBufferInfo info, AVCodecBufferFlag flag) override;
 
 private:
-    std::shared_ptr<AEnSignal> signal_;
+    std::shared_ptr<ADecSignal> signal_;
 };
 
-class AEnInnerDemo : public NoCopyable {
+class ADecInnerDemo : public NoCopyable {
 public:
-    AEnInnerDemo() = default;
-    virtual ~AEnInnerDemo() = default;
+    ADecInnerDemo() = default;
+    virtual ~ADecInnerDemo() = default;
     void RunCase();
 
 private:
@@ -74,10 +75,10 @@ private:
     std::unique_ptr<std::ifstream> testFile_;
     std::unique_ptr<std::thread> inputLoop_;
     std::unique_ptr<std::thread> outputLoop_;
-    std::shared_ptr<AVCodecAudioEncoder> audioEn_;
-    std::shared_ptr<AEnSignal> signal_;
-    std::shared_ptr<AEnDemoCallback> cb_;
-    // uint32_t frameCount_ = 0;
+    std::shared_ptr<AVCodecAudioDecoder> audioDec_;
+    std::shared_ptr<ADecSignal> signal_;
+    std::shared_ptr<ADecDemoCallback> cb_;
+    uint32_t frameCount_ = 0;
 };
 } // InnerAudioDemo
 } // namespace AV_Codec

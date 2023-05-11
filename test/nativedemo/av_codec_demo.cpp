@@ -20,6 +20,7 @@
 #include "avmuxer_demo.h"
 #include "avmuxer_ffmpeg_demo.h"
 #include "avmuxer_engine_demo.h"
+#include "avcodec_audio_decoder_inner_demo.h"
 #include "avcodec_audio_encoder_inner_demo.h"
 #include "avcodec_audio_decoder_demo.h"
 #include "avcodec_audio_encoder_demo.h"
@@ -138,7 +139,7 @@ static int RunAudioInnerDecoder()
 
 static int RunAudioInnerEncoder()
 {
-    auto audioEnc = std::make_unique<ADecInnerDemo>();
+    auto audioEnc = std::make_unique<AEnInnerDemo>();
     if (audioEnc == nullptr) {
         cout << "audio encoder is null" << endl;
         return 0;

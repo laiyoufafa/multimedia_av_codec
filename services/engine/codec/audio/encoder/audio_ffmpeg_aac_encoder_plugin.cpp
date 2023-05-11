@@ -1,9 +1,15 @@
 #include "audio_ffmpeg_aac_encoder_plugin.h"
 #include "avcodec_errors.h"
+#include "avcodec_dfx.h"
+#include "avcodec_log.h"
 #include "media_description.h"
-#include <iostream>
+namespace {
+constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-AudioFFMpegAacEncoderPlugin"};
+}
+
 namespace OHOS {
 namespace Media {
+
 AudioFFMpegAacEncoderPlugin::AudioFFMpegAacEncoderPlugin() : basePlugin(std::make_unique<AudioFfmpegEncoderPlugin>()) {}
 
 AudioFFMpegAacEncoderPlugin::~AudioFFMpegAacEncoderPlugin() {
@@ -12,7 +18,8 @@ AudioFFMpegAacEncoderPlugin::~AudioFFMpegAacEncoderPlugin() {
     basePlugin = nullptr;
 }
 
-static int32_t GetAdtsHeader(std::string &adtsHeader, uint32_t &headerSize, std::shared_ptr<AVCodecContext> ctx, int aacLength)
+static int32_t GetAdtsHeader(std::string &adtsHeader, uint32_t &headerSize, std::shared_ptr<AVCodecContext> ctx,
+                             int aacLength)
 {
     uint8_t freqIdx = 0;    //0: 96000 Hz  3: 48000 Hz 4: 44100 Hz
     switch (ctx->sample_rate) {
@@ -72,7 +79,7 @@ static bool CheckChannelLayout(const std::shared_ptr<AVCodec> &codec, const uint
     // 不是每个codec都给出支持的channel_layout
     const uint64_t* p = codec->channel_layouts;
     if (!p) {
-        std::cout << "The codec " << codec->name << " no set channel_layouts" << std::endl;
+        AVCODEC_LOGI("The encoder %{public}s do not set channel_layouts", codec->name);
         return true;
     }
     while (*p != 0) { // 0作为退出条件，比如libfdk-aacenc.c的aac_channel_layout
@@ -88,7 +95,7 @@ bool AudioFFMpegAacEncoderPlugin::CheckFormat(const Format &format) const
     if (!format.ContainKey(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT) ||
         !format.ContainKey(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT) ||
         !format.ContainKey(MediaDescriptionKey::MD_KEY_SAMPLE_RATE)) {
-        std::cout << "parameter missing" << std::endl;
+        AVCODEC_LOGE("Format parameter missing");
         return false;
     }
 
@@ -96,21 +103,21 @@ bool AudioFFMpegAacEncoderPlugin::CheckFormat(const Format &format) const
     int sampleFormat;
     format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_FORMAT, sampleFormat);
     if (!CheckSampleFormat(avCodec, (AVSampleFormat)sampleFormat)) {
-        std::cout << "sample format is not supported" << std::endl;
+        AVCODEC_LOGE("Sample format not supported");
         return false;
     }
 
     int sampleRate;
     format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, sampleRate);
     if (!CheckSampleRate(avCodec, sampleRate)) {
-        std::cout << "sample rate is not supported" << std::endl;
+        AVCODEC_LOGE("Sample rate not supported");
         return false;
     }
 
     int64_t channelLayout;
     format.GetLongValue(MediaDescriptionKey::MD_KEY_CHANNEL_LAYOUT, channelLayout);
     if (!CheckChannelLayout(avCodec, channelLayout)) {
-        std::cout << "channel layout is not supported" << std::endl;
+        AVCODEC_LOGE("Channel layout not supported");
         return false;
     }
 
@@ -120,28 +127,27 @@ bool AudioFFMpegAacEncoderPlugin::CheckFormat(const Format &format) const
 int32_t AudioFFMpegAacEncoderPlugin::init(const Format &format) {
     int32_t ret = basePlugin->AllocateContext("aac");
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        std::cout << "init 1 OH error:" << ret << "\n";
+        AVCODEC_LOGE("Allocat aac context failed, ret = %{publid}d", ret);
         return ret;
     }
     if (!CheckFormat(format)) {
-        std::cout << "format not supported" << std::endl;
+        AVCODEC_LOGE("Format check failed.");
         return AVCodecServiceErrCode::AVCS_ERR_UNSUPPORT_AUD_PARAMS;
     }
     ret = basePlugin->InitContext(format);
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        std::cout << "init 2 OH error:" << ret << "\n";
+        AVCODEC_LOGE("Init context failed, ret = %{publid}d", ret);
         return ret;
     }
-    std::cout << "AudioFFMpegAacEncoderPlugin::init done." << std::endl;
     ret = basePlugin->OpenContext();
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        std::cout << "init 3 OH error:" << ret << "\n";
+        AVCODEC_LOGE("Open context failed, ret = %{publid}d", ret);
         return ret;
     }
 
     ret = basePlugin->InitFrame();
     if (ret != AVCodecServiceErrCode::AVCS_ERR_OK) {
-        std::cout << "init 4 OH error:" << ret << "\n";
+        AVCODEC_LOGE("Init frame failed, ret = %{publid}d", ret);
         return ret;
     }
 
@@ -171,7 +177,11 @@ int32_t AudioFFMpegAacEncoderPlugin::flush() {
 }
 
 uint32_t AudioFFMpegAacEncoderPlugin::getInputBufferSize() const {
-    return 4 * 1024 * 8;
+    int32_t maxSize = basePlugin->GetMaxInputSize();
+    if (maxSize < 0 || maxSize > 8192) {
+        maxSize = 4 * 1024 * 8;
+    }
+    return maxSize;
 }
 
 uint32_t AudioFFMpegAacEncoderPlugin::getOutputBufferSize() const {

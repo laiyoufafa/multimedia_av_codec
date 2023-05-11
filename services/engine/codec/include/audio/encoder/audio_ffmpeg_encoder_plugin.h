@@ -3,11 +3,13 @@
 
 #include "audio_ffmpeg_base_codec.h"
 #include <mutex>
+#include <fstream>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include "libavcodec/avcodec.h"
+#include "nocopyable.h"
 #include <libavutil/opt.h>
 #ifdef __cplusplus
 };
@@ -15,8 +17,9 @@ extern "C" {
 
 namespace OHOS {
 namespace Media {
-class AudioFfmpegEncoderPlugin {
+class AudioFfmpegEncoderPlugin : NoCopyable {
 private:
+    int32_t maxInputSize_;
     std::shared_ptr<AVCodec> avCodec_{};
     std::shared_ptr<AVCodecContext> avCodecContext_{};
     std::shared_ptr<AVFrame> cachedFrame_{};
@@ -48,8 +51,8 @@ public:
     std::shared_ptr<AVCodec> GetAVCodec() const;
 
     void RegisterHeaderFunc(HeaderFunc headerFunc);
-
     int32_t CloseCtxLocked();
+    int32_t GetMaxInputSize() const noexcept;
 
 private:
     int32_t sendBuffer(const std::shared_ptr<AudioBufferInfo> &inputBuffer);
@@ -58,6 +61,7 @@ private:
     int32_t PcmFillFrame(const std::shared_ptr<AudioBufferInfo> &inputBuffer);
     HeaderFunc GetHeaderFunc_;
     bool headerFuncValid_ = false;
+    // std::unique_ptr<std::ofstream> outputFile_;
 };
 
 } // namespace Media
