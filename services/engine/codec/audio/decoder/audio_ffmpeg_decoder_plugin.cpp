@@ -26,8 +26,6 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 namespace OHOS {
 namespace Media {
 
-const std::string BITS_PER_CODED_SAMPLE_KEY{"bits_per_coded_sample"};
-
 AudioFfmpegDecoderPlugin::AudioFfmpegDecoderPlugin()
     : hasExtra_(false),
       maxInputSize_(-1),
@@ -190,10 +188,10 @@ int32_t AudioFfmpegDecoderPlugin::ReceiveFrameSucc(std::shared_ptr<AudioBufferIn
     if (av_sample_fmt_is_planar(avCodecContext_->sample_fmt)) {
         size_t planarSize = outputSize / channels;
         for (int32_t idx = 0; idx < channels; idx++) {
-            outBuffer->WriteBuffer(cachedFrame_->extended_data[idx], planarSize);
+            ioInfoMem->Write(cachedFrame_->extended_data[idx], planarSize);
         }
     } else {
-        outBuffer->WriteBuffer(cachedFrame_->data[0], outputSize);
+        ioInfoMem->Write(cachedFrame_->data[0], outputSize);
     }
     auto attr = outBuffer->GetBufferAttr();
     attr.presentationTimeUs = static_cast<uint64_t>(cachedFrame_->pts);
@@ -258,7 +256,6 @@ int32_t AudioFfmpegDecoderPlugin::InitContext(const Format &format)
     format.GetIntValue(MediaDescriptionKey::MD_KEY_CHANNEL_COUNT, avCodecContext_->channels);
     format.GetIntValue(MediaDescriptionKey::MD_KEY_SAMPLE_RATE, avCodecContext_->sample_rate);
     format.GetLongValue(MediaDescriptionKey::MD_KEY_BITRATE, avCodecContext_->bit_rate);
-    format.GetIntValue(BITS_PER_CODED_SAMPLE_KEY, avCodecContext_->bits_per_coded_sample);
     format.GetLongValue(MediaDescriptionKey::MD_KEY_MAX_INPUT_SIZE, maxInputSize_);
 
     size_t extraSize;

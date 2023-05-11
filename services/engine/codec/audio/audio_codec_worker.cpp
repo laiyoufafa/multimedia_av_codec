@@ -225,7 +225,7 @@ bool AudioCodecWorker::Release()
         callback_.reset();
         callback_ = nullptr;
     }
-    AVCODEC_LOGD("Worker Release end"); // TODO: delete?
+    AVCODEC_LOGD("Worker Release end");
     return true;
 }
 

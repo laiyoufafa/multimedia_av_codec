@@ -28,13 +28,13 @@ namespace Media {
 class AudioFFMpegAdapter : public CodecBase, public NoCopyable {
 private:
     std::atomic<CodecState> state_;
-    std::string_view name_;
+    const std::string name_;
     std::shared_ptr<AVCodecCallback> callback_;
     std::shared_ptr<IAudioFFMpegBaseCodec> audioCodec;
     std::shared_ptr<AudioCodecWorker> worker_;
 
 public:
-    explicit AudioFFMpegAdapter(const std::string_view &name);
+    explicit AudioFFMpegAdapter(const std::string &name);
 
     ~AudioFFMpegAdapter() override;
 

@@ -23,7 +23,7 @@ public:
 
     const static std::string identify()
     {
-        return AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY;
+        return std::string(AVCodecAudioCodecKey::AUDIO_ENCODER_AAC_NAME_KEY);
     }
 
 private:

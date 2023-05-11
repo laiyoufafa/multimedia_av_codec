@@ -38,9 +38,9 @@ public:
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
 
-    const static std::string_view identify()
+    const static std::string identify()
     {
-        return AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY;
+        return std::string(AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY);
     }
 
 private:

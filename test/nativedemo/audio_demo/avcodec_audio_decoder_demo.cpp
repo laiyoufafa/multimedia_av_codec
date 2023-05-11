@@ -35,7 +35,7 @@ constexpr uint32_t SAMPLE_RATE = 44100;
 constexpr uint32_t BITS_RATE = 169000;
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
 constexpr uint32_t FRAME_DURATION_US = 33000;
-constexpr string_view inputFilePath = "/data/audioIn.mp3";
+constexpr string_view inputFilePath = "/data/test441_2_noid3.mp3";
 constexpr string_view outputFilePath = "/data/audioOut.pcm";
 } // namespace
 
@@ -135,7 +135,7 @@ ADecDemo::~ADecDemo()
 
 int32_t ADecDemo::CreateDec()
 {
-
+    // const char *name = "avdec_mp3";
     audioDec_ = OH_AudioDecoder_CreateByName((AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY).data());
     DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 

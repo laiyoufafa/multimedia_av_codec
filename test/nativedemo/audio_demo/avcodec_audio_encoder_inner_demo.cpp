@@ -15,8 +15,8 @@
 
 #include "avcodec_audio_encoder_inner_demo.h"
 #include "avcodec_audio_codec_key.h"
-#include "avcodec_errors.h"
 #include "avcodec_common.h"
+#include "avcodec_errors.h"
 #include "demo_log.h"
 #include "media_description.h"
 #include "securec.h"
@@ -235,7 +235,7 @@ void ADecInnerDemo::OutputFunc()
             cout << "decode eos" << endl;
             isRunning_.store(false);
         }
-        outputFile.write((char*)buffer->GetBase(), attr.size);
+        outputFile.write((char *)buffer->GetBase(), attr.size);
         if (audioDec_->ReleaseOutputBuffer(index) != AVCS_ERR_OK) {
             cout << "Fatal: ReleaseOutputBuffer fail" << endl;
             break;
