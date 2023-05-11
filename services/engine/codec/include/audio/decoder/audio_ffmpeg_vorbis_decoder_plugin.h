@@ -18,6 +18,7 @@
 
 #include "audio_ffmpeg_base_codec.h"
 #include "audio_ffmpeg_decoder_plugin.h"
+#include "avcodec_audio_codec_key.h"
 
 namespace OHOS {
 namespace Media {
@@ -37,9 +38,9 @@ public:
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
 
-    const static std::string_view identify()
+    const static std::string identify()
     {
-        return "OH.Media.Codec.VORBIS.FFMPEGVorbis";
+        return std::string(AVCodecAudioCodecKey::AUDIO_DECODER_VORBIS_NAME_KEY);
     }
 
 private:

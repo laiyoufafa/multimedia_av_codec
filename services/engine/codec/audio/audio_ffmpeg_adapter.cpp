@@ -26,7 +26,10 @@ constexpr OHOS::HiviewDFX::HiLogLabel LABEL = {LOG_CORE, LOG_DOMAIN, "AvCodec-Au
 namespace OHOS {
 namespace Media {
 
-AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string_view &name) : state_(CodecState::RELEASED), name_(name) {}
+AudioFFMpegAdapter::AudioFFMpegAdapter(const std::string &name) : state_(CodecState::RELEASED), name_(name)
+{
+    AVCODEC_LOGD("enter constructor of adapter,name:%{public}s,name after:%{public}s", name.data(), name_.data());
+}
 
 AudioFFMpegAdapter::~AudioFFMpegAdapter()
 {
@@ -71,7 +74,8 @@ int32_t AudioFFMpegAdapter::Configure(const Format &format)
         return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
     }
 
-    AVCODEC_LOGI("state from %{public}s to INITLIZING", stateToString(state_).data());
+    AVCODEC_LOGI("state from %{public}s to INITLIZING,name:%{public}s,name size:%{public}d",
+                 stateToString(state_).data(), name_.data(), name_.size());
     state_ = CodecState::INITLIZING;
     auto ret = doInit();
 
@@ -378,6 +382,7 @@ int32_t AudioFFMpegAdapter::doInit()
         return AVCodecServiceErrCode::AVCS_ERR_UNKNOWN;
     }
 
+    AVCODEC_LOGI("adapter doInit, codec name:%{public}s", name_.data());
     audioCodec = IAudioFFMpegBaseCodec::make_sharePtr(name_);
 
     if (audioCodec == nullptr) {
@@ -494,7 +499,7 @@ int32_t AudioFFMpegAdapter::doRelease()
         return AVCodecServiceErrCode::AVCS_ERR_OK;
     }
     if (audioCodec != nullptr) {
-       audioCodec->release();
+        audioCodec->release();
     }
     if (worker_ != nullptr) {
         worker_->Release();

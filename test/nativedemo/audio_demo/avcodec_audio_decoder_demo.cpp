@@ -14,12 +14,13 @@
  */
 
 #include "avcodec_audio_decoder_demo.h"
+#include "avcodec_audio_codec_key.h"
 #include "avcodec_common.h"
 #include "avcodec_errors.h"
-#include "media_description.h"
-#include "native_avformat.h"
 #include "demo_log.h"
+#include "media_description.h"
 #include "native_avcodec_base.h"
+#include "native_avformat.h"
 #include "securec.h"
 #include <iostream>
 #include <unistd.h>
@@ -34,7 +35,7 @@ constexpr uint32_t SAMPLE_RATE = 44100;
 constexpr uint32_t BITS_RATE = 169000;
 constexpr uint32_t BITS_PER_CODED_RATE = 4;
 constexpr uint32_t FRAME_DURATION_US = 33000;
-constexpr string_view inputFilePath = "/data/audioIn.mp3";
+constexpr string_view inputFilePath = "/data/test441_2_noid3.mp3";
 constexpr string_view outputFilePath = "/data/audioOut.pcm";
 } // namespace
 
@@ -74,12 +75,12 @@ static void OnOutputBufferAvailable(OH_AVCodec *codec, uint32_t index, OH_AVMemo
     unique_lock<mutex> lock(signal_->outMutex_);
     signal_->outQueue_.push(index);
     signal_->outBufferQueue_.push(data);
-	if (attr) {
+    if (attr) {
         cout << "OnOutputBufferAvailable received, index:" << index << ", attr->size:" << attr->size << endl;
         signal_->attrQueue_.push(*attr);
-	} else {
-	    cout << "OnOutputBufferAvailable error, attr is nullptr!" << endl;
-	}
+    } else {
+        cout << "OnOutputBufferAvailable error, attr is nullptr!" << endl;
+    }
     signal_->outCond_.notify_all();
 }
 
@@ -108,7 +109,7 @@ void ADecDemo::RunCase()
 ADecDemo::ADecDemo()
 {
     int32_t ret = 0;
-	ret = avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL);
+    ret = avformat_open_input(&fmpt_ctx, inputFilePath.data(), NULL, NULL);
     if (ret < 0) {
         std::cout << "open file failed" << ret << "\n";
         exit(1);
@@ -134,8 +135,8 @@ ADecDemo::~ADecDemo()
 
 int32_t ADecDemo::CreateDec()
 {
-
-    audioDec_ = OH_AudioDecoder_CreateByName("OH.Media.Codec.MP3.FFMPEGMp3");
+    // const char *name = "avdec_mp3";
+    audioDec_ = OH_AudioDecoder_CreateByName((AVCodecAudioCodecKey::AUDIO_DECODER_MP3_NAME_KEY).data());
     DEMO_CHECK_AND_RETURN_RET_LOG(audioDec_ != nullptr, AVCS_ERR_UNKNOWN, "Fatal: CreateByName fail");
 
     signal_ = new ADecSignal();
@@ -267,10 +268,10 @@ void ADecDemo::InputFunc()
 
 void ADecDemo::OutputFunc()
 {
-    std::ofstream  pcmFile;
+    std::ofstream pcmFile;
     pcmFile.open(outputFilePath.data(), std::ios::out | std::ios::binary);
     if (!pcmFile.is_open()) {
-        std::cout<<"open " << outputFilePath << " failed!"<<std::endl;
+        std::cout << "open " << outputFilePath << " failed!" << std::endl;
     }
 
     while (true) {
@@ -291,7 +292,7 @@ void ADecDemo::OutputFunc()
         OH_AVCodecBufferAttr attr = signal_->attrQueue_.front();
         OH_AVMemory *data = signal_->outBufferQueue_.front();
         if (data != nullptr) {
-            cout << "OutputFunc write file,buffer index" << index  << ", data size = :" << attr.size << endl;
+            cout << "OutputFunc write file,buffer index" << index << ", data size = :" << attr.size << endl;
             pcmFile.write(reinterpret_cast<char *>(OH_AVMemory_GetAddr(data)), attr.size);
         }
 
