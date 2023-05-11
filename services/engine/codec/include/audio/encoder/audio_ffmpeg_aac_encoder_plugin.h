@@ -21,13 +21,12 @@ public:
     uint32_t getOutputBufferSize() const override;
     Format GetFormat() const noexcept override;
 
-    const static std::string identify() {
+    const static std::string_view identify() {
         return "OH.Media.Codec.AAC.FFMPEGAacEn";
     }
 
 private:
     bool CheckFormat(const Format &format) const;
-
     std::unique_ptr<AudioFfmpegEncoderPlugin> basePlugin;
 };
 
